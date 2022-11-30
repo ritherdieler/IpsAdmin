@@ -7,7 +7,7 @@
     tools:context=".presentation.registration.RegisterActivity">
 
     <EditText
-        android:id="@+id/etUser"
+        android:id="@+id/ltUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -71,7 +71,7 @@
         app:layout_constraintBottom_toTopOf="@+id/etLastName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUser" />
+        app:layout_constraintTop_toBottomOf="@+id/ltUser" />
 
     <Button
         android:id="@+id/btRegister"

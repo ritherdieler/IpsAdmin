@@ -6,32 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".presentation.login.LoginActivity">
 
-    <EditText
-        android:id="@+id/etUser"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ltUser"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="escriba su usuario"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/etPassword"
+        android:layout_marginEnd="32dp"
+        android:hint="Escriba su usuario"
+        app:layout_constraintBottom_toTopOf="@+id/ltPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed">
 
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ltPassword"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="escriba su contrasena"
-        android:inputType="textPassword"
+        android:hint="Escriba su Contrasena"
         app:layout_constraintBottom_toTopOf="@+id/btLogin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUser" />
+        app:layout_constraintEnd_toEndOf="@+id/ltUser"
+        app:layout_constraintStart_toStartOf="@+id/ltUser"
+        app:layout_constraintTop_toBottomOf="@+id/ltUser"
+        app:endIconMode="password_toggle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:inputType="textPassword"
+
+
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btLogin"
@@ -40,9 +57,9 @@
         android:layout_marginTop="40dp"
         android:text="Iniciar Sesion"
         app:layout_constraintBottom_toTopOf="@+id/tvCreateAccount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+        app:layout_constraintEnd_toEndOf="@+id/ltPassword"
+        app:layout_constraintStart_toStartOf="@+id/ltPassword"
+        app:layout_constraintTop_toBottomOf="@+id/ltPassword" />
 
     <TextView
         android:id="@+id/tvCreateAccount"
@@ -52,8 +69,8 @@
         android:text="Crear Cuenta"
         android:textColor="#E4490881"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btLogin"
+        app:layout_constraintStart_toStartOf="@+id/btLogin"
         app:layout_constraintTop_toBottomOf="@+id/btLogin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

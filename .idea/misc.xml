@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/activity_dialogo.xml" value="0.25" />
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/activity_login.xml" value="0.264" />
+        <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/activity_main2.xml" value="0.25" />
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/activity_register.xml" value="0.264" />
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/app_bar_main.xml" value="0.25" />
@@ -13,8 +14,14 @@
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/content_main2.xml" value="0.25" />
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/fragment_gallery.xml" value="0.25" />
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/fragment_network_device.xml" value="0.2" />
+        <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/fragment_newtwork_device.xml" value="0.25" />
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/fragment_plan.xml" value="0.264" />
         <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/fragment_slideshow.xml" value="0.25" />
+        <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/layout/layout.xml" value="0.25" />
+        <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/menu/activity_main_drawer.xml" value="0.25" />
+        <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/menu/main.xml" value="0.25" />
+        <entry key="..\:/ingenieria de software/AndroidBussiness/ispAdminAndroid/app/src/main/res/menu/main_activity2.xml" value="0.25" />
       </map>
     </option>
   </component>

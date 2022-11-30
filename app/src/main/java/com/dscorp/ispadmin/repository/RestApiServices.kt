@@ -1,12 +1,11 @@
 package com.dscorp.ispadmin.repository
 
 import com.dscorp.ispadmin.repository.model.Loging
+import com.dscorp.ispadmin.repository.model.NetworkDevice
 import com.dscorp.ispadmin.repository.model.Plan
 import com.dscorp.ispadmin.repository.model.User
 import retrofit2.Response
-import retrofit2.Retrofit
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
 
 /**
@@ -27,6 +26,7 @@ interface RestApiServices {
     @POST("plan")
     suspend fun registerPlan(@Body plan: Plan):Response <Plan>
 
-
+    @POST("networkDevice")
+    suspend fun registerNetworkDevice(@Body networkDevice: NetworkDevice):Response <NetworkDevice>
 
 }

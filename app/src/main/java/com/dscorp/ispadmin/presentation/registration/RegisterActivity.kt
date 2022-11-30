@@ -26,7 +26,7 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        etUser = findViewById(R.id.etUser)
+        etUser = findViewById(R.id.ltUser)
         etPassword1 = findViewById(R.id.etPassword1)
         etPassword2 = findViewById(R.id.etPassword2)
         etFirstName = findViewById(R.id.etFirstName)
