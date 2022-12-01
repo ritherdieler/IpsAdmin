@@ -1,11 +1,9 @@
 package com.dscorp.ispadmin.repository
 
-import com.dscorp.ispadmin.repository.model.Loging
-import com.dscorp.ispadmin.repository.model.NetworkDevice
-import com.dscorp.ispadmin.repository.model.Plan
-import com.dscorp.ispadmin.repository.model.User
+import com.dscorp.ispadmin.repository.model.*
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 /**
@@ -28,5 +26,11 @@ interface RestApiServices {
 
     @POST("networkDevice")
     suspend fun registerNetworkDevice(@Body networkDevice: NetworkDevice):Response <NetworkDevice>
+
+    @POST("subscription")
+    suspend fun doSubscription(@Body subscription: Subscription): Response <Subscription>
+    @GET("plan")
+   suspend fun getPlans(): Response <List<Plan>>
+
 
 }

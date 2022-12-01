@@ -19,11 +19,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintVertical_chainStyle="packed"
+        app:endIconMode="clear_text"
+        >
 
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etName"
+            android:id="@+id/etFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -41,6 +43,7 @@
         app:layout_constraintStart_toStartOf="@+id/tlName"
         app:layout_constraintTop_toBottomOf="@+id/tlName"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        app:endIconMode="password_toggle"
         >
 
 
@@ -61,7 +64,8 @@
         app:layout_constraintEnd_toEndOf="@+id/tlPassword"
         app:layout_constraintStart_toStartOf="@+id/tlPassword"
         app:layout_constraintTop_toBottomOf="@+id/tlPassword"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        app:endIconMode="clear_text">
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -81,7 +85,9 @@
         app:layout_constraintEnd_toEndOf="@+id/tlUserName"
         app:layout_constraintStart_toStartOf="@+id/tlUserName"
         app:layout_constraintTop_toBottomOf="@+id/tlUserName"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        app:endIconMode="clear_text"
+        >
 
 
         <com.google.android.material.textfield.TextInputEditText

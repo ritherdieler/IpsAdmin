@@ -1,9 +1,9 @@
 package com.dscorp.ispadmin.repository
 
-import com.dscorp.ispadmin.repository.model.Loging
-import com.dscorp.ispadmin.repository.model.NetworkDevice
-import com.dscorp.ispadmin.repository.model.Plan
-import com.dscorp.ispadmin.repository.model.User
+import android.telephony.euicc.DownloadableSubscription
+import com.dscorp.ispadmin.presentation.Subscription.SubscriptionFragment
+import com.dscorp.ispadmin.repository.model.*
+import java.lang.reflect.Executable
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -54,7 +54,24 @@ class Repository(val restApiServices: RestApiServices) {
         } else {
             throw Exception("error en la respuesta")
         }
+    }
 
+    suspend fun doSubscription(doSubscription: Subscription): Subscription {
+        val response = restApiServices.doSubscription(doSubscription)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("error en la respuesta")
+        }
 
     }
+    suspend fun getplans():List<Plan> {
+        val response = restApiServices.getPlans()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("error en la respuesta")
+        }
+    }
+
 }

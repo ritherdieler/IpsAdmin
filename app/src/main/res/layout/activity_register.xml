@@ -6,82 +6,109 @@
     android:layout_height="match_parent"
     tools:context=".presentation.registration.RegisterActivity">
 
-    <EditText
-        android:id="@+id/ltUser"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tlUser"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="ingrese su usuario"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/etFirstName"
+        android:layout_marginEnd="32dp"
+        android:hint="Ingrese su Usuario"
+        app:layout_constraintBottom_toTopOf="@+id/tlFirstName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed">
 
-    <EditText
-        android:id="@+id/etPassword2"
-        android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tlFirstName"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="ingrese su contrasena"
-        android:inputType="textPassword"
+        android:hint="Ingrese su Nombre"
+        app:layout_constraintBottom_toTopOf="@+id/tlLastName"
+        app:layout_constraintEnd_toEndOf="@+id/tlUser"
+        app:layout_constraintStart_toStartOf="@+id/tlUser"
+        app:layout_constraintTop_toBottomOf="@+id/tlUser">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tlLastName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Ingrese su Apellido"
+        app:layout_constraintBottom_toTopOf="@+id/tlPassword1"
+        app:layout_constraintEnd_toEndOf="@+id/tlFirstName"
+        app:layout_constraintStart_toStartOf="@+id/tlFirstName"
+        app:layout_constraintTop_toBottomOf="@+id/tlFirstName">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tlPassword1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Ingrese su Contrasena"
+        app:layout_constraintBottom_toTopOf="@+id/tlPassword2"
+        app:layout_constraintEnd_toEndOf="@+id/tlLastName"
+        app:layout_constraintStart_toStartOf="@+id/tlLastName"
+        app:layout_constraintTop_toBottomOf="@+id/tlLastName">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tlPassword2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Ingrese su Contrasena"
         app:layout_constraintBottom_toTopOf="@+id/btRegister"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword1" />
+        app:layout_constraintEnd_toEndOf="@+id/tlPassword1"
+        app:layout_constraintStart_toStartOf="@+id/tlPassword1"
+        app:layout_constraintTop_toBottomOf="@+id/tlPassword1">
 
-    <EditText
-        android:id="@+id/etLastName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Apellidos"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/etPassword1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etFirstName" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <EditText
-        android:id="@+id/etPassword1"
-        android:layout_width="209dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="ingrese contrasena"
-        android:inputType="textPassword"
-        app:guidelineUseRtl="false"
-        app:layout_constraintBottom_toTopOf="@+id/etPassword2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etLastName" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/etFirstName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Nombres"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/etLastName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ltUser" />
 
     <Button
         android:id="@+id/btRegister"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:text="Registrarse"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword2" />
+        app:layout_constraintEnd_toEndOf="@+id/tlPassword2"
+        app:layout_constraintStart_toStartOf="@+id/tlPassword2"
+        app:layout_constraintTop_toBottomOf="@+id/tlPassword2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

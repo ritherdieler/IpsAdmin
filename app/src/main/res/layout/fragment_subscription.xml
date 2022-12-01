@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.Subscription.SubscriptionFragment">
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlFirstName"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="32dp"
+
+                    android:hint="Nombres"
+                    app:endIconMode="clear_text"
+                    app:layout_constraintBottom_toTopOf="@+id/tlLastName"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etFirstName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlLastName"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="Apellidos"
+                    app:endIconMode="clear_text"
+                    app:layout_constraintBottom_toTopOf="@+id/tlDni"
+                    app:layout_constraintEnd_toEndOf="@+id/tlFirstName"
+                    app:layout_constraintStart_toStartOf="@+id/tlFirstName"
+                    app:layout_constraintTop_toBottomOf="@+id/tlFirstName">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLastName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlDni"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="DNI"
+                    app:endIconMode="clear_text"
+                    app:layout_constraintBottom_toTopOf="@+id/tlPassword"
+                    app:layout_constraintEnd_toEndOf="@+id/tlLastName"
+                    app:layout_constraintStart_toStartOf="@+id/tlLastName"
+                    app:layout_constraintTop_toBottomOf="@+id/tlLastName">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDni"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlPassword"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="Contraseña"
+                    app:endIconMode="password_toggle"
+                    app:layout_constraintBottom_toTopOf="@+id/tlAddress"
+                    app:layout_constraintEnd_toEndOf="@+id/tlDni"
+                    app:layout_constraintStart_toStartOf="@+id/tlDni"
+                    app:layout_constraintTop_toBottomOf="@+id/tlDni">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlAddress"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="Dirección"
+                    app:endIconMode="clear_text"
+                    app:layout_constraintBottom_toTopOf="@+id/tlPhone"
+                    app:layout_constraintEnd_toEndOf="@+id/tlPassword"
+                    app:layout_constraintStart_toStartOf="@+id/tlPassword"
+                    app:layout_constraintTop_toBottomOf="@+id/tlPassword">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlPhone"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="Numero de telefono"
+                    app:endIconMode="clear_text"
+                    app:layout_constraintBottom_toTopOf="@+id/tlSubscriptionDate"
+                    app:layout_constraintEnd_toEndOf="@+id/tlAddress"
+                    app:layout_constraintStart_toStartOf="@+id/tlAddress"
+                    app:layout_constraintTop_toBottomOf="@+id/tlAddress">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlSubscriptionDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="Fecha de Suscripción"
+                    app:endIconMode="clear_text"
+                    app:layout_constraintBottom_toTopOf="@+id/spnPlan"
+                    app:layout_constraintEnd_toEndOf="@+id/tlPhone"
+                    app:layout_constraintStart_toStartOf="@+id/tlPhone"
+                    app:layout_constraintTop_toBottomOf="@+id/tlPhone">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSubscriptionDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Spinner
+                    android:id="@+id/spnPlan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintBottom_toTopOf="@+id/spnDevice"
+                    app:layout_constraintEnd_toEndOf="@+id/tlSubscriptionDate"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="@+id/tlSubscriptionDate"
+                    app:layout_constraintTop_toBottomOf="@+id/tlSubscriptionDate"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <Spinner
+                    android:id="@+id/spnDevice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
+                    app:layout_constraintEnd_toEndOf="@+id/spnPlan"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/spnPlan"
+                    app:layout_constraintTop_toBottomOf="@+id/spnPlan" />
+
+                <Button
+                    android:id="@+id/btSubscribirse"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="20dp"
+                    android:text="Registrar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/spnDevice"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/spnDevice"
+                    app:layout_constraintTop_toBottomOf="@+id/spnDevice" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

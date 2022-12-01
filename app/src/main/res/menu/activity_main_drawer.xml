@@ -9,9 +9,13 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Plan" />
         <item
-            android:id="@+id/nav_equipo"
+            android:id="@+id/nav_device"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Equipos" />
+        <item
+            android:id="@+id/nav_subscription"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Subscripcion" />
 
     </group>
 </menu>

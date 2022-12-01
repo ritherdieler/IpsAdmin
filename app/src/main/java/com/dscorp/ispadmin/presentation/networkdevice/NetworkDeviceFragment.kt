@@ -27,7 +27,7 @@ class NetworkDeviceFragment : Fragment() {
     ): View? {
         subscribirse()
         val view = inflater.inflate(R.layout.fragment_network_device, container, false)
-        etName = view.findViewById(R.id.etName)
+        etName = view.findViewById(R.id.etFirstName)
         etPassword = view.findViewById(R.id.ltPassword)
         etUsername = view.findViewById(R.id.etUsername)
         etIpAddress = view.findViewById(R.id.etIpAddress)

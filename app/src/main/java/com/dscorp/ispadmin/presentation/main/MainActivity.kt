@@ -7,6 +7,7 @@ import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.presentation.Subscription.SubscriptionFragment
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFragment
 import com.dscorp.ispadmin.presentation.plan.PlanFragment
 import com.google.android.material.navigation.NavigationView
@@ -31,7 +32,8 @@ class MainActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { elemento ->
             when (elemento.itemId) {
                 R.id.nav_plan -> showPlanFragment()
-                R.id.nav_equipo -> showNetworkDeviceFragment()
+                R.id.nav_device -> showNetworkDeviceFragment()
+                R.id.nav_subscription -> showSubscriptionFragment()
             }
             drawerLayout.close()
             true
@@ -56,6 +58,13 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<PlanFragment>(R.id.fragmentContainer)
+        }
+    }
+
+    private fun showSubscriptionFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<SubscriptionFragment>(R.id.fragmentContainer)
         }
     }
 }
