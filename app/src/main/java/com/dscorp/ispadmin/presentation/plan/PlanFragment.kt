@@ -10,9 +10,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.databinding.ActivityRegisterBinding
+import com.dscorp.ispadmin.databinding.FragmentPlanBinding
 import com.dscorp.ispadmin.presentation.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.registration.RegisterActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,11 +24,7 @@ import java.util.concurrent.Flow
 
 @AndroidEntryPoint
 class PlanFragment : Fragment() {
-    lateinit var etNamePlan: EditText
-    lateinit var etPrecio: EditText
-    lateinit var etDownloadSpeed: EditText
-    lateinit var etUploadSpeed: EditText
-    lateinit var btRegisterPlan:Button
+    lateinit var binding : FragmentPlanBinding
     val viewModel: PlanViewModel by viewModels()
 
 
@@ -34,17 +33,13 @@ class PlanFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         subscribirse()
-        val view = inflater.inflate(R.layout.fragment_plan, container, false)
-        etNamePlan = view.findViewById(R.id.etNamePlan)
-        etPrecio = view.findViewById(R.id.etPrecio)
-        etDownloadSpeed = view.findViewById(R.id.etDownloadSpeed)
-        etUploadSpeed = view.findViewById(R.id.etUploadSpeed)
-        btRegisterPlan= view.findViewById(R.id.btRegisterPlan)
+        binding = DataBindingUtil.inflate(layoutInflater,R.layout.fragment_plan,null,true
+        )
 
-        btRegisterPlan.setOnClickListener{
+        binding.btRegisterPlan.setOnClickListener{
             registerPlan()
         }
-        return view
+        return binding.root
 
 
     }
@@ -87,20 +82,20 @@ class PlanFragment : Fragment() {
     }
 
     fun registerPlan() {
-        var namePlan = etNamePlan.text.toString()
-        var precio = etPrecio.text.toString()
-        var downloadSpeed = etDownloadSpeed.text.toString()
-        var uploadSpeed = etUploadSpeed.text.toString()
+        var namePlan = binding.etNamePlan.text.toString()
+        var precio = binding.etPrecio.text.toString()
+        var downloadSpeed = binding.etDownloadSpeed.text.toString()
+        var uploadSpeed = binding.etUploadSpeed.text.toString()
 
         viewModel.validateForm(
             namePlan = namePlan,
             precio = precio,
             downloadSpeed = downloadSpeed,
             uploadSpeed = uploadSpeed,
-            etNamePlan = etNamePlan,
-            etPrecio = etPrecio,
-            etDownloadSpeed = etDownloadSpeed,
-            etUploadSpeed = etUploadSpeed
+            etNamePlan = binding.etNamePlan,
+            etPrecio = binding.etPrecio,
+            etDownloadSpeed = binding.etDownloadSpeed,
+            etUploadSpeed = binding.etUploadSpeed
         )
     }
 

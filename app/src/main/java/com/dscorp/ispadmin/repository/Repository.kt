@@ -73,5 +73,13 @@ class Repository(val restApiServices: RestApiServices) {
             throw Exception("error en la respuesta")
         }
     }
+    suspend fun getDevices():List<NetworkDevice>{
+        val response = restApiServices.getDevices()
+        if (response.code() == 200){
+                return response.body()!!
+        } else {
+            throw Exception("ERROR")
+        }
+    }
 
 }

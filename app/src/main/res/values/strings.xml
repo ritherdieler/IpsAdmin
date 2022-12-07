@@ -12,4 +12,6 @@
     <string name="menu_slideshow">Slideshow</string>
     <string name="label" />
     <string name="title_activity_main2">MainActivity2</string>
+    <string name="plan">Plan</string>
+    <string name="networkdevice">DispositivoDeRed</string>
 </resources>

@@ -173,28 +173,50 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <TextView
+                    android:id="@+id/tvPlanHint"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/plan"
+                    app:layout_constraintBottom_toTopOf="@+id/spnPlan"
+                    app:layout_constraintEnd_toEndOf="@+id/tlSubscriptionDate"
+                    app:layout_constraintStart_toStartOf="@+id/tlSubscriptionDate"
+                    app:layout_constraintTop_toBottomOf="@+id/tlSubscriptionDate" />
+
+
                 <Spinner
                     android:id="@+id/spnPlan"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    app:layout_constraintBottom_toTopOf="@+id/spnDevice"
-                    app:layout_constraintEnd_toEndOf="@+id/tlSubscriptionDate"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="@+id/tlSubscriptionDate"
-                    app:layout_constraintTop_toBottomOf="@+id/tlSubscriptionDate"
+                    app:layout_constraintBottom_toTopOf="@+id/tvNetworkDeviceHint"
+                    app:layout_constraintEnd_toEndOf="@+id/tvPlanHint"
+                    app:layout_constraintStart_toStartOf="@+id/tvPlanHint"
+                    app:layout_constraintTop_toBottomOf="@+id/tvPlanHint"
                     app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/tvNetworkDeviceHint"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/networkdevice"
+                    app:layout_constraintBottom_toTopOf="@+id/spnDevice"
+
+
+                    app:layout_constraintEnd_toEndOf="@+id/spnPlan"
+                    app:layout_constraintStart_toStartOf="@+id/spnPlan"
+                    app:layout_constraintTop_toBottomOf="@+id/spnPlan" />
 
                 <Spinner
                     android:id="@+id/spnDevice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
                     app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
                     app:layout_constraintEnd_toEndOf="@+id/spnPlan"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/spnPlan"
-                    app:layout_constraintTop_toBottomOf="@+id/spnPlan" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvNetworkDeviceHint" />
 
                 <Button
                     android:id="@+id/btSubscribirse"

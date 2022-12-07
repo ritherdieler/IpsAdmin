@@ -14,4 +14,9 @@ data class NetworkDevice(
         val username:String,
         val ipAddress:String,
         )
+{
+        override fun toString(): String {
+                return name
+        }
+}
 

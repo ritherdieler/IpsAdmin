@@ -6,34 +6,29 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.databinding.ActivityRegisterBinding
+import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
 
-    lateinit var etUser: EditText
-    lateinit var etPassword1: EditText
-    lateinit var etPassword2: EditText
-    lateinit var etFirstName: EditText
-    lateinit var etLastName: EditText
-    lateinit var btRegister: Button
+    lateinit var binding: ActivityRegisterBinding
+
+
 
     val viewModel: RegisterViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_register, null, true)
+        setContentView(binding.root)
 
-        etUser = findViewById(R.id.ltUser)
-        etPassword1 = findViewById(R.id.etPassword1)
-        etPassword2 = findViewById(R.id.etPassword2)
-        etFirstName = findViewById(R.id.etFirstName)
-        etLastName = findViewById(R.id.etLastName)
-        btRegister = findViewById(R.id.btRegister)
 
-        btRegister.setOnClickListener {
+       binding.btRegister.setOnClickListener {
             register()
 
         }
@@ -78,11 +73,11 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun register() {
-        var usertext = etUser.text.toString()
-        var passwordtext1 = etPassword1.text.toString()
-        var passwordtext2 = etPassword2.text.toString()
-        var firstnametext = etFirstName.text.toString()
-        var lastnametext = etLastName.text.toString()
+        var usertext = binding.etUser.text.toString()
+        var passwordtext1 = binding.etPassword1.text.toString()
+        var passwordtext2 = binding.etPassword2.text.toString()
+        var firstnametext = binding.etFirstName.text.toString()
+        var lastnametext = binding.etLastName.text.toString()
 
 
         viewModel.validateForm(
@@ -91,11 +86,11 @@ class RegisterActivity : AppCompatActivity() {
             password2 = passwordtext2,
             firstName = firstnametext,
             lastName = lastnametext,
-            etUser = etUser,
-            etFirstName = etFirstName,
-            etLastName = etLastName,
-            etPassword1 = etPassword1,
-            etPassword2 = etPassword2
+            etUser = binding.etUser,
+            etFirstName = binding.etFirstName,
+            etLastName = binding.etLastName,
+            etPassword1 = binding.etPassword1,
+            etPassword2 = binding.etPassword2
         )
 
 

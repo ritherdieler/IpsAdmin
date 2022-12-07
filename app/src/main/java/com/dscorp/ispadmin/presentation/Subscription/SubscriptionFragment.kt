@@ -13,13 +13,16 @@ import androidx.fragment.app.viewModels
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import com.dscorp.ispadmin.presentation.registration.RegisterActivity
+import com.dscorp.ispadmin.repository.model.NetworkDevice
+import com.dscorp.ispadmin.repository.model.Plan
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SubscriptionFragment : Fragment() {
 
     lateinit var binding: FragmentSubscriptionBinding
-
+    var selectedPlan: Plan? = null
+    var selectedNetworkDevice: NetworkDevice? = null
     val viewModel: SubscriptionViewModel by viewModels()
 
     override fun onCreateView(
@@ -31,8 +34,54 @@ class SubscriptionFragment : Fragment() {
         observe()
 
         binding.btSubscribirse.setOnClickListener {
+            registerSubscription()
         }
+        setOnSpnPlanItemSelectedListener()
+        setOnSpnDeviceItemSelectedListener()
         return binding.root
+    }
+
+    private fun registerSubscription() {
+        val firstname = binding.etFirstName.text.toString()
+        val lastName = binding.etLastName.text.toString()
+        val dni = binding.etDni.text.toString()
+        val password = binding.etPassword.text.toString()
+        val address = binding.etAddress.text.toString()
+        val phoneNumber = binding.etPhone.text.toString()
+        val subscriptionDate = binding.etSubscriptionDate.text.toString().toInt()
+        val planId = selectedPlan?.id ?: ""
+        val networkDevice = selectedNetworkDevice?.id ?: ""
+
+
+        viewModel.registerSubscription(
+            firstname, lastName, password, dni, address, phoneNumber, subscriptionDate, planId, networkDevice
+        )
+    }
+
+    private fun setOnSpnDeviceItemSelectedListener() {
+        binding.spnDevice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                val selected: NetworkDevice = p0?.selectedItem as NetworkDevice
+                Toast.makeText(requireContext(), selected.name, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+        }
+    }
+
+    private fun setOnSpnPlanItemSelectedListener() {
+        binding.spnPlan.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                val selected: Plan = p0?.selectedItem as Plan
+                Toast.makeText(requireContext(), selected.name, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+        }
     }
 
     fun showSucessDialog(subscriptionFirstName: String) {
@@ -58,12 +107,20 @@ class SubscriptionFragment : Fragment() {
         observeToSubscriptionLiveData()
         observeToErrorLiveData()
         observePlanListLiveData()
+        observeNetworkDevice()
+    }
+
+    private fun observeNetworkDevice() {
+        viewModel.deviceListLiveData.observe(viewLifecycleOwner) {
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it)
+            binding.spnDevice.adapter = adapter
+        }
     }
 
     private fun observePlanListLiveData() {
         viewModel.planListLiveData.observe(viewLifecycleOwner) {
             val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it)
-           binding.spnPlan.adapter = adapter
+            binding.spnPlan.adapter = adapter
         }
     }
 
@@ -89,7 +146,7 @@ class SubscriptionFragment : Fragment() {
     }
 
     fun doSubscription() {
-        with(binding){
+        with(binding) {
             val firstName: String = etFirstName.text.toString()
             val lastName: String = etLastName.text.toString()
             val password: String = etPassword.text.toString()
@@ -99,14 +156,7 @@ class SubscriptionFragment : Fragment() {
             val subscriptionDate: Int = etSubscriptionDate.toString().toInt()
 
 
-            viewModel.validateform(
-                etFirstName = etFirstName,
-                etLastName = etLastName,
-                etPassword = etPassword,
-                etDni = etDni,
-                etAddress = etAddress,
-                etPhone = etPhone,
-                etSubscriptionDate = etSubscriptionDate,
+            viewModel.registerSubscription(
                 firstname = firstName,
                 lastname = lastName,
                 password = password,
@@ -114,6 +164,9 @@ class SubscriptionFragment : Fragment() {
                 address = address,
                 phone = phone,
                 subscriptionDate = subscriptionDate,
+                planId = selectedPlan?.id?:"",
+                networkDeviceId = selectedNetworkDevice?.id?:"",
+
 
                 )
         }

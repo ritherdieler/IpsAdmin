@@ -8,17 +8,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.databinding.FragmentNetworkDeviceBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class NetworkDeviceFragment : Fragment() {
-    lateinit var etName: EditText
-    lateinit var etPassword: EditText
-    lateinit var etUsername: EditText
-    lateinit var etIpAddress: EditText
-    lateinit var btRegisterNetworkDevice: Button
+    lateinit var binding:FragmentNetworkDeviceBinding
     val viewModel: NetworkDeviceViewModel by viewModels()
 
     override fun onCreateView(
@@ -26,20 +24,14 @@ class NetworkDeviceFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         subscribirse()
-        val view = inflater.inflate(R.layout.fragment_network_device, container, false)
-        etName = view.findViewById(R.id.etFirstName)
-        etPassword = view.findViewById(R.id.ltPassword)
-        etUsername = view.findViewById(R.id.etUsername)
-        etIpAddress = view.findViewById(R.id.etIpAddress)
-        btRegisterNetworkDevice = view.findViewById(R.id.btRegisterNetworkDevice)
+     binding = DataBindingUtil.inflate(layoutInflater,R.layout.fragment_network_device,null,true)
 
-        btRegisterNetworkDevice.setOnClickListener{
+        binding.btRegisterNetworkDevice.setOnClickListener{
 
-
-          registerNetworkDevice()
+            registerNetworkDevice()
         }
 
-        return view
+        return binding.root
 
     }
 
@@ -77,21 +69,23 @@ class NetworkDeviceFragment : Fragment() {
         builder.show()
     }
     fun registerNetworkDevice(){
-        var name: String = etName.text.toString()
-        var password:String = etPassword.text.toString()
-        var username:String = etUsername.text.toString()
-        var ipaddress:String = etIpAddress.text.toString()
+        with(binding) {
+            var name: String= etName.text.toString()
+            var password: String =etPassword.text.toString()
+            var username: String = etUsername.text.toString()
+            var ipaddress: String = etIpAddress.text.toString()
 
-        viewModel.validateForm(
-            etName,
-            etPassword,
-            etUsername,
-            etIpAddress,
-            name,
-            password,
-            username,
-            ipaddress
-        )
+            viewModel.validateForm(
+                etName,
+                etPassword,
+                etUsername,
+                etIpAddress,
+                name,
+                password,
+                username,
+                ipaddress
+            )
+        }
     }
 
 

@@ -31,6 +31,8 @@ interface RestApiServices {
     suspend fun doSubscription(@Body subscription: Subscription): Response <Subscription>
     @GET("plan")
    suspend fun getPlans(): Response <List<Plan>>
+   @GET("networkDevice")
+   suspend fun getDevices(): Response <List<NetworkDevice>>
 
 
 }
