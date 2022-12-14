@@ -7,7 +7,7 @@ import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.Subscription.SubscriptionFragment
+import com.dscorp.ispadmin.presentation.subscription.SubscriptionFragment
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFragment
 import com.dscorp.ispadmin.presentation.plan.PlanFragment
 import com.google.android.material.navigation.NavigationView

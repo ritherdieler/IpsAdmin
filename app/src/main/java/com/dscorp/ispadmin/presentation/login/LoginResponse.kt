@@ -1,0 +1,15 @@
+package com.dscorp.ispadmin.presentation.login
+
+import com.dscorp.ispadmin.repository.model.User
+
+/**
+ * Created by Sergio Carrillo Diestra on 14/12/2022.
+ * scarrillo.peruapps@gmail.com
+ * Peru Apps
+ * Huacho, Peru.
+ *
+ **/
+sealed class LoginResponse{
+    class OnLoginSubcess(val user:User):LoginResponse()
+    class OnError(val error:Exception):LoginResponse()
+}

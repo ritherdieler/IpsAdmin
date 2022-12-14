@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.plan
 
-import android.widget.EditText
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,39 +11,36 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlanViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
-    val planLiveData: MutableLiveData<Plan> = MutableLiveData()
-    val errorLiveData: MutableLiveData<Exception> = MutableLiveData()
-    // TODO: Implement the ViewModel
-
-    fun validateForm(
+   val planResponseLiveData=MutableLiveData<PlanResponse>()
+    val formErrorLiveData=MutableLiveData<PlanFormError>()
+    fun registerPlan(
         namePlan: String,
         precio: String,
         downloadSpeed: String,
         uploadSpeed: String,
-        etNamePlan: EditText,
-        etPrecio: EditText,
-        etDownloadSpeed: EditText,
-        etUploadSpeed: EditText
     ){
-
         if (namePlan.isEmpty()) {
+          formErrorLiveData.postValue(PlanFormError.OnEtNamePlanError("El nombre del plan no puede estar vacio"))
             println("Debes escribir el nombre del plan")
-            etNamePlan.setError("El nombre del plan no puede estar vacio")
             return
         }
 
         if (precio.isEmpty()) {
+            formErrorLiveData.postValue(PlanFormError.OnEtPriceError("El precio no puede estar vacio"))
             println("Debes escribir el precio")
-            etPrecio.setError("El precio no puede estar vacio")
+            return
         }
+
         if (downloadSpeed.isEmpty()) {
+             formErrorLiveData.postValue(PlanFormError.OnEtDowloadSpeedError("La velocidad de descarga no puede estar vacia"))
             println("debes escribir la velocidad de descarga")
-            etDownloadSpeed.setError("La velocidad de descarga no puede estar vacia")
+            return
         }
 
         if (uploadSpeed.isEmpty()) {
+            formErrorLiveData.postValue(PlanFormError.OnEtUploadSpeedError("La velocidad de subida no puede estar vacia"))
             print("Debes escribir la velocidad de subida")
-            etUploadSpeed.setError("La velocidad de subida no puede estar vacia")
+            return
         }
 
         var planObject = Plan(
@@ -54,15 +50,14 @@ class PlanViewModel @Inject constructor(private val repository: Repository) : Vi
             uploadSpeed =uploadSpeed.toInt()
         )
 
-
         viewModelScope.launch {
             try {
 
-                var response = repository.registerPlan(planObject)
-                planLiveData.postValue(response)
+                var planFromRepository=repository.registerPlan(planObject)
+                planResponseLiveData.postValue(PlanResponse.OnPlanRegistered(planFromRepository))
 
             } catch (error: Exception) {
-                errorLiveData.postValue(error)
+                planResponseLiveData.postValue(PlanResponse.OnError(error))
 
             }
 

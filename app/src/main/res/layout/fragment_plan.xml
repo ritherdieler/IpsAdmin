@@ -22,7 +22,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
             android:hint="Nombre plan"
-            app:layout_constraintBottom_toTopOf="@+id/tlPrecio"
+            app:layout_constraintBottom_toTopOf="@+id/tlprice"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -37,7 +37,7 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlPrecio"
+            android:id="@+id/tlprice"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tlNamePlan">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPrecio"
+                android:id="@+id/etPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
@@ -64,9 +64,9 @@
             android:layout_marginTop="20dp"
             android:hint="Velocidad de descarga"
             app:layout_constraintBottom_toTopOf="@+id/tlUploadSpeed"
-            app:layout_constraintEnd_toEndOf="@+id/tlPrecio"
-            app:layout_constraintStart_toStartOf="@+id/tlPrecio"
-            app:layout_constraintTop_toBottomOf="@+id/tlPrecio">
+            app:layout_constraintEnd_toEndOf="@+id/tlprice"
+            app:layout_constraintStart_toStartOf="@+id/tlprice"
+            app:layout_constraintTop_toBottomOf="@+id/tlprice">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDownloadSpeed"
