@@ -52,10 +52,8 @@ class PlanViewModel @Inject constructor(private val repository: Repository) : Vi
 
         viewModelScope.launch {
             try {
-
                 var planFromRepository=repository.registerPlan(planObject)
                 planResponseLiveData.postValue(PlanResponse.OnPlanRegistered(planFromRepository))
-
             } catch (error: Exception) {
                 planResponseLiveData.postValue(PlanResponse.OnError(error))
 

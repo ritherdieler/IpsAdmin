@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
@@ -22,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_login, null, true)
         setContentView(binding.root)
 
-        subscribirse()
+        observe()
 
         binding.btLogin.setOnClickListener {
             doLogin()
@@ -33,28 +34,47 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun subscribirse() {
-
-        viewModel.loginLiveData.observe(this) {
-            var intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+    private fun observeLoginFormError() {
+        viewModel.loginFormErrorLiveData.observe(this) { formError ->
+            when (formError) {
+                is LoginFormError.OnEtPassword -> binding.etPassword.setError(formError.error)
+                is LoginFormError.OnEtUser -> binding.etUser.setError(formError.error)
+            }
         }
-
-        viewModel.errorLiveData.observe(this) {
-            Toast.makeText(this, "Ocurrio un error, verifique que sus credenciales sean validas", Toast.LENGTH_SHORT)
-                .show()
-            println(it.message)
-        }
-
-
     }
 
+    private fun observeLoginResponse() {
+        viewModel.loginResponseLiveData.observe(this) { response ->
+            when (response) {
+                is LoginResponse.OnError -> showErrorDialog(response.error.message)
+                is LoginResponse.OnLoginSucess -> navigateToMainActivity()
+            }
+        }
+    }
+
+    private fun navigateToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun showErrorDialog(message: String?) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.login_Error_Tittle)
+            .setMessage(message)
+            .create()
+            .show()
+    }
+
+    fun observe() {
+
+        observeLoginResponse()
+        observeLoginFormError()
+    }
 
     fun doLogin() {
 
         var usertext = binding.etUser.text.toString()
         var passwordtext = binding.etPassword.text.toString()
-
 
         viewModel.validateForm(
             usertext,
@@ -62,7 +82,6 @@ class LoginActivity : AppCompatActivity() {
             binding.etUser,
             binding.etPassword
         )
-
     }
 
     fun navigateToRegister() {
@@ -72,6 +91,4 @@ class LoginActivity : AppCompatActivity() {
         var intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
-
-
 }

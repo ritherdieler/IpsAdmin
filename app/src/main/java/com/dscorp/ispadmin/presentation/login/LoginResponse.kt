@@ -10,6 +10,6 @@ import com.dscorp.ispadmin.repository.model.User
  *
  **/
 sealed class LoginResponse{
-    class OnLoginSubcess(val user:User):LoginResponse()
+    class OnLoginSucess(val login:User):LoginResponse()
     class OnError(val error:Exception):LoginResponse()
 }

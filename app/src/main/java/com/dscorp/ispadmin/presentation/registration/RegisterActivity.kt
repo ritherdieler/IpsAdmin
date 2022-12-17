@@ -1,15 +1,12 @@
 package com.dscorp.ispadmin.presentation.registration
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityRegisterBinding
-import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,24 +30,35 @@ class RegisterActivity : AppCompatActivity() {
 
         }
 
-        suscribirse()
+        observe()
+
 
     }
 
-    fun suscribirse() {
-
-        //Aqui el observador se subscribe al observable
-        viewModel.userLiveData.observe(this) {
-
-            showSucessDialog(it.name)
+    private fun observeRegisterResponse() {
+        viewModel.registerResponseLiveData.observe(this){it ->
+            when(it){
+                is RegisterResponse.OnError ->showErrorDialog(it.error.message.toString())
+                is RegisterResponse.OnRegister ->showSucessDialog(it.register.name.toString())
+            }
         }
+    }
 
-        viewModel.errorLiveData.observe(this) {
-
-            showErrorDialog(it.message!!)
+    private fun ObserveRegisterFormError() {
+        viewModel.registerFormErrorLiveData.observe(this) { it ->
+        when(it){
+            is RegisterFormError.OnEtFirstNameError -> binding.etFirstName.setError(it.error)
+            is RegisterFormError.OnEtLastNameError -> binding.etLastName.setError(it.error)
+            is RegisterFormError.OnEtPassword1Error -> binding.etPassword1.setError(it.error)
+            is RegisterFormError.OnEtPassword2Error -> binding.etPassword2.setError(it.error)
+            is RegisterFormError.OnEtUserError -> binding.etUser.setError(it.error)
         }
+        }
+    }
 
-
+    fun observe() {
+        ObserveRegisterFormError()
+        observeRegisterResponse()
     }
 
     fun showSucessDialog(nombre: String) {
@@ -79,22 +87,12 @@ class RegisterActivity : AppCompatActivity() {
         var firstnametext = binding.etFirstName.text.toString()
         var lastnametext = binding.etLastName.text.toString()
 
-
         viewModel.validateForm(
             user = usertext,
             password1 = passwordtext1,
             password2 = passwordtext2,
             firstName = firstnametext,
             lastName = lastnametext,
-            etUser = binding.etUser,
-            etFirstName = binding.etFirstName,
-            etLastName = binding.etLastName,
-            etPassword1 = binding.etPassword1,
-            etPassword2 = binding.etPassword2
         )
-
-
     }
-
-
 }

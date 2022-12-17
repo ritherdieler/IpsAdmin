@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
 class NetworkDeviceViewModel @Inject constructor(private val repository: Repository): ViewModel() {
-    val networkDeviceLiveData:MutableLiveData<NetworkDevice> = MutableLiveData ()
-    val errorLiveData:MutableLiveData<Exception> = MutableLiveData()
+        val networkDeviceResponseLiveData=MutableLiveData<NetworkDeviceResponse>()
+        val networkDeviceFormErrorLiveData=MutableLiveData<NetworkDeviceFormError>()
 
     fun validateForm(
         etName: EditText,
@@ -49,12 +49,11 @@ class NetworkDeviceViewModel @Inject constructor(private val repository: Reposit
 
         viewModelScope.launch {
             try {
-
-                var response = repository.registerNetworkDevice(planObject)
-                networkDeviceLiveData.postValue(response)
-
+                var networkDeviceFromRepository= repository.registerNetworkDevice(planObject)
+                networkDeviceResponseLiveData.postValue(NetworkDeviceResponse.OnNetworkDeviceRegistered
+                    (networkDeviceFromRepository))
             } catch (error: Exception) {
-                errorLiveData.postValue(error)
+                networkDeviceResponseLiveData.postValue(NetworkDeviceResponse.OnError(error))
 
             }
 

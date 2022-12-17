@@ -10,8 +10,10 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.whenCreated
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNetworkDeviceBinding
+import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFormError.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,32 +25,41 @@ class NetworkDeviceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        subscribirse()
      binding = DataBindingUtil.inflate(layoutInflater,R.layout.fragment_network_device,null,true)
 
         binding.btRegisterNetworkDevice.setOnClickListener{
 
             registerNetworkDevice()
+            observeNetWorkDeviceResponse()
+            observeNetworkDeviceFormError()
         }
 
         return binding.root
 
     }
+    private fun observeNetWorkDeviceResponse() {
+         viewModel.networkDeviceResponseLiveData.observe(viewLifecycleOwner){response ->
+             when(response){
+                 is NetworkDeviceResponse.OnNetworkDeviceRegistered ->showErrorLiveData(response.networkDevice.name)
+                 is NetworkDeviceResponse.OnError -> showSucessDialog(response.error.message.toString())
+             }
+         }
+    }
 
+    private fun observeNetworkDeviceFormError()
+    {viewModel.networkDeviceFormErrorLiveData.observe(viewLifecycleOwner) { formError ->
+        when (formError) {
+            is OnEtAddress -> binding.etIpAddress.setError(formError.error)
+            is OnEtNameError -> binding.etName.setError(formError.error)
+            is OnEtPassword -> binding.etPassword.setError(formError.error)
+            is OnEtUserName -> binding.etUsername.setError(formError.error)
+        }
+     }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
-    }
-
-    fun subscribirse(){
-        viewModel.networkDeviceLiveData.observe(viewLifecycleOwner){
-            showSucessDialog(it.name)
-        }
-        viewModel.errorLiveData.observe(viewLifecycleOwner){
-            showErrorLiveData(it.message.toString())
-        }
     }
 
     fun showSucessDialog(networkDeviceName:String){
@@ -62,7 +73,7 @@ class NetworkDeviceFragment : Fragment() {
 
     fun showErrorLiveData(error:String){
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("")
+        builder.setTitle("ERROR:el dispositivo de red no fue registrado")
         builder.setMessage(error)
         builder.setPositiveButton("ok"){p0,p1->
         }
@@ -87,10 +98,4 @@ class NetworkDeviceFragment : Fragment() {
             )
         }
     }
-
-
-
-
-
-
 }

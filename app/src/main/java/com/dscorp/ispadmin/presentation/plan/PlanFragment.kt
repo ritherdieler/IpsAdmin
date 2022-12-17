@@ -33,8 +33,7 @@ class PlanFragment : Fragment() {
         return binding.root
     }
 
-    private fun observePlanResponse() {
-        viewModel.planResponseLiveData.observe(viewLifecycleOwner){ response ->
+    private fun observePlanResponse() { viewModel.planResponseLiveData.observe(viewLifecycleOwner){ response ->
             when(response){
                 is PlanResponse.OnError ->showErrorDialog(response.error.message.toString())
                 is PlanResponse.OnPlanRegistered ->showSucessDialog(response.plan.name)

@@ -14,4 +14,5 @@
     <string name="title_activity_main2">MainActivity2</string>
     <string name="plan">Plan</string>
     <string name="networkdevice">DispositivoDeRed</string>
+    <string name="login_Error_Tittle">Ocurrio un Error</string>
 </resources>

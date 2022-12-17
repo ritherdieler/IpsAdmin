@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.model.Loging
-import com.dscorp.ispadmin.repository.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,8 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    val loginLiveData: MutableLiveData<User> = MutableLiveData()
-    val errorLiveData:MutableLiveData<Exception> = MutableLiveData()
+    val loginResponseLiveData=MutableLiveData<LoginResponse>()
+    val loginFormErrorLiveData=MutableLiveData<LoginFormError>()
 
     fun validateForm(
         user: String,
@@ -56,11 +55,11 @@ class LoginViewModel @Inject constructor(private val repository: Repository) : V
         viewModelScope.launch {
             try {
 
-                var response = repository.doLogin(loginObject)
-                loginLiveData.postValue(response)
+                var loginFromRepository = repository.doLogin(loginObject)
+               loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(loginFromRepository))
 
             }catch (error:Exception){
-                errorLiveData.postValue(error)
+                loginResponseLiveData.postValue(LoginResponse.OnError(error))
 
             }
 
