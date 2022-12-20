@@ -86,5 +86,14 @@ class Repository(val restApiServices: RestApiServices) {
             throw Exception("ERROR EN LA RESPUESTA")
         }
     }
+     suspend fun registerPlace(registerPlace:IdAbbreviation):IdAbbreviation {
+         val response = restApiServices.registerplace(registerPlace)
+         if (response.code()==200){
+             return response.body()!!
+         }else{
+             throw Exception("ERROR")
+         }
+
+     }
 
 }

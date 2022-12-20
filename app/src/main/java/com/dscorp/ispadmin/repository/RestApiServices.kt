@@ -35,6 +35,8 @@ interface RestApiServices {
    suspend fun getDevices(): Response <List<NetworkDevice>>
    @GET("subscription")
    suspend fun getSubscriptions():Response<List<Subscription>>
+   @POST("place")
+   suspend fun registerplace(@Body place:IdAbbreviation):Response<IdAbbreviation>
 
 
 }

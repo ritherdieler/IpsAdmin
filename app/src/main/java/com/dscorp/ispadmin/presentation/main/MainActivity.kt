@@ -9,6 +9,7 @@ import androidx.fragment.app.replace
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionFragment
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFragment
+import com.dscorp.ispadmin.presentation.place.PlaceFragment
 import com.dscorp.ispadmin.presentation.plan.PlanFragment
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment
 import com.google.android.material.navigation.NavigationView
@@ -36,11 +37,14 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_device -> showNetworkDeviceFragment()
                 R.id.nav_subscription -> showSubscriptionFragment()
                 R.id.nav_see_subscriptions -> showSubscriptionsListFragments()
+                R.id.nav_to_register -> showPlaceFragment()
             }
             drawerLayout.close()
             true
         }
     }
+
+
 
     private fun showSubscriptionsListFragments() {
         supportFragmentManager.commit {
@@ -74,6 +78,12 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<SubscriptionFragment>(R.id.fragmentContainer)
+        }
+    }
+    private fun showPlaceFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<PlaceFragment>(R.id.fragmentContainer)
         }
     }
 }

@@ -19,6 +19,8 @@
     <string name="menu_device">Equipos</string>
     <string name="menu_subscription">Subscripcion</string>
     <string name="menu_see_subscriptions">Ver Suscripciones</string>
+    <string name="abreviatura">Abreviatura</string>
+    <string name="nombre">Nombre</string>
 
 
 </resources>

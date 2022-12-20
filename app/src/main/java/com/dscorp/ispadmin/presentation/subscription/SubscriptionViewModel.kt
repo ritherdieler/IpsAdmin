@@ -28,7 +28,6 @@ class SubscriptionViewModel @Inject constructor(private val repository: Reposito
                }catch (e:Exception){
                     responseLiveData.postValue(SubscriptionResponse.OnError(e))
                }
-
           }
      }
 
@@ -78,7 +77,6 @@ class SubscriptionViewModel @Inject constructor(private val repository: Reposito
                subscriptionDate = subscriptionDate,
                planId =planId,
                networkDeviceId =networkDeviceId
-
           )
 
           viewModelScope.launch {
@@ -92,7 +90,6 @@ class SubscriptionViewModel @Inject constructor(private val repository: Reposito
                     responseLiveData.postValue(SubscriptionResponse.OnError(error))
 
                }
-
           }
      }
 
