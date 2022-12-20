@@ -10,6 +10,7 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionFragment
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFragment
 import com.dscorp.ispadmin.presentation.plan.PlanFragment
+import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,9 +35,17 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_plan -> showPlanFragment()
                 R.id.nav_device -> showNetworkDeviceFragment()
                 R.id.nav_subscription -> showSubscriptionFragment()
+                R.id.nav_see_subscriptions -> showSubscriptionsListFragments()
             }
             drawerLayout.close()
             true
+        }
+    }
+
+    private fun showSubscriptionsListFragments() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<SubscriptionsListFragment>(R.id.fragmentContainer)
         }
     }
 

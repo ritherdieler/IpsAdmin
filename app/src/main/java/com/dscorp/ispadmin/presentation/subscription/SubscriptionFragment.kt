@@ -37,8 +37,6 @@ class SubscriptionFragment : Fragment() {
         binding.btSubscribirse.setOnClickListener {
             registerSubscription()
         }
-        setOnSpnPlanItemSelectedListener()
-        setOnSpnDeviceItemSelectedListener()
         return binding.root
     }
 
@@ -57,44 +55,58 @@ class SubscriptionFragment : Fragment() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner){formError ->
             when (formError) {
                 is OnEtAddressesError -> setEtAddressError(formError)
+                onFirstNameHasNotErrors -> clearTlFirstNameErrors()
                 is OnEtDniError -> setEtDniError(formError)
                 is OnEtFirstNameError -> setEtFirstNameError(formError)
                 is OnEtLastNameError -> setEtLastNameError(formError)
                 is OnEtNumberPhoneError -> setEtNumberPhoneError(formError)
                 is OnEtPasswordError -> setEtPasswordError(formError)
                 is OnEtSubscriptionDateError -> setSubscriptionDateError(formError)
-                is OnSpnNetworkDeviceError ->{}
-                is OnSpnPlanError -> {}
+                is OnSpnNetworkDeviceError -> setSpnNetworkDeviceError(formError)
+                is OnSpnPlanError -> setSpnPlanError(formError)
+
             }
         }
     }
 
+    private fun clearTlFirstNameErrors() {
+        binding.tlFirstName.error = null
+    }
+
+    private fun setSpnPlanError(formError: OnSpnPlanError) {
+        binding.spnPlan.error = formError.error
+    }
+
+    private fun setSpnNetworkDeviceError(formError: OnSpnNetworkDeviceError) {
+        binding.spnDevice.error = formError.error
+    }
+
     private fun setSubscriptionDateError(formError: OnEtSubscriptionDateError) {
-        binding.etSubscriptionDate.setError(formError.error)
+        binding.tlSubscriptionDate.error = formError.error
     }
 
     private fun setEtPasswordError(formError: OnEtPasswordError) {
-        binding.etPassword.setError(formError.error)
+        binding.tlPassword.error = formError.error
     }
 
     private fun setEtNumberPhoneError(formError: OnEtNumberPhoneError) {
-        binding.etPhone.setError(formError.error)
+        binding.tlPhone.error = formError.error
     }
 
     private fun setEtLastNameError(formError: OnEtLastNameError) {
-        binding.etLastName.setError(formError.error)
+        binding.tlLastName.error = formError.error
     }
 
     private fun setEtFirstNameError(formError: OnEtFirstNameError) {
-        binding.etFirstName.setError(formError.error)
+        binding.tlFirstName.error = formError.error
     }
 
     private fun setEtDniError(formError: OnEtDniError) {
-        binding.etDni.setError(formError.error)
+        binding.tlDni.error = formError.error
     }
 
     private fun setEtAddressError(formError: OnEtAddressesError) {
-        binding.etAddress.setError(formError.error)
+        binding.tlAddress.error = formError.error
     }
 
     private fun registerSubscription() {
@@ -106,35 +118,11 @@ class SubscriptionFragment : Fragment() {
         val phoneNumber = binding.etPhone.text.toString()
         val subscriptionDate = binding.etSubscriptionDate.text.toString()
         val planId = selectedPlan?.id ?: ""
-        val networkDevice = selectedNetworkDevice?.id ?: ""
+        val networkDeviceId = selectedNetworkDevice?.id ?: ""
 
         viewModel.registerSubscription(
-            firstname, lastName, password, dni, address, phoneNumber, subscriptionDate, planId, networkDevice
+            firstname, lastName, password, dni, address, phoneNumber, subscriptionDate, planId, networkDeviceId
         )
-    }
-
-    private fun setOnSpnDeviceItemSelectedListener() {
-        binding.spnDevice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                val selected: NetworkDevice = p0?.selectedItem as NetworkDevice
-                Toast.makeText(requireContext(), selected.name, Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
-        }
-    }
-
-    private fun setOnSpnPlanItemSelectedListener() {
-        binding.spnPlan.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                val selected: Plan = p0?.selectedItem as Plan
-                Toast.makeText(requireContext(), selected.name, Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
-        }
     }
 
     fun showSucessDialog(subscriptionFirstName: String) {
@@ -156,15 +144,20 @@ class SubscriptionFragment : Fragment() {
     }
 
     private fun setUpPlansSpinner(plans: List<Plan>) {
-        val adapter = ArrayAdapter(
-            requireContext(), android.R
-                .layout.simple_spinner_item, plans
-        )
-        binding.spnPlan.adapter = adapter
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, plans)
+        binding.etPlan.setAdapter(adapter)
+        binding.etPlan.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, pos, _ ->
+                selectedPlan = plans[pos]
+            }
     }
 
     private fun setUpNetworkDeviceSpinner(networkDevices: List<NetworkDevice>) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevices)
-        binding.spnDevice.adapter = adapter
+        binding.etNetworkDevice.setAdapter(adapter)
+        binding.etNetworkDevice.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, pos, _ ->
+                selectedNetworkDevice = networkDevices[pos]
+            }
     }
 }

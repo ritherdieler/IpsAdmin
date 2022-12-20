@@ -15,4 +15,10 @@
     <string name="plan">Plan</string>
     <string name="networkdevice">DispositivoDeRed</string>
     <string name="login_Error_Tittle">Ocurrio un Error</string>
+    <string name="menu_plan">Plan</string>
+    <string name="menu_device">Equipos</string>
+    <string name="menu_subscription">Subscripcion</string>
+    <string name="menu_see_subscriptions">Ver Suscripciones</string>
+
+
 </resources>

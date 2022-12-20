@@ -8,6 +8,7 @@ package com.dscorp.ispadmin.presentation.subscription
  *
  **/
 sealed class SubscriptionFormError {
+    object onFirstNameHasNotErrors:SubscriptionFormError()
     class OnEtFirstNameError(val error: String) : SubscriptionFormError()
     class OnEtLastNameError(val error: String) : SubscriptionFormError()
     class OnEtDniError(val error: String) : SubscriptionFormError()

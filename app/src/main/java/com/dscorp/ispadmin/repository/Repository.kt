@@ -78,5 +78,13 @@ class Repository(val restApiServices: RestApiServices) {
             throw Exception("ERROR")
         }
     }
+    suspend fun getSubscriptions():List<Subscription>{
+        val response = restApiServices.getSubscriptions()
+        if (response.code()==200){
+            return response.body()!!
+        }else {
+            throw Exception("ERROR EN LA RESPUESTA")
+        }
+    }
 
 }

@@ -7,15 +7,20 @@
         <item
             android:id="@+id/nav_plan"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Plan" />
+            android:title="@string/menu_plan" />
         <item
             android:id="@+id/nav_device"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Equipos" />
+            android:title="@string/menu_device" />
         <item
             android:id="@+id/nav_subscription"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="Subscripcion" />
+            android:title="@string/menu_subscription" />
+        <item
+            android:id="@+id/nav_see_subscriptions"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/menu_see_subscriptions" />
+
 
     </group>
 </menu>

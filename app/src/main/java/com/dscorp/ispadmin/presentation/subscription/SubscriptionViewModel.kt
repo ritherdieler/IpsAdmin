@@ -43,7 +43,6 @@ class SubscriptionViewModel @Inject constructor(private val repository: Reposito
           }
      }
 
-
      fun registerSubscription(
           firstname:String,
           lastname:String,
@@ -85,7 +84,7 @@ class SubscriptionViewModel @Inject constructor(private val repository: Reposito
           viewModelScope.launch {
                try {
 
-                    var subscriptionFromRepository = repository.doSubscription(subscriptionObjetct)
+                    val subscriptionFromRepository = repository.doSubscription(subscriptionObjetct)
                     responseLiveData.postValue(SubscriptionResponse.OnSubscriptionRegistered
                          (subscriptionFromRepository))
 
@@ -133,16 +132,16 @@ class SubscriptionViewModel @Inject constructor(private val repository: Reposito
                formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa Un numero valido"))
                return
           }
-          if (subscriptionDate.toString().isEmpty()) {
+          if (subscriptionDate.isEmpty()) {
                formErrorLiveData.postValue(SubscriptionFormError.OnEtSubscriptionDateError("Debes colocar una fecha " +
                        "de suscripcion"))
                return
           }
-          if (planId.toString().isEmpty()){
+          if (planId.isEmpty()){
                formErrorLiveData.postValue(SubscriptionFormError.OnSpnPlanError("Debes seleccionar un plan"))
                return
           }
-          if (networkDeviceId.toString().isEmpty()){
+          if (networkDeviceId.isEmpty()){
                formErrorLiveData.postValue(SubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un " +
                        "dispositivo de red"))
                return

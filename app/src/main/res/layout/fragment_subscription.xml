@@ -173,50 +173,48 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/tvPlanHint"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/spnPlan"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/plan"
-                    app:layout_constraintBottom_toTopOf="@+id/spnPlan"
+                    android:hint="@string/plan"
                     app:layout_constraintEnd_toEndOf="@+id/tlSubscriptionDate"
                     app:layout_constraintStart_toStartOf="@+id/tlSubscriptionDate"
-                    app:layout_constraintTop_toBottomOf="@+id/tlSubscriptionDate" />
-
-
-                <Spinner
-                    android:id="@+id/spnPlan"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@+id/tvNetworkDeviceHint"
-                    app:layout_constraintEnd_toEndOf="@+id/tvPlanHint"
-                    app:layout_constraintStart_toStartOf="@+id/tvPlanHint"
-                    app:layout_constraintTop_toBottomOf="@+id/tvPlanHint"
-                    app:layout_constraintVertical_chainStyle="packed" />
-
-                <TextView
-                    android:id="@+id/tvNetworkDeviceHint"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/tlSubscriptionDate"
+                    app:layout_constraintVertical_chainStyle="packed"
                     android:layout_marginTop="24dp"
-                    android:text="@string/networkdevice"
-                    app:layout_constraintBottom_toTopOf="@+id/spnDevice"
+                    app:layout_constraintBottom_toBottomOf="@+id/tlSubscriptionDate">
 
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/etPlan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    app:layout_constraintEnd_toEndOf="@+id/spnPlan"
-                    app:layout_constraintStart_toStartOf="@+id/spnPlan"
-                    app:layout_constraintTop_toBottomOf="@+id/spnPlan" />
-
-                <Spinner
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnDevice"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:hint="@string/networkdevice"
                     app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
                     app:layout_constraintEnd_toEndOf="@+id/spnPlan"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/spnPlan"
-                    app:layout_constraintTop_toBottomOf="@+id/tvNetworkDeviceHint" />
+                    app:layout_constraintTop_toBottomOf="@+id/spnPlan"
+                    android:layout_marginTop="24dp">
+
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/etNetworkDevice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/btSubscribirse"

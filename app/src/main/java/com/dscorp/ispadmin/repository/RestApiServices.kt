@@ -33,6 +33,8 @@ interface RestApiServices {
    suspend fun getPlans(): Response <List<Plan>>
    @GET("networkDevice")
    suspend fun getDevices(): Response <List<NetworkDevice>>
+   @GET("subscription")
+   suspend fun getSubscriptions():Response<List<Subscription>>
 
 
 }
