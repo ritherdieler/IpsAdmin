@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.model.User
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * Created by Sergio Carrillo Diestra on 18/11/2022.
@@ -16,8 +14,7 @@ import javax.inject.Inject
  * Huacho, Peru.
  *
  **/
-@HiltViewModel
-class RegisterViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class RegisterViewModel(private val repository: Repository) : ViewModel() {
     val registerResponseLiveData=MutableLiveData<RegisterResponse>()
     val registerFormErrorLiveData=MutableLiveData<RegisterFormError>()
     fun validateForm(

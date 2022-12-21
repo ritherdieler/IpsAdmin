@@ -10,12 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlaceBinding
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class PlaceFragment : Fragment() {
     lateinit var binding: FragmentPlaceBinding
-    val viewModel: PlaceViewModel by viewModels()
+    val viewModel: PlaceViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

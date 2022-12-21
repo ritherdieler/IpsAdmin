@@ -11,12 +11,11 @@ import androidx.fragment.app.viewModels
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlanBinding
 import com.dscorp.ispadmin.presentation.plan.PlanFormError.*
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class PlanFragment : Fragment() {
     lateinit var binding : FragmentPlanBinding
-    val viewModel: PlanViewModel by viewModels()
+    val viewModel: PlanViewModel by viewModel()
 
 
     override fun onCreateView(

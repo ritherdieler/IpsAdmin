@@ -13,9 +13,7 @@ import com.dscorp.ispadmin.presentation.place.PlaceFragment
 import com.dscorp.ispadmin.presentation.plan.PlanFragment
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment
 import com.google.android.material.navigation.NavigationView
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var navigationView: NavigationView

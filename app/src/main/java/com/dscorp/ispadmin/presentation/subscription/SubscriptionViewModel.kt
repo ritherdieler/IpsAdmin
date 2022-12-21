@@ -5,12 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.model.Subscription
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SubscriptionViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class SubscriptionViewModel(private val repository: Repository) : ViewModel() {
 
           val responseLiveData=MutableLiveData<SubscriptionResponse>()
           val formErrorLiveData=MutableLiveData<SubscriptionFormError>()

@@ -7,16 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityRegisterBinding
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityRegisterBinding
 
 
 
-    val viewModel: RegisterViewModel by viewModels()
+    val viewModel: RegisterViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 

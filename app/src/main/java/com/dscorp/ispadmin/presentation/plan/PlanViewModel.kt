@@ -5,12 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.model.Plan
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class PlanViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class PlanViewModel (private val repository: Repository) : ViewModel() {
    val planResponseLiveData=MutableLiveData<PlanResponse>()
     val formErrorLiveData=MutableLiveData<PlanFormError>()
     fun registerPlan(

@@ -1,16 +1,11 @@
-package com.dscorp.ispadmin.repository
+package com.dscorp.ispadmin.di
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -21,12 +16,11 @@ import javax.inject.Singleton
  **/
 
 
-@Module
-@InstallIn(SingletonComponent::class)
-class RetroFitModule {
 
-@Provides
-@Singleton
+val networkModule = module {
+    single { providesRetrofit() }
+}
+
     fun providesRetrofit(): Retrofit {
     val gson = GsonBuilder().create()
     val httpClient = OkHttpClient.Builder()
@@ -41,16 +35,6 @@ class RetroFitModule {
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun providesApi(retrofit :Retrofit):RestApiServices{
-        return retrofit.create(RestApiServices::class.java)
-    }
 
-    @Provides
-    @Singleton
-    fun providesRepository(restApiServices: RestApiServices): Repository {
-        return Repository(restApiServices)
-    }
 
-}
+

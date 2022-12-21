@@ -2,7 +2,6 @@ package com.dscorp.ispadmin.presentation.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -11,12 +10,11 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityLoginBinding
 import com.dscorp.ispadmin.presentation.main.MainActivity
 import com.dscorp.ispadmin.presentation.registration.RegisterActivity
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
-    val viewModel: LoginViewModel by viewModels()
+    val viewModel: LoginViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

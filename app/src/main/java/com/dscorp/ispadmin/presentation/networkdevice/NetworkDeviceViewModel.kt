@@ -6,13 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.model.NetworkDevice
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-@HiltViewModel
-class NetworkDeviceViewModel @Inject constructor(private val repository: Repository): ViewModel() {
-        val networkDeviceResponseLiveData=MutableLiveData<NetworkDeviceResponse>()
-        val networkDeviceFormErrorLiveData=MutableLiveData<NetworkDeviceFormError>()
+
+class NetworkDeviceViewModel(private val repository: Repository) : ViewModel() {
+    val networkDeviceResponseLiveData = MutableLiveData<NetworkDeviceResponse>()
+    val networkDeviceFormErrorLiveData = MutableLiveData<NetworkDeviceFormError>()
 
     fun validateForm(
         etName: EditText,
@@ -22,34 +20,34 @@ class NetworkDeviceViewModel @Inject constructor(private val repository: Reposit
         name: String,
         password: String,
         username: String,
-        ipaddress: String
+        ipaddress: String,
     ) {
 
-        if (name.isEmpty()){
+        if (name.isEmpty()) {
             println("Debes escribir un nombre para el dispositivo de red")
             etName.setError("El nombre del dispositivo de red no puede estar vacio")
         }
-        if (password.isEmpty()){
+        if (password.isEmpty()) {
             print("debes escribir una contraseña")
             etPassword.setError("La contraseña no puede estar vacia")
         }
-        if (username.isEmpty()){
+        if (username.isEmpty()) {
             println("Debes escribir un usuario")
             etUsername.setError("El usuario no puede estar vacio")
         }
-        if (ipaddress.isEmpty()){
+        if (ipaddress.isEmpty()) {
             println("Debes escribir una direccion de ip")
             etIpAddress.setError("La direccion de ip no puede estar vacia")
         }
         val planObject = NetworkDevice(
             name = name,
-            Password =password,
+            Password = password,
             username = username,
             ipAddress = ipaddress)
 
         viewModelScope.launch {
             try {
-                var networkDeviceFromRepository= repository.registerNetworkDevice(planObject)
+                var networkDeviceFromRepository = repository.registerNetworkDevice(planObject)
                 networkDeviceResponseLiveData.postValue(NetworkDeviceResponse.OnNetworkDeviceRegistered
                     (networkDeviceFromRepository))
             } catch (error: Exception) {
@@ -60,6 +58,5 @@ class NetworkDeviceViewModel @Inject constructor(private val repository: Reposit
         }
 
 
-
-        }
     }
+}

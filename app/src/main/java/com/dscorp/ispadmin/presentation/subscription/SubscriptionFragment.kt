@@ -15,15 +15,14 @@ import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
 import com.dscorp.ispadmin.repository.model.NetworkDevice
 import com.dscorp.ispadmin.repository.model.Plan
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class SubscriptionFragment : Fragment() {
 
     lateinit var binding: FragmentSubscriptionBinding
     var selectedPlan: Plan? = null
     var selectedNetworkDevice: NetworkDevice? = null
-    val viewModel: SubscriptionViewModel by viewModels()
+    val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

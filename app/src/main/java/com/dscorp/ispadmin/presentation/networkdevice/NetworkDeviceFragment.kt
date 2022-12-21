@@ -14,12 +14,11 @@ import androidx.lifecycle.whenCreated
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNetworkDeviceBinding
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFormError.*
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class NetworkDeviceFragment : Fragment() {
     lateinit var binding:FragmentNetworkDeviceBinding
-    val viewModel: NetworkDeviceViewModel by viewModels()
+    val viewModel: NetworkDeviceViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,11 +54,6 @@ class NetworkDeviceFragment : Fragment() {
             is OnEtUserName -> binding.etUsername.setError(formError.error)
         }
      }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
     }
 
     fun showSucessDialog(networkDeviceName:String){

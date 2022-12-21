@@ -9,9 +9,9 @@ import com.dscorp.ispadmin.repository.model.*
  * Huacho, Peru.
  *
  **/
-class Repository(val restApiServices: RestApiServices) {
+class Repository(val restApiServices: RestApiServices) : IRepository {
 
-    suspend fun registerUser(user: User): User {
+    override suspend fun registerUser(user: User): User {
         val response = restApiServices.registerUser(user)
         if (response.code() == 200) {
 
@@ -23,7 +23,7 @@ class Repository(val restApiServices: RestApiServices) {
     }
 
 
-    suspend fun doLogin(login: Loging): User {
+    override suspend fun doLogin(login: Loging): User {
         val response = restApiServices.doLoging(login)
         if (response.code() == 200) {
 
@@ -35,7 +35,7 @@ class Repository(val restApiServices: RestApiServices) {
 
     }
 
-    suspend fun registerPlan(plan: Plan): Plan {
+    override suspend fun registerPlan(plan: Plan): Plan {
         val response = restApiServices.registerPlan(plan)
         if (response.code() == 200) {
             return response.body()!!
@@ -44,7 +44,7 @@ class Repository(val restApiServices: RestApiServices) {
         }
     }
 
-    suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice {
+    override suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice {
         val response = restApiServices.registerNetworkDevice(registerNetworkDevice)
         if (response.code() == 200) {
             return response.body()!!
@@ -53,7 +53,7 @@ class Repository(val restApiServices: RestApiServices) {
         }
     }
 
-    suspend fun doSubscription(doSubscription: Subscription): Subscription {
+    override suspend fun doSubscription(doSubscription: Subscription): Subscription {
         val response = restApiServices.doSubscription(doSubscription)
         if (response.code() == 200) {
             return response.body()!!
@@ -62,7 +62,8 @@ class Repository(val restApiServices: RestApiServices) {
         }
 
     }
-    suspend fun getplans():List<Plan> {
+
+    override suspend fun getplans(): List<Plan> {
         val response = restApiServices.getPlans()
         if (response.code() == 200) {
             return response.body()!!
@@ -70,30 +71,33 @@ class Repository(val restApiServices: RestApiServices) {
             throw Exception("error en la respuesta")
         }
     }
-    suspend fun getDevices():List<NetworkDevice>{
+
+    override suspend fun getDevices(): List<NetworkDevice> {
         val response = restApiServices.getDevices()
-        if (response.code() == 200){
-                return response.body()!!
+        if (response.code() == 200) {
+            return response.body()!!
         } else {
             throw Exception("ERROR")
         }
     }
-    suspend fun getSubscriptions():List<Subscription>{
+
+    override suspend fun getSubscriptions(): List<Subscription> {
         val response = restApiServices.getSubscriptions()
-        if (response.code()==200){
+        if (response.code() == 200) {
             return response.body()!!
-        }else {
+        } else {
             throw Exception("ERROR EN LA RESPUESTA")
         }
     }
-     suspend fun registerPlace(registerPlace:IdAbbreviation):IdAbbreviation {
-         val response = restApiServices.registerplace(registerPlace)
-         if (response.code()==200){
-             return response.body()!!
-         }else{
-             throw Exception("ERROR")
-         }
 
-     }
+    override suspend fun registerPlace(registerPlace: IdAbbreviation): IdAbbreviation {
+        val response = restApiServices.registerplace(registerPlace)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("ERROR")
+        }
+
+    }
 
 }
