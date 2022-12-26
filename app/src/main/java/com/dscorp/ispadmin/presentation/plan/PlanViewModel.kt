@@ -3,12 +3,16 @@ package com.dscorp.ispadmin.presentation.plan
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.repository.IRepository
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.model.Plan
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent
 
-class PlanViewModel (private val repository: Repository) : ViewModel() {
-   val planResponseLiveData=MutableLiveData<PlanResponse>()
+class PlanViewModel  : ViewModel() {
+    private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
+
+    val planResponseLiveData=MutableLiveData<PlanResponse>()
     val formErrorLiveData=MutableLiveData<PlanFormError>()
     fun registerPlan(
         namePlan: String,

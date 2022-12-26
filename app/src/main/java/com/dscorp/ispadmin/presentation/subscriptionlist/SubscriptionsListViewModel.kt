@@ -14,7 +14,7 @@ import org.koin.core.component.inject
 
 class SubscriptionsListViewModel : ViewModel(), KoinComponent {
 
-    val repository: Repository by inject()
+    val repository: IRepository by inject()
     val responseLiveData = MutableLiveData<SubscriptionsListResponse>()
 
     init {

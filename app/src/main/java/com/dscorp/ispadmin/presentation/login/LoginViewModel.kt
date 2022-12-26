@@ -4,9 +4,10 @@ import android.widget.EditText
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.repository.Repository
+import com.dscorp.ispadmin.repository.IRepository
 import com.dscorp.ispadmin.repository.model.Loging
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 
 /**
  * Created by Sergio Carrillo Diestra on 20/11/2022.
@@ -15,26 +16,26 @@ import kotlinx.coroutines.launch
  * Huacho, Peru.
  *
  **/
-class LoginViewModel(private val repository: Repository) : ViewModel() {
-
-    val loginResponseLiveData=MutableLiveData<LoginResponse>()
-    val loginFormErrorLiveData=MutableLiveData<LoginFormError>()
+class LoginViewModel: ViewModel() {
+    private val repository: IRepository by inject(IRepository::class.java)
+    val loginResponseLiveData = MutableLiveData<LoginResponse>()
+    val loginFormErrorLiveData = MutableLiveData<LoginFormError>()
 
     fun validateForm(
         user: String,
         password: String,
-        etUser:EditText,
-        etPassword:EditText
+        etUser: EditText,
+        etPassword: EditText,
     ) {
 
-        if (user.isEmpty()){
+        if (user.isEmpty()) {
 
             println("debes escribir un usuario")
             etUser.setError("el usuario no puede estar vacio")
             return
         }
 
-        if (password.isEmpty()){
+        if (password.isEmpty()) {
 
             println("debes escribir una contrasena")
             etPassword.setError("la contrana no puede estar vacia")
@@ -53,26 +54,15 @@ class LoginViewModel(private val repository: Repository) : ViewModel() {
             try {
 
                 var loginFromRepository = repository.doLogin(loginObject)
-               loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(loginFromRepository))
+                loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(loginFromRepository))
 
-            }catch (error:Exception){
+            } catch (error: Exception) {
                 loginResponseLiveData.postValue(LoginResponse.OnError(error))
 
             }
 
 
-
         }
-
-
-
-
-
-
-
-
-
-
 
 
     }

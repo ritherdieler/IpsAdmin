@@ -19,11 +19,11 @@ import java.lang.reflect.Array.get
  *
  **/
 val viewModelModule = module {
-    viewModel { LoginViewModel(get()) }
-    viewModel { NetworkDeviceViewModel(get()) }
-    viewModel { PlaceViewModel(get()) }
-    viewModel { PlanViewModel(get()) }
-    viewModel { RegisterViewModel(get()) }
-    viewModel { SubscriptionViewModel(get()) }
+    viewModel { LoginViewModel() }
+    viewModel { NetworkDeviceViewModel() }
+    viewModel { PlaceViewModel() }
+    viewModel { PlanViewModel() }
+    viewModel { RegisterViewModel() }
+    viewModel { SubscriptionViewModel() }
     viewModel { SubscriptionsListViewModel() }
 }

@@ -3,9 +3,11 @@ package com.dscorp.ispadmin.presentation.registration
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.repository.IRepository
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.model.User
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent
 
 /**
  * Created by Sergio Carrillo Diestra on 18/11/2022.
@@ -14,7 +16,8 @@ import kotlinx.coroutines.launch
  * Huacho, Peru.
  *
  **/
-class RegisterViewModel(private val repository: Repository) : ViewModel() {
+class RegisterViewModel: ViewModel() {
+    private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
     val registerResponseLiveData=MutableLiveData<RegisterResponse>()
     val registerFormErrorLiveData=MutableLiveData<RegisterFormError>()
     fun validateForm(

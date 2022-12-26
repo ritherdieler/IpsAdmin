@@ -3,11 +3,15 @@ package com.dscorp.ispadmin.presentation.place
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.repository.IRepository
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.model.IdAbbreviation
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent
 
-class PlaceViewModel constructor(private val repository: Repository) : ViewModel() {
+class PlaceViewModel : ViewModel() {
+    private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
+
     val placeResponseLiveData = MutableLiveData<Response>()
     val formErrorLiveData = MutableLiveData<FormError>()
 

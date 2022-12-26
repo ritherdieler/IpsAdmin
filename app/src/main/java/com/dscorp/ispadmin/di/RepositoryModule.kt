@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.di
 
+import com.dscorp.ispadmin.repository.IRepository
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.RestApiServices
 import org.koin.dsl.module
@@ -16,7 +17,7 @@ import retrofit2.Retrofit
 
 val repositoryModule = module {
     single { providesApi(get()) }
-    single<Repository> { Repository() }
+    single<IRepository> { Repository() }
 }
 
 fun providesApi(retrofit: Retrofit): RestApiServices {
