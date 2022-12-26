@@ -13,22 +13,23 @@ import org.koin.core.context.startKoin
  *
  **/
 class KoinApplication:Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin {
-            // Log Koin into Android logger
-//            androidLogger()
-            // Reference Android context
-//            androidContext(this@KoinApplication)
-            // Load modules
-            modules(
-                networkModule,
-                repositoryModule,
-                viewModelModule
-            )
-        }
-
-    }
+//
+//    override fun onCreate() {
+//        super.onCreate()
+//
+//        startKoin {
+//            // Log Koin into Android logger
+////            androidLogger()
+//            // Reference Android context
+////            androidContext(this@KoinApplication)
+//            // Load modules
+//            allowOverride(true)
+////            modules(
+////                networkModule,
+////                repositoryModule,
+////                viewModelModule
+////            )
+//        }
+//
+//    }
 }

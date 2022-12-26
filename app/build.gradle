@@ -13,9 +13,9 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "com.dscorp.ispadmin.InstrumentationTestRunner"
+//        testInstrumentationRunner "com.dscorp.ispadmin.InstrumentationTestRunner"
 
-//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.dscorp.ispadmin.InstrumentationTestRunner"
     }
 
     buildTypes {
@@ -50,6 +50,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
@@ -59,12 +60,10 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    // Koin main features for Android
-    implementation "io.insert-koin:koin-android:3.3.0"
+
 
     // Koin for Tests
     debugImplementation "androidx.fragment:fragment-testing:1.5.5"
-    testImplementation "io.insert-koin:koin-test-junit4:3.3.0"
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.test.ext:junit:1.1.4'
     testImplementation 'org.robolectric:robolectric:4.8'
@@ -74,5 +73,16 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
     testImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     testImplementation 'androidx.test.espresso:espresso-contrib:3.5.0'
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+
+    // Koin main features for Android
+    implementation "io.insert-koin:koin-android:3.3.0"
+
+//    implementation "io.insert-koin:koin-core:3.3.0"
+    testImplementation "io.insert-koin:koin-android:3.3.0"
+    testImplementation "io.insert-koin:koin-test:3.3.0"
+    testImplementation "io.insert-koin:koin-test-junit4:3.3.0"
+
+    androidTestImplementation 'androidx.test:runner:1.5.1'
 
 }

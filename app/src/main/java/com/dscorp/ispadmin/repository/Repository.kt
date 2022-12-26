@@ -1,6 +1,8 @@
 package com.dscorp.ispadmin.repository
 
 import com.dscorp.ispadmin.repository.model.*
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -9,7 +11,9 @@ import com.dscorp.ispadmin.repository.model.*
  * Huacho, Peru.
  *
  **/
-class Repository(val restApiServices: RestApiServices) : IRepository {
+class Repository : IRepository, KoinComponent {
+
+    private val restApiServices: RestApiServices by inject()
 
     override suspend fun registerUser(user: User): User {
         val response = restApiServices.registerUser(user)
@@ -87,6 +91,7 @@ class Repository(val restApiServices: RestApiServices) : IRepository {
             return response.body()!!
         } else {
             throw Exception("ERROR EN LA RESPUESTA")
+//            return emptyList()
         }
     }
 

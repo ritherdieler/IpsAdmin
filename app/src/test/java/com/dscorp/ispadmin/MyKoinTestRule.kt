@@ -9,13 +9,13 @@ import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 
 /**
- * Created by Sergio Carrillo Diestra on 21/12/2022.
+ * Created by Sergio Carrillo Diestra on 25/12/2022.
  * scarrillo.peruapps@gmail.com
  * Peru Apps
  * Huacho, Peru.
  *
  **/
-class KoinTestRule(
+class MyKoinTestRule(
     private val modules: List<Module>
 ) : TestWatcher() {
     override fun starting(description: Description) {

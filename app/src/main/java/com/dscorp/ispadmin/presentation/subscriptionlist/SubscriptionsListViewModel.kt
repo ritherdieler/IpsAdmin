@@ -8,22 +8,27 @@ import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListRespon
 import com.dscorp.ispadmin.repository.IRepository
 import com.dscorp.ispadmin.repository.Repository
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class SubscriptionsListViewModel(private val repository: IRepository) : ViewModel() {
+
+class SubscriptionsListViewModel : ViewModel(), KoinComponent {
+
+    val repository: IRepository by inject()
     val responseLiveData = MutableLiveData<SubscriptionsListResponse>()
 
     init {
-        getSubscriptions()
+        initGetSubscriptions()
     }
 
-     fun getSubscriptions() {
-        viewModelScope.launch {
-            try {
-                val subscriptionsListFromRepository = repository.getSubscriptions()
-                responseLiveData.postValue(OnSubscriptionFound(subscriptionsListFromRepository))
-            } catch (error: Exception) {
-                responseLiveData.postValue(OnError(error))
-            }
+    fun initGetSubscriptions() = viewModelScope.launch {
+        try {
+            val subscriptionsListFromRepository = repository.getSubscriptions()
+            responseLiveData.postValue(OnSubscriptionFound(subscriptionsListFromRepository))
+        } catch (error: Exception) {
+            error.printStackTrace()
+            responseLiveData.postValue(OnError(error))
         }
     }
+
 }

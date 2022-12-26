@@ -3,11 +3,12 @@ package com.dscorp.ispadmin.presentation.subscription
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.repository.IRepository
 import com.dscorp.ispadmin.repository.Repository
 import com.dscorp.ispadmin.repository.model.Subscription
 import kotlinx.coroutines.launch
 
-class SubscriptionViewModel(private val repository: Repository) : ViewModel() {
+class SubscriptionViewModel(private val repository: IRepository) : ViewModel() {
 
           val responseLiveData=MutableLiveData<SubscriptionResponse>()
           val formErrorLiveData=MutableLiveData<SubscriptionFormError>()

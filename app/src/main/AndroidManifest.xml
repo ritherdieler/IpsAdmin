@@ -21,11 +21,9 @@
             android:exported="false"
             android:label="@string/title_activity_main2"
             android:theme="@style/Theme.IspAdminAndroid.NoActionBar" />
-
         <activity
             android:name=".presentation.registration.RegisterActivity"
             android:exported="false" />
-
         <activity
             android:name=".presentation.login.LoginActivity"
             android:exported="true"

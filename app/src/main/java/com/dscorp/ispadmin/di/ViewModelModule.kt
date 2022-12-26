@@ -8,8 +8,8 @@ import com.dscorp.ispadmin.presentation.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.module.Module
 import org.koin.dsl.module
+import java.lang.reflect.Array.get
 
 /**
  * Created by Sergio Carrillo Diestra on 20/12/2022.
@@ -18,7 +18,7 @@ import org.koin.dsl.module
  * Huacho, Peru.
  *
  **/
-val viewModelModule = module{
+val viewModelModule = module {
     viewModel { LoginViewModel(get()) }
     viewModel { NetworkDeviceViewModel(get()) }
     viewModel { PlaceViewModel(get()) }
