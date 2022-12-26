@@ -25,5 +25,5 @@ val viewModelModule = module {
     viewModel { PlanViewModel(get()) }
     viewModel { RegisterViewModel(get()) }
     viewModel { SubscriptionViewModel(get()) }
-    viewModel { SubscriptionsListViewModel(get()) }
+    viewModel { SubscriptionsListViewModel() }
 }

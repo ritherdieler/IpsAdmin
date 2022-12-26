@@ -14,7 +14,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SubscriptionsListFragment : Fragment() {
     private lateinit var binding: FragmentSubscriptionsListBinding
-    val viewModel: SubscriptionsListViewModel by viewModel()
+    private val viewModel: SubscriptionsListViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

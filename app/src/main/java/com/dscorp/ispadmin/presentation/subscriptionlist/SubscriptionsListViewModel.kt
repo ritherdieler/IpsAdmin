@@ -21,7 +21,7 @@ class SubscriptionsListViewModel : ViewModel(), KoinComponent {
         initGetSubscriptions()
     }
 
-    fun initGetSubscriptions() = viewModelScope.launch {
+    private fun initGetSubscriptions() = viewModelScope.launch {
         try {
             val subscriptionsListFromRepository = repository.getSubscriptions()
             responseLiveData.postValue(OnSubscriptionFound(subscriptionsListFromRepository))
