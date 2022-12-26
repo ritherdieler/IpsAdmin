@@ -15,6 +15,6 @@ class InstrumentationTestRunner : AndroidJUnitRunner() {
         className: String?,
         context: android.content.Context?,
     ): Application? {
-        return super.newApplication(classLoader, KoinAppForInstrumentation::class.java.name, context)
+        return super.newApplication(classLoader, com.dscorp.ispadmin.KoinAppForInstrumentation::class.java.name, context)
     }
 }

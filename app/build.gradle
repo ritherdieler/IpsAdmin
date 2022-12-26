@@ -15,7 +15,7 @@ android {
         versionName "1.0"
 //        testInstrumentationRunner "com.dscorp.ispadmin.InstrumentationTestRunner"
 
-        testInstrumentationRunner "com.dscorp.ispadmin.InstrumentationTestRunner"
+        testInstrumentationRunner "com.dscorp.ispadmin.test.InstrumentationTestRunner"
     }
 
     buildTypes {

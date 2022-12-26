@@ -19,7 +19,7 @@ class SubscriptionsListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscriptions_list, null, true)
         observe()
         return binding.root
