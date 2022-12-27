@@ -24,6 +24,10 @@
             android:id="@+id/nav_to_register"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="Registrar Ubicacion" />
+        <item
+            android:id="@+id/nav_to_register_technician"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Registrar tecnicos" />
 
     </group>
 </menu>

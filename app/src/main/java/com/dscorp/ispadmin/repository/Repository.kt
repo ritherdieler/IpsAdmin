@@ -107,5 +107,13 @@ class Repository : IRepository, KoinComponent {
             throw Exception("error en la respuesta")
         }
     }
+     override suspend fun registerTechnician(registerTechnician:Technician):Technician {
+        val response = restApiServices.registerTechnician(registerTechnician)
+        if (response.code() == 200) {
+            return response.body()!!
+        }else{
+            throw Exception("Error en el registro")
+        }
+    }
 
 }

@@ -39,6 +39,8 @@ interface RestApiServices {
    suspend fun registerplace(@Body place:Place):Response<Place>
    @GET("place")
    suspend fun getPlaces():Response <List<Place>>
+   @POST("technician")
+   suspend fun registerTechnician(@Body technician:Technician):Response<Technician>
 
 
 }

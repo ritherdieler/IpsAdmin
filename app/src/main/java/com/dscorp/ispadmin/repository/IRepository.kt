@@ -20,4 +20,5 @@ interface IRepository {
     suspend fun getSubscriptions(): List<Subscription>
     suspend fun registerPlace(registerPlace: Place): Place
     suspend fun getPlaces():List<Place>
+    suspend fun registerTechnician(registerTechnician: Technician):Technician
 }

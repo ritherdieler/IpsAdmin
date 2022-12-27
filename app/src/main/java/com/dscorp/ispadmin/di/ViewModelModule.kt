@@ -7,6 +7,7 @@ import com.dscorp.ispadmin.presentation.plan.PlanViewModel
 import com.dscorp.ispadmin.presentation.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
+import com.dscorp.ispadmin.presentation.technician.TechnicianViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import java.lang.reflect.Array.get
@@ -26,4 +27,5 @@ val viewModelModule = module {
     viewModel { RegisterViewModel() }
     viewModel { SubscriptionViewModel() }
     viewModel { SubscriptionsListViewModel() }
+    viewModel { TechnicianViewModel() }
 }

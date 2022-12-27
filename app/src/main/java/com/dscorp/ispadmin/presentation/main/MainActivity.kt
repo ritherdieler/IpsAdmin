@@ -12,6 +12,7 @@ import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFragment
 import com.dscorp.ispadmin.presentation.place.PlaceFragment
 import com.dscorp.ispadmin.presentation.plan.PlanFragment
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment
+import com.dscorp.ispadmin.presentation.technician.TechnicianFragment
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -36,14 +37,19 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_subscription -> showSubscriptionFragment()
                 R.id.nav_see_subscriptions -> showSubscriptionsListFragments()
                 R.id.nav_to_register -> showPlaceFragment()
+                R.id.nav_to_register_technician ->showTechnicianFragment()
             }
             drawerLayout.close()
             true
         }
     }
 
-
-
+    private fun showTechnicianFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<TechnicianFragment>(R.id.fragmentContainer)
+        }
+    }
     private fun showSubscriptionsListFragments() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
