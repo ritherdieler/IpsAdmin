@@ -14,17 +14,16 @@
 
         <ScrollView
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:fillViewport="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlFirstName"
@@ -34,7 +33,6 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="32dp"
-
                     android:hint="Nombres"
                     app:endIconMode="clear_text"
                     app:layout_constraintBottom_toTopOf="@+id/tlLastName"
@@ -180,11 +178,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:hint="@string/plan"
-                    app:layout_constraintBottom_toBottomOf="@+id/spnDevice"
+                    app:layout_constraintBottom_toTopOf="@+id/spnDevice"
                     app:layout_constraintEnd_toEndOf="@+id/tlSubscriptionDate"
                     app:layout_constraintStart_toStartOf="@+id/tlSubscriptionDate"
                     app:layout_constraintTop_toBottomOf="@+id/tlSubscriptionDate"
-                    app:layout_constraintVertical_chainStyle="packed">
+                    >
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etPlan"
@@ -201,11 +199,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:hint="@string/networkdevice"
-                    app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
                     app:layout_constraintEnd_toEndOf="@+id/spnPlan"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/spnPlan"
-                    app:layout_constraintTop_toBottomOf="@+id/spnPlan">
+                    app:layout_constraintTop_toBottomOf="@+id/spnPlan"
+                    app:layout_constraintBottom_toTopOf="@+id/spnPlace"
+                    >
+
 
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView

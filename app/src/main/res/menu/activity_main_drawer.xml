@@ -23,11 +23,19 @@
         <item
             android:id="@+id/nav_to_register"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="Registrar Ubicacion" />
+            android:title="@string/registrar_ubicacion" />
         <item
             android:id="@+id/nav_to_register_technician"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="Registrar tecnicos" />
+            android:title="@string/registrar_tecnicos" />
+        <item
+            android:id="@+id/nav_to_register_nap_box"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/registrar_caja_nap" />
+        <item
+            android:id="@+id/nav_to_register_service_order"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Registrar Orden de Servicio" />
 
     </group>
 </menu>

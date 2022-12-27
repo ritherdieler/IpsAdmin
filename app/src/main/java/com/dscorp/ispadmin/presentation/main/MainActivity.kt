@@ -7,10 +7,12 @@ import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.subscription.SubscriptionFragment
+import com.dscorp.ispadmin.presentation.napbox.NapBoxFragment
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFragment
 import com.dscorp.ispadmin.presentation.place.PlaceFragment
 import com.dscorp.ispadmin.presentation.plan.PlanFragment
+import com.dscorp.ispadmin.presentation.serviceorden.ServiceOrderFragment
+import com.dscorp.ispadmin.presentation.subscription.SubscriptionFragment
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment
 import com.dscorp.ispadmin.presentation.technician.TechnicianFragment
 import com.google.android.material.navigation.NavigationView
@@ -18,7 +20,7 @@ import com.google.android.material.navigation.NavigationView
 class MainActivity : AppCompatActivity() {
 
     lateinit var navigationView: NavigationView
-    lateinit var drawerLayout:DrawerLayout
+    lateinit var drawerLayout: DrawerLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,10 +39,19 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_subscription -> showSubscriptionFragment()
                 R.id.nav_see_subscriptions -> showSubscriptionsListFragments()
                 R.id.nav_to_register -> showPlaceFragment()
-                R.id.nav_to_register_technician ->showTechnicianFragment()
+                R.id.nav_to_register_technician -> showTechnicianFragment()
+                R.id.nav_to_register_nap_box -> showRegisterNapBoxFragment()
+                R.id.nav_to_register_service_order -> showRegisterServiceOrderFragment()
             }
             drawerLayout.close()
             true
+        }
+    }
+
+    private fun showRegisterNapBoxFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<NapBoxFragment>(R.id.fragmentContainer)
         }
     }
 
@@ -50,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             replace<TechnicianFragment>(R.id.fragmentContainer)
         }
     }
+
     private fun showSubscriptionsListFragments() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
@@ -84,10 +96,17 @@ class MainActivity : AppCompatActivity() {
             replace<SubscriptionFragment>(R.id.fragmentContainer)
         }
     }
+
     private fun showPlaceFragment() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<PlaceFragment>(R.id.fragmentContainer)
+        }
+    }
+    private fun showRegisterServiceOrderFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<ServiceOrderFragment>(R.id.fragmentContainer)
         }
     }
 }

@@ -41,6 +41,10 @@ interface RestApiServices {
    suspend fun getPlaces():Response <List<Place>>
    @POST("technician")
    suspend fun registerTechnician(@Body technician:Technician):Response<Technician>
+    @POST("napbox")
+   suspend fun registerNapBox(@Body napBox: NapBox): Response<NapBox>
+    @POST("serviceOrder")
+    suspend fun registerServiceOrder(@Body serviceOrden: ServiceOrder): Response<ServiceOrder>
 
 
 }

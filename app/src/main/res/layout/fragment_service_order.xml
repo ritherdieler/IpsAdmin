@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".presentation.serviceOrder.ServiceOrderFragment">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:id="@+id/tlLatitud"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="32dp"
+            android:hint="@string/latitud"
+            app:layout_constraintBottom_toTopOf="@+id/tlLongitud"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLatitud"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlLongitud"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="@string/longitud"
+            app:layout_constraintBottom_toTopOf="@+id/tlCreateDate"
+            app:layout_constraintEnd_toEndOf="@+id/tlLatitud"
+            app:layout_constraintStart_toStartOf="@+id/tlLatitud"
+            app:layout_constraintTop_toBottomOf="@+id/tlLatitud">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLongitud"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:id="@+id/tlCreateDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="@string/fecha_de_creaci_n"
+            app:layout_constraintBottom_toTopOf="@+id/tlAttentionDate"
+            app:layout_constraintEnd_toEndOf="@+id/tlLongitud"
+            app:layout_constraintStart_toStartOf="@+id/tlLongitud"
+            app:layout_constraintTop_toBottomOf="@+id/tlLongitud">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCreateDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+               android:inputType="number"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:id="@+id/tlAttentionDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="@string/fecha_de_atenci_n"
+            app:layout_constraintBottom_toTopOf="@+id/btRegisterServiceOrder"
+            app:layout_constraintEnd_toEndOf="@+id/tlCreateDate"
+            app:layout_constraintStart_toStartOf="@+id/tlCreateDate"
+            app:layout_constraintTop_toBottomOf="@+id/tlCreateDate">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAttentionDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btRegisterServiceOrder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Registrar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tlAttentionDate"
+            app:layout_constraintStart_toStartOf="@+id/tlAttentionDate"
+            app:layout_constraintTop_toBottomOf="@+id/tlAttentionDate" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

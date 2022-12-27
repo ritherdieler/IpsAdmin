@@ -13,7 +13,7 @@
     <string name="label" />
     <string name="title_activity_main2">MainActivity2</string>
     <string name="plan">Plan</string>
-    <string name="networkdevice">DispositivoDeRed</string>
+    <string name="networkdevice">Dispositivo De Red</string>
     <string name="login_Error_Tittle">Ocurrio un Error</string>
     <string name="menu_plan">Plan</string>
     <string name="menu_device">Equipos</string>
@@ -22,6 +22,17 @@
     <string name="abreviatura">Abreviatura</string>
     <string name="nombre">Nombre</string>
     <string name="lugar">Lugar</string>
+    <string name="codigo">Codigo</string>
+    <string name="direccion">Direccion</string>
+    <string name="registrar">REGISTRAR</string>
+    <string name="registrar_ubicacion">Registrar Ubicacion</string>
+    <string name="registrar_tecnicos">Registrar tecnicos</string>
+    <string name="registrar_caja_nap">Registrar caja nap</string>
+    <string name="latitud">Latitud</string>
+    <string name="longitud">Longitud</string>
+    <string name="crear_datos">Crear Datos</string>
+    <string name="fecha_de_creaci_n">Fecha de creación</string>
+    <string name="fecha_de_atenci_n">Fecha de atención</string>
 
 
 </resources>

@@ -116,4 +116,22 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun registerNapBox(napBox: NapBox): NapBox {
+
+        val response = restApiServices.registerNapBox(napBox)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("ERROR")
+        }
+    }
+    override suspend fun registerServiceOrder(serviceOrder: ServiceOrder): ServiceOrder {
+
+        val response = restApiServices.registerServiceOrder(serviceOrder)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("ERROR")
+        }
+    }
 }
