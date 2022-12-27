@@ -7,9 +7,13 @@ package com.dscorp.ispadmin.repository.model
  * Huacho, Peru.
  *
  **/
-data class IdAbbreviation(
-    val id:Int? = null,
-    val abbreviation:String,
-    val name:String
-)
+data class Place(
+    val id: String? = null,
+    val abbreviation: String,
+    val name: String,
+) {
+    override fun toString(): String {
+        return name
+    }
+}
 

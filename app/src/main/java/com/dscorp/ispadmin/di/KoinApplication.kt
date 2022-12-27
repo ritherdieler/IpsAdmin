@@ -17,6 +17,9 @@ class KoinApplication:Application() {
     override fun onCreate() {
         super.onCreate()
 
+
+
+
         startKoin {
             // Log Koin into Android logger
             androidLogger()

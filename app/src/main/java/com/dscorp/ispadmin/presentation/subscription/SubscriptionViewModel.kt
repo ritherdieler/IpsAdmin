@@ -3,8 +3,10 @@ package com.dscorp.ispadmin.presentation.subscription
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
 import com.dscorp.ispadmin.repository.IRepository
 import com.dscorp.ispadmin.repository.model.Subscription
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
@@ -15,56 +17,55 @@ class SubscriptionViewModel : ViewModel() {
     val formErrorLiveData = MutableLiveData<SubscriptionFormError>()
 
     init {
-        getPlans()
-        getDevices()
+        getFormData()
     }
 
-    private fun getPlans() {
+    fun getFormData() {
         viewModelScope.launch {
             try {
-                val plansFromRepository = repository.getplans()
-                responseLiveData.postValue(SubscriptionResponse.OnPlansFetched(plansFromRepository))
-            } catch (e: Exception) {
-                responseLiveData.postValue(SubscriptionResponse.OnError(e))
-            }
-        }
-    }
+                val devicesJob = async { repository.getDevices() }
+                val plansJob = async { repository.getplans() }
+                val placeJob = async { repository.getPlaces() }
+                val devicesFromRepository = devicesJob.await()
+                val plansFromRepository = plansJob.await()
+                val placeFromRepository = placeJob.await()
 
-    private fun getDevices() {
-        viewModelScope.launch {
-            try {
-                val devicesFromRepository = repository.getDevices()
-                responseLiveData.postValue(SubscriptionResponse.OnNetworkDeviceFetched(devicesFromRepository))
+                responseLiveData.postValue(OnFormDataFound(plansFromRepository, devicesFromRepository,
+                    placeFromRepository))
+
             } catch (e: Exception) {
-                responseLiveData.postValue(SubscriptionResponse.OnError(e))
+                responseLiveData.postValue(OnError(e))
             }
         }
     }
 
     fun registerSubscription(
-         firstname: String,
-         lastname: String,
-         password: String,
-         dni: String,
-         address: String,
-         phone: String,
-         subscriptionDate: String,
-         planId: String,
-         networkDeviceId: String,
+        firstname: String,
+        lastname: String,
+        password: String,
+        dni: String,
+        address: String,
+        phone: String,
+        subscriptionDate: String,
+        planId: String,
+        networkDeviceId: String,
+        placeId: String,
     ) {
-        validateform(firstname, lastname, password, dni, address, phone, subscriptionDate, planId, networkDeviceId)
+        validateform(firstname, lastname, password, dni, address, phone, subscriptionDate, planId, networkDeviceId,
+            placeId)
     }
 
     private fun sendRegisterSubscriptionToServer(
-         firstname: String,
-         lastname: String,
-         dni: String,
-         password: String,
-         address: String,
-         phone: String,
-         subscriptionDate: Int,
-         planId: String,
-         networkDeviceId: String,
+        firstname: String,
+        lastname: String,
+        dni: String,
+        password: String,
+        address: String,
+        phone: String,
+        subscriptionDate: Int,
+        planId: String,
+        networkDeviceId: String,
+        placeId: String,
     ) {
         val subscriptionObjetct = Subscription(
             firstName = firstname,
@@ -75,33 +76,35 @@ class SubscriptionViewModel : ViewModel() {
             phone = phone,
             subscriptionDate = subscriptionDate,
             planId = planId,
-            networkDeviceId = networkDeviceId
+            networkDeviceId = networkDeviceId,
+            placeId = placeId
         )
 
         viewModelScope.launch {
             try {
 
                 val subscriptionFromRepository = repository.doSubscription(subscriptionObjetct)
-                responseLiveData.postValue(SubscriptionResponse.OnSubscriptionRegistered
+                responseLiveData.postValue(OnSubscriptionRegistered
                     (subscriptionFromRepository))
 
             } catch (error: Exception) {
-                responseLiveData.postValue(SubscriptionResponse.OnError(error))
+                responseLiveData.postValue(OnError(error))
 
             }
         }
     }
 
     private fun validateform(
-         firstname: String,
-         lastname: String,
-         password: String,
-         dni: String,
-         address: String,
-         phone: String,
-         subscriptionDate: String,
-         planId: String,
-         networkDeviceId: String,
+        firstname: String,
+        lastname: String,
+        password: String,
+        dni: String,
+        address: String,
+        phone: String,
+        subscriptionDate: String,
+        planId: String,
+        networkDeviceId: String,
+        placeId: String,
     ) {
         if (firstname.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtFirstNameError("Ingresa tu nombre. "))
@@ -142,8 +145,13 @@ class SubscriptionViewModel : ViewModel() {
                     "dispositivo de red"))
             return
         }
+        if (placeId.isEmpty()) {
+            formErrorLiveData.postValue(SubscriptionFormError.OnSpnPlaceError("Debes seleccionar un " +
+                    "lugar"))
+            return
+        }
         sendRegisterSubscriptionToServer(firstname, lastname, dni, password, address, phone, subscriptionDate.toInt(),
-            planId, networkDeviceId)
+            planId, networkDeviceId, placeId)
     }
 }
 

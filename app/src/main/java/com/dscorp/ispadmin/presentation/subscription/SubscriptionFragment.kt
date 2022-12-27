@@ -4,16 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
 import com.dscorp.ispadmin.repository.model.NetworkDevice
+import com.dscorp.ispadmin.repository.model.Place
 import com.dscorp.ispadmin.repository.model.Plan
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,11 +23,12 @@ class SubscriptionFragment : Fragment() {
     lateinit var binding: FragmentSubscriptionBinding
     var selectedPlan: Plan? = null
     var selectedNetworkDevice: NetworkDevice? = null
+    var selectedPlace: Place? = null
     val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscription, null, true)
 
@@ -40,21 +42,26 @@ class SubscriptionFragment : Fragment() {
     }
 
     private fun observeResponse() {
-        viewModel.responseLiveData.observe(viewLifecycleOwner){ response ->
+        viewModel.responseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is OnError ->showErrorDialog(response.error.message.toString())
-                is OnPlansFetched -> setUpPlansSpinner(response.plans)
-                is OnSubscriptionRegistered ->showSucessDialog(response.subscription.firstName)
-                is OnNetworkDeviceFetched -> setUpNetworkDeviceSpinner(response.networkdevices)
+                is OnError -> showErrorDialog(response.error.message.toString())
+                is OnFormDataFound -> fillFormSpinners(response)
+                is OnSubscriptionRegistered -> showSucessDialog(response.subscription.firstName)
             }
         }
     }
 
+    private fun fillFormSpinners(response: OnFormDataFound) {
+        setUpPlansSpinner(response.plans)
+        setUpNetworkDeviceSpinner(response.networkDevice)
+        setUpPlaceSpinner(response.places)
+    }
+
     private fun observeFormError() {
-        viewModel.formErrorLiveData.observe(viewLifecycleOwner){formError ->
+        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
                 is OnEtAddressesError -> setEtAddressError(formError)
-                onFirstNameHasNotErrors -> clearTlFirstNameErrors()
+                OnFirstNameHasNotErrors -> clearTlFirstNameErrors()
                 is OnEtDniError -> setEtDniError(formError)
                 is OnEtFirstNameError -> setEtFirstNameError(formError)
                 is OnEtLastNameError -> setEtLastNameError(formError)
@@ -63,9 +70,13 @@ class SubscriptionFragment : Fragment() {
                 is OnEtSubscriptionDateError -> setSubscriptionDateError(formError)
                 is OnSpnNetworkDeviceError -> setSpnNetworkDeviceError(formError)
                 is OnSpnPlanError -> setSpnPlanError(formError)
-
+                is OnSpnPlaceError -> setSpnpPlaceError(formError)
             }
         }
+    }
+
+    private fun setSpnpPlaceError(formError: OnSpnPlaceError) {
+        binding.spnPlace.error = formError.error
     }
 
     private fun clearTlFirstNameErrors() {
@@ -118,9 +129,19 @@ class SubscriptionFragment : Fragment() {
         val subscriptionDate = binding.etSubscriptionDate.text.toString()
         val planId = selectedPlan?.id ?: ""
         val networkDeviceId = selectedNetworkDevice?.id ?: ""
+        val placeId = selectedPlace?.id ?: ""
 
         viewModel.registerSubscription(
-            firstname, lastName, password, dni, address, phoneNumber, subscriptionDate, planId, networkDeviceId
+            firstname,
+            lastName,
+            password,
+            dni,
+            address,
+            phoneNumber,
+            subscriptionDate,
+            planId,
+            networkDeviceId,
+            placeId
         )
     }
 
@@ -157,6 +178,15 @@ class SubscriptionFragment : Fragment() {
         binding.etNetworkDevice.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
                 selectedNetworkDevice = networkDevices[pos]
+            }
+    }
+
+    private fun setUpPlaceSpinner(places: List<Place>) {
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, places)
+        binding.etPlace.setAdapter(adapter)
+        binding.etPlace.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, pos, _ ->
+                selectedPlace = places[pos]
             }
     }
 }

@@ -4,8 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.repository.IRepository
-import com.dscorp.ispadmin.repository.Repository
-import com.dscorp.ispadmin.repository.model.IdAbbreviation
+import com.dscorp.ispadmin.repository.model.Place
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
@@ -30,7 +29,7 @@ class PlaceViewModel : ViewModel() {
             return
         }
 
-        val placeObject = IdAbbreviation(
+        val placeObject = Place(
             abbreviation = abbreviation,
             name = namePlace
         )

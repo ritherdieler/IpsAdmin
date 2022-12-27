@@ -8,17 +8,17 @@ package com.dscorp.ispadmin.presentation.subscription
  *
  **/
 sealed class SubscriptionFormError {
-    object onFirstNameHasNotErrors:SubscriptionFormError()
+    object OnFirstNameHasNotErrors : SubscriptionFormError()
     class OnEtFirstNameError(val error: String) : SubscriptionFormError()
     class OnEtLastNameError(val error: String) : SubscriptionFormError()
     class OnEtDniError(val error: String) : SubscriptionFormError()
-    class OnEtPasswordError(val error:String):SubscriptionFormError()
-    class OnEtAddressesError(val error:String):SubscriptionFormError()
-    class OnEtNumberPhoneError(val error: String):SubscriptionFormError()
-    class OnEtSubscriptionDateError(val error:String):SubscriptionFormError()
-    class OnSpnPlanError(val error: String):SubscriptionFormError()
-    class OnSpnNetworkDeviceError(val error: String):SubscriptionFormError()
-
+    class OnEtPasswordError(val error: String) : SubscriptionFormError()
+    class OnEtAddressesError(val error: String) : SubscriptionFormError()
+    class OnEtNumberPhoneError(val error: String) : SubscriptionFormError()
+    class OnEtSubscriptionDateError(val error: String) : SubscriptionFormError()
+    class OnSpnPlanError(val error: String) : SubscriptionFormError()
+    class OnSpnNetworkDeviceError(val error: String) : SubscriptionFormError()
+    class OnSpnPlaceError(val error: String) : SubscriptionFormError()
 
 
 }

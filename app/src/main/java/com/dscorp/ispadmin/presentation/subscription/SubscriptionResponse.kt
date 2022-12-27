@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.subscription
 
 import com.dscorp.ispadmin.repository.model.NetworkDevice
+import com.dscorp.ispadmin.repository.model.Place
 import com.dscorp.ispadmin.repository.model.Plan
 import com.dscorp.ispadmin.repository.model.Subscription
 
@@ -11,9 +12,9 @@ import com.dscorp.ispadmin.repository.model.Subscription
  * Huacho, Peru.
  *
  **/
-sealed class SubscriptionResponse{
-    class OnPlansFetched(val plans:List <Plan>): SubscriptionResponse()
-    class OnNetworkDeviceFetched(val networkdevices:List<NetworkDevice>): SubscriptionResponse()
-    class OnSubscriptionRegistered(val subscription:Subscription):SubscriptionResponse()
-    class OnError(val error:Exception):SubscriptionResponse()
+sealed class SubscriptionResponse {
+    class OnFormDataFound(val plans: List<Plan>, val networkDevice: List<NetworkDevice>, val places: List<Place>) :
+        SubscriptionResponse()
+    class OnSubscriptionRegistered(val subscription: Subscription) : SubscriptionResponse()
+    class OnError(val error: Exception) : SubscriptionResponse()
 }

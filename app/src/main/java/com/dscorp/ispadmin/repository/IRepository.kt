@@ -18,5 +18,6 @@ interface IRepository {
     suspend fun getplans(): List<Plan>
     suspend fun getDevices(): List<NetworkDevice>
     suspend fun getSubscriptions(): List<Subscription>
-    suspend fun registerPlace(registerPlace: IdAbbreviation): IdAbbreviation
+    suspend fun registerPlace(registerPlace: Place): Place
+    suspend fun getPlaces():List<Place>
 }

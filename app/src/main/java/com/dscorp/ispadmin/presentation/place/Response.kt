@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.place
 
-import com.dscorp.ispadmin.repository.model.IdAbbreviation
+import com.dscorp.ispadmin.repository.model.Place
 
 /**
  * Created by Sergio Carrillo Diestra on 20/12/2022.
@@ -10,6 +10,6 @@ import com.dscorp.ispadmin.repository.model.IdAbbreviation
  *
  **/
 sealed class Response{
-    class OnPlaceRegister(val place:IdAbbreviation ):Response()
+    class OnPlaceRegister(val place:Place ):Response()
     class OnError(val error:Exception):Response()
 }

@@ -23,9 +23,7 @@ class Repository : IRepository, KoinComponent {
         } else {
             throw Exception("error en la respuesta")
         }
-
     }
-
 
     override suspend fun doLogin(login: Loging): User {
         val response = restApiServices.doLoging(login)
@@ -35,8 +33,6 @@ class Repository : IRepository, KoinComponent {
         } else {
             throw Exception("error en la respuesta")
         }
-
-
     }
 
     override suspend fun registerPlan(plan: Plan): Plan {
@@ -91,18 +87,25 @@ class Repository : IRepository, KoinComponent {
             return response.body()!!
         } else {
             throw Exception("ERROR EN LA RESPUESTA")
-//            return emptyList()
         }
     }
 
-    override suspend fun registerPlace(registerPlace: IdAbbreviation): IdAbbreviation {
+    override suspend fun registerPlace(registerPlace: Place): Place {
         val response = restApiServices.registerplace(registerPlace)
         if (response.code() == 200) {
             return response.body()!!
         } else {
             throw Exception("ERROR")
         }
+    }
 
+    override suspend fun getPlaces(): List<Place> {
+        val response = restApiServices.getPlaces()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("error en la respuesta")
+        }
     }
 
 }
