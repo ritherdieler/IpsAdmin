@@ -23,4 +23,5 @@ val subscriptionListMock = listOf(Subscription(
     isNew = true,
     serviceIsSuspended = true,
     planId = "1",
-    networkDeviceId = "1"))
+    networkDeviceId = "1",
+    placeId = "1"))

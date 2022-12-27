@@ -3,6 +3,7 @@ package com.dscorp.ispadmin
 import android.app.Application
 import com.dscorp.ispadmin.mockdata.subscriptionListMock
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
+import com.dscorp.ispadmin.repository.IRepository
 import com.dscorp.ispadmin.repository.Repository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
@@ -29,7 +30,7 @@ class KoinAppForInstrumentation : Application() {
         startKoin {
 //            androidLogger()
 //            androidContext(this@KoinAppForInstrumentation)
-            val repo = mock(Repository::class.java)
+            val repo = mock(IRepository::class.java)
             launch {
                 `when`(repo.getSubscriptions()).thenReturn(subscriptionListMock)
                 modules(listOf(

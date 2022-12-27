@@ -67,6 +67,8 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
     testImplementation 'androidx.test.espresso:espresso-contrib:3.5.0'
 
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+
     // Koin main features for Android
     implementation "io.insert-koin:koin-android:3.3.0"
 
