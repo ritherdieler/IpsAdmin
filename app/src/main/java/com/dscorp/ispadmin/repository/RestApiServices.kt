@@ -16,35 +16,43 @@ import retrofit2.http.POST
 interface RestApiServices {
 
     @POST("user")
-    suspend fun registerUser(@Body user: User): Response <User>
+    suspend fun registerUser(@Body user: User): Response<User>
 
     @POST("login")
-    suspend fun doLoging(@Body loging : Loging): Response <User>
+    suspend fun doLoging(@Body loging: Loging): Response<User>
 
     @POST("plan")
-    suspend fun registerPlan(@Body plan: Plan):Response <Plan>
+    suspend fun registerPlan(@Body plan: Plan): Response<Plan>
 
     @POST("networkDevice")
-    suspend fun registerNetworkDevice(@Body networkDevice: NetworkDevice):Response <NetworkDevice>
+    suspend fun registerNetworkDevice(@Body networkDevice: NetworkDevice): Response<NetworkDevice>
 
     @POST("subscription")
-    suspend fun doSubscription(@Body subscription: Subscription): Response <Subscription>
+    suspend fun doSubscription(@Body subscription: Subscription): Response<Subscription>
+
     @GET("plan")
-   suspend fun getPlans(): Response <List<Plan>>
-   @GET("networkDevice")
-   suspend fun getDevices(): Response <List<NetworkDevice>>
-   @GET("subscription")
-   suspend fun getSubscriptions():Response<List<Subscription>>
-   @POST("place")
-   suspend fun registerplace(@Body place:Place):Response<Place>
-   @GET("place")
-   suspend fun getPlaces():Response <List<Place>>
-   @POST("technician")
-   suspend fun registerTechnician(@Body technician:Technician):Response<Technician>
+    suspend fun getPlans(): Response<List<Plan>>
+
+    @GET("networkDevice")
+    suspend fun getDevices(): Response<List<NetworkDevice>>
+
+    @GET("subscription")
+    suspend fun getSubscriptions(): Response<List<Subscription>>
+
+    @POST("place")
+    suspend fun registerplace(@Body place: Place): Response<Place>
+
+    @GET("place")
+    suspend fun getPlaces(): Response<List<Place>>
+
+    @POST("technician")
+    suspend fun registerTechnician(@Body technician: Technician): Response<Technician>
+
     @POST("napbox")
-   suspend fun registerNapBox(@Body napBox: NapBox): Response<NapBox>
+    suspend fun registerNapBox(@Body napBox: NapBox): Response<NapBox>
+
     @POST("serviceOrder")
-    suspend fun registerServiceOrder(@Body serviceOrden: ServiceOrder): Response<ServiceOrder>
+    suspend fun registerServiceOrder(@Body serviceOrder: ServiceOrder): Response<ServiceOrder>
 
 
 }

@@ -46,7 +46,7 @@ class SubscriptionViewModel : ViewModel() {
         dni: String,
         address: String,
         phone: String,
-        subscriptionDate: String,
+        subscriptionDate: Long,
         planId: String,
         networkDeviceId: String,
         placeId: String,
@@ -101,7 +101,7 @@ class SubscriptionViewModel : ViewModel() {
         dni: String,
         address: String,
         phone: String,
-        subscriptionDate: String,
+        subscriptionDate: Long,
         planId: String,
         networkDeviceId: String,
         placeId: String,
@@ -131,7 +131,7 @@ class SubscriptionViewModel : ViewModel() {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa Un numero valido"))
             return
         }
-        if (subscriptionDate.isEmpty()) {
+        if (subscriptionDate == 0L) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtSubscriptionDateError("Debes colocar una fecha " +
                     "de suscripcion"))
             return

@@ -159,6 +159,7 @@
                     android:layout_marginTop="24dp"
                     android:hint="Fecha de Suscripción"
                     app:endIconMode="clear_text"
+                    android:focusable="false"
                     app:layout_constraintBottom_toTopOf="@+id/spnPlan"
                     app:layout_constraintEnd_toEndOf="@+id/tlPhone"
                     app:layout_constraintStart_toStartOf="@+id/tlPhone"
@@ -167,6 +168,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etSubscriptionDate"
                         android:layout_width="match_parent"
+                        android:focusable="false"
                         android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>

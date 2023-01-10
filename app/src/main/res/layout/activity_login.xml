@@ -30,7 +30,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUser"
-                android:text="DragonForce"
+                android:text="entra"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -53,7 +53,7 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:inputType="textPassword"
-                android:text="contrasena"
+                android:text="123"
                 android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>

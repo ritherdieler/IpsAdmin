@@ -9,10 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentServiceOrderBinding
+import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.SimpleDateFormat
 
 class ServiceOrderFragment : Fragment() {
     lateinit var binding : FragmentServiceOrderBinding
+    var selectedDate:Long =0
     val viewModel: ServiceOrderViewModel by viewModel()
 
 
@@ -27,6 +30,39 @@ class ServiceOrderFragment : Fragment() {
         binding.btRegisterServiceOrder.setOnClickListener{
             registerServiceOrder()
         }
+        binding.etCreateDate.setOnClickListener{
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select date")
+                .build()
+            datePicker
+            datePicker.addOnPositiveButtonClickListener {
+                selectedDate = it
+                val formatter = SimpleDateFormat("dd/MM/yyyy")
+
+
+                val formattedDate = formatter.format(it)
+                binding.etCreateDate.setText(formattedDate)
+            }
+
+            datePicker.show(childFragmentManager,"DatePicker")
+        }
+        binding.etAttentionDate.setOnClickListener{
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select date")
+                .build()
+            datePicker
+            datePicker.addOnPositiveButtonClickListener {
+                selectedDate = it
+                val formatter = SimpleDateFormat("dd/MM/yyyy")
+
+
+                val formattedDate = formatter.format(it)
+                binding.etAttentionDate.setText(formattedDate)
+            }
+
+            datePicker.show(childFragmentManager,"DatePicker")
+        }
+
         return binding.root
     }
 

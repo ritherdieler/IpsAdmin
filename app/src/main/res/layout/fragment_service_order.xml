@@ -65,6 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="@string/fecha_de_creaci_n"
+            android:focusable="false"
             app:layout_constraintBottom_toTopOf="@+id/tlAttentionDate"
             app:layout_constraintEnd_toEndOf="@+id/tlLongitud"
             app:layout_constraintStart_toStartOf="@+id/tlLongitud"
@@ -73,6 +74,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etCreateDate"
                 android:layout_width="match_parent"
+                android:focusable="false"
                 android:layout_height="wrap_content"
                android:inputType="number"/>
 
@@ -86,6 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="@string/fecha_de_atenci_n"
+            android:focusable="false"
             app:layout_constraintBottom_toTopOf="@+id/btRegisterServiceOrder"
             app:layout_constraintEnd_toEndOf="@+id/tlCreateDate"
             app:layout_constraintStart_toStartOf="@+id/tlCreateDate"
@@ -94,6 +97,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAttentionDate"
                 android:layout_width="match_parent"
+                android:focusable="false"
                 android:layout_height="wrap_content"
                 android:inputType="number" />
 

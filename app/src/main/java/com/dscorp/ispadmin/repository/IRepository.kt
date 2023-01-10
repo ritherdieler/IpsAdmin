@@ -22,5 +22,5 @@ interface IRepository {
     suspend fun getPlaces():List<Place>
     suspend fun registerTechnician(registerTechnician: Technician):Technician
     suspend fun registerNapBox(napBox: NapBox): NapBox
-    suspend fun registerServiceOrder(serviceOrden: ServiceOrder): ServiceOrder
+    suspend fun registerServiceOrder(serviceOrder: ServiceOrder): ServiceOrder
 }

@@ -9,10 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
+import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.SimpleDateFormat
 
 class TechnicianFragment : Fragment() {
     lateinit var binding: FragmentTechnicianBinding
+    var selectedDate:Long = 0
     val viewModel: TechnicianViewModel by viewModel()
 
     override fun onCreateView(
@@ -26,6 +29,22 @@ class TechnicianFragment : Fragment() {
 
         binding.btRegisterTechnician.setOnClickListener {
             registerTechnician()
+        }
+        binding.etBirthday.setOnClickListener{
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select date")
+                .build()
+            datePicker
+            datePicker.addOnPositiveButtonClickListener {
+                selectedDate = it
+                val formatter = SimpleDateFormat("dd/MM/yyyy")
+
+
+                val formattedDate = formatter.format(it)
+                binding.etBirthday.setText(formattedDate)
+            }
+
+            datePicker.show(childFragmentManager,"DatePicker")
         }
         return binding.root
     }

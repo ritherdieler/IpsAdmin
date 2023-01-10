@@ -16,7 +16,9 @@ import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
 import com.dscorp.ispadmin.repository.model.NetworkDevice
 import com.dscorp.ispadmin.repository.model.Place
 import com.dscorp.ispadmin.repository.model.Plan
+import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.text.SimpleDateFormat
 
 class SubscriptionFragment : Fragment() {
 
@@ -24,6 +26,7 @@ class SubscriptionFragment : Fragment() {
     var selectedPlan: Plan? = null
     var selectedNetworkDevice: NetworkDevice? = null
     var selectedPlace: Place? = null
+    var selectedDate:Long =0
     val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
@@ -37,6 +40,22 @@ class SubscriptionFragment : Fragment() {
 
         binding.btSubscribirse.setOnClickListener {
             registerSubscription()
+        }
+        binding.etSubscriptionDate.setOnClickListener{
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select date")
+                .build()
+            datePicker
+            datePicker.addOnPositiveButtonClickListener {
+                selectedDate = it
+                val formatter = SimpleDateFormat("dd/MM/yyyy")
+
+
+                val formattedDate = formatter.format(it)
+                binding.etSubscriptionDate.setText(formattedDate)
+            }
+
+            datePicker.show(childFragmentManager,"DatePicker")
         }
         return binding.root
     }
@@ -70,12 +89,12 @@ class SubscriptionFragment : Fragment() {
                 is OnEtSubscriptionDateError -> setSubscriptionDateError(formError)
                 is OnSpnNetworkDeviceError -> setSpnNetworkDeviceError(formError)
                 is OnSpnPlanError -> setSpnPlanError(formError)
-                is OnSpnPlaceError -> setSpnpPlaceError(formError)
+                is OnSpnPlaceError -> setSpnPlaceError(formError)
             }
         }
     }
 
-    private fun setSpnpPlaceError(formError: OnSpnPlaceError) {
+    private fun setSpnPlaceError(formError: OnSpnPlaceError) {
         binding.spnPlace.error = formError.error
     }
 
@@ -126,7 +145,6 @@ class SubscriptionFragment : Fragment() {
         val password = binding.etPassword.text.toString()
         val address = binding.etAddress.text.toString()
         val phoneNumber = binding.etPhone.text.toString()
-        val subscriptionDate = binding.etSubscriptionDate.text.toString()
         val planId = selectedPlan?.id ?: ""
         val networkDeviceId = selectedNetworkDevice?.id ?: ""
         val placeId = selectedPlace?.id ?: ""
@@ -138,7 +156,7 @@ class SubscriptionFragment : Fragment() {
             dni,
             address,
             phoneNumber,
-            subscriptionDate,
+            selectedDate,
             planId,
             networkDeviceId,
             placeId
