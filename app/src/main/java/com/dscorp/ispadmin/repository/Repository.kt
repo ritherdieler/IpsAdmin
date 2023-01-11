@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.repository
 import com.dscorp.ispadmin.repository.model.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import java.lang.reflect.Executable
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -107,11 +108,12 @@ class Repository : IRepository, KoinComponent {
             throw Exception("error en la respuesta")
         }
     }
-     override suspend fun registerTechnician(registerTechnician:Technician):Technician {
+
+    override suspend fun registerTechnician(registerTechnician: Technician): Technician {
         val response = restApiServices.registerTechnician(registerTechnician)
         if (response.code() == 200) {
             return response.body()!!
-        }else{
+        } else {
             throw Exception("Error en el registro")
         }
     }
@@ -125,6 +127,7 @@ class Repository : IRepository, KoinComponent {
             throw Exception("ERROR")
         }
     }
+
     override suspend fun registerServiceOrder(serviceOrder: ServiceOrder): ServiceOrder {
 
         val response = restApiServices.registerServiceOrder(serviceOrder)
@@ -134,4 +137,30 @@ class Repository : IRepository, KoinComponent {
             throw Exception("ERROR")
         }
     }
+
+    override suspend fun getServicesOrder(): List<ServiceOrder> {
+        val response = restApiServices.getServicesOrder()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("ERROR EN LA RESPUESTA")
+        }
+    }
+
+    override suspend fun getTechnicians(): List<Technician> {
+        val response = restApiServices.getTechnicians()
+        if (response.code() == 200) {
+            return response.body()!!
+        }else{
+            throw Exception("Error")
+        }
+    }   override suspend fun getNapBoxes(): List<NapBox> {
+        val response = restApiServices.getNapBoxes()
+        if (response.code() == 200) {
+            return response.body()!!
+        }else{
+            throw Exception("Error")
+        }
+    }
+
 }

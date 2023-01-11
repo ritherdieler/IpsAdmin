@@ -11,6 +11,6 @@ data class ServiceOrder(
     val id: String? = null,
     val latitude: Double,
     val longitude: Double,
-    val createDate: Int,
-    val attentionDate: Int,
+    val createDate: Long,
+    val attentionDate: Long,
 )

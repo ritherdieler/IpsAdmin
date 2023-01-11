@@ -8,8 +8,8 @@ package com.dscorp.ispadmin.presentation.serviceorden
  *
  **/
 sealed class ServiceOrderFormError {
-    class OnEtLatitudError(val error: String) : ServiceOrderFormError()
-    class OnEtLogintudError(val error: String) : ServiceOrderFormError()
+    class OnEtLatitudeError(val error: String) : ServiceOrderFormError()
+    class OnEtLogintudeError(val error: String) : ServiceOrderFormError()
     class OnEtCreateDateError(val error: String) : ServiceOrderFormError()
     class OnEtAttentionDate(val error: String) : ServiceOrderFormError()
 }

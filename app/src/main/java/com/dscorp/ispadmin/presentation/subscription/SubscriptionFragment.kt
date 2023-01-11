@@ -45,7 +45,7 @@ class SubscriptionFragment : Fragment() {
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
                 .build()
-            datePicker
+
             datePicker.addOnPositiveButtonClickListener {
                 selectedDate = it
                 val formatter = SimpleDateFormat("dd/MM/yyyy")

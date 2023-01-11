@@ -29,21 +29,22 @@ class NetworkDeviceViewModel() : ViewModel() {
     ) {
 
         if (name.isEmpty()) {
-            println("Debes escribir un nombre para el dispositivo de red")
             etName.setError("El nombre del dispositivo de red no puede estar vacio")
+            return
         }
         if (password.isEmpty()) {
-            print("debes escribir una contraseña")
             etPassword.setError("La contraseña no puede estar vacia")
+            return
         }
         if (username.isEmpty()) {
-            println("Debes escribir un usuario")
             etUsername.setError("El usuario no puede estar vacio")
+            return
         }
         if (ipaddress.isEmpty()) {
-            println("Debes escribir una direccion de ip")
-            etIpAddress.setError("La direccion de ip no puede estar vacia")
+            etIpAddress.error = "La direccion de ip no puede estar vacia"
+            return
         }
+
         val planObject = NetworkDevice(
             name = name,
             Password = password,

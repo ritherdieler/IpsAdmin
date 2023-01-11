@@ -20,7 +20,7 @@ class NapBoxFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_nap_box, null, true)
-        observeNapBoxNapBoxResponse()
+        observeNapBoxResponse()
         observeNapBoxFormError()
 
         binding.btRegisterNapBox.setOnClickListener {
@@ -38,13 +38,13 @@ class NapBoxFragment : Fragment() {
     private fun observeNapBoxFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is NapBoxFormError.OnEtAbbreviationError -> binding.etAddress.setError(formError.error)
-                is NapBoxFormError.OnEtNameNapBoxError -> binding.etCode.setError(formError.error)
+                is NapBoxFormError.OnEtAbbreviationError -> binding.etAddress.error = formError.error
+                is NapBoxFormError.OnEtNameNapBoxError -> binding.etCode.error =formError.error
             }
         }
     }
 
-    private fun observeNapBoxNapBoxResponse() {
+    private fun observeNapBoxResponse() {
         viewModel.napBoxResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NapBoxResponse.OnError -> showErrorDialog(response.error.message.toString())

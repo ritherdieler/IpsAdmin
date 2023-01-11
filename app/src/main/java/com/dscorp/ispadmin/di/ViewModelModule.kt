@@ -2,14 +2,17 @@ package com.dscorp.ispadmin.di
 
 import com.dscorp.ispadmin.presentation.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.napbox.NapBoxViewModel
+import com.dscorp.ispadmin.presentation.napboxeslist.NapBoxesListViewModel
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceViewModel
 import com.dscorp.ispadmin.presentation.place.PlaceViewModel
 import com.dscorp.ispadmin.presentation.plan.PlanViewModel
 import com.dscorp.ispadmin.presentation.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.serviceorden.ServiceOrderViewModel
+import com.dscorp.ispadmin.presentation.serviceorderlist.ServicesOrderListViewModel
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
 import com.dscorp.ispadmin.presentation.technician.TechnicianViewModel
+import com.dscorp.ispadmin.presentation.technicianslist.TechniciansListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -31,4 +34,7 @@ val viewModelModule = module {
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel() }
     viewModel { ServiceOrderViewModel() }
+    viewModel {ServicesOrderListViewModel()}
+    viewModel {TechniciansListViewModel()}
+    viewModel {NapBoxesListViewModel()}
 }

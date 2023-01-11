@@ -15,14 +15,14 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:id="@+id/tlLatitud"
+            android:id="@+id/tlLatitude"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
             android:hint="@string/latitud"
-            app:layout_constraintBottom_toTopOf="@+id/tlLongitud"
+            app:layout_constraintBottom_toTopOf="@+id/tlLongitude"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +30,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLatitud"
+                android:id="@+id/etLatitude"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"/>
@@ -39,19 +39,19 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlLongitud"
+            android:id="@+id/tlLongitude"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="@string/longitud"
             app:layout_constraintBottom_toTopOf="@+id/tlCreateDate"
-            app:layout_constraintEnd_toEndOf="@+id/tlLatitud"
-            app:layout_constraintStart_toStartOf="@+id/tlLatitud"
-            app:layout_constraintTop_toBottomOf="@+id/tlLatitud">
+            app:layout_constraintEnd_toEndOf="@+id/tlLatitude"
+            app:layout_constraintStart_toStartOf="@+id/tlLatitude"
+            app:layout_constraintTop_toBottomOf="@+id/tlLatitude">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLongitud"
+                android:id="@+id/etLongitude"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal" />
@@ -67,9 +67,9 @@
             android:hint="@string/fecha_de_creaci_n"
             android:focusable="false"
             app:layout_constraintBottom_toTopOf="@+id/tlAttentionDate"
-            app:layout_constraintEnd_toEndOf="@+id/tlLongitud"
-            app:layout_constraintStart_toStartOf="@+id/tlLongitud"
-            app:layout_constraintTop_toBottomOf="@+id/tlLongitud">
+            app:layout_constraintEnd_toEndOf="@+id/tlLongitude"
+            app:layout_constraintStart_toStartOf="@+id/tlLongitude"
+            app:layout_constraintTop_toBottomOf="@+id/tlLongitude">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etCreateDate"

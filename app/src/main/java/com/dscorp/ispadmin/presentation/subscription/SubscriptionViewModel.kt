@@ -30,8 +30,12 @@ class SubscriptionViewModel : ViewModel() {
                 val plansFromRepository = plansJob.await()
                 val placeFromRepository = placeJob.await()
 
-                responseLiveData.postValue(OnFormDataFound(plansFromRepository, devicesFromRepository,
-                    placeFromRepository))
+                responseLiveData.postValue(
+                    OnFormDataFound(
+                        plansFromRepository, devicesFromRepository,
+                        placeFromRepository
+                    )
+                )
 
             } catch (e: Exception) {
                 responseLiveData.postValue(OnError(e))
@@ -51,8 +55,18 @@ class SubscriptionViewModel : ViewModel() {
         networkDeviceId: String,
         placeId: String,
     ) {
-        validateform(firstname, lastname, password, dni, address, phone, subscriptionDate, planId, networkDeviceId,
-            placeId)
+        validateform(
+            firstname,
+            lastname,
+            password,
+            dni,
+            address,
+            phone,
+            subscriptionDate,
+            planId,
+            networkDeviceId,
+            placeId
+        )
     }
 
     private fun sendRegisterSubscriptionToServer(
@@ -84,8 +98,7 @@ class SubscriptionViewModel : ViewModel() {
             try {
 
                 val subscriptionFromRepository = repository.doSubscription(subscriptionObjetct)
-                responseLiveData.postValue(OnSubscriptionRegistered
-                    (subscriptionFromRepository))
+                responseLiveData.postValue(OnSubscriptionRegistered(subscriptionFromRepository))
 
             } catch (error: Exception) {
                 responseLiveData.postValue(OnError(error))
@@ -132,8 +145,12 @@ class SubscriptionViewModel : ViewModel() {
             return
         }
         if (subscriptionDate == 0L) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtSubscriptionDateError("Debes colocar una fecha " +
-                    "de suscripcion"))
+            formErrorLiveData.postValue(
+                SubscriptionFormError.OnEtSubscriptionDateError(
+                    "Debes colocar una fecha " +
+                            "de suscripcion"
+                )
+            )
             return
         }
         if (planId.isEmpty()) {
@@ -141,17 +158,27 @@ class SubscriptionViewModel : ViewModel() {
             return
         }
         if (networkDeviceId.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un " +
-                    "dispositivo de red"))
+            formErrorLiveData.postValue(
+                SubscriptionFormError.OnSpnNetworkDeviceError(
+                    "Debes seleccionar un " +
+                            "dispositivo de red"
+                )
+            )
             return
         }
         if (placeId.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnSpnPlaceError("Debes seleccionar un " +
-                    "lugar"))
+            formErrorLiveData.postValue(
+                SubscriptionFormError.OnSpnPlaceError(
+                    "Debes seleccionar un " +
+                            "lugar"
+                )
+            )
             return
         }
-        sendRegisterSubscriptionToServer(firstname, lastname, dni, password, address, phone, subscriptionDate.toInt(),
-            planId, networkDeviceId, placeId)
+        sendRegisterSubscriptionToServer(
+            firstname, lastname, dni, password, address, phone, subscriptionDate.toInt(),
+            planId, networkDeviceId, placeId
+        )
     }
 }
 

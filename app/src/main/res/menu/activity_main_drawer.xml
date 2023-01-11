@@ -17,10 +17,6 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/menu_subscription" />
         <item
-            android:id="@+id/nav_see_subscriptions"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/menu_see_subscriptions" />
-        <item
             android:id="@+id/nav_to_register"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/registrar_ubicacion" />
@@ -35,7 +31,23 @@
         <item
             android:id="@+id/nav_to_register_service_order"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="Registrar Orden de Servicio" />
+            android:title="@string/registrar_orden_de_servicio" />
+        <item
+            android:id="@+id/nav_see_subscriptions"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/menu_see_subscriptions" />
+        <item
+            android:id="@+id/nav_view_services_order_list"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/ver_orden_de_servicios" />
+        <item
+            android:id="@+id/nav_see_technician_list"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/ver_t_cnicos" />
+        <item
+            android:id="@+id/nav_see_nap_boxes"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Ver Cajas Nap" />
 
     </group>
 </menu>

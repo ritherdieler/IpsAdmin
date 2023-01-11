@@ -14,8 +14,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 
 class ServiceOrderFragment : Fragment() {
-    lateinit var binding : FragmentServiceOrderBinding
-    var selectedDate:Long =0
+    lateinit var binding: FragmentServiceOrderBinding
+    var selectedDate: Long = 0
+    var selectedAttentionDate: Long = 0
     val viewModel: ServiceOrderViewModel by viewModel()
 
 
@@ -23,14 +24,15 @@ class ServiceOrderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater,R.layout.fragment_service_order,null,true)
+        binding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_service_order, null, true)
         observeServiceOrderResponse()
         observeServiceFormError()
 
-        binding.btRegisterServiceOrder.setOnClickListener{
+        binding.btRegisterServiceOrder.setOnClickListener {
             registerServiceOrder()
         }
-        binding.etCreateDate.setOnClickListener{
+        binding.etCreateDate.setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
                 .build()
@@ -38,67 +40,64 @@ class ServiceOrderFragment : Fragment() {
             datePicker.addOnPositiveButtonClickListener {
                 selectedDate = it
                 val formatter = SimpleDateFormat("dd/MM/yyyy")
-
-
                 val formattedDate = formatter.format(it)
                 binding.etCreateDate.setText(formattedDate)
             }
-
-            datePicker.show(childFragmentManager,"DatePicker")
+            datePicker.show(childFragmentManager, "DatePicker")
         }
-        binding.etAttentionDate.setOnClickListener{
+        binding.etAttentionDate.setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
                 .build()
             datePicker
             datePicker.addOnPositiveButtonClickListener {
-                selectedDate = it
+                selectedAttentionDate = it
                 val formatter = SimpleDateFormat("dd/MM/yyyy")
-
-
                 val formattedDate = formatter.format(it)
                 binding.etAttentionDate.setText(formattedDate)
             }
 
-            datePicker.show(childFragmentManager,"DatePicker")
+            datePicker.show(childFragmentManager, "DatePicker")
         }
 
         return binding.root
     }
 
-    private fun observeServiceOrderResponse() { viewModel.serviceOrderResponseLiveData.observe(viewLifecycleOwner){
-            response ->
-            when(response){
-                is ServiceOrderResponse.OnError ->showErrorDialog(response.error.message.toString())
-                is ServiceOrderResponse.OnServiceOrderRegistered ->showSucessDialog(response.serviceOrder.createDate)
+    private fun observeServiceOrderResponse() {
+        viewModel.serviceOrderResponseLiveData.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ServiceOrderResponse.OnError -> showErrorDialog(response.error.message.toString())
+                is ServiceOrderResponse.OnServiceOrderRegistered -> showSucessDialog(response.serviceOrder.createDate)
             }
         }
     }
-    private fun observeServiceFormError() { viewModel.ServiceOrderFormLiveData.observe(viewLifecycleOwner){
-            response ->
-            when(response){
-                is ServiceOrderFormError.OnEtLatitudError->binding.etLatitud.error=response.error
-                is ServiceOrderFormError.OnEtLogintudError ->binding.etLongitud.error=response.error
-                is ServiceOrderFormError.OnEtCreateDateError ->binding.etCreateDate.error=response.error
-                is ServiceOrderFormError.OnEtAttentionDate ->binding.etAttentionDate.error=response.error
 
+    private fun observeServiceFormError() {
+        viewModel.serviceOrderFormErrorLiveData.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ServiceOrderFormError.OnEtLatitudeError -> binding.etLatitude.error =
+                    response.error
+                is ServiceOrderFormError.OnEtLogintudeError -> binding.etLongitude.error =
+                    response.error
+                is ServiceOrderFormError.OnEtCreateDateError -> binding.etCreateDate.error =
+                    response.error
+                is ServiceOrderFormError.OnEtAttentionDate -> binding.etAttentionDate.error =
+                    response.error
             }
         }
     }
 
     private fun registerServiceOrder() {
-        viewModel.registerServiceOrder(
-            binding.etLongitud.text.toString().toDouble(),
-            binding.etLatitud.text.toString().toDouble(),
-            binding.etCreateDate.text.toString().toInt(),
-            binding.etAttentionDate.text.toString().toInt(),
-        )
+        val latitude = binding.etLatitude.text.toString().toDouble()
+        val longitude = binding.etLongitude.text.toString().toDouble()
+
+        viewModel.registerServiceOrder(longitude, latitude, selectedDate, selectedAttentionDate)
     }
 
-    fun showSucessDialog(service_orden: Int) {
+    fun showSucessDialog(service_orden: Long) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Orden de registro registrado con Exito")
-        builder.setMessage(service_orden)
+        builder.setMessage("")
         builder.setPositiveButton("Ok") { p0, p1 ->
         }
         builder.show()
@@ -112,8 +111,4 @@ class ServiceOrderFragment : Fragment() {
         }
         builder.show()
     }
-
-
-
-
 }

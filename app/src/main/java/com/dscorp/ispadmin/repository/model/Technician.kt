@@ -18,5 +18,5 @@ data class Technician(
     val verified: Boolean = false,
     val address:String,
     val phone:String,
-    val birthday:String
+    val birthday:Long
     )

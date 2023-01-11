@@ -57,8 +57,7 @@ class TechnicianFragment : Fragment() {
         val password = binding.etPassword.text.toString()
         val address = binding.etAddress.text.toString()
         val phone = binding.etPhone.text.toString()
-        val birthday = binding.etBirthday.text.toString()
-        viewModel.registerTechnician(firstName,lastName,dni,type,userName,password,address,phone,birthday)
+        viewModel.registerTechnician(firstName,lastName,dni,type,userName,password,address,phone,selectedDate)
     }
 
     private fun observeResponse() {

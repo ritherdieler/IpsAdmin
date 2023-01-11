@@ -33,6 +33,9 @@
     <string name="crear_datos">Crear Datos</string>
     <string name="fecha_de_creaci_n">Fecha de creación</string>
     <string name="fecha_de_atenci_n">Fecha de atención</string>
+    <string name="ver_orden_de_servicios">Ver Orden de Servicios</string>
+    <string name="registrar_orden_de_servicio">Registrar Orden de Servicio</string>
+    <string name="ver_t_cnicos">Ver Técnicos</string>
 
 
 </resources>

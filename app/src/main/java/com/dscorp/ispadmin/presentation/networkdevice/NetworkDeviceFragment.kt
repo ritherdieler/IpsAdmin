@@ -24,7 +24,10 @@ class NetworkDeviceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+/*
      binding = DataBindingUtil.inflate(layoutInflater,R.layout.fragment_network_device,null,true)
+*/
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_network_device, null, true)
 
         binding.btRegisterNetworkDevice.setOnClickListener{
 
@@ -39,8 +42,8 @@ class NetworkDeviceFragment : Fragment() {
     private fun observeNetWorkDeviceResponse() {
          viewModel.networkDeviceResponseLiveData.observe(viewLifecycleOwner){response ->
              when(response){
-                 is NetworkDeviceResponse.OnNetworkDeviceRegistered ->showErrorLiveData(response.networkDevice.name)
-                 is NetworkDeviceResponse.OnError -> showSucessDialog(response.error.message.toString())
+                 is NetworkDeviceResponse.OnNetworkDeviceRegistered ->showSucessDialog(response.networkDevice.name)
+                 is NetworkDeviceResponse.OnError -> showErrorLiveData(response.error.message.toString())
              }
          }
     }
@@ -58,8 +61,8 @@ class NetworkDeviceFragment : Fragment() {
 
     fun showSucessDialog(networkDeviceName:String){
         val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Dispositivo de red registrado correctamente ")
-        builder.setMessage(networkDeviceName)
+        builder.setTitle("Dispositivo $networkDeviceName registrado correctamente.")
+        builder.setMessage("")
         builder.setPositiveButton("ok"){p0,p1->
         }
         builder.show()

@@ -7,7 +7,8 @@ package com.dscorp.ispadmin.presentation.subscription
  * Huacho, Peru.
  *
  **/
-sealed class SubscriptionFormError {
+sealed class
+SubscriptionFormError {
     object OnFirstNameHasNotErrors : SubscriptionFormError()
     class OnEtFirstNameError(val error: String) : SubscriptionFormError()
     class OnEtLastNameError(val error: String) : SubscriptionFormError()
@@ -19,6 +20,5 @@ sealed class SubscriptionFormError {
     class OnSpnPlanError(val error: String) : SubscriptionFormError()
     class OnSpnNetworkDeviceError(val error: String) : SubscriptionFormError()
     class OnSpnPlaceError(val error: String) : SubscriptionFormError()
-
 
 }

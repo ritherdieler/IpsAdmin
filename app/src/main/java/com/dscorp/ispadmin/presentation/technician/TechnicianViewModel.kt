@@ -25,7 +25,7 @@ class TechnicianViewModel : ViewModel() {
         password: String,
         address: String,
         phone: String,
-        birthday: String
+        birthday: Long
     ) {if (firstName.isEmpty()) {
         technicianFromErrorLiveData.postValue(TechnicianFromError.OnEtFirstNameError("El nombre del tecnico no " +
                 "puede estar " +
@@ -75,7 +75,7 @@ class TechnicianViewModel : ViewModel() {
                     "vacio"))
             return
         }
-        if (birthday.isEmpty()) {
+        if (birthday == 0L) {
             technicianFromErrorLiveData.postValue(TechnicianFromError.OnEtBirthdayError("El Cumpleanos no " +
                     "puede estar " +
                     "vacio"))

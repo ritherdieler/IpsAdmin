@@ -8,13 +8,16 @@ import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.napbox.NapBoxFragment
+import com.dscorp.ispadmin.presentation.napboxeslist.NapBoxesListFragment
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFragment
 import com.dscorp.ispadmin.presentation.place.PlaceFragment
 import com.dscorp.ispadmin.presentation.plan.PlanFragment
 import com.dscorp.ispadmin.presentation.serviceorden.ServiceOrderFragment
+import com.dscorp.ispadmin.presentation.serviceorderlist.ServicesOrderListFragment
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionFragment
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment
 import com.dscorp.ispadmin.presentation.technician.TechnicianFragment
+import com.dscorp.ispadmin.presentation.technicianslist.TechniciansListFragment
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -28,7 +31,6 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawer_layout)
         showFirstFragment()
         setNavigationClickListener()
-
     }
 
     private fun setNavigationClickListener() {
@@ -42,6 +44,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_to_register_technician -> showTechnicianFragment()
                 R.id.nav_to_register_nap_box -> showRegisterNapBoxFragment()
                 R.id.nav_to_register_service_order -> showRegisterServiceOrderFragment()
+                R.id.nav_view_services_order_list -> showServicesOrderListFragment()
+                R.id.nav_see_technician_list -> showTechniciansListFragment()
+                R.id.nav_see_nap_boxes -> showNapBoxesListFragment()
             }
             drawerLayout.close()
             true
@@ -109,4 +114,22 @@ class MainActivity : AppCompatActivity() {
             replace<ServiceOrderFragment>(R.id.fragmentContainer)
         }
     }
+    private fun showServicesOrderListFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<ServicesOrderListFragment>(R.id.fragmentContainer)
+        }
+    }
+    private fun showTechniciansListFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<TechniciansListFragment>(R.id.fragmentContainer)
+        }
+    }  private fun showNapBoxesListFragment() {
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace<NapBoxesListFragment>(R.id.fragmentContainer)
+        }
+    }
+
 }
