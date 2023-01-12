@@ -8,8 +8,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.replace
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionsListBinding
+import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragmentDirections.*
 import com.dscorp.ispadmin.repository.model.Subscription
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -54,9 +56,8 @@ class SubscriptionsListFragment : Fragment(),SubscriptionItemClickListener {
     }
     override fun onItemClick(subscription: Subscription) {
         parentFragmentManager.beginTransaction().apply {
-            setReorderingAllowed(true)
-            this.replace(R.id.fragmentContainer,SubscriptionDetailFragment.newInstance(subscription))
-            commit()
+            val destination = subscriptionListToSubscriptionDetail(subscription)
+            findNavController().navigate(destination)
         }
     }
 }

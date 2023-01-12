@@ -13,7 +13,7 @@ import com.dscorp.ispadmin.databinding.FragmentPlanBinding
 import com.dscorp.ispadmin.presentation.plan.PlanFormError.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlanFragment : Fragment() {
+class PlanFragment : Fragment(R.layout.fragment_plan) {
     lateinit var binding : FragmentPlanBinding
     val viewModel: PlanViewModel by viewModel()
 

@@ -54,12 +54,12 @@ class NapBoxesListFragment : Fragment() , OnItemClickListener {
                 if (it.napBoxesList.isNotEmpty()) View.VISIBLE else View.GONE
         }
 
-    override fun onItemClick(napBox: NapBox) {
+    override fun onItemClick(napBox: NapBox) {/*
         parentFragmentManager.beginTransaction().apply {
             setReorderingAllowed(true)
             replace<NapBoxeDetailsFragment>(R.id.fragmentContainer)
-            commit()
+            commit()*/
         }
     }
-}
+
 

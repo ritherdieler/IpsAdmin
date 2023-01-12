@@ -16,7 +16,7 @@ import com.dscorp.ispadmin.databinding.FragmentNetworkDeviceBinding
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFormError.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NetworkDeviceFragment : Fragment() {
+class NetworkDeviceFragment : Fragment(R.layout.fragment_network_device) {
     lateinit var binding: FragmentNetworkDeviceBinding
     val viewModel: NetworkDeviceViewModel by viewModel()
 

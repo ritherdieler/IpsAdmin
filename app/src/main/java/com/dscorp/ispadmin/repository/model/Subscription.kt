@@ -7,7 +7,7 @@ package com.dscorp.ispadmin.repository.model
  * Huacho, Peru.
  *
  **/
-data class Subscription(
+ class Subscription(
     var id: String? = null,
     var code:String? = null,
     var firstName: String,

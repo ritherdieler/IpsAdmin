@@ -13,7 +13,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 
-class TechnicianFragment : Fragment() {
+class TechnicianFragment : Fragment(R.layout.fragment_technician) {
     lateinit var binding: FragmentTechnicianBinding
     var selectedDate: Long = 0
     val viewModel: TechnicianViewModel by viewModel()
@@ -26,6 +26,7 @@ class TechnicianFragment : Fragment() {
 
         observeResponse()
         observeFromError()
+
 
         binding.btRegisterTechnician.setOnClickListener {
             registerTechnician()

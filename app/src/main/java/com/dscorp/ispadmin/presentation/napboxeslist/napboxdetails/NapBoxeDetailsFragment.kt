@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.napboxeslist
+package com.dscorp.ispadmin.presentation.napboxeslist.napboxdetails
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
