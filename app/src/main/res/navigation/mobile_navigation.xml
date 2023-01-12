@@ -64,7 +64,11 @@
         android:id="@+id/nav_see_nap_boxes"
         android:name="com.dscorp.ispadmin.presentation.napboxeslist.NapBoxesListFragment"
         tools:layout="@layout/fragment_nap_boxes_list"
-        android:label="NapBoxesListFragment" />
+        android:label="NapBoxesListFragment" >
+        <action
+            android:id="@+id/action_nav_see_nap_boxes_to_napBoxeDetailsFragment"
+            app:destination="@id/napBoxeDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/fragmentDetail"
         android:name="com.dscorp.ispadmin.presentation.subscriptiondetails.SubscriptionDetailFragment"
@@ -78,6 +82,15 @@
         <action
             android:id="@+id/subscriptionList_to_SubscriptionDetail"
             app:destination="@id/subscriptionDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/napBoxeDetailsFragment"
+        tools:layout="@layout/fragment_nap_box_detail"
+        android:name="com.dscorp.ispadmin.presentation.napboxeslist.napboxdetails.NapBoxDetailsFragment"
+        android:label="NapBoxeDetailsFragment" >
+        <argument
+            android:name="NapBox"
+            app:argType="com.dscorp.ispadmin.repository.model.NapBox" />
     </fragment>
 
 
