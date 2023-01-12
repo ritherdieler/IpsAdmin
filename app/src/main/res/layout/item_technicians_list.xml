@@ -27,7 +27,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="Cliente"
+                android:text="Nombres"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toTopOf="@+id/tvTechnician1"
                 app:layout_constraintEnd_toStartOf="@+id/tvPrueba0Technician"
@@ -40,7 +40,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Plan"
+                android:text="ID"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toTopOf="@id/tvTechnician2"
                 app:layout_constraintEnd_toEndOf="@+id/Technician"
@@ -52,16 +52,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="ip"
+                android:text="Apellido"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                app:layout_constraintBottom_toTopOf="@id/tvTechnicianprueba3"
+                app:layout_constraintBottom_toTopOf="@id/tvTechnician3"
                 app:layout_constraintEnd_toEndOf="@+id/tvTechnician1"
                 app:layout_constraintStart_toStartOf="@+id/tvTechnician1"
                 app:layout_constraintTop_toBottomOf="@id/tvTechnician1" />
 
             <TextView
-
-                android:id="@+id/tvTechnicianprueba3"
+                android:id="@+id/tvTechnician3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -70,7 +69,7 @@
                 app:layout_constraintEnd_toEndOf="@id/tvTechnician2"
                 app:layout_constraintStart_toStartOf="@id/tvTechnician2"
                 app:layout_constraintTop_toBottomOf="@+id/tvTechnician2"
-                tools:text="Lugar" />
+                tools:text="@string/Lugar" />
 
             <TextView
                 android:id="@+id/tvPrueba0Technician"
@@ -85,7 +84,7 @@
                 app:layout_constraintStart_toEndOf="@+id/Technician"
                 app:layout_constraintTop_toTopOf="@+id/Technician"
                 app:layout_constraintVertical_chainStyle="packed"
-                tools:text="saul" />
+                tools:text="name" />
 
             <TextView
                 android:id="@+id/tvPrueba1Technician"
@@ -98,7 +97,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tvPrueba0Technician"
                 app:layout_constraintTop_toTopOf="@+id/tvTechnician1"
                 app:layout_constraintVertical_bias="0.0"
-                tools:text="renato" />
+                tools:text="id" />
 
             <TextView
                 android:id="@+id/tvPrueba2Technician"
@@ -109,18 +108,18 @@
                 app:layout_constraintEnd_toEndOf="@+id/tvPrueba1Technician"
                 app:layout_constraintStart_toStartOf="@+id/tvPrueba1Technician"
                 app:layout_constraintTop_toTopOf="@+id/tvTechnician2"
-                tools:text="vacalola" />
+                tools:text="apellidos" />
 
             <TextView
                 android:id="@+id/tvPrueba3Technician"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tvTechnicianprueba3"
+                app:layout_constraintBottom_toBottomOf="@+id/tvTechnician3"
                 app:layout_constraintEnd_toEndOf="@+id/tvPrueba2Technician"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="@id/tvPrueba2Technician"
-                app:layout_constraintTop_toTopOf="@+id/tvTechnicianprueba3"
+                app:layout_constraintTop_toTopOf="@+id/tvTechnician3"
                 app:layout_constraintVertical_bias="1.0"
                 tools:text="vacalola" />
 

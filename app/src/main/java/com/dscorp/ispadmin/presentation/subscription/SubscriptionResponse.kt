@@ -13,8 +13,13 @@ import com.dscorp.ispadmin.repository.model.Subscription
  *
  **/
 sealed class SubscriptionResponse {
-    class OnFormDataFound(val plans: List<Plan>, val networkDevice: List<NetworkDevice>, val places: List<Place>) :
+    class OnFormDataFound(
+        val plans: List<Plan>,
+        val networkDevice: List<NetworkDevice>,
+        val places: List<Place>
+    ) :
         SubscriptionResponse()
+
     class OnSubscriptionRegistered(val subscription: Subscription) : SubscriptionResponse()
     class OnError(val error: Exception) : SubscriptionResponse()
 }

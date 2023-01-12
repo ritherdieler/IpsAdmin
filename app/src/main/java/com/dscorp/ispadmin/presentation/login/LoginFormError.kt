@@ -9,8 +9,8 @@ import com.dscorp.ispadmin.presentation.plan.PlanFormError
  * Huacho, Peru.
  *
  **/
-sealed class LoginFormError{
-    class OnEtUser(val error: String):LoginFormError()
+sealed class LoginFormError {
+    class OnEtUser(val error: String) : LoginFormError()
     class OnEtPassword(val error: String) : LoginFormError()
 }
 

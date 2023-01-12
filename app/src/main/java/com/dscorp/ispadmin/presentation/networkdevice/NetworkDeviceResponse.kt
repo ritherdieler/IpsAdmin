@@ -10,7 +10,7 @@ import com.dscorp.ispadmin.repository.model.NetworkDevice
  * Huacho, Peru.
  *
  **/
-sealed class NetworkDeviceResponse{
-    class OnNetworkDeviceRegistered(val networkDevice: NetworkDevice):NetworkDeviceResponse()
-    class OnError(val error:Exception):NetworkDeviceResponse()
+sealed class NetworkDeviceResponse {
+    class OnNetworkDeviceRegistered(val networkDevice: NetworkDevice) : NetworkDeviceResponse()
+    class OnError(val error: Exception) : NetworkDeviceResponse()
 }

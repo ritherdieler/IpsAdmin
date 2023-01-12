@@ -9,6 +9,6 @@ package com.dscorp.ispadmin.repository.model
  **/
 data class Loging(
 
-    val username:String,
-    val password:String
+    val username: String,
+    val password: String
 )

@@ -35,7 +35,11 @@ class NapBoxViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val napBoxFromRepository = repository.registerNapBox(napBoxObject)
-                napBoxResponseLiveData.postValue(NapBoxResponse.OnNapBoxRegister(napBoxFromRepository))
+                napBoxResponseLiveData.postValue(
+                    NapBoxResponse.OnNapBoxRegister(
+                        napBoxFromRepository
+                    )
+                )
             } catch (error: Exception) {
                 napBoxResponseLiveData.postValue(NapBoxResponse.OnError(error))
             }

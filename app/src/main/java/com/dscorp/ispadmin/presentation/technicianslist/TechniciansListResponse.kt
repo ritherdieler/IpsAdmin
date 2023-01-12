@@ -9,8 +9,8 @@ import com.dscorp.ispadmin.repository.model.Technician
  * Huacho, Peru.
  *
  **/
-sealed class TechniciansListResponse{
-    class OnTechniciansListFound(val techniciansList :List<Technician>):TechniciansListResponse()
-    class OnError(val error:Exception):TechniciansListResponse()
+sealed class TechniciansListResponse {
+    class OnTechniciansListFound(val techniciansList: List<Technician>) : TechniciansListResponse()
+    class OnError(val error: Exception) : TechniciansListResponse()
 
 }

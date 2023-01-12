@@ -23,4 +23,4 @@ data class Subscription(
     var networkDeviceId: String,
     var placeId:String
 
-)
+):java.io.Serializable

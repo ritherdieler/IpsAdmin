@@ -25,7 +25,11 @@ class NapBoxesListViewModel : ViewModel(), KoinComponent {
     private fun initGetSubscriptions() = viewModelScope.launch {
         try {
             val napBoxesListFromRepository = repository.getNapBoxes()
-            responseLiveData.postValue(NapBoxesListResponse.OnNapBoxesListFound(napBoxesListFromRepository))
+            responseLiveData.postValue(
+                NapBoxesListResponse.OnNapBoxesListFound(
+                    napBoxesListFromRepository
+                )
+            )
         } catch (error: Exception) {
             error.printStackTrace()
             responseLiveData.postValue(NapBoxesListResponse.OnError(error))

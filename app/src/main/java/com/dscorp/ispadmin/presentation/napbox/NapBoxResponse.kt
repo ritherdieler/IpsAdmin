@@ -9,7 +9,7 @@ import com.dscorp.ispadmin.repository.model.NapBox
  * Huacho, Peru.
  *
  **/
-sealed class NapBoxResponse{
-    class OnNapBoxRegister(val napBox: NapBox):NapBoxResponse()
-    class OnError(val error:Exception):NapBoxResponse()
+sealed class NapBoxResponse {
+    class OnNapBoxRegister(val napBox: NapBox) : NapBoxResponse()
+    class OnError(val error: Exception) : NapBoxResponse()
 }

@@ -10,7 +10,7 @@ import com.dscorp.ispadmin.repository.model.*
  * Huacho, Peru.
  *
  **/
-sealed class TechnicianResponse{
+sealed class TechnicianResponse {
 
     class OnTechnicianRegistered(val technician: Technician) : TechnicianResponse()
     class OnError(val error: Exception) : TechnicianResponse()

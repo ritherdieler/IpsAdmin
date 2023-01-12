@@ -26,14 +26,15 @@ class SubscriptionFragment : Fragment() {
     var selectedPlan: Plan? = null
     var selectedNetworkDevice: NetworkDevice? = null
     var selectedPlace: Place? = null
-    var selectedDate:Long =0
+    var selectedDate: Long = 0
     val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscription, null, true)
+        binding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscription, null, true)
 
         observeResponse()
         observeFormError()
@@ -41,7 +42,7 @@ class SubscriptionFragment : Fragment() {
         binding.btSubscribirse.setOnClickListener {
             registerSubscription()
         }
-        binding.etSubscriptionDate.setOnClickListener{
+        binding.etSubscriptionDate.setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
                 .build()
@@ -55,7 +56,7 @@ class SubscriptionFragment : Fragment() {
                 binding.etSubscriptionDate.setText(formattedDate)
             }
 
-            datePicker.show(childFragmentManager,"DatePicker")
+            datePicker.show(childFragmentManager, "DatePicker")
         }
         return binding.root
     }
@@ -191,7 +192,8 @@ class SubscriptionFragment : Fragment() {
     }
 
     private fun setUpNetworkDeviceSpinner(networkDevices: List<NetworkDevice>) {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevices)
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevices)
         binding.etNetworkDevice.setAdapter(adapter)
         binding.etNetworkDevice.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->

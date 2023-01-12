@@ -11,14 +11,14 @@ import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError
  **/
 sealed class TechnicianFromError {
 
-        class OnEtFirstNameError(val error: String) : TechnicianFromError()
-        class OnEtLastNameError(val error: String) : TechnicianFromError()
-        class OnEtDniError(val error: String) : TechnicianFromError()
-        class OnEtTypeError(val error: String) : TechnicianFromError()
-        class OnEtUserNameError(val error: String) : TechnicianFromError()
-        class OnEtPasswordError(val error: String) : TechnicianFromError()
-        class OnEtAddressError(val error: String) : TechnicianFromError()
-        class OnEtPhoneError(val error: String) : TechnicianFromError()
-        class OnEtBirthdayError(val error: String) : TechnicianFromError()
+    class OnEtFirstNameError(val error: String) : TechnicianFromError()
+    class OnEtLastNameError(val error: String) : TechnicianFromError()
+    class OnEtDniError(val error: String) : TechnicianFromError()
+    class OnEtTypeError(val error: String) : TechnicianFromError()
+    class OnEtUserNameError(val error: String) : TechnicianFromError()
+    class OnEtPasswordError(val error: String) : TechnicianFromError()
+    class OnEtAddressError(val error: String) : TechnicianFromError()
+    class OnEtPhoneError(val error: String) : TechnicianFromError()
+    class OnEtBirthdayError(val error: String) : TechnicianFromError()
 }
 

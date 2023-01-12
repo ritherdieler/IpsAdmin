@@ -21,9 +21,9 @@ class ServiceOrderAdapter : RecyclerView.Adapter<ServiceOrderAdapter.ServicesOrd
 
     class ServicesOrderViewHolder(private val binding: ItemServicesOrderBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(serviceOrder:ServiceOrder){
-            binding.tvPrueba0.text = serviceOrder.longitude.toString()
-            binding.tvPrueba1.text = serviceOrder.latitude.toString()
-            binding.tvPrueba3.text = serviceOrder.id
+            binding.tvSeeLongitude.text = serviceOrder.longitude.toString()
+            binding.tvSeeLatitude.text = serviceOrder.latitude.toString()
+            binding.tvSeeId.text = serviceOrder.id
         }
     }
 

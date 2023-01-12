@@ -11,8 +11,8 @@ import java.lang.Error
  * Huacho, Peru.
  *
  **/
-sealed class SubscriptionsListResponse{
-    class OnSubscriptionFound(val subscriptions :List<Subscription>):SubscriptionsListResponse()
-    class OnError(val error:Exception):SubscriptionsListResponse()
+sealed class SubscriptionsListResponse {
+    class OnSubscriptionFound(val subscriptions: List<Subscription>) : SubscriptionsListResponse()
+    class OnError(val error: Exception) : SubscriptionsListResponse()
 
 }

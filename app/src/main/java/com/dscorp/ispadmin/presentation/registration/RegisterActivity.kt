@@ -14,7 +14,6 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var binding: ActivityRegisterBinding
 
 
-
     val viewModel: RegisterViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +23,7 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-       binding.btRegister.setOnClickListener {
+        binding.btRegister.setOnClickListener {
             register()
 
         }
@@ -35,23 +34,23 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun observeRegisterResponse() {
-        viewModel.registerResponseLiveData.observe(this){it ->
-            when(it){
-                is RegisterResponse.OnError ->showErrorDialog(it.error.message.toString())
-                is RegisterResponse.OnRegister ->showSucessDialog(it.register.name.toString())
+        viewModel.registerResponseLiveData.observe(this) { it ->
+            when (it) {
+                is RegisterResponse.OnError -> showErrorDialog(it.error.message.toString())
+                is RegisterResponse.OnRegister -> showSucessDialog(it.register.name.toString())
             }
         }
     }
 
     private fun ObserveRegisterFormError() {
         viewModel.registerFormErrorLiveData.observe(this) { it ->
-        when(it){
-            is RegisterFormError.OnEtFirstNameError -> binding.etFirstName.setError(it.error)
-            is RegisterFormError.OnEtLastNameError -> binding.etLastName.setError(it.error)
-            is RegisterFormError.OnEtPassword1Error -> binding.etPassword1.setError(it.error)
-            is RegisterFormError.OnEtPassword2Error -> binding.etPassword2.setError(it.error)
-            is RegisterFormError.OnEtUserError -> binding.etUser.setError(it.error)
-        }
+            when (it) {
+                is RegisterFormError.OnEtFirstNameError -> binding.etFirstName.setError(it.error)
+                is RegisterFormError.OnEtLastNameError -> binding.etLastName.setError(it.error)
+                is RegisterFormError.OnEtPassword1Error -> binding.etPassword1.setError(it.error)
+                is RegisterFormError.OnEtPassword2Error -> binding.etPassword2.setError(it.error)
+                is RegisterFormError.OnEtUserError -> binding.etUser.setError(it.error)
+            }
         }
     }
 

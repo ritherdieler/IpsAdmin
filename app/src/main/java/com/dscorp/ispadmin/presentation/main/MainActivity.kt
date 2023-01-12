@@ -31,6 +31,11 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawer_layout)
         showFirstFragment()
         setNavigationClickListener()
+        showDetailsFragment()
+    }
+
+    private fun showDetailsFragment() {
+
     }
 
     private fun setNavigationClickListener() {
@@ -108,24 +113,29 @@ class MainActivity : AppCompatActivity() {
             replace<PlaceFragment>(R.id.fragmentContainer)
         }
     }
+
     private fun showRegisterServiceOrderFragment() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<ServiceOrderFragment>(R.id.fragmentContainer)
         }
     }
+
     private fun showServicesOrderListFragment() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<ServicesOrderListFragment>(R.id.fragmentContainer)
         }
     }
+
     private fun showTechniciansListFragment() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<TechniciansListFragment>(R.id.fragmentContainer)
         }
-    }  private fun showNapBoxesListFragment() {
+    }
+
+    private fun showNapBoxesListFragment() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace<NapBoxesListFragment>(R.id.fragmentContainer)

@@ -11,8 +11,8 @@ import com.dscorp.ispadmin.repository.model.Subscription
  * Huacho, Peru.
  *
  **/
-sealed class NapBoxesListResponse{
-    class OnNapBoxesListFound(val napBoxesList :List<NapBox>):NapBoxesListResponse()
-    class OnError(val error:Exception):NapBoxesListResponse()
+sealed class NapBoxesListResponse {
+    class OnNapBoxesListFound(val napBoxesList: List<NapBox>) : NapBoxesListResponse()
+    class OnError(val error: Exception) : NapBoxesListResponse()
 
 }

@@ -7,7 +7,7 @@ package com.dscorp.ispadmin.presentation.place
  * Huacho, Peru.
  *
  **/
-sealed class FormError{
-    class OnEtNamePlaceError(val error:String): FormError()
-    class OnEtAbbreviationError(val error: String): FormError()
+sealed class FormError {
+    class OnEtNamePlaceError(val error: String) : FormError()
+    class OnEtAbbreviationError(val error: String) : FormError()
 }

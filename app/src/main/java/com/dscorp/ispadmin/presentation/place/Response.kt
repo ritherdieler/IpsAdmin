@@ -9,7 +9,7 @@ import com.dscorp.ispadmin.repository.model.Place
  * Huacho, Peru.
  *
  **/
-sealed class Response{
-    class OnPlaceRegister(val place:Place ):Response()
-    class OnError(val error:Exception):Response()
+sealed class Response {
+    class OnPlaceRegister(val place: Place) : Response()
+    class OnError(val error: Exception) : Response()
 }

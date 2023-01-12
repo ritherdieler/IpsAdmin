@@ -7,7 +7,7 @@ package com.dscorp.ispadmin.presentation.registration
  * Huacho, Peru.
  *
  **/
-sealed class RegisterFormError{
+sealed class RegisterFormError {
     class OnEtUserError(val error: String) : RegisterFormError()
     class OnEtFirstNameError(val error: String) : RegisterFormError()
     class OnEtLastNameError(val error: String) : RegisterFormError()

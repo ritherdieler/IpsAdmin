@@ -7,7 +7,7 @@ package com.dscorp.ispadmin.presentation.napbox
  * Huacho, Peru.
  *
  **/
-sealed class NapBoxFormError{
-    class OnEtNameNapBoxError(val error:String): NapBoxFormError()
-    class OnEtAbbreviationError(val error: String): NapBoxFormError()
+sealed class NapBoxFormError {
+    class OnEtNameNapBoxError(val error: String) : NapBoxFormError()
+    class OnEtAbbreviationError(val error: String) : NapBoxFormError()
 }

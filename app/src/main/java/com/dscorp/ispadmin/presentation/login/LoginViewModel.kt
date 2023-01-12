@@ -16,7 +16,7 @@ import org.koin.java.KoinJavaComponent.inject
  * Huacho, Peru.
  *
  **/
-class LoginViewModel: ViewModel() {
+class LoginViewModel : ViewModel() {
     private val repository: IRepository by inject(IRepository::class.java)
     val loginResponseLiveData = MutableLiveData<LoginResponse>()
     val loginFormErrorLiveData = MutableLiveData<LoginFormError>()

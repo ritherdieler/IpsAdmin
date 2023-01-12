@@ -38,8 +38,9 @@ class NapBoxFragment : Fragment() {
     private fun observeNapBoxFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is NapBoxFormError.OnEtAbbreviationError -> binding.etAddress.error = formError.error
-                is NapBoxFormError.OnEtNameNapBoxError -> binding.etCode.error =formError.error
+                is NapBoxFormError.OnEtAbbreviationError -> binding.etAddress.error =
+                    formError.error
+                is NapBoxFormError.OnEtNameNapBoxError -> binding.etCode.error = formError.error
             }
         }
     }

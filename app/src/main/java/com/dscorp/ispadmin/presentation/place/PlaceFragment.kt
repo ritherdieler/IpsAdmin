@@ -33,7 +33,7 @@ class PlaceFragment : Fragment() {
     private fun registerPlace() {
         val namePlace = binding.etNamePlace.text.toString()
         val abbreviation = binding.etAbbreviation.text.toString()
-        viewModel.registerPlace( namePlace,  abbreviation)
+        viewModel.registerPlace(namePlace, abbreviation)
     }
 
     private fun observeFormError() {

@@ -6,13 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.replace
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionsListBinding
+import com.dscorp.ispadmin.repository.model.Subscription
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SubscriptionsListFragment : Fragment() {
+class SubscriptionsListFragment : Fragment(),SubscriptionItemClickListener {
     private lateinit var binding: FragmentSubscriptionsListBinding
     private val viewModel: SubscriptionsListViewModel by viewModel()
 
@@ -20,7 +22,12 @@ class SubscriptionsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscriptions_list, null, true)
+        binding = DataBindingUtil.inflate(
+            layoutInflater,
+            R.layout.fragment_subscriptions_list,
+            null,
+            true
+        )
         observe()
         return binding.root
     }
@@ -38,11 +45,22 @@ class SubscriptionsListFragment : Fragment() {
     }
 
     private fun fillRecycleView(it: SubscriptionsListResponse.OnSubscriptionFound) {
-        val adapter = SubscriptionAdapter()
+        val adapter = SubscriptionAdapter(this)
         adapter.submitList(it.subscriptions)
         binding.rvSubscription.adapter = adapter
 
-        binding.rvSubscription.visibility = if (it.subscriptions.isNotEmpty()) View.VISIBLE else View.GONE
+        binding.rvSubscription.visibility =
+            if (it.subscriptions.isNotEmpty()) View.VISIBLE else View.GONE
+    }
+    override fun onItemClick(subscription: Subscription) {
+        parentFragmentManager.beginTransaction().apply {
+            setReorderingAllowed(true)
+            this.replace(R.id.fragmentContainer,SubscriptionDetailFragment.newInstance(subscription))
+            commit()
+        }
     }
 }
+
+
+
 

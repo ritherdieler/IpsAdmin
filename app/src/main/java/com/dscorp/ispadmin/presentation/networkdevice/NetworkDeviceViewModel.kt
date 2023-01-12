@@ -49,13 +49,16 @@ class NetworkDeviceViewModel() : ViewModel() {
             name = name,
             Password = password,
             username = username,
-            ipAddress = ipaddress)
+            ipAddress = ipaddress
+        )
 
         viewModelScope.launch {
             try {
                 var networkDeviceFromRepository = repository.registerNetworkDevice(planObject)
-                networkDeviceResponseLiveData.postValue(NetworkDeviceResponse.OnNetworkDeviceRegistered
-                    (networkDeviceFromRepository))
+                networkDeviceResponseLiveData.postValue(
+                    NetworkDeviceResponse.OnNetworkDeviceRegistered
+                        (networkDeviceFromRepository)
+                )
             } catch (error: Exception) {
                 networkDeviceResponseLiveData.postValue(NetworkDeviceResponse.OnError(error))
 

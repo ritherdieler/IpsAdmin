@@ -27,10 +27,10 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="Cliente"
+                android:text="Longitude"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toTopOf="@+id/tvServices2"
-                app:layout_constraintEnd_toStartOf="@+id/tvPrueba0"
+                app:layout_constraintEnd_toStartOf="@+id/tvSeeLongitude"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed" />
@@ -40,7 +40,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Plan"
+                android:text="Latitude"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toTopOf="@id/tvServices3"
                 app:layout_constraintEnd_toEndOf="@+id/tvServices"
@@ -73,7 +73,7 @@
                 tools:text="Lugar" />
 
             <TextView
-                android:id="@+id/tvPrueba0"
+                android:id="@+id/tvSeeLongitude"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -88,26 +88,26 @@
                 tools:text="saul" />
 
             <TextView
-                android:id="@+id/tvPrueba1"
+                android:id="@+id/tvSeeLatitude"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="10dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tvServices2"
-                app:layout_constraintEnd_toEndOf="@+id/tvPrueba0"
+                app:layout_constraintEnd_toEndOf="@+id/tvSeeLongitude"
                 app:layout_constraintHorizontal_bias="0.375"
-                app:layout_constraintStart_toStartOf="@+id/tvPrueba0"
+                app:layout_constraintStart_toStartOf="@+id/tvSeeLongitude"
                 app:layout_constraintTop_toTopOf="@+id/tvServices2"
                 app:layout_constraintVertical_bias="0.0"
                 tools:text="renato" />
 
             <TextView
-                android:id="@+id/tvPrueba2"
+                android:id="@+id/tvSeeId"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="10dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tvServices3"
-                app:layout_constraintEnd_toEndOf="@+id/tvPrueba1"
-                app:layout_constraintStart_toStartOf="@+id/tvPrueba1"
+                app:layout_constraintEnd_toEndOf="@+id/tvSeeLatitude"
+                app:layout_constraintStart_toStartOf="@+id/tvSeeLatitude"
                 app:layout_constraintTop_toTopOf="@+id/tvServices3"
                 tools:text="vacalola" />
 
@@ -117,9 +117,9 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/tvServices4"
-                app:layout_constraintEnd_toEndOf="@+id/tvPrueba2"
+                app:layout_constraintEnd_toEndOf="@+id/tvSeeId"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@id/tvPrueba2"
+                app:layout_constraintStart_toStartOf="@id/tvSeeId"
                 app:layout_constraintTop_toTopOf="@+id/tvServices4"
                 app:layout_constraintVertical_bias="1.0"
                 tools:text="vacalola" />

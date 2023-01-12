@@ -20,6 +20,7 @@ class ServicesOrderListViewModel : ViewModel(), KoinComponent {
 
     init {
         initGetSubscriptions()
+        
     }
 
     private fun initGetSubscriptions() = viewModelScope.launch {

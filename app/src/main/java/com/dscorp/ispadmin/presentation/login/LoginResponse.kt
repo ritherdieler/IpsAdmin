@@ -9,7 +9,7 @@ import com.dscorp.ispadmin.repository.model.User
  * Huacho, Peru.
  *
  **/
-sealed class LoginResponse{
-    class OnLoginSucess(val login:User):LoginResponse()
-    class OnError(val error:Exception):LoginResponse()
+sealed class LoginResponse {
+    class OnLoginSucess(val login: User) : LoginResponse()
+    class OnError(val error: Exception) : LoginResponse()
 }

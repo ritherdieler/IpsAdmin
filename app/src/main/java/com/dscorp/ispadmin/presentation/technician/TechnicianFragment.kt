@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 
 class TechnicianFragment : Fragment() {
     lateinit var binding: FragmentTechnicianBinding
-    var selectedDate:Long = 0
+    var selectedDate: Long = 0
     val viewModel: TechnicianViewModel by viewModel()
 
     override fun onCreateView(
@@ -30,7 +30,7 @@ class TechnicianFragment : Fragment() {
         binding.btRegisterTechnician.setOnClickListener {
             registerTechnician()
         }
-        binding.etBirthday.setOnClickListener{
+        binding.etBirthday.setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
                 .build()
@@ -44,10 +44,11 @@ class TechnicianFragment : Fragment() {
                 binding.etBirthday.setText(formattedDate)
             }
 
-            datePicker.show(childFragmentManager,"DatePicker")
+            datePicker.show(childFragmentManager, "DatePicker")
         }
         return binding.root
     }
+
     private fun registerTechnician() {
         val firstName = binding.etFirstName.text.toString()
         val lastName = binding.etLastName.text.toString()
@@ -57,14 +58,24 @@ class TechnicianFragment : Fragment() {
         val password = binding.etPassword.text.toString()
         val address = binding.etAddress.text.toString()
         val phone = binding.etPhone.text.toString()
-        viewModel.registerTechnician(firstName,lastName,dni,type,userName,password,address,phone,selectedDate)
+        viewModel.registerTechnician(
+            firstName,
+            lastName,
+            dni,
+            type,
+            userName,
+            password,
+            address,
+            phone,
+            selectedDate
+        )
     }
 
     private fun observeResponse() {
         viewModel.technicianResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is TechnicianResponse.OnError -> showErrorDialog(response.error.message.toString())
-                is TechnicianResponse.OnTechnicianRegistered ->showSucessDialog(response.technician.name)
+                is TechnicianResponse.OnTechnicianRegistered -> showSucessDialog(response.technician.name)
             }
         }
     }
@@ -78,7 +89,8 @@ class TechnicianFragment : Fragment() {
         builder.show()
     }
 
-    private fun showErrorDialog(error: String) {  val builder = AlertDialog.Builder(requireContext())
+    private fun showErrorDialog(error: String) {
+        val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("El Tenico no fue registrado")
         builder.setMessage(error)
         builder.setPositiveButton("Ok") { p0, p1 ->

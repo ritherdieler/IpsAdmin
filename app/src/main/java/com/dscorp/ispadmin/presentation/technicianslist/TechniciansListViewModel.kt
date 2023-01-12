@@ -21,7 +21,11 @@ class TechniciansListViewModel : ViewModel(), KoinComponent {
     private fun initGetSubscriptions() = viewModelScope.launch {
         try {
             val techniciansListFromRepository = repository.getTechnicians()
-            responseLiveData.postValue(TechniciansListResponse.OnTechniciansListFound(techniciansListFromRepository))
+            responseLiveData.postValue(
+                TechniciansListResponse.OnTechniciansListFound(
+                    techniciansListFromRepository
+                )
+            )
         } catch (error: Exception) {
             error.printStackTrace()
             responseLiveData.postValue(TechniciansListResponse.OnError(error))

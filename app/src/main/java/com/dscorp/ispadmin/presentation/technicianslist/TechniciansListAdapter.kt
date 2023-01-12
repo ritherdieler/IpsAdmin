@@ -7,27 +7,37 @@ import com.dscorp.ispadmin.databinding.ItemTechniciansListBinding
 import com.dscorp.ispadmin.repository.model.Subscription
 import com.dscorp.ispadmin.repository.model.Technician
 
-class TechniciansListAdapter : RecyclerView.Adapter<TechniciansListAdapter.TechniciansListViewHolder>() {
+class TechniciansListAdapter :
+    RecyclerView.Adapter<TechniciansListAdapter.TechniciansListViewHolder>() {
     private var techniciansList: List<Technician> = emptyList()
 
-    fun submitList(techniciansList: List<Technician>){
+    fun submitList(techniciansList: List<Technician>) {
         this.techniciansList = techniciansList
         notifyDataSetChanged()
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TechniciansListViewHolder {
-       return TechniciansListViewHolder(ItemTechniciansListBinding.inflate(LayoutInflater.from(parent.context),parent, false))
+        return TechniciansListViewHolder(
+            ItemTechniciansListBinding.inflate(
+                LayoutInflater.from(
+                    parent.context
+                ), parent, false
+            )
+        )
     }
 
-    class TechniciansListViewHolder(private val binding: ItemTechniciansListBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(techniciansList:Technician) {
+    class TechniciansListViewHolder(private val binding: ItemTechniciansListBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(techniciansList: Technician) {
             binding.tvPrueba0Technician.text = techniciansList.name
-            binding.tvPrueba2Technician.text = techniciansList.lastName
             binding.tvPrueba1Technician.text = techniciansList.id
+            binding.tvPrueba2Technician.text = techniciansList.lastName
+
         }
     }
 
-    override fun onBindViewHolder(holder:TechniciansListViewHolder, position: Int) {
-      holder.bind(techniciansList[position])
+    override fun onBindViewHolder(holder: TechniciansListViewHolder, position: Int) {
+        holder.bind(techniciansList[position])
     }
 
     override fun getItemCount(): Int {

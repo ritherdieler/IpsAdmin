@@ -10,7 +10,7 @@ import java.lang.Error
  * Huacho, Peru.
  *
  **/
-sealed class RegisterResponse{
-    class OnRegister(val register:User):RegisterResponse()
-    class OnError(val error: Exception):RegisterResponse()
+sealed class RegisterResponse {
+    class OnRegister(val register: User) : RegisterResponse()
+    class OnError(val error: Exception) : RegisterResponse()
 }

@@ -16,10 +16,10 @@ import org.koin.java.KoinJavaComponent
  * Huacho, Peru.
  *
  **/
-class RegisterViewModel: ViewModel() {
+class RegisterViewModel : ViewModel() {
     private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
-    val registerResponseLiveData=MutableLiveData<RegisterResponse>()
-    val registerFormErrorLiveData=MutableLiveData<RegisterFormError>()
+    val registerResponseLiveData = MutableLiveData<RegisterResponse>()
+    val registerFormErrorLiveData = MutableLiveData<RegisterFormError>()
     fun validateForm(
         user: String,
         password1: String,
@@ -61,14 +61,18 @@ class RegisterViewModel: ViewModel() {
         val planObject = User(null, firstName, lastName, 0, user, password1, false)
 
         viewModelScope.launch {
-          try {
-              val registerFormRepository = repository.registerUser(planObject)
-              registerResponseLiveData.postValue(RegisterResponse.OnRegister(registerFormRepository))
+            try {
+                val registerFormRepository = repository.registerUser(planObject)
+                registerResponseLiveData.postValue(
+                    RegisterResponse.OnRegister(
+                        registerFormRepository
+                    )
+                )
 
-          }catch (error:Exception){
-              registerResponseLiveData.postValue(RegisterResponse.OnError(error))
+            } catch (error: Exception) {
+                registerResponseLiveData.postValue(RegisterResponse.OnError(error))
 
-          }
+            }
         }
     }
 }
