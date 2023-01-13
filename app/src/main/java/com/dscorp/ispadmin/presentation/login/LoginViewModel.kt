@@ -4,8 +4,8 @@ import android.widget.EditText
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.repository.IRepository
-import com.dscorp.ispadmin.repository.model.Loging
+import com.dscorp.ispadmin.domain.repository.IRepository
+import com.dscorp.ispadmin.domain.entity.Loging
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 

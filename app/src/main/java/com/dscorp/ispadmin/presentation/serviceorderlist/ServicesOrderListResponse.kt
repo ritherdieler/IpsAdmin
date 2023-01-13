@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.serviceorderlist
 
-import com.dscorp.ispadmin.repository.model.ServiceOrder
-import com.dscorp.ispadmin.repository.model.Subscription
+import com.dscorp.ispadmin.domain.entity.ServiceOrder
 
 /**
  * Created by Sergio Carrillo Diestra on 19/12/2022.

@@ -6,13 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.replace
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxesListBinding
-import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragmentDirections
-import com.dscorp.ispadmin.repository.model.NapBox
+import com.dscorp.ispadmin.domain.entity.NapBox
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -59,8 +57,7 @@ class NapBoxesListFragment : Fragment() , OnItemClickListener {
     override fun onItemClick(napBox: NapBox) {
         parentFragmentManager.beginTransaction().apply {
             val destination =
-                NapBoxesListFragmentDirections.actionNavSeeNapBoxesToNapBoxeDetailsFragment(
-                    napBox
+                NapBoxesListFragmentDirections.actionNavSeeNapBoxesToNapBoxeDetailsFragment(napBox
                 )
             findNavController().navigate(destination)
         }

@@ -9,9 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxDetailBinding
-import com.dscorp.ispadmin.databinding.FragmentNapBoxesListBinding
-import com.dscorp.ispadmin.databinding.FragmentSubscriptionDetailBinding
-import com.dscorp.ispadmin.repository.model.NapBox
+import com.dscorp.ispadmin.domain.entity.NapBox
 
 class NapBoxDetailsFragment : Fragment() {
 

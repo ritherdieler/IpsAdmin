@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.napboxeslist
 
-import com.dscorp.ispadmin.repository.model.NapBox
+import com.dscorp.ispadmin.domain.entity.NapBox
 
 interface OnItemClickListener {
         fun onItemClick(napBox: NapBox)

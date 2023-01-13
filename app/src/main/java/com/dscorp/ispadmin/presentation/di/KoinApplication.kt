@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.di
+package com.dscorp.ispadmin.presentation.di
 
 import android.app.Application
 import org.koin.android.ext.koin.androidContext

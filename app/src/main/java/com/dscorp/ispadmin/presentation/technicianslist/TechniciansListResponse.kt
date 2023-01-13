@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.technicianslist
 
-import com.dscorp.ispadmin.repository.model.Technician
+import com.dscorp.ispadmin.domain.entity.Technician
 
 /**
  * Created by Sergio Carrillo Diestra on 19/12/2022.

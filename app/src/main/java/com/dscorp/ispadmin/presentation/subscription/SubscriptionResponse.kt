@@ -1,9 +1,9 @@
 package com.dscorp.ispadmin.presentation.subscription
 
-import com.dscorp.ispadmin.repository.model.NetworkDevice
-import com.dscorp.ispadmin.repository.model.Place
-import com.dscorp.ispadmin.repository.model.Plan
-import com.dscorp.ispadmin.repository.model.Subscription
+import com.dscorp.ispadmin.domain.entity.NetworkDevice
+import com.dscorp.ispadmin.domain.entity.Place
+import com.dscorp.ispadmin.domain.entity.Plan
+import com.dscorp.ispadmin.domain.entity.Subscription
 
 /**
  * Created by Sergio Carrillo Diestra on 13/12/2022.

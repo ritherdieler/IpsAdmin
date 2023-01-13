@@ -3,8 +3,7 @@ package com.dscorp.ispadmin
 import android.app.Application
 import com.dscorp.ispadmin.mockdata.subscriptionListMock
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
-import com.dscorp.ispadmin.repository.IRepository
-import com.dscorp.ispadmin.repository.Repository
+import com.dscorp.ispadmin.domain.repository.IRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -13,7 +12,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 
 /**

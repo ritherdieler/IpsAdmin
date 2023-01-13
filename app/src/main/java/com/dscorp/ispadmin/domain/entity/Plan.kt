@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.repository.model
+package com.dscorp.ispadmin.domain.entity
 
 /**
  * Created by Sergio Carrillo Diestra on 23/11/2022.

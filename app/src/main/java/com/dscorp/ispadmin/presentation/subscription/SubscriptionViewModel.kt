@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
-import com.dscorp.ispadmin.repository.IRepository
-import com.dscorp.ispadmin.repository.model.Subscription
+import com.dscorp.ispadmin.domain.repository.IRepository
+import com.dscorp.ispadmin.domain.entity.Subscription
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent

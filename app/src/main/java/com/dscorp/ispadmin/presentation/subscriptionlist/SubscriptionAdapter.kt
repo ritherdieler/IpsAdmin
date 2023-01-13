@@ -3,7 +3,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemSubscriptionBinding
-import com.dscorp.ispadmin.repository.model.Subscription
+import com.dscorp.ispadmin.domain.entity.Subscription
 
 class SubscriptionAdapter(val listener: SubscriptionsListFragment): RecyclerView.Adapter<SubscriptionAdapter.SubscriptionListViewHolder>() {
     private var subscriptionList:List<Subscription> = emptyList()
@@ -25,7 +25,7 @@ class SubscriptionAdapter(val listener: SubscriptionsListFragment): RecyclerView
 
     class SubscriptionListViewHolder(private val binding: ItemSubscriptionBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(subscription:Subscription) {
+        fun bind(subscription: Subscription) {
             binding.tvSeePlanId.text = subscription.code
             binding.tvSeeFirstName.text = subscription.address
             binding.tvSeeId.text = subscription.id

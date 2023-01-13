@@ -48,7 +48,7 @@
         android:label="SubscriptionDetailFragment" >
         <argument
             android:name="subscription"
-            app:argType="com.dscorp.ispadmin.repository.model.Subscription" />
+            app:argType="com.dscorp.ispadmin.domain.entity.Subscription" />
     </fragment>
     <fragment
         android:id="@+id/nav_view_services_order_list"
@@ -90,7 +90,7 @@
         android:label="NapBoxeDetailsFragment" >
         <argument
             android:name="NapBox"
-            app:argType="com.dscorp.ispadmin.repository.model.NapBox" />
+            app:argType="com.dscorp.ispadmin.domain.entity.NapBox" />
     </fragment>
 
 

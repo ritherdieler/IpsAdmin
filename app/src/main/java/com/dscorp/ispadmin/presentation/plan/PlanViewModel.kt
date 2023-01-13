@@ -3,9 +3,8 @@ package com.dscorp.ispadmin.presentation.plan
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.repository.IRepository
-import com.dscorp.ispadmin.repository.Repository
-import com.dscorp.ispadmin.repository.model.Plan
+import com.dscorp.ispadmin.domain.repository.IRepository
+import com.dscorp.ispadmin.domain.entity.Plan
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 

@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.plan
 
-import com.dscorp.ispadmin.repository.model.Plan
+import com.dscorp.ispadmin.domain.entity.Plan
 
 /**
  * Created by Sergio Carrillo Diestra on 14/12/2022.
@@ -10,6 +10,6 @@ import com.dscorp.ispadmin.repository.model.Plan
  *
  **/
 sealed class PlanResponse{
-    class OnPlanRegistered(val plan :Plan):PlanResponse()
+    class OnPlanRegistered(val plan : Plan):PlanResponse()
     class OnError(val error:Exception):PlanResponse()
 }

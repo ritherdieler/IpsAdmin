@@ -1,8 +1,6 @@
 package com.dscorp.ispadmin.presentation.subscriptionlist
 
-import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse
-import com.dscorp.ispadmin.repository.model.Subscription
-import java.lang.Error
+import com.dscorp.ispadmin.domain.entity.Subscription
 
 /**
  * Created by Sergio Carrillo Diestra on 19/12/2022.

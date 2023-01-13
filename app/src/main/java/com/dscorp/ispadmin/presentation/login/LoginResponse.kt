@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.login
 
-import com.dscorp.ispadmin.repository.model.User
+import com.dscorp.ispadmin.domain.entity.User
 
 /**
  * Created by Sergio Carrillo Diestra on 14/12/2022.

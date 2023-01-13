@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListResponse.OnError
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListResponse.OnSubscriptionFound
-import com.dscorp.ispadmin.repository.IRepository
-import com.dscorp.ispadmin.repository.Repository
+import com.dscorp.ispadmin.domain.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

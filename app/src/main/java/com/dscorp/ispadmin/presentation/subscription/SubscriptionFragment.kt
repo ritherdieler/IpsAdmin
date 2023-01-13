@@ -13,9 +13,9 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
-import com.dscorp.ispadmin.repository.model.NetworkDevice
-import com.dscorp.ispadmin.repository.model.Place
-import com.dscorp.ispadmin.repository.model.Plan
+import com.dscorp.ispadmin.domain.entity.NetworkDevice
+import com.dscorp.ispadmin.domain.entity.Place
+import com.dscorp.ispadmin.domain.entity.Plan
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat

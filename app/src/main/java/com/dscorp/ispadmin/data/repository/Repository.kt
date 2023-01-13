@@ -1,9 +1,10 @@
-package com.dscorp.ispadmin.repository
+package com.dscorp.ispadmin.data.repository
 
-import com.dscorp.ispadmin.repository.model.*
+import com.dscorp.ispadmin.data.api.RestApiServices
+import com.dscorp.ispadmin.domain.entity.*
+import com.dscorp.ispadmin.domain.repository.IRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.lang.reflect.Executable
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.

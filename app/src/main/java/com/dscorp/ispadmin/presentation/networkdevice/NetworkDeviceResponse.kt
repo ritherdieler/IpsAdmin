@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.networkdevice
 
-import com.dscorp.ispadmin.presentation.plan.PlanResponse
-import com.dscorp.ispadmin.repository.model.NetworkDevice
+import com.dscorp.ispadmin.domain.entity.NetworkDevice
 
 /**
  * Created by Sergio Carrillo Diestra on 16/12/2022.

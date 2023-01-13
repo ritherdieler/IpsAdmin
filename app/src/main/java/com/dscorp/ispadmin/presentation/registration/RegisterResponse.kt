@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.registration
 
-import com.dscorp.ispadmin.repository.model.User
-import java.lang.Error
+import com.dscorp.ispadmin.domain.entity.User
 
 /**
  * Created by Sergio Carrillo Diestra on 16/12/2022.

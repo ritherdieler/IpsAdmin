@@ -1,7 +1,6 @@
-package com.dscorp.ispadmin.repository
+package com.dscorp.ispadmin.data.api
 
-import android.app.Service
-import com.dscorp.ispadmin.repository.model.*
+import com.dscorp.ispadmin.domain.entity.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -54,10 +53,13 @@ interface RestApiServices {
 
     @POST("service-order")
     suspend fun registerServiceOrder(@Body serviceOrder: ServiceOrder): Response<ServiceOrder>
+
     @GET("service-order")
     suspend fun getServicesOrder(): Response<List<ServiceOrder>>
+
     @GET("technician")
     suspend fun getTechnicians(): Response<List<Technician>>
+
     @GET("napbox")
     suspend fun getNapBoxes(): Response<List<NapBox>>
 }

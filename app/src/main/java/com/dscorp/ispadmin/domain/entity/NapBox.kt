@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.repository.model
+package com.dscorp.ispadmin.domain.entity
 
  class NapBox(
     val id: String? = null,

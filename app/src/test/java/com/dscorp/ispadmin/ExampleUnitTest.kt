@@ -10,7 +10,7 @@ import com.dscorp.ispadmin.mockdata.subscriptionListMock
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListResponse.*
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
-import com.dscorp.ispadmin.repository.IRepository
+import com.dscorp.ispadmin.domain.repository.IRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest

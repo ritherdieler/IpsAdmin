@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.di
+package com.dscorp.ispadmin.presentation.di
 
 import com.dscorp.ispadmin.presentation.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.napbox.NapBoxViewModel

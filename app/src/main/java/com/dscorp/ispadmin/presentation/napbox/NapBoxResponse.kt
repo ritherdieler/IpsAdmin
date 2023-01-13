@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.napbox
 
-import com.dscorp.ispadmin.repository.model.NapBox
+import com.dscorp.ispadmin.domain.entity.NapBox
 
 /**
  * Created by Sergio Carrillo Diestra on 20/12/2022.

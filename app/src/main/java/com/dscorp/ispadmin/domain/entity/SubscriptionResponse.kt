@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.repository.model
+package com.dscorp.ispadmin.domain.entity
 
 data class SubscriptionResponse(
     val address: String,
@@ -13,6 +13,6 @@ data class SubscriptionResponse(
     val phone: String,
     val place: Place,
     val plan: Plan,
-    val serviceOrder:ServiceOrder,
+    val serviceOrder: ServiceOrder,
     val serviceIsSuspended: Boolean
 )

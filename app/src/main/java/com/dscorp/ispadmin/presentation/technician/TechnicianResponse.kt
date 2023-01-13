@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.technician
 
-import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse
-import com.dscorp.ispadmin.repository.model.*
+import com.dscorp.ispadmin.domain.entity.Technician
 
 /**
  * Created by Sergio Carrillo Diestra on 26/12/2022.

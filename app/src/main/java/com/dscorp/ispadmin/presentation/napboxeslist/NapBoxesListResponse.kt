@@ -1,8 +1,6 @@
 package com.dscorp.ispadmin.presentation.napboxeslist
 
-import com.dscorp.ispadmin.repository.model.NapBox
-import com.dscorp.ispadmin.repository.model.ServiceOrder
-import com.dscorp.ispadmin.repository.model.Subscription
+import com.dscorp.ispadmin.domain.entity.NapBox
 
 /**
  * Created by Sergio Carrillo Diestra on 19/12/2022.

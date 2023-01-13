@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.di
+package com.dscorp.ispadmin.presentation.di
 
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient

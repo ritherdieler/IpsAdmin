@@ -3,7 +3,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemNapBoxesListBinding
-import com.dscorp.ispadmin.repository.model.NapBox
+import com.dscorp.ispadmin.domain.entity.NapBox
 
 class NapBoxesAdapter (val listener: OnItemClickListener): RecyclerView.Adapter<NapBoxesAdapter.NapBoxesListViewHolder>() {
     private var napBoxesList: List<NapBox> = emptyList()

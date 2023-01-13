@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.place
 
-import com.dscorp.ispadmin.repository.model.Place
+import com.dscorp.ispadmin.domain.entity.Place
 
 /**
  * Created by Sergio Carrillo Diestra on 20/12/2022.

@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.mockdata
 
-import com.dscorp.ispadmin.repository.model.Subscription
+import com.dscorp.ispadmin.domain.entity.Subscription
 
 /**
  * Created by Sergio Carrillo Diestra on 21/12/2022.
@@ -10,7 +10,8 @@ import com.dscorp.ispadmin.repository.model.Subscription
  *
  **/
 
-val subscriptionListMock = listOf(Subscription(
+val subscriptionListMock = listOf(
+    Subscription(
     id = "123",
     code = "123",
     firstName = "Sergio",
@@ -24,4 +25,5 @@ val subscriptionListMock = listOf(Subscription(
     serviceIsSuspended = true,
     planId = "1",
     networkDeviceId = "1",
-    placeId = "1"))
+    placeId = "1")
+)

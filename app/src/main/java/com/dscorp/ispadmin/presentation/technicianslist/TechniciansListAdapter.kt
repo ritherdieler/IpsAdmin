@@ -4,8 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemTechniciansListBinding
-import com.dscorp.ispadmin.repository.model.Subscription
-import com.dscorp.ispadmin.repository.model.Technician
+import com.dscorp.ispadmin.domain.entity.Technician
 
 class TechniciansListAdapter :
     RecyclerView.Adapter<TechniciansListAdapter.TechniciansListViewHolder>() {

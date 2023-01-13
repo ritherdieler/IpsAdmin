@@ -1,6 +1,6 @@
-package com.dscorp.ispadmin.repository
+package com.dscorp.ispadmin.domain.repository
 
-import com.dscorp.ispadmin.repository.model.*
+import com.dscorp.ispadmin.domain.entity.*
 
 /**
  * Created by Sergio Carrillo Diestra on 25/12/2022.
@@ -20,7 +20,7 @@ interface IRepository {
     suspend fun getSubscriptions(): List<Subscription>
     suspend fun registerPlace(registerPlace: Place): Place
     suspend fun getPlaces():List<Place>
-    suspend fun registerTechnician(registerTechnician: Technician):Technician
+    suspend fun registerTechnician(registerTechnician: Technician): Technician
     suspend fun registerNapBox(napBox: NapBox): NapBox
     suspend fun registerServiceOrder(serviceOrder: ServiceOrder): ServiceOrder
     suspend fun getServicesOrder():List<ServiceOrder>

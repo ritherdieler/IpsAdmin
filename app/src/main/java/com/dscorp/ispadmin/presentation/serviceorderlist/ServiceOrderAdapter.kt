@@ -4,15 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemServicesOrderBinding
-import com.dscorp.ispadmin.databinding.ItemSubscriptionBinding
-import com.dscorp.ispadmin.repository.model.ServiceOrder
-import com.dscorp.ispadmin.repository.model.Subscription
+import com.dscorp.ispadmin.domain.entity.ServiceOrder
 
 class ServiceOrderAdapter : RecyclerView.Adapter<ServiceOrderAdapter.ServicesOrderViewHolder>() {
-    private var servicesOrder: List<ServiceOrder> = emptyList()
+    private var servicesOrderList: List<ServiceOrder> = emptyList()
 
     fun submitList(servicesOrder: List<ServiceOrder>){
-        this.servicesOrder = servicesOrder
+        this.servicesOrderList = servicesOrder
         notifyDataSetChanged()
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServicesOrderViewHolder {
@@ -20,7 +18,7 @@ class ServiceOrderAdapter : RecyclerView.Adapter<ServiceOrderAdapter.ServicesOrd
     }
 
     class ServicesOrderViewHolder(private val binding: ItemServicesOrderBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(serviceOrder:ServiceOrder){
+        fun bind(serviceOrder: ServiceOrder){
             binding.tvSeeLongitude.text = serviceOrder.longitude.toString()
             binding.tvSeeLatitude.text = serviceOrder.latitude.toString()
             binding.tvSeeId.text = serviceOrder.id
@@ -28,11 +26,11 @@ class ServiceOrderAdapter : RecyclerView.Adapter<ServiceOrderAdapter.ServicesOrd
     }
 
     override fun onBindViewHolder(holder: ServicesOrderViewHolder, position: Int) {
-      holder.bind(servicesOrder[position])
+      holder.bind(servicesOrderList[position])
     }
 
     override fun getItemCount(): Int {
-        return servicesOrder.size
+        return servicesOrderList.size
     }
 
 }
