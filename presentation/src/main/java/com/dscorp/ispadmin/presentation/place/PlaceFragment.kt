@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlaceBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,7 +19,7 @@ class PlaceFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_place, null, true)
         observePlaceResponse()
         observeFormError()
@@ -27,8 +27,12 @@ class PlaceFragment : Fragment() {
         binding.btRegisterPlace.setOnClickListener {
             registerPlace()
         }
+        binding.tlLocation.setOnClickListener {
+            findNavController().navigate(PlaceFragmentDirections.actionNavRegisterPlaceToMapDialog())
+        }
         return binding.root
     }
+
 
     private fun registerPlace() {
         val namePlace = binding.etNamePlace.text.toString()
@@ -39,8 +43,8 @@ class PlaceFragment : Fragment() {
     private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is FormError.OnEtAbbreviationError -> binding.etAbbreviation.setError(formError.error)
-                is FormError.OnEtNamePlaceError -> binding.etNamePlace.setError(formError.error)
+                is FormError.OnEtAbbreviationError -> binding.etAbbreviation.error = formError.error
+                is FormError.OnEtNamePlaceError -> binding.etNamePlace.error = formError.error
             }
         }
     }
@@ -49,12 +53,12 @@ class PlaceFragment : Fragment() {
         viewModel.placeResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Response.OnError -> showErrorDialog(response.error.message.toString())
-                is Response.OnPlaceRegister -> showSucessDialog(response.place.name)
+                is Response.OnPlaceRegister -> showSuccessDialog(response.place.name)
             }
         }
     }
 
-    private fun showSucessDialog(place: String) {
+    private fun showSuccessDialog(place: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Lugar registrado con exito")
         builder.setMessage(place)

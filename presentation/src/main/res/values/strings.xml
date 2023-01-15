@@ -39,6 +39,8 @@
     <string name="Lugar">Lugar</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="location">Ubicación</string>
+    <string name="register">Registrar</string>
 
 
 </resources>

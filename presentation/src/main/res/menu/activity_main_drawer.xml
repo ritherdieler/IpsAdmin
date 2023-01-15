@@ -17,7 +17,7 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/menu_subscription" />
         <item
-            android:id="@+id/nav_to_register"
+            android:id="@+id/nav_register_place"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/registrar_ubicacion" />
         <item

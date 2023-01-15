@@ -21,10 +21,14 @@
         tools:layout="@layout/fragment_subscription"
         android:label="SubscriptionFragment" />
     <fragment
-        android:id="@+id/nav_to_register"
+        android:id="@+id/nav_register_place"
         android:name="com.dscorp.ispadmin.presentation.place.PlaceFragment"
         tools:layout="@layout/fragment_place"
-        android:label="PlaceFragment" />
+        android:label="PlaceFragment" >
+        <action
+            android:id="@+id/action_nav_register_place_to_mapDialog"
+            app:destination="@id/mapDialog" />
+    </fragment>
     <fragment
         android:id="@+id/nav_to_register_technician"
         android:name="com.dscorp.ispadmin.presentation.technician.TechnicianFragment"
@@ -92,6 +96,11 @@
             android:name="NapBox"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBox" />
     </fragment>
+    <dialog
+        android:id="@+id/mapDialog"
+        tools:layout="@layout/dialog_map"
+        android:name="com.dscorp.ispadmin.presentation.util.MapDialog"
+        android:label="MapDialog" />
 
 
 </navigation>

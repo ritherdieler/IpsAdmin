@@ -18,13 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="35dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="35dp"
             android:hint="Nombre"
             app:layout_constraintBottom_toTopOf="@+id/tlAbbreviation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.52"
             app:layout_constraintVertical_chainStyle="packed">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -41,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Abreviatura"
-            app:layout_constraintBottom_toTopOf="@+id/btRegisterPlace"
+            app:layout_constraintBottom_toTopOf="@+id/tlLocation"
             app:layout_constraintEnd_toEndOf="@+id/tlNamePlace"
             app:layout_constraintStart_toStartOf="@+id/tlNamePlace"
             app:layout_constraintTop_toBottomOf="@+id/tlNamePlace">
@@ -53,16 +54,36 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlLocation"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="@string/location"
+            app:layout_constraintBottom_toTopOf="@+id/btRegisterPlace"
+            app:layout_constraintEnd_toEndOf="@+id/tlNamePlace"
+            app:layout_constraintStart_toStartOf="@+id/tlNamePlace"
+            app:layout_constraintTop_toBottomOf="@+id/tlAbbreviation">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <Button
             android:id="@+id/btRegisterPlace"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="REGISTRAR"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="32dp"
+            android:text="@string/register"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/tlAbbreviation"
             app:layout_constraintStart_toStartOf="@+id/tlAbbreviation"
-            app:layout_constraintTop_toBottomOf="@+id/tlAbbreviation" />
+            app:layout_constraintTop_toBottomOf="@+id/tlLocation" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

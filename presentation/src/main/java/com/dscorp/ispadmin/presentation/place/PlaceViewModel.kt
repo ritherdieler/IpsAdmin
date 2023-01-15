@@ -31,7 +31,7 @@ class PlaceViewModel : ViewModel() {
 
         val placeObject = Place(
             abbreviation = abbreviation,
-            name = namePlace
+            name = namePlace,
         )
 
         viewModelScope.launch {

@@ -9,8 +9,9 @@ package com.example.cleanarchitecture.domain.domain.entity
  **/
 data class Place(
     val id: String? = null,
-    val abbreviation: String,
-    val name: String,
+    val abbreviation: String = "",
+    val name: String = "",
+    val geoLocation: GeoLocation? = null,
 ) {
     override fun toString(): String {
         return name
