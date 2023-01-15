@@ -60,6 +60,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:focusable="false"
             android:hint="@string/location"
             app:layout_constraintBottom_toTopOf="@+id/btRegisterPlace"
             app:layout_constraintEnd_toEndOf="@+id/tlNamePlace"
@@ -69,7 +70,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLocation"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:focusable="false" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -4,7 +4,7 @@
     package="com.dscorp.ispadmin">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:name=".presentation.di.KoinApplication"
         android:allowBackup="true"
@@ -35,6 +35,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--        google maps-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDDBKY6nbP_py1llBqM0rjE32uN5gNPd-U" />
+
     </application>
 
 </manifest>

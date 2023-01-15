@@ -100,7 +100,11 @@
         android:id="@+id/mapDialog"
         tools:layout="@layout/dialog_map"
         android:name="com.dscorp.ispadmin.presentation.util.MapDialog"
-        android:label="MapDialog" />
+        android:label="MapDialog" >
+        <action
+            android:id="@+id/action_mapDialog_to_nav_register_place"
+            app:destination="@id/nav_register_place" />
+    </dialog>
 
 
 </navigation>
