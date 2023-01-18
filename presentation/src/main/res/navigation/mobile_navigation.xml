@@ -19,7 +19,11 @@
         android:id="@+id/nav_subscription"
         android:name="com.dscorp.ispadmin.presentation.subscription.SubscriptionFragment"
         tools:layout="@layout/fragment_subscription"
-        android:label="SubscriptionFragment" />
+        android:label="SubscriptionFragment" >
+        <action
+            android:id="@+id/action_nav_subscription_to_mapDialogSubscription"
+            app:destination="@id/mapDialogSubscription" />
+    </fragment>
     <fragment
         android:id="@+id/nav_register_place"
         android:name="com.dscorp.ispadmin.presentation.place.PlaceFragment"
@@ -38,7 +42,11 @@
         android:id="@+id/nav_to_register_nap_box"
         android:name="com.dscorp.ispadmin.presentation.napbox.NapBoxFragment"
         tools:layout="@layout/fragment_nap_box"
-        android:label="NapBoxFragment" />
+        android:label="NapBoxFragment" >
+        <action
+            android:id="@+id/action_nav_to_register_nap_box_to_mapDialogNapBox"
+            app:destination="@id/mapDialogNapBox" />
+    </fragment>
     <fragment
         android:id="@+id/nav_to_register_service_order"
         android:name="com.dscorp.ispadmin.presentation.serviceorden.ServiceOrderFragment"
@@ -105,6 +113,16 @@
             android:id="@+id/action_mapDialog_to_nav_register_place"
             app:destination="@id/nav_register_place" />
     </dialog>
+    <dialog
+        android:id="@+id/mapDialogNapBox"
+        tools:layout="@layout/dialog_map_nap_box"
+        android:name="com.dscorp.ispadmin.presentation.util.MapDialogNapBox"
+        android:label="MapDialogNapBox" />
+    <dialog
+        android:id="@+id/mapDialogSubscription"
+        tools:layout="@layout/dialog_map_subscription"
+        android:name="com.dscorp.ispadmin.presentation.util.MapDialogSubscription"
+        android:label="MapDialogSubscription" />
 
 
 </navigation>

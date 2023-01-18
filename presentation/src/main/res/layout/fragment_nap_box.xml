@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="@string/direccion"
-            app:layout_constraintBottom_toTopOf="@+id/btRegisterNapBox"
+            app:layout_constraintBottom_toTopOf="@+id/tlLocationNapBox"
             app:layout_constraintEnd_toEndOf="@+id/tlCode"
             app:layout_constraintStart_toStartOf="@+id/tlCode"
             app:layout_constraintTop_toBottomOf="@+id/tlCode">
@@ -49,6 +49,26 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAddress"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlLocationNapBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:layout_marginTop="20dp"
+            android:hint="@string/ubicaci_n"
+            app:layout_constraintBottom_toTopOf="@+id/btRegisterNapBox"
+            app:layout_constraintEnd_toEndOf="@+id/tlAddress"
+            app:layout_constraintStart_toStartOf="@+id/tlAddress"
+            app:layout_constraintTop_toBottomOf="@+id/tlAddress">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLocationNapBox"
+                android:layout_width="match_parent"
+                android:focusable="false"
                 android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -60,9 +80,9 @@
             android:layout_marginTop="40dp"
             android:text="@string/registrar"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tlAddress"
-            app:layout_constraintStart_toStartOf="@+id/tlAddress"
-            app:layout_constraintTop_toBottomOf="@+id/tlAddress" />
+            app:layout_constraintEnd_toEndOf="@+id/tlLocationNapBox"
+            app:layout_constraintStart_toStartOf="@+id/tlLocationNapBox"
+            app:layout_constraintTop_toBottomOf="@+id/tlLocationNapBox" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

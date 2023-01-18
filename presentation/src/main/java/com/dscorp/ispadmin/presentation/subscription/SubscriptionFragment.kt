@@ -1,26 +1,34 @@
 package com.dscorp.ispadmin.presentation.subscription
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
+import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.example.cleanarchitecture.domain.domain.entity.Plan
+import com.google.android.gms.maps.MapFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 
 class SubscriptionFragment : Fragment() {
+    private var selectedLocation: LatLng? = null
 
     lateinit var binding: FragmentSubscriptionBinding
     var selectedPlan: Plan? = null
@@ -58,7 +66,25 @@ class SubscriptionFragment : Fragment() {
 
             datePicker.show(childFragmentManager, "DatePicker")
         }
+        binding.etLocationSubscription.setOnClickListener {
+            findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialogSubscription)
+
+        }
+        observeMapDialogResult()
+
         return binding.root
+    }
+
+private fun observeMapDialogResult() {
+    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")
+        ?.observe(viewLifecycleOwner) {
+            onLocationSelected(it)
+        }
+}
+    @SuppressLint("SetTextI18n")
+    private fun onLocationSelected(it: LatLng) {
+        this.selectedLocation = it
+        binding.etLocationSubscription.setText("${it.latitude}, ${it.longitude}")
     }
 
     private fun observeResponse() {
@@ -209,4 +235,6 @@ class SubscriptionFragment : Fragment() {
                 selectedPlace = places[pos]
             }
     }
+
+
 }

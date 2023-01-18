@@ -118,7 +118,7 @@
                     android:layout_marginTop="24dp"
                     android:hint="Dirección"
                     app:endIconMode="clear_text"
-                    app:layout_constraintBottom_toTopOf="@+id/tlPhone"
+                    app:layout_constraintBottom_toTopOf="@+id/tlLocationSubscription"
                     app:layout_constraintEnd_toEndOf="@+id/tlPassword"
                     app:layout_constraintStart_toStartOf="@+id/tlPassword"
                     app:layout_constraintTop_toBottomOf="@+id/tlPassword">
@@ -126,6 +126,28 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAddress"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlLocationSubscription"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="Ubicación"
+                    app:endIconMode="clear_text"
+                    android:focusable="false"
+                    app:layout_constraintBottom_toTopOf="@+id/tlPhone"
+                    app:layout_constraintEnd_toEndOf="@+id/tlAddress"
+                    app:layout_constraintStart_toStartOf="@+id/tlAddress"
+                    app:layout_constraintTop_toBottomOf="@+id/tlAddress">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLocationSubscription"
+                        android:layout_width="match_parent"
+                        android:focusable="false"
                         android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -139,9 +161,9 @@
                     android:hint="Numero de telefono"
                     app:endIconMode="clear_text"
                     app:layout_constraintBottom_toTopOf="@+id/tlSubscriptionDate"
-                    app:layout_constraintEnd_toEndOf="@+id/tlAddress"
-                    app:layout_constraintStart_toStartOf="@+id/tlAddress"
-                    app:layout_constraintTop_toBottomOf="@+id/tlAddress">
+                    app:layout_constraintEnd_toEndOf="@+id/tlLocationSubscription"
+                    app:layout_constraintStart_toStartOf="@+id/tlLocationSubscription"
+                    app:layout_constraintTop_toBottomOf="@+id/tlLocationSubscription">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPhone"
