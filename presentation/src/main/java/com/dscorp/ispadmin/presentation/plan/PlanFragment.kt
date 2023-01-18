@@ -14,7 +14,7 @@ import com.dscorp.ispadmin.presentation.plan.PlanFormError.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanFragment : Fragment(R.layout.fragment_plan) {
-    lateinit var binding : FragmentPlanBinding
+    lateinit var binding: FragmentPlanBinding
     val viewModel: PlanViewModel by viewModel()
 
 
@@ -22,13 +22,14 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater,R.layout.fragment_plan,null,true)
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_plan, null, true)
         observePlanResponse()
         observeFormError()
 
-        binding.btRegisterPlan.setOnClickListener{
+        binding.btRegisterPlan.setOnClickListener {
             registerPlan()
         }
+
         return binding.root
     }
 

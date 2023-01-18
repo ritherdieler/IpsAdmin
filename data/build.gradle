@@ -16,11 +16,19 @@ android {
     }
 
     buildTypes {
+        debug {
+            debuggable true
+            buildConfigField 'String', "BASE_URL", '"http://192.168.0.109:8080/api/"'
+
+        }
         release {
             minifyEnabled false
+            buildConfigField 'String', "BASE_URL", '"http://192.168.0.109:8080/api/"'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -28,27 +36,29 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-}
-
-dependencies {
-
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'com.google.android.material:material:1.7.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-
-    implementation project(':domain')
-
-    implementation "io.insert-koin:koin-android:3.3.0"
 
 
+    dependencies {
+
+        implementation project(':domain')
+
+
+        implementation 'androidx.core:core-ktx:1.7.0'
+        implementation 'androidx.appcompat:appcompat:1.6.0'
+        implementation 'com.google.android.material:material:1.7.0'
+        testImplementation 'junit:junit:4.13.2'
+        androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+        androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+        implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.10'
+        implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+        implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
+        implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+        implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+        implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
+        def koin_version = "3.3.0"
+        api "io.insert-koin:koin-android:$koin_version"
+
+    }
 }

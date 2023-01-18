@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.place
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,10 +15,13 @@ import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlaceBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
+import com.dscorp.ispadmin.presentation.extension.toGeoLocation
+import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaceFragment() : Fragment() {
+    private var selectedLocation: LatLng? = null
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
         ::onLocationPermissionResult
@@ -33,10 +37,7 @@ class PlaceFragment() : Fragment() {
         observePlaceResponse()
         observeFormError()
 
-        binding.btRegisterPlace.setOnClickListener {
-            registerPlace()
-
-        }
+        binding.btRegisterPlace.setOnClickListener { registerPlace() }
         binding.etLocation.setOnClickListener {
             locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -51,15 +52,19 @@ class PlaceFragment() : Fragment() {
             }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun onLocationSelected(it: LatLng) {
-        toast("Latitud: ${it.latitude} Longitud: ${it.longitude}")
-
+        this.selectedLocation = it
+        binding.etLocation.setText("${it.latitude}, ${it.longitude}")
     }
 
     private fun registerPlace() {
-        val namePlace = binding.etNamePlace.text.toString()
-        val abbreviation = binding.etAbbreviation.text.toString()
-        viewModel.registerPlace(namePlace, abbreviation)
+        val placeObject = Place(
+            abbreviation = binding.etAbbreviation.text.toString(),
+            name = binding.etNamePlace.text.toString(),
+            location = selectedLocation?.toGeoLocation()
+        )
+        viewModel.registerPlace(placeObject)
     }
 
     private fun observeFormError() {
@@ -67,15 +72,16 @@ class PlaceFragment() : Fragment() {
             when (formError) {
                 is FormError.OnEtAbbreviationError -> binding.etAbbreviation.error = formError.error
                 is FormError.OnEtNamePlaceError -> binding.etNamePlace.error = formError.error
+                is FormError.OnEtLocationError -> binding.etLocation.error = formError.error
             }
         }
     }
 
     private fun observePlaceResponse() {
-        viewModel.placeResponseLiveData.observe(viewLifecycleOwner) { response ->
+        viewModel.placePlaceResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is Response.OnError -> showErrorDialog(response.error.message.toString())
-                is Response.OnPlaceRegister -> showSuccessDialog(response.place.name)
+                is PlaceResponse.OnError -> showErrorDialog(response.error.message.toString())
+                is PlaceResponse.OnPlaceRegister -> showSuccessDialog(response.place.name)
             }
         }
     }

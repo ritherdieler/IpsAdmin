@@ -11,7 +11,7 @@ data class Place(
     val id: String? = null,
     val abbreviation: String = "",
     val name: String = "",
-    val geoLocation: GeoLocation? = null,
+    val location: GeoLocation? = null,
 ) {
     override fun toString(): String {
         return name

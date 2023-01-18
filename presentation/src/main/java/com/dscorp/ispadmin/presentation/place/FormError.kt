@@ -10,4 +10,5 @@ package com.dscorp.ispadmin.presentation.place
 sealed class FormError {
     class OnEtNamePlaceError(val error: String) : FormError()
     class OnEtAbbreviationError(val error: String) : FormError()
+    class OnEtLocationError(val error: String) : FormError()
 }

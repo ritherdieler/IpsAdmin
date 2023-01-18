@@ -9,7 +9,7 @@ import com.example.cleanarchitecture.domain.domain.entity.Place
  * Huacho, Peru.
  *
  **/
-sealed class Response {
-    class OnPlaceRegister(val place: Place) : Response()
-    class OnError(val error: Exception) : Response()
+sealed class PlaceResponse {
+    class OnPlaceRegister(val place: Place) : PlaceResponse()
+    class OnError(val error: Exception) : PlaceResponse()
 }

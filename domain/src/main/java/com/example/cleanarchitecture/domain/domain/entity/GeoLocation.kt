@@ -7,7 +7,12 @@ package com.example.cleanarchitecture.domain.domain.entity
  * Huacho, Peru.
  *
  **/
-class GeoLocation {
-    val latitude: Double = 0.0
-    val longitude: Double = 0.0
+class GeoLocation(latitude: Double, longitude: Double) {
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+
+    init {
+        this.latitude = latitude
+        this.longitude = longitude
+    }
 }
