@@ -28,7 +28,7 @@ interface RestApiServices {
     suspend fun registerNetworkDevice(@Body networkDevice: NetworkDevice): Response<NetworkDevice>
 
     @POST("subscription")
-    suspend fun doSubscription(@Body subscription: Subscription): Response<Subscription>
+    suspend fun registerSubscription(@Body subscription: Subscription): Response<Subscription>
 
     @GET("plan")
     suspend fun getPlans(): Response<List<Plan>>

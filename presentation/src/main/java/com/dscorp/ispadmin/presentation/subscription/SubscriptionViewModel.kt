@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
+import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import kotlinx.coroutines.async
@@ -54,6 +55,8 @@ class SubscriptionViewModel : ViewModel() {
         planId: String,
         networkDeviceId: String,
         placeId: String,
+        location: GeoLocation = GeoLocation(0.0, 0.0)
+
     ) {
         validateform(
             firstname,
@@ -65,7 +68,8 @@ class SubscriptionViewModel : ViewModel() {
             subscriptionDate,
             planId,
             networkDeviceId,
-            placeId
+            placeId,
+            location
         )
     }
 
@@ -80,6 +84,8 @@ class SubscriptionViewModel : ViewModel() {
         planId: String,
         networkDeviceId: String,
         placeId: String,
+        location :GeoLocation
+
     ) {
         val subscriptionObjetct = Subscription(
             firstName = firstname,
@@ -91,7 +97,9 @@ class SubscriptionViewModel : ViewModel() {
             subscriptionDate = subscriptionDate,
             planId = planId,
             networkDeviceId = networkDeviceId,
-            placeId = placeId
+            placeId = placeId,
+            location = location
+
         )
 
         viewModelScope.launch {
@@ -118,6 +126,7 @@ class SubscriptionViewModel : ViewModel() {
         planId: String,
         networkDeviceId: String,
         placeId: String,
+        location: GeoLocation,
     ) {
         if (firstname.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtFirstNameError("Ingresa tu nombre. "))
@@ -151,6 +160,9 @@ class SubscriptionViewModel : ViewModel() {
                             "de suscripcion"
                 )
             )
+        }
+        if (location == null) {
+            formErrorLiveData.postValue(SubscriptionFormError.OnEtLocationError("La ubicacion no puede estar vacia"))
             return
         }
         if (planId.isEmpty()) {
@@ -177,10 +189,11 @@ class SubscriptionViewModel : ViewModel() {
         }
         sendRegisterSubscriptionToServer(
             firstname, lastname, dni, password, address, phone, subscriptionDate.toInt(),
-            planId, networkDeviceId, placeId
+            planId, networkDeviceId, placeId,location
         )
     }
 }
+
 
 
 

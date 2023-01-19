@@ -106,7 +106,7 @@ class NapBoxFragment : Fragment() {
 
     private fun onLocationPermissionResult(isGranted: Boolean) {
         if (isGranted) {
-            findNavController().navigateSafe(R.id.action_nav_to_register_nap_box_to_mapDialogNapBox)
+            findNavController().navigateSafe(R.id.action_nav_to_register_nap_box_to_mapDialog)
         } else {
             if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 showRationaleDialog()

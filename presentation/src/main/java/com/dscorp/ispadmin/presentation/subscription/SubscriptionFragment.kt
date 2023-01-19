@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.subscription
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -18,10 +16,10 @@ import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
+import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.example.cleanarchitecture.domain.domain.entity.Plan
-import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -67,7 +65,7 @@ class SubscriptionFragment : Fragment() {
             datePicker.show(childFragmentManager, "DatePicker")
         }
         binding.etLocationSubscription.setOnClickListener {
-            findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialogSubscription)
+            findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
 
         }
         observeMapDialogResult()
@@ -75,12 +73,13 @@ class SubscriptionFragment : Fragment() {
         return binding.root
     }
 
-private fun observeMapDialogResult() {
-    findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")
-        ?.observe(viewLifecycleOwner) {
-            onLocationSelected(it)
-        }
-}
+    private fun observeMapDialogResult() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")
+            ?.observe(viewLifecycleOwner) {
+                onLocationSelected(it)
+            }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun onLocationSelected(it: LatLng) {
         this.selectedLocation = it
@@ -117,8 +116,13 @@ private fun observeMapDialogResult() {
                 is OnSpnNetworkDeviceError -> setSpnNetworkDeviceError(formError)
                 is OnSpnPlanError -> setSpnPlanError(formError)
                 is OnSpnPlaceError -> setSpnPlaceError(formError)
+                is OnEtLocationError -> setEtLocationError(formError)
             }
         }
+    }
+
+    private fun setEtLocationError(formError: OnEtLocationError) {
+        binding.etLocationSubscription.error = formError.error
     }
 
     private fun setSpnPlaceError(formError: OnSpnPlaceError) {
@@ -175,6 +179,7 @@ private fun observeMapDialogResult() {
         val planId = selectedPlan?.id ?: ""
         val networkDeviceId = selectedNetworkDevice?.id ?: ""
         val placeId = selectedPlace?.id ?: ""
+        val location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude)
 
         viewModel.registerSubscription(
             firstname,
@@ -186,7 +191,10 @@ private fun observeMapDialogResult() {
             selectedDate,
             planId,
             networkDeviceId,
-            placeId
+            placeId,
+            location
+
+
         )
     }
 

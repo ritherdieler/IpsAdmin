@@ -1,5 +1,7 @@
 package com.dscorp.ispadmin.presentation.subscription
 
+import com.dscorp.ispadmin.presentation.place.FormError
+
 /**
  * Created by Sergio Carrillo Diestra on 13/12/2022.
  * scarrillo.peruapps@gmail.com
@@ -20,5 +22,7 @@ SubscriptionFormError {
     class OnSpnPlanError(val error: String) : SubscriptionFormError()
     class OnSpnNetworkDeviceError(val error: String) : SubscriptionFormError()
     class OnSpnPlaceError(val error: String) : SubscriptionFormError()
+    class OnEtLocationError(val error: String) : SubscriptionFormError()
+
 
 }
