@@ -25,18 +25,18 @@ class SubscriptionViewModel : ViewModel() {
             val devicesJob = async { repository.getDevices() }
             val plansJob = async { repository.getplans() }
             val placeJob = async { repository.getPlaces() }
+            val napBoxesJob = async { repository.getNapBoxes() }
             val deferredTechnicians = async { repository.getTechnicians() }
             val devicesFromRepository = devicesJob.await()
             val plansFromRepository = plansJob.await()
             val placeFromRepository = placeJob.await()
             val technicians = deferredTechnicians.await()
+            val napBoxesFromRepository = napBoxesJob.await()
 
             responseLiveData.postValue(
                 OnFormDataFound(
-                    plansFromRepository, devicesFromRepository,
-                    placeFromRepository, technicians
-                )
-            )
+                    plansFromRepository, devicesFromRepository, placeFromRepository,
+                    technicians, napBoxesFromRepository))
 
         } catch (e: Exception) {
             responseLiveData.postValue(OnError(e))
@@ -45,7 +45,6 @@ class SubscriptionViewModel : ViewModel() {
 
 
     fun registerSubscription(subscription: Subscription) = viewModelScope.launch {
-
         try {
             if (formIsValid(subscription)) {
                 val subscriptionFromRepository = repository.doSubscription(subscription)
@@ -107,6 +106,10 @@ class SubscriptionViewModel : ViewModel() {
 
         if (subscription.placeId.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnSpnPlaceError("Debes seleccionar un lugar"))
+            return false
+        }
+        if (subscription.napBoxId.isEmpty()) {
+            formErrorLiveData.postValue(SubscriptionFormError.OnSpnNapBoxError("Debes seleccionar una Caja Nap"))
             return false
         }
 

@@ -265,13 +265,32 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:hint="@string/technician"
-                    app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
+                    app:layout_constraintBottom_toTopOf="@+id/spnNapBox"
                     app:layout_constraintEnd_toEndOf="@+id/spnPlace"
                     app:layout_constraintStart_toStartOf="@+id/spnPlace"
                     app:layout_constraintTop_toBottomOf="@+id/spnPlace">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etTechnician"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/spnNapBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="@string/cajas_nap"
+                    app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
+                    app:layout_constraintEnd_toEndOf="@+id/spnTechnician"
+                    app:layout_constraintStart_toStartOf="@+id/spnTechnician"
+                    app:layout_constraintTop_toBottomOf="@+id/spnTechnician">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/etNapBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
@@ -286,10 +305,10 @@
                     android:layout_marginBottom="20dp"
                     android:text="Registrar"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/spnPlace"
+                    app:layout_constraintEnd_toEndOf="@+id/spnNapBox"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/spnPlace"
-                    app:layout_constraintTop_toBottomOf="@+id/spnTechnician" />
+                    app:layout_constraintStart_toStartOf="@+id/spnNapBox"
+                    app:layout_constraintTop_toBottomOf="@+id/spnNapBox" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>

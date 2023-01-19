@@ -23,6 +23,7 @@ package com.example.cleanarchitecture.domain.domain.entity
    var networkDeviceId: String,
    var placeId:String,
    var location: GeoLocation? = null,
-   var technicianId: String
+   var technicianId: String,
+   var napBoxId:String
 
 ):java.io.Serializable

@@ -30,6 +30,7 @@ class SubscriptionFragment : Fragment() {
     var selectedNetworkDevice: NetworkDevice? = null
     var selectedPlace: Place? = null
     private var selectedTechnician: Technician? = null
+    var selectedNapBox: NapBox? = null
     val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
@@ -96,6 +97,7 @@ class SubscriptionFragment : Fragment() {
         setUpNetworkDeviceSpinner(response.networkDevice)
         setUpPlaceSpinner(response.places)
         setUpTechnicianSpinner(response.technicians)
+        setUpNapBoxSpinner(response.napBoxs)
     }
 
 
@@ -114,8 +116,13 @@ class SubscriptionFragment : Fragment() {
                 is OnSpnPlanError -> setSpnPlanError(formError)
                 is OnSpnPlaceError -> setSpnPlaceError(formError)
                 is OnEtLocationError -> setEtLocationError(formError)
+                is OnSpnNapBoxError -> setSpnNapBoxError(formError)
             }
         }
+    }
+
+    private fun setSpnNapBoxError(formError: OnSpnNapBoxError) {
+        binding.spnNapBox.error = formError.error
     }
 
     private fun setEtLocationError(formError: OnEtLocationError) {
@@ -180,7 +187,10 @@ class SubscriptionFragment : Fragment() {
             placeId = selectedPlace?.id ?: "",
             location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude),
             technicianId = selectedTechnician?.id ?: "",
+            napBoxId = selectedNapBox?.id ?: "",
             subscriptionDate = selectedDate
+
+
         )
 
         viewModel.registerSubscription(subscription)
@@ -239,6 +249,16 @@ class SubscriptionFragment : Fragment() {
         binding.etTechnician.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
                 selectedTechnician = technicians[pos]
+            }
+    }
+
+    private fun setUpNapBoxSpinner(napBoxes: List<NapBox>) {
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, napBoxes)
+        binding.etNapBox.setAdapter(adapter)
+        binding.etNapBox.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, pos, _ ->
+                selectedNapBox = napBoxes[pos]
             }
     }
 

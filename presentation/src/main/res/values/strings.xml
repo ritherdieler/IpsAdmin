@@ -43,6 +43,7 @@
     <string name="register">Registrar</string>
     <string name="confirm">Confirmar</string>
     <string name="ubicaci_n">Ubicación</string>
+    <string name="cajas_nap">Cajas Nap</string>
 
 
 </resources>

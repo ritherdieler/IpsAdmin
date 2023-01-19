@@ -14,7 +14,8 @@ sealed class SubscriptionResponse {
         val plans: List<Plan>,
         val networkDevice: List<NetworkDevice>,
         val places: List<Place>,
-        val technicians: List<Technician>
+        val technicians: List<Technician>,
+        val napBoxs: List<NapBox>
     ) :
         SubscriptionResponse()
 

@@ -3,6 +3,8 @@ package com.dscorp.ispadmin.presentation.napbox
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError
+import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import kotlinx.coroutines.launch
@@ -17,6 +19,7 @@ class NapBoxViewModel : ViewModel() {
     fun registerNapBox(
         code: String,
         address: String,
+        location: GeoLocation,
     ) {
         if (code.isEmpty()) {
             formErrorLiveData.postValue(NapBoxFormError.OnEtNameNapBoxError("El codigo no puede estar vacio"))
@@ -26,11 +29,12 @@ class NapBoxViewModel : ViewModel() {
             formErrorLiveData.postValue(NapBoxFormError.OnEtAbbreviationError("la direccion no puede estar vacia"))
             return
         }
+        if (location == null) {
+            formErrorLiveData.postValue(NapBoxFormError.OnEtLocationError("La ubicacion no puede estar vacia"))
+            return
+        }
 
-        val napBoxObject = NapBox(
-            code = code,
-            address = address
-        )
+        val napBoxObject = NapBox(code = code, address = address, location = location)
 
         viewModelScope.launch {
             try {
