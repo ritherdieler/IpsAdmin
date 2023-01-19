@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlanBinding
 import com.dscorp.ispadmin.presentation.plan.PlanFormError.*
+import com.example.cleanarchitecture.domain.domain.entity.Plan
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanFragment : Fragment(R.layout.fragment_plan) {
@@ -90,11 +90,13 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     }
 
     fun registerPlan() {
-        val namePlan = binding.etNamePlan.text.toString()
-        val precio = binding.etPrice.text.toString()
-        val downloadSpeed = binding.etDownloadSpeed.text.toString()
-        val uploadSpeed = binding.etUploadSpeed.text.toString()
-        viewModel.registerPlan(namePlan =namePlan, precio = precio, downloadSpeed = downloadSpeed, uploadSpeed =uploadSpeed)
+        val plan = Plan(
+            name = binding.etNamePlan.text.toString(),
+            price = binding.etPrice.text.toString(),
+            downloadSpeed = binding.etDownloadSpeed.text.toString(),
+            uploadSpeed = binding.etUploadSpeed.text.toString()
+        )
+        viewModel.registerPlan(plan)
     }
 
 

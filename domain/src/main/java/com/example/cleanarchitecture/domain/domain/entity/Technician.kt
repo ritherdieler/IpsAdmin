@@ -9,7 +9,7 @@ package com.example.cleanarchitecture.domain.domain.entity
  **/
 data class Technician(
     val id: String? = null,
-    val name: String,
+    val firstName: String,
     val lastName: String,
     val dni: String,
     val type: String,
@@ -20,5 +20,5 @@ data class Technician(
     val phone: String,
     val birthday: Long
 ) {
-    override fun toString() = "$name $lastName"
+    override fun toString() = "$firstName $lastName"
 }

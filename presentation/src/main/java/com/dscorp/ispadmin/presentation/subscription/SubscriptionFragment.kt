@@ -189,8 +189,6 @@ class SubscriptionFragment : Fragment() {
             technicianId = selectedTechnician?.id ?: "",
             napBoxId = selectedNapBox?.id ?: "",
             subscriptionDate = selectedDate
-
-
         )
 
         viewModel.registerSubscription(subscription)

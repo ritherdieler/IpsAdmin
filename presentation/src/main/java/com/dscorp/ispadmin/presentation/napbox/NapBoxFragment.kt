@@ -13,11 +13,12 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
+import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NapBoxFragment : Fragment() {
-    var selectedLocation : LatLng? = null
+    var selectedLocation: LatLng? = null
 
     lateinit var binding: FragmentNapBoxBinding
     val viewModel: NapBoxViewModel by viewModel()
@@ -57,11 +58,13 @@ class NapBoxFragment : Fragment() {
     }
 
     private fun registerNapBox() {
-        val code = binding.etCode.text.toString()
-        val address = binding.etAddress.text.toString()
-        val location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude)
+        val registerNapBox = NapBox(
+            code = binding.etCode.text.toString(),
+            address = binding.etAddress.text.toString(),
+            location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude)
+        )
 
-        viewModel.registerNapBox(code, address,location)
+        viewModel.registerNapBox(registerNapBox)
     }
 
     private fun observeNapBoxFormError() {
@@ -70,7 +73,8 @@ class NapBoxFragment : Fragment() {
                 is NapBoxFormError.OnEtAbbreviationError -> binding.etAddress.error =
                     formError.error
                 is NapBoxFormError.OnEtNameNapBoxError -> binding.etCode.error = formError.error
-                is NapBoxFormError.OnEtLocationError -> binding.etLocationNapBox.error=formError.error
+                is NapBoxFormError.OnEtLocationError -> binding.etLocationNapBox.error =
+                    formError.error
             }
         }
     }

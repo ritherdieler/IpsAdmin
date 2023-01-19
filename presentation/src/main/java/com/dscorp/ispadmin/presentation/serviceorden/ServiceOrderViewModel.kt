@@ -13,53 +13,46 @@ class ServiceOrderViewModel  : ViewModel() {
 
     val serviceOrderResponseLiveData=MutableLiveData<ServiceOrderResponse>()
     val serviceOrderFormErrorLiveData=MutableLiveData<ServiceOrderFormError>()
-    fun registerServiceOrder(
-        longitude: Double,
-        latitude: Double,
-        createDate: Long,
-        attentionDate:Long,
 
-    ){
-        if (latitude.toString().isEmpty()) {
+    fun registerServiceOrder(serviceOrder: ServiceOrder)=viewModelScope.launch {
+
+        try {
+            if (formatIsValid(serviceOrder)) {
+                var serviceOrderFromRepository = repository.registerServiceOrder(serviceOrder)
+                serviceOrderResponseLiveData.postValue(
+                    ServiceOrderResponse.OnServiceOrderRegistered
+                        (serviceOrderFromRepository)
+                )
+            }
+        } catch (error: Exception) {
+            serviceOrderResponseLiveData.postValue(ServiceOrderResponse.OnError(error))
+        }
+    }
+
+    private fun formatIsValid(serviceOrder: ServiceOrder): Boolean {
+
+        if (serviceOrder.latitude.toString().isEmpty()) {
           serviceOrderFormErrorLiveData.postValue(ServiceOrderFormError.OnEtLatitudeError("La Latitud del  " +
                   "servicio no puede estar vacio"))
-            return
+            return false
         }
 
-        if (longitude.toString().isEmpty()) {
+        if (serviceOrder.longitude.toString().isEmpty()) {
             serviceOrderFormErrorLiveData.postValue(ServiceOrderFormError.OnEtLogintudeError("La Longitud no puede estar " +
                     "vacio"))
-            return
+            return false
         }
 
-        if (createDate == 0L) {
+        if (serviceOrder.createDate == 0L) {
              serviceOrderFormErrorLiveData.postValue(ServiceOrderFormError.OnEtCreateDateError("La Fecha de creacion  " +
                      " no puede estar vacia"))
-            return
+            return false
         }
-        if (attentionDate == 0L) {
+        if (serviceOrder.attentionDate == 0L) {
             serviceOrderFormErrorLiveData.postValue(ServiceOrderFormError.OnEtAttentionDate("La Fecha de atencion no " +
                     "puede estar vacia"))
-            return
+            return false
         }
-
-        var serviceOrderObject = ServiceOrder(
-            longitude = longitude,
-            latitude = latitude,
-            createDate = createDate,
-            attentionDate = attentionDate,
-        )
-
-        viewModelScope.launch {
-            try {
-                var serviceOrderFromRepository=repository.registerServiceOrder(serviceOrderObject)
-                serviceOrderResponseLiveData.postValue(ServiceOrderResponse.OnServiceOrderRegistered
-                    (serviceOrderFromRepository))
-            } catch (error: Exception) {
-                serviceOrderResponseLiveData.postValue(ServiceOrderResponse.OnError(error))
-
-            }
-        }
-
+        return true
     }
 }

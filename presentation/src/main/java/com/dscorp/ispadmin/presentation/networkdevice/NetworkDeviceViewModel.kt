@@ -16,55 +16,38 @@ class NetworkDeviceViewModel() : ViewModel() {
     val networkDeviceResponseLiveData = MutableLiveData<NetworkDeviceResponse>()
     val networkDeviceFormErrorLiveData = MutableLiveData<NetworkDeviceFormError>()
 
-    fun validateForm(
-        etName: EditText,
-        etPassword: EditText,
-        etUsername: EditText,
-        etIpAddress: EditText,
-        name: String,
-        password: String,
-        username: String,
-        ipaddress: String,
-    ) {
+    fun registerNetworkDevice(networkDevice: NetworkDevice) = viewModelScope.launch {
+        try {
+            if (formIsValid(networkDevice)) {
 
-        if (name.isEmpty()) {
-            etName.setError("El nombre del dispositivo de red no puede estar vacio")
-            return
-        }
-        if (password.isEmpty()) {
-            etPassword.setError("La contraseña no puede estar vacia")
-            return
-        }
-        if (username.isEmpty()) {
-            etUsername.setError("El usuario no puede estar vacio")
-            return
-        }
-        if (ipaddress.isEmpty()) {
-            etIpAddress.error = "La direccion de ip no puede estar vacia"
-            return
-        }
-
-        val planObject = NetworkDevice(
-            name = name,
-            Password = password,
-            username = username,
-            ipAddress = ipaddress
-        )
-
-        viewModelScope.launch {
-            try {
-                var networkDeviceFromRepository = repository.registerNetworkDevice(planObject)
-                networkDeviceResponseLiveData.postValue(
-                    NetworkDeviceResponse.OnNetworkDeviceRegistered
-                        (networkDeviceFromRepository)
-                )
-            } catch (error: Exception) {
-                networkDeviceResponseLiveData.postValue(NetworkDeviceResponse.OnError(error))
-
+                var networkDeviceFromRepository = repository.registerNetworkDevice(networkDevice)
+                networkDeviceResponseLiveData.postValue(NetworkDeviceResponse.OnNetworkDeviceRegistered
+                    (networkDeviceFromRepository))
             }
+        } catch (error: Exception) {
+            networkDeviceResponseLiveData.postValue(NetworkDeviceResponse.OnError(error))
+        }
+    }
+
+    private fun formIsValid(networkDevice: NetworkDevice): Boolean {
+
+        if (networkDevice.name.isEmpty()) {
+            networkDeviceFormErrorLiveData.postValue(NetworkDeviceFormError.OnEtNameError("El nombre del dispositivo de red no puede estar vacio"))
+            return false
+        }
+        if (networkDevice.password.isEmpty()) {
+            networkDeviceFormErrorLiveData.postValue(NetworkDeviceFormError.OnEtPassword("La contraseña no puede estar vacia"))
+            return false
+        }
+        if (networkDevice.username.isEmpty()) {
+            networkDeviceFormErrorLiveData.postValue(NetworkDeviceFormError.OnEtUserName("El usuario no puede estar vacio"))
+            return false
+        }
+        if (networkDevice.ipAddress.isEmpty()) {
+            networkDeviceFormErrorLiveData.postValue(NetworkDeviceFormError.OnEtAddress("La direccion de ip no puede estar vacia"))
+            return false
 
         }
-
-
+        return true
     }
 }

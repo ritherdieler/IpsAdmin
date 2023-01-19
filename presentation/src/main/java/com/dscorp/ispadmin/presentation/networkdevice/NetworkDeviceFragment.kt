@@ -14,6 +14,7 @@ import androidx.lifecycle.whenCreated
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNetworkDeviceBinding
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFormError.*
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NetworkDeviceFragment : Fragment(R.layout.fragment_network_device) {
@@ -24,7 +25,9 @@ class NetworkDeviceFragment : Fragment(R.layout.fragment_network_device) {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-     binding = DataBindingUtil.inflate(layoutInflater,R.layout.fragment_network_device,null,true)
+        binding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_network_device, null, true)
+
         binding.btRegisterNetworkDevice.setOnClickListener {
 
             registerNetworkDevice()
@@ -74,23 +77,13 @@ class NetworkDeviceFragment : Fragment(R.layout.fragment_network_device) {
         builder.show()
     }
 
-    fun registerNetworkDevice() {
-        with(binding) {
-            var name: String = etName.text.toString()
-            var password: String = etPassword.text.toString()
-            var username: String = etUsername.text.toString()
-            var ipaddress: String = etIpAddress.text.toString()
-
-            viewModel.validateForm(
-                etName,
-                etPassword,
-                etUsername,
-                etIpAddress,
-                name,
-                password,
-                username,
-                ipaddress
-            )
-        }
+    private fun registerNetworkDevice() {
+        val networkDevice = NetworkDevice(
+            name = binding.etName.text.toString(),
+            password = binding.etPassword.text.toString(),
+            username = binding.etUsername.text.toString(),
+            ipAddress = binding.etIpAddress.text.toString()
+        )
+        viewModel.registerNetworkDevice(networkDevice)
     }
 }

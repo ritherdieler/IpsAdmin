@@ -28,7 +28,7 @@ class TechniciansListAdapter :
     class TechniciansListViewHolder(private val binding: ItemTechniciansListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(techniciansList: Technician) {
-            binding.tvPrueba0Technician.text = techniciansList.name
+            binding.tvPrueba0Technician.text = techniciansList.firstName
             binding.tvPrueba1Technician.text = techniciansList.id
             binding.tvPrueba2Technician.text = techniciansList.lastName
 

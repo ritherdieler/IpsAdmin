@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentServiceOrderBinding
+import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -88,10 +89,15 @@ class ServiceOrderFragment : Fragment() {
     }
 
     private fun registerServiceOrder() {
-        val latitude = binding.etLatitude.text.toString().toDouble()
-        val longitude = binding.etLongitude.text.toString().toDouble()
+        val serviceOrder = ServiceOrder(
+            latitude = binding.etLatitude.text.toString().toDouble(),
+            longitude = binding.etLongitude.text.toString().toDouble(),
+            createDate = selectedDate,
+            attentionDate = selectedAttentionDate
 
-        viewModel.registerServiceOrder(longitude, latitude, selectedDate, selectedAttentionDate)
+        )
+
+        viewModel.registerServiceOrder(serviceOrder)
     }
 
     fun showSucessDialog(service_orden: Long) {

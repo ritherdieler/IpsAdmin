@@ -36,6 +36,7 @@ class PlaceFragment() : Fragment() {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_place, null, true)
         observePlaceResponse()
         observeFormError()
+        registerPlace()
 
         binding.btRegisterPlace.setOnClickListener { registerPlace() }
         binding.etLocation.setOnClickListener {

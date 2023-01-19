@@ -10,7 +10,7 @@ package com.example.cleanarchitecture.domain.domain.entity
 data class NetworkDevice(
         val id:String? = null,
         val name:String,
-        val Password:String,
+        val password:String,
         val username:String,
         val ipAddress:String,
         )

@@ -11,9 +11,9 @@ data class Plan(
 
     val id: String? =null,
     val name:String,
-    val price:Double,
-    val downloadSpeed: Int,
-    val uploadSpeed:Int,
+    val price: String,
+    val downloadSpeed: String,
+    val uploadSpeed: String,
 
     )
 {

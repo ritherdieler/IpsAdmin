@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
+import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -51,32 +52,27 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
     }
 
     private fun registerTechnician() {
-        val firstName = binding.etFirstName.text.toString()
-        val lastName = binding.etLastName.text.toString()
-        val dni = binding.etDni.text.toString()
-        val type = binding.etType.text.toString()
-        val userName = binding.etUsername.text.toString()
-        val password = binding.etPassword.text.toString()
-        val address = binding.etAddress.text.toString()
-        val phone = binding.etPhone.text.toString()
-        viewModel.registerTechnician(
-            firstName,
-            lastName,
-            dni,
-            type,
-            userName,
-            password,
-            address,
-            phone,
-            selectedDate
+        val technician = Technician(
+            firstName = binding.etFirstName.text.toString(),
+            lastName = binding.etLastName.text.toString(),
+            dni = binding.etDni.text.toString(),
+            type = binding.etType.text.toString(),
+            username = binding.etUsername.text.toString(),
+            password = binding.etPassword.text.toString(),
+            address = binding.etAddress.text.toString(),
+            phone = binding.etPhone.text.toString(),
+            birthday = selectedDate
+
         )
+
+        viewModel.registerTechnician(technician)
     }
 
     private fun observeResponse() {
         viewModel.technicianResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is TechnicianResponse.OnError -> showErrorDialog(response.error.message.toString())
-                is TechnicianResponse.OnTechnicianRegistered -> showSucessDialog(response.technician.name)
+                is TechnicianResponse.OnTechnicianRegistered -> showSucessDialog(response.technician.firstName)
             }
         }
     }
