@@ -167,30 +167,19 @@ class SubscriptionFragment : Fragment() {
     }
 
     private fun registerSubscription() {
-        val firstname = binding.etFirstName.text.toString()
-        val lastName = binding.etLastName.text.toString()
-        val dni = binding.etDni.text.toString()
-        val password = binding.etPassword.text.toString()
-        val address = binding.etAddress.text.toString()
-        val phoneNumber = binding.etPhone.text.toString()
-        val planId = selectedPlan?.id ?: ""
-        val networkDeviceId = selectedNetworkDevice?.id ?: ""
-        val placeId = selectedPlace?.id ?: ""
-        val location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude)
-        val technicianId = selectedTechnician?.id ?: ""
 
         val subscription = Subscription(
-            firstName = firstname,
-            lastName = lastName,
-            dni = dni,
-            password = password,
-            address = address,
-            phone = phoneNumber,
-            planId = planId,
-            networkDeviceId = networkDeviceId,
-            placeId = placeId,
-            location = location,
-            technicianId = technicianId,
+            firstName = binding.etFirstName.text.toString(),
+            lastName = binding.etLastName.text.toString(),
+            dni = binding.etDni.text.toString(),
+            password = binding.etPassword.text.toString(),
+            address = binding.etAddress.text.toString(),
+            phone = binding.etPhone.text.toString(),
+            planId = selectedPlan?.id ?: "",
+            networkDeviceId = selectedNetworkDevice?.id ?: "",
+            placeId = selectedPlace?.id ?: "",
+            location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude),
+            technicianId = selectedTechnician?.id ?: "",
             subscriptionDate = selectedDate
         )
 

@@ -79,13 +79,11 @@ class SubscriptionViewModel : ViewModel() {
         if (subscription.address.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtAddressesError("Ingresa una Direccion"))
             return false
-
         }
 
         if (subscription.phone.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa Un numero valido"))
             return false
-
         }
 
         if (subscription.subscriptionDate == 0L) {
@@ -95,19 +93,16 @@ class SubscriptionViewModel : ViewModel() {
         if (subscription.location == null) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtLocationError("La ubicacion no puede estar vacia"))
             return false
-
         }
 
         if (subscription.planId.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnSpnPlanError("Debes seleccionar un plan"))
             return false
-
         }
 
         if (subscription.networkDeviceId.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un dispositivo de red"))
             return false
-
         }
 
         if (subscription.placeId.isEmpty()) {
