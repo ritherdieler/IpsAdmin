@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
-import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import kotlinx.coroutines.async
@@ -21,176 +20,110 @@ class SubscriptionViewModel : ViewModel() {
         getFormData()
     }
 
-    fun getFormData() {
-        viewModelScope.launch {
-            try {
-                val devicesJob = async { repository.getDevices() }
-                val plansJob = async { repository.getplans() }
-                val placeJob = async { repository.getPlaces() }
-                val devicesFromRepository = devicesJob.await()
-                val plansFromRepository = plansJob.await()
-                val placeFromRepository = placeJob.await()
+    private fun getFormData() = viewModelScope.launch {
+        try {
+            val devicesJob = async { repository.getDevices() }
+            val plansJob = async { repository.getplans() }
+            val placeJob = async { repository.getPlaces() }
+            val deferredTechnicians = async { repository.getTechnicians() }
+            val devicesFromRepository = devicesJob.await()
+            val plansFromRepository = plansJob.await()
+            val placeFromRepository = placeJob.await()
+            val technicians = deferredTechnicians.await()
 
-                responseLiveData.postValue(
-                    OnFormDataFound(
-                        plansFromRepository, devicesFromRepository,
-                        placeFromRepository
-                    )
+            responseLiveData.postValue(
+                OnFormDataFound(
+                    plansFromRepository, devicesFromRepository,
+                    placeFromRepository, technicians
                 )
+            )
 
-            } catch (e: Exception) {
-                responseLiveData.postValue(OnError(e))
-            }
+        } catch (e: Exception) {
+            responseLiveData.postValue(OnError(e))
         }
     }
 
-    fun registerSubscription(
-        firstname: String,
-        lastname: String,
-        password: String,
-        dni: String,
-        address: String,
-        phone: String,
-        subscriptionDate: Long,
-        planId: String,
-        networkDeviceId: String,
-        placeId: String,
-        location: GeoLocation = GeoLocation(0.0, 0.0)
 
-    ) {
-        validateform(
-            firstname,
-            lastname,
-            password,
-            dni,
-            address,
-            phone,
-            subscriptionDate,
-            planId,
-            networkDeviceId,
-            placeId,
-            location
-        )
-    }
+    fun registerSubscription(subscription: Subscription) = viewModelScope.launch {
 
-    private fun sendRegisterSubscriptionToServer(
-        firstname: String,
-        lastname: String,
-        dni: String,
-        password: String,
-        address: String,
-        phone: String,
-        subscriptionDate: Int,
-        planId: String,
-        networkDeviceId: String,
-        placeId: String,
-        location :GeoLocation
-
-    ) {
-        val subscriptionObjetct = Subscription(
-            firstName = firstname,
-            lastName = lastname,
-            dni = dni,
-            password = password,
-            address = address,
-            phone = phone,
-            subscriptionDate = subscriptionDate,
-            planId = planId,
-            networkDeviceId = networkDeviceId,
-            placeId = placeId,
-            location = location
-
-        )
-
-        viewModelScope.launch {
-            try {
-
-                val subscriptionFromRepository = repository.doSubscription(subscriptionObjetct)
+        try {
+            if (formIsValid(subscription)) {
+                val subscriptionFromRepository = repository.doSubscription(subscription)
                 responseLiveData.postValue(OnSubscriptionRegistered(subscriptionFromRepository))
-
-            } catch (error: Exception) {
-                responseLiveData.postValue(OnError(error))
-
             }
+
+        } catch (error: Exception) {
+            responseLiveData.postValue(OnError(error))
+
         }
     }
 
-    private fun validateform(
-        firstname: String,
-        lastname: String,
-        password: String,
-        dni: String,
-        address: String,
-        phone: String,
-        subscriptionDate: Long,
-        planId: String,
-        networkDeviceId: String,
-        placeId: String,
-        location: GeoLocation,
-    ) {
-        if (firstname.isEmpty()) {
+    private fun formIsValid(subscription: Subscription): Boolean {
+        if (subscription.firstName.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtFirstNameError("Ingresa tu nombre. "))
-            return
+            return false
         }
-        if (lastname.isEmpty()) {
+        if (subscription.lastName.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtLastNameError("Ingresa Tu Apellido"))
-            return
+            return false
         }
-        if (dni.isEmpty()) {
+        if (subscription.dni.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtDniError("Ingresa tu nuemero de DNI."))
-            return
+            return false
         }
-        if (password.isEmpty()) {
+        if (subscription.password.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtPasswordError("Ingresa una contrasena."))
-            return
+            return false
         }
 
-        if (address.isEmpty()) {
+        if (subscription.address.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtAddressesError("Ingresa una Direccion"))
-            return
+            return false
+
         }
-        if (phone.isEmpty()) {
+
+        if (subscription.phone.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa Un numero valido"))
-            return
+            return false
+
         }
-        if (subscriptionDate == 0L) {
-            formErrorLiveData.postValue(
-                SubscriptionFormError.OnEtSubscriptionDateError(
-                    "Debes colocar una fecha " +
-                            "de suscripcion"
-                )
-            )
+
+        if (subscription.subscriptionDate == 0L) {
+            formErrorLiveData.postValue(SubscriptionFormError.OnEtSubscriptionDateError("Debes colocar una fecha de suscripcion"))
         }
-        if (location == null) {
+
+        if (subscription.location == null) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtLocationError("La ubicacion no puede estar vacia"))
-            return
+            return false
+
         }
-        if (planId.isEmpty()) {
+
+        if (subscription.planId.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnSpnPlanError("Debes seleccionar un plan"))
-            return
+            return false
+
         }
-        if (networkDeviceId.isEmpty()) {
+
+        if (subscription.networkDeviceId.isEmpty()) {
+            formErrorLiveData.postValue(SubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un dispositivo de red"))
+            return false
+
+        }
+
+        if (subscription.placeId.isEmpty()) {
+            formErrorLiveData.postValue(SubscriptionFormError.OnSpnPlaceError("Debes seleccionar un lugar"))
+            return false
+        }
+
+        if (subscription.networkDeviceId.isEmpty()) {
             formErrorLiveData.postValue(
-                SubscriptionFormError.OnSpnNetworkDeviceError(
-                    "Debes seleccionar un " +
-                            "dispositivo de red"
-                )
+                SubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un técnico")
             )
-            return
+            return false
         }
-        if (placeId.isEmpty()) {
-            formErrorLiveData.postValue(
-                SubscriptionFormError.OnSpnPlaceError(
-                    "Debes seleccionar un " +
-                            "lugar"
-                )
-            )
-            return
-        }
-        sendRegisterSubscriptionToServer(
-            firstname, lastname, dni, password, address, phone, subscriptionDate.toInt(),
-            planId, networkDeviceId, placeId,location
-        )
+
+        return true
+
     }
 }
 

@@ -16,12 +16,13 @@ package com.example.cleanarchitecture.domain.domain.entity
    var password:String,
    var address:String,
    var phone:String,
-   var subscriptionDate:Int,
+   var subscriptionDate:Long,
    var isNew:Boolean? = null,
    var serviceIsSuspended: Boolean? = null,
    var planId:String,
    var networkDeviceId: String,
    var placeId:String,
-   var location: GeoLocation? = null
+   var location: GeoLocation? = null,
+   var technicianId: String
 
 ):java.io.Serializable

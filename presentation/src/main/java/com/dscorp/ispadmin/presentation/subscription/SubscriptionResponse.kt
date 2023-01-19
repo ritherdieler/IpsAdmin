@@ -1,9 +1,6 @@
 package com.dscorp.ispadmin.presentation.subscription
 
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
-import com.example.cleanarchitecture.domain.domain.entity.Place
-import com.example.cleanarchitecture.domain.domain.entity.Plan
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.*
 
 /**
  * Created by Sergio Carrillo Diestra on 13/12/2022.
@@ -16,7 +13,8 @@ sealed class SubscriptionResponse {
     class OnFormDataFound(
         val plans: List<Plan>,
         val networkDevice: List<NetworkDevice>,
-        val places: List<Place>
+        val places: List<Place>,
+        val technicians: List<Technician>
     ) :
         SubscriptionResponse()
 

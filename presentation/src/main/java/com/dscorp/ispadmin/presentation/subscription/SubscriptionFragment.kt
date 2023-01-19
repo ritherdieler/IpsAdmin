@@ -16,23 +16,20 @@ import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
-import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
-import com.example.cleanarchitecture.domain.domain.entity.Place
-import com.example.cleanarchitecture.domain.domain.entity.Plan
+import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 
 class SubscriptionFragment : Fragment() {
-    private var selectedLocation: LatLng? = null
-
     lateinit var binding: FragmentSubscriptionBinding
+    var selectedDate: Long = 0
+    private var selectedLocation: LatLng? = null
     var selectedPlan: Plan? = null
     var selectedNetworkDevice: NetworkDevice? = null
     var selectedPlace: Place? = null
-    var selectedDate: Long = 0
+    private var selectedTechnician: Technician? = null
     val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
@@ -56,8 +53,6 @@ class SubscriptionFragment : Fragment() {
             datePicker.addOnPositiveButtonClickListener {
                 selectedDate = it
                 val formatter = SimpleDateFormat("dd/MM/yyyy")
-
-
                 val formattedDate = formatter.format(it)
                 binding.etSubscriptionDate.setText(formattedDate)
             }
@@ -100,7 +95,9 @@ class SubscriptionFragment : Fragment() {
         setUpPlansSpinner(response.plans)
         setUpNetworkDeviceSpinner(response.networkDevice)
         setUpPlaceSpinner(response.places)
+        setUpTechnicianSpinner(response.technicians)
     }
+
 
     private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
@@ -180,25 +177,27 @@ class SubscriptionFragment : Fragment() {
         val networkDeviceId = selectedNetworkDevice?.id ?: ""
         val placeId = selectedPlace?.id ?: ""
         val location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude)
+        val technicianId = selectedTechnician?.id ?: ""
 
-        viewModel.registerSubscription(
-            firstname,
-            lastName,
-            password,
-            dni,
-            address,
-            phoneNumber,
-            selectedDate,
-            planId,
-            networkDeviceId,
-            placeId,
-            location
-
-
+        val subscription = Subscription(
+            firstName = firstname,
+            lastName = lastName,
+            dni = dni,
+            password = password,
+            address = address,
+            phone = phoneNumber,
+            planId = planId,
+            networkDeviceId = networkDeviceId,
+            placeId = placeId,
+            location = location,
+            technicianId = technicianId,
+            subscriptionDate = selectedDate
         )
+
+        viewModel.registerSubscription(subscription)
     }
 
-    fun showSucessDialog(subscriptionFirstName: String) {
+    private fun showSucessDialog(subscriptionFirstName: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Te Subscribiste con exito ")
         builder.setMessage(subscriptionFirstName)
@@ -207,7 +206,7 @@ class SubscriptionFragment : Fragment() {
         builder.show()
     }
 
-    fun showErrorDialog(error: String) {
+    private fun showErrorDialog(error: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("La subscripcion no fue procesada")
         builder.setMessage(error)
@@ -244,5 +243,14 @@ class SubscriptionFragment : Fragment() {
             }
     }
 
+    private fun setUpTechnicianSpinner(technicians: List<Technician>) {
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, technicians)
+        binding.etTechnician.setAdapter(adapter)
+        binding.etTechnician.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, pos, _ ->
+                selectedTechnician = technicians[pos]
+            }
+    }
 
 }

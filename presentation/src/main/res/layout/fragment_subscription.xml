@@ -136,9 +136,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
+                    android:focusable="false"
                     android:hint="Ubicación"
                     app:endIconMode="clear_text"
-                    android:focusable="false"
                     app:layout_constraintBottom_toTopOf="@+id/tlPhone"
                     app:layout_constraintEnd_toEndOf="@+id/tlAddress"
                     app:layout_constraintStart_toStartOf="@+id/tlAddress"
@@ -146,9 +146,9 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLocationSubscription"
-                        android:focusable="false"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:focusable="false" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -179,9 +179,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
+                    android:focusable="false"
                     android:hint="Fecha de Suscripción"
                     app:endIconMode="clear_text"
-                    android:focusable="false"
                     app:layout_constraintBottom_toTopOf="@+id/spnPlan"
                     app:layout_constraintEnd_toEndOf="@+id/tlPhone"
                     app:layout_constraintStart_toStartOf="@+id/tlPhone"
@@ -190,8 +190,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etSubscriptionDate"
                         android:layout_width="match_parent"
-                        android:focusable="false"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:focusable="false" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -205,8 +205,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/spnDevice"
                     app:layout_constraintEnd_toEndOf="@+id/tlSubscriptionDate"
                     app:layout_constraintStart_toStartOf="@+id/tlSubscriptionDate"
-                    app:layout_constraintTop_toBottomOf="@+id/tlSubscriptionDate"
-                    >
+                    app:layout_constraintTop_toBottomOf="@+id/tlSubscriptionDate">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etPlan"
@@ -223,14 +222,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:hint="@string/networkdevice"
+                    app:layout_constraintBottom_toTopOf="@+id/spnPlace"
                     app:layout_constraintEnd_toEndOf="@+id/spnPlan"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/spnPlan"
-                    app:layout_constraintTop_toBottomOf="@+id/spnPlan"
-                    app:layout_constraintBottom_toTopOf="@+id/spnPlace"
-                    >
-
-
+                    app:layout_constraintTop_toBottomOf="@+id/spnPlan">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etNetworkDevice"
@@ -247,7 +243,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:hint="@string/lugar"
-                    app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
+                    app:layout_constraintBottom_toTopOf="@+id/spnTechnician"
                     app:layout_constraintEnd_toEndOf="@+id/spnDevice"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/spnDevice"
@@ -256,6 +252,26 @@
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etPlace"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/spnTechnician"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="@string/technician"
+                    app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
+                    app:layout_constraintEnd_toEndOf="@+id/spnPlace"
+                    app:layout_constraintStart_toStartOf="@+id/spnPlace"
+                    app:layout_constraintTop_toBottomOf="@+id/spnPlace">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/etTechnician"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
@@ -273,7 +289,7 @@
                     app:layout_constraintEnd_toEndOf="@+id/spnPlace"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/spnPlace"
-                    app:layout_constraintTop_toBottomOf="@+id/spnPlace" />
+                    app:layout_constraintTop_toBottomOf="@+id/spnTechnician" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>

@@ -37,6 +37,7 @@
         <entry key="presentation/src/main/res/layout/activity_login.xml" value="0.35833333333333334" />
         <entry key="presentation/src/main/res/layout/dialog_map.xml" value="0.18253072102864581" />
         <entry key="presentation/src/main/res/layout/fragment_place.xml" value="0.35833333333333334" />
+        <entry key="presentation/src/main/res/layout/fragment_subscription.xml" value="0.1" />
         <entry key="presentation/src/main/res/xml/network_rules.xml" value="0.1" />
       </map>
     </option>
