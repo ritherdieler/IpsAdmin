@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.presentation.subscription
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Parcel
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -21,11 +22,12 @@ import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.time.Duration.Companion.days
+import kotlin.time.DurationUnit
 
 class SubscriptionFragment : Fragment() {
     lateinit var binding: FragmentSubscriptionBinding
@@ -52,22 +54,32 @@ class SubscriptionFragment : Fragment() {
             registerSubscription()
         }
         binding.etSubscriptionDate.setOnClickListener {
-            val minDate = Calendar.getInstance().apply {
-                set(2023, 0, 15) // 0 = January, 15 = 15th
-            }.timeInMillis
-            val maxDate = MaterialDatePicker.todayInUtcMilliseconds()
-            val constraintsBuilder = CalendarConstraints.Builder()
-                .setEnd(maxDate)
-                .setStart(minDate)
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+            val dateValidatorMin = DateValidatorPointForward.from(
+                Calendar.getInstance().timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS)
+            )
+
+            val dateValidatorMax =
+                DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
+
+            val dateValidator =
+                CompositeDateValidator.allOf(listOf(dateValidatorMin, dateValidatorMax))
+
+
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
-                .setCalendarConstraints(constraintsBuilder.build())
+                .setCalendarConstraints(
+                    CalendarConstraints.Builder()
+                        .setValidator(dateValidator)
+                        .build()
+                )
                 .build()
 
             datePicker.addOnPositiveButtonClickListener {
                 selectedDate = it
                 val formatter = SimpleDateFormat("dd/MM/yyyy")
-                val formattedDate = formatter.format(it)
+                val formattedDate = formatter.format(calendar.timeInMillis)
                 binding.etSubscriptionDate.setText(formattedDate)
             }
 
