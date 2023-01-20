@@ -66,7 +66,6 @@ class SubscriptionFragment : Fragment() {
             val dateValidator =
                 CompositeDateValidator.allOf(listOf(dateValidatorMin, dateValidatorMax))
 
-
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
                 .setCalendarConstraints(
