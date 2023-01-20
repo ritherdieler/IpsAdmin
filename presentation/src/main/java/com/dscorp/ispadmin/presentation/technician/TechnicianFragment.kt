@@ -2,13 +2,17 @@ package com.dscorp.ispadmin.presentation.technician
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
+import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,6 +52,42 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
 
             datePicker.show(childFragmentManager, "DatePicker")
         }
+        val edDni: EditText = binding.etDni
+
+        edDni.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s != null) {
+                    if (s.length < 8) {
+                        viewModel.technicianFromErrorLiveData.postValue(TechnicianFromError.OnEtDniError("La cantidad mínima de caracteres para el número de teléfono es de 8"))
+                        return
+                    }
+                }
+            }
+        })
+        val edPhone: EditText = binding.etPhone
+
+        edPhone.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s != null) {
+                    if (s.length < 9) {
+                        viewModel.technicianFromErrorLiveData.postValue(TechnicianFromError.OnEtPhoneError("La cantidad mínima de caracteres para el número de teléfono es de 9"))
+                        return
+                    }
+                }
+            }
+        })
         return binding.root
     }
 

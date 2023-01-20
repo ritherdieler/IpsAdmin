@@ -2,11 +2,14 @@ package com.dscorp.ispadmin.presentation.subscription
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -60,10 +63,52 @@ class SubscriptionFragment : Fragment() {
 
             datePicker.show(childFragmentManager, "DatePicker")
         }
+
         binding.etLocationSubscription.setOnClickListener {
             findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
 
         }
+        val edPhone: EditText = binding.etPhone
+
+        edPhone.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s != null) {
+                    if (s.length <7) {
+                        viewModel.formErrorLiveData.postValue(OnEtNumberPhoneError("La cantidad mínima de caracteres para el número de teléfono es de 9 (nueve)"))
+                        return
+                    } else {
+                        viewModel.formErrorLiveData.postValue(OnEtNumberPhoneError(""))
+                    }
+                }
+            }
+        })
+        val edDni: EditText = binding.etDni
+
+        edDni.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s != null) {
+                    if (s.length < 8) {
+                        viewModel.formErrorLiveData.postValue(OnEtDniError("La cantidad mínima de caracteres para el número de teléfono es de 8"))
+
+                    }else{
+                        viewModel.formErrorLiveData.postValue(OnEtDniHasNotError)
+                    }
+                }
+            }
+        })
+
         observeMapDialogResult()
 
         return binding.root
@@ -117,8 +162,13 @@ class SubscriptionFragment : Fragment() {
                 is OnSpnPlaceError -> setSpnPlaceError(formError)
                 is OnEtLocationError -> setEtLocationError(formError)
                 is OnSpnNapBoxError -> setSpnNapBoxError(formError)
+                OnEtDniHasNotError -> clearTlDniError()
             }
         }
+    }
+
+    private fun clearTlDniError() {
+        binding.tlDni.error = null
     }
 
     private fun setSpnNapBoxError(formError: OnSpnNapBoxError) {
@@ -126,7 +176,7 @@ class SubscriptionFragment : Fragment() {
     }
 
     private fun setEtLocationError(formError: OnEtLocationError) {
-        binding.etLocationSubscription.error = formError.error
+        binding.tlLocationSubscription.error = formError.error
     }
 
     private fun setSpnPlaceError(formError: OnSpnPlaceError) {
@@ -190,7 +240,6 @@ class SubscriptionFragment : Fragment() {
             napBoxId = selectedNapBox?.id ?: "",
             subscriptionDate = selectedDate
         )
-
         viewModel.registerSubscription(subscription)
     }
 
@@ -259,5 +308,4 @@ class SubscriptionFragment : Fragment() {
                 selectedNapBox = napBoxes[pos]
             }
     }
-
 }

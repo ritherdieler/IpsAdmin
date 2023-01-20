@@ -28,26 +28,22 @@ class PlanViewModel : ViewModel() {
     private fun formIsValid(plan: Plan): Boolean {
         if (plan.name.isEmpty()) {
             formErrorLiveData.postValue(PlanFormError.OnEtNamePlanError("El nombre del plan no puede estar vacio"))
-            println("Debes escribir el nombre del plan")
             return false
 
         }
 
         if (plan.price.isEmpty()) {
             formErrorLiveData.postValue(PlanFormError.OnEtPriceError("El precio no puede estar vacio"))
-            println("Debes escribir el precio")
             return false
         }
 
         if (plan.downloadSpeed.isEmpty()) {
             formErrorLiveData.postValue(PlanFormError.OnEtDowloadSpeedError("La velocidad de descarga no puede estar vacia"))
-            println("debes escribir la velocidad de descarga")
             return false
         }
 
         if (plan.uploadSpeed.isEmpty()) {
             formErrorLiveData.postValue(PlanFormError.OnEtUploadSpeedError("La velocidad de subida no puede estar vacia"))
-            print("Debes escribir la velocidad de subida")
             return false
         }
         return true

@@ -43,7 +43,6 @@ class SubscriptionViewModel : ViewModel() {
         }
     }
 
-
     fun registerSubscription(subscription: Subscription) = viewModelScope.launch {
         try {
             if (formIsValid(subscription)) {
@@ -58,6 +57,7 @@ class SubscriptionViewModel : ViewModel() {
     }
 
     private fun formIsValid(subscription: Subscription): Boolean {
+
         if (subscription.firstName.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtFirstNameError("Ingresa tu nombre. "))
             return false
@@ -84,6 +84,10 @@ class SubscriptionViewModel : ViewModel() {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa Un numero valido"))
             return false
         }
+      /*  if (subscription.phone.isEmpty() || subscription.phone.length < 9) {
+            formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa Un numero valido de 9 digitos"))
+            return false
+        }*/
 
         if (subscription.subscriptionDate == 0L) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtSubscriptionDateError("Debes colocar una fecha de suscripcion"))
@@ -121,7 +125,6 @@ class SubscriptionViewModel : ViewModel() {
         }
 
         return true
-
     }
 }
 

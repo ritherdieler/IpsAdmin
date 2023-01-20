@@ -162,6 +162,7 @@
                     android:layout_marginTop="24dp"
                     android:hint="Numero de telefono"
                     app:endIconMode="clear_text"
+
                     app:layout_constraintBottom_toTopOf="@+id/tlSubscriptionDate"
                     app:layout_constraintEnd_toEndOf="@+id/tlLocationSubscription"
                     app:layout_constraintStart_toStartOf="@+id/tlLocationSubscription"
@@ -172,7 +173,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:maxLength="8"/>
+                        android:maxLength="9"
+                        />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

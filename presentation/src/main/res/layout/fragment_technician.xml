@@ -89,6 +89,7 @@
                         android:id="@+id/etDni"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:maxLength="8"
                         android:inputType="number" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -192,7 +193,8 @@
                         android:id="@+id/etPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="number" />
+                        android:inputType="number"
+                        android:maxLength="9"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
