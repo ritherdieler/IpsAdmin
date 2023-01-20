@@ -28,4 +28,6 @@ SubscriptionFormError {
     class OnSpnPlaceError(val error: String) : SubscriptionFormError()
     class OnEtLocationError(val error: String) : SubscriptionFormError()
     class OnSpnNapBoxError(val error: String) : SubscriptionFormError()
+    class OnDniIsInvalidError(val error: String) : SubscriptionFormError()
+
 }

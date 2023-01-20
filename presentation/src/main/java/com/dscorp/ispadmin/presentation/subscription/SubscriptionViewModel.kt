@@ -70,6 +70,10 @@ class SubscriptionViewModel : ViewModel() {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtDniError("Ingresa tu nuemero de DNI."))
             return false
         }
+        if (subscription.dni.length<8) {
+            formErrorLiveData.postValue(SubscriptionFormError.OnDniIsInvalidError("El DNI debe tener 8 caracteres"))
+            return false
+        }
         if (subscription.password.isEmpty()) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtPasswordError("Ingresa una contrasena."))
             return false

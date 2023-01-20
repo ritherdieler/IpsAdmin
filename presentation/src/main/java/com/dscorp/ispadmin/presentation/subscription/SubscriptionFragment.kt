@@ -2,7 +2,6 @@ package com.dscorp.ispadmin.presentation.subscription
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Parcel
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -82,6 +81,7 @@ class SubscriptionFragment : Fragment() {
                 binding.etSubscriptionDate.setText(formattedDate)
             }
 
+
             datePicker.show(childFragmentManager, "DatePicker")
         }
 
@@ -110,7 +110,7 @@ class SubscriptionFragment : Fragment() {
             }
         })
         val edDni: EditText = binding.etDni
-
+/*
         edDni.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
@@ -128,7 +128,7 @@ class SubscriptionFragment : Fragment() {
                     }
                 }
             }
-        })
+        })*/
 
         observeMapDialogResult()
 
@@ -184,6 +184,7 @@ class SubscriptionFragment : Fragment() {
                 is OnEtLocationError -> setEtLocationError(formError)
                 is OnSpnNapBoxError -> setSpnNapBoxError(formError)
                 OnEtDniHasNotError -> clearTlDniError()
+                is OnDniIsInvalidError -> binding.tlDni.error = formError.error
             }
         }
     }
@@ -245,7 +246,6 @@ class SubscriptionFragment : Fragment() {
     }
 
     private fun registerSubscription() {
-
         val subscription = Subscription(
             firstName = binding.etFirstName.text.toString(),
             lastName = binding.etLastName.text.toString(),
@@ -256,7 +256,9 @@ class SubscriptionFragment : Fragment() {
             planId = selectedPlan?.id ?: "",
             networkDeviceId = selectedNetworkDevice?.id ?: "",
             placeId = selectedPlace?.id ?: "",
-            location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude),
+            location = GeoLocation(
+                selectedLocation?.latitude ?: 0.0,
+                selectedLocation?.longitude ?: 0.0),
             technicianId = selectedTechnician?.id ?: "",
             napBoxId = selectedNapBox?.id ?: "",
             subscriptionDate = selectedDate
