@@ -1,8 +1,6 @@
 package com.dscorp.ispadmin.presentation.di
 
-import com.example.cleanarchitecture.domain.domain.repository.IRepository
-import com.example.data2.data.repository.Repository
-import com.example.data2.data.api.RestApiServices
+import com.example.data2.data.repository.IRepository
 import org.koin.dsl.module
 import retrofit2.Retrofit
 

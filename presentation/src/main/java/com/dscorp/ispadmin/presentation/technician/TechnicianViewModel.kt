@@ -3,8 +3,7 @@ package com.dscorp.ispadmin.presentation.technician
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
-import com.example.cleanarchitecture.domain.domain.repository.IRepository
+import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent

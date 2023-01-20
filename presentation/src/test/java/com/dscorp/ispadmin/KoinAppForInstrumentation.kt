@@ -3,7 +3,7 @@ package com.dscorp.ispadmin
 import android.app.Application
 import com.dscorp.ispadmin.mockdata.subscriptionListMock
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
-import com.example.cleanarchitecture.domain.domain.repository.IRepository
+import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.koin.androidx.viewmodel.dsl.viewModel

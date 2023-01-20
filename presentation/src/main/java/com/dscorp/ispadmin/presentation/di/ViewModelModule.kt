@@ -4,6 +4,7 @@ import com.dscorp.ispadmin.presentation.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.napbox.NapBoxViewModel
 import com.dscorp.ispadmin.presentation.napboxeslist.NapBoxesListViewModel
 import com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceViewModel
+import com.dscorp.ispadmin.presentation.payment.ConsultPaymentsViewModel
 import com.dscorp.ispadmin.presentation.place.PlaceViewModel
 import com.dscorp.ispadmin.presentation.plan.PlanViewModel
 import com.dscorp.ispadmin.presentation.registration.RegisterViewModel
@@ -37,4 +38,6 @@ val viewModelModule = module {
     viewModel {ServicesOrderListViewModel()}
     viewModel {TechniciansListViewModel()}
     viewModel {NapBoxesListViewModel()}
+    viewModel {ConsultPaymentsViewModel()}
+
 }

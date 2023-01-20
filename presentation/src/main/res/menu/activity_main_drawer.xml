@@ -48,7 +48,10 @@
             android:id="@+id/nav_see_nap_boxes"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="Ver Cajas Nap" />
-
+        <item
+            android:id="@+id/nav_consult_payments"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/consult_payments" />
 
     </group>
 </menu>

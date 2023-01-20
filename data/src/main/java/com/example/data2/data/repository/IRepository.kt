@@ -1,6 +1,7 @@
-package com.example.cleanarchitecture.domain.domain.repository
+package com.example.data2.data.repository
 
 import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 
 /**
  * Created by Sergio Carrillo Diestra on 25/12/2022.
@@ -15,7 +16,7 @@ interface IRepository {
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
     suspend fun doSubscription(doSubscription: Subscription): Subscription
-    suspend fun getplans(): List<Plan>
+    suspend fun getPlans(): List<Plan>
     suspend fun getDevices(): List<NetworkDevice>
     suspend fun getSubscriptions(): List<Subscription>
     suspend fun registerPlace(registerPlace: Place): Place
@@ -26,4 +27,5 @@ interface IRepository {
     suspend fun getServicesOrder():List<ServiceOrder>
     suspend fun getTechnicians():List<Technician>
     suspend fun getNapBoxes():List<NapBox>
+    suspend fun consultPayments(request:SearchPaymentsRequest):List<Payment>
 }

@@ -40,7 +40,7 @@ interface RestApiServices {
     suspend fun getSubscriptions(): Response<List<Subscription>>
 
     @POST("place")
-    suspend fun registerplace(@Body place: Place): Response<Place>
+    suspend fun registerPlace(@Body place: Place): Response<Place>
 
     @GET("place")
     suspend fun getPlaces(): Response<List<Place>>
@@ -62,4 +62,11 @@ interface RestApiServices {
 
     @GET("napbox")
     suspend fun getNapBoxes(): Response<List<NapBox>>
+
+    @GET("payment")
+    suspend fun consultPayments(
+        subscriptionCode: Int?,
+        startDate: Long?,
+        endDate: Long?
+    ): Response<List<Payment>>
 }

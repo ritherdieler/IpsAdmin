@@ -3,7 +3,7 @@ package com.dscorp.ispadmin.presentation.napbox
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cleanarchitecture.domain.domain.repository.IRepository
+import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent

@@ -8,15 +8,13 @@ import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.dscorp.ispadmin.mockdata.subscriptionListMock
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment
-import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListResponse.*
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
-import com.example.cleanarchitecture.domain.domain.repository.IRepository
+import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.Matchers.not
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

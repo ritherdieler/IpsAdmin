@@ -1,8 +1,8 @@
 package com.example.data2.data.repository
 
 import com.example.cleanarchitecture.domain.domain.entity.*
-import com.example.cleanarchitecture.domain.domain.repository.IRepository
 import com.example.data2.data.api.RestApiServices
+import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -65,7 +65,7 @@ class Repository : IRepository, KoinComponent {
 
     }
 
-    override suspend fun getplans(): List<Plan> {
+    override suspend fun getPlans(): List<Plan> {
         val response = restApiServices.getPlans()
         if (response.code() == 200) {
             return response.body()!!
@@ -93,7 +93,7 @@ class Repository : IRepository, KoinComponent {
     }
 
     override suspend fun registerPlace(registerPlace: Place): Place {
-        val response = restApiServices.registerplace(registerPlace)
+        val response = restApiServices.registerPlace(registerPlace)
         if (response.code() == 200) {
             return response.body()!!
         } else {
@@ -152,16 +152,32 @@ class Repository : IRepository, KoinComponent {
         val response = restApiServices.getTechnicians()
         if (response.code() == 200) {
             return response.body()!!
-        }else{
-            throw Exception("Error")
-        }
-    }   override suspend fun getNapBoxes(): List<NapBox> {
-        val response = restApiServices.getNapBoxes()
-        if (response.code() == 200) {
-            return response.body()!!
-        }else{
+        } else {
             throw Exception("Error")
         }
     }
+
+    override suspend fun getNapBoxes(): List<NapBox> {
+        val response = restApiServices.getNapBoxes()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun consultPayments(request: SearchPaymentsRequest): List<Payment> {
+        val response = restApiServices.consultPayments(
+            request.subscriptionCode,
+            request.startDate,
+            request.endDate
+        )
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
 
 }

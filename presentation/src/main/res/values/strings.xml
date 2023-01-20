@@ -1,6 +1,10 @@
 <resources>
+
+
+    <string name="digit_subscription">Digite el codigo de suscripcion o el DNI</string>
     <string name="app_name">ispAdminAndroid</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
+    find_subscription
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
@@ -44,6 +48,7 @@
     <string name="confirm">Confirmar</string>
     <string name="ubicaci_n">Ubicación</string>
     <string name="cajas_nap">Cajas Nap</string>
+    <string name="consult_payments">Consultar Pagos</string>
 
 
 </resources>

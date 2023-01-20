@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
-import com.example.cleanarchitecture.domain.domain.repository.IRepository
+import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -23,7 +23,7 @@ class SubscriptionViewModel : ViewModel() {
     private fun getFormData() = viewModelScope.launch {
         try {
             val devicesJob = async { repository.getDevices() }
-            val plansJob = async { repository.getplans() }
+            val plansJob = async { repository.getPlans() }
             val placeJob = async { repository.getPlaces() }
             val napBoxesJob = async { repository.getNapBoxes() }
             val deferredTechnicians = async { repository.getTechnicians() }
