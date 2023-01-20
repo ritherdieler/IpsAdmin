@@ -14,9 +14,11 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError
 import com.example.cleanarchitecture.domain.domain.entity.Technician
+import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
+import java.util.*
 
 class TechnicianFragment : Fragment(R.layout.fragment_technician) {
     lateinit var binding: FragmentTechnicianBinding
@@ -32,19 +34,23 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
         observeResponse()
         observeFromError()
 
-
         binding.btRegisterTechnician.setOnClickListener {
             registerTechnician()
         }
         binding.etBirthday.setOnClickListener {
+
+            val today = MaterialDatePicker.todayInUtcMilliseconds()
+            val constraintsBuilder =
+                CalendarConstraints.Builder()
+                    .setEnd(today)
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
+                .setCalendarConstraints(constraintsBuilder.build())
                 .build()
-            datePicker
+
             datePicker.addOnPositiveButtonClickListener {
                 selectedDate = it
                 val formatter = SimpleDateFormat("dd/MM/yyyy")
-
 
                 val formattedDate = formatter.format(it)
                 binding.etBirthday.setText(formattedDate)

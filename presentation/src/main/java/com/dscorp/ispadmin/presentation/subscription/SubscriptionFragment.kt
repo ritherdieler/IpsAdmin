@@ -21,9 +21,11 @@ import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
+import java.util.*
 
 class SubscriptionFragment : Fragment() {
     lateinit var binding: FragmentSubscriptionBinding
@@ -50,8 +52,16 @@ class SubscriptionFragment : Fragment() {
             registerSubscription()
         }
         binding.etSubscriptionDate.setOnClickListener {
+            val minDate = Calendar.getInstance().apply {
+                set(2023, 0, 15) // 0 = January, 15 = 15th
+            }.timeInMillis
+            val maxDate = MaterialDatePicker.todayInUtcMilliseconds()
+            val constraintsBuilder = CalendarConstraints.Builder()
+                .setEnd(maxDate)
+                .setStart(minDate)
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
+                .setCalendarConstraints(constraintsBuilder.build())
                 .build()
 
             datePicker.addOnPositiveButtonClickListener {
@@ -79,7 +89,7 @@ class SubscriptionFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s != null) {
-                    if (s.length <7) {
+                    if (s.length < 9) {
                         viewModel.formErrorLiveData.postValue(OnEtNumberPhoneError("La cantidad mínima de caracteres para el número de teléfono es de 9 (nueve)"))
                         return
                     } else {
@@ -102,7 +112,7 @@ class SubscriptionFragment : Fragment() {
                     if (s.length < 8) {
                         viewModel.formErrorLiveData.postValue(OnEtDniError("La cantidad mínima de caracteres para el número de teléfono es de 8"))
 
-                    }else{
+                    } else {
                         viewModel.formErrorLiveData.postValue(OnEtDniHasNotError)
                     }
                 }
