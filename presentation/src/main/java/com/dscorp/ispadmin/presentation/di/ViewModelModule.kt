@@ -11,6 +11,7 @@ import com.dscorp.ispadmin.presentation.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.serviceorden.ServiceOrderViewModel
 import com.dscorp.ispadmin.presentation.serviceorderlist.ServicesOrderListViewModel
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionViewModel
+import com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
 import com.dscorp.ispadmin.presentation.technician.TechnicianViewModel
 import com.dscorp.ispadmin.presentation.technicianslist.TechniciansListViewModel
@@ -39,5 +40,6 @@ val viewModelModule = module {
     viewModel {TechniciansListViewModel()}
     viewModel {NapBoxesListViewModel()}
     viewModel {ConsultPaymentsViewModel()}
+    viewModel {FindSubscriptionViewModel()}
 
 }

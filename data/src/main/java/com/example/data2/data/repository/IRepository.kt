@@ -28,4 +28,5 @@ interface IRepository {
     suspend fun getTechnicians():List<Technician>
     suspend fun getNapBoxes():List<NapBox>
     suspend fun consultPayments(request:SearchPaymentsRequest):List<Payment>
+    suspend fun findSubscription(dni: Int): List<Subscription>
 }

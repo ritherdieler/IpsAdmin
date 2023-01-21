@@ -116,7 +116,7 @@
         tools:layout="@layout/fragment_consult_payments" />
     <fragment
         android:id="@+id/FIndSubscriptionFragment"
-        android:name="com.dscorp.ispadmin.FIndSubscriptionFragment"
+        android:name="com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionFragment"
         android:label="fragment_find_subscription"
         tools:layout="@layout/fragment_find_subscription" />
 

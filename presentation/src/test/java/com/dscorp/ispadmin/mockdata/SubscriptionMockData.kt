@@ -25,5 +25,7 @@ val subscriptionListMock = listOf(
     serviceIsSuspended = true,
     planId = "1",
     networkDeviceId = "1",
-    placeId = "1")
+    placeId = "1",
+    technicianId = "1",
+    napBoxId = "1",)
 )

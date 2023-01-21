@@ -179,5 +179,14 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun findSubscription(dni: Int): List<Subscription> {
+        val response = restApiServices.findSubscription(dni)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
 
 }

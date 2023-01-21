@@ -14,7 +14,7 @@ import retrofit2.Retrofit
 
 
 val repositoryModule = module {
-    single { providesApi(get()) }
+
     single<IRepository> { com.example.data2.data.repository.Repository() }
 }
 

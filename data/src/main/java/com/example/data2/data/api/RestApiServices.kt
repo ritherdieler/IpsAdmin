@@ -5,6 +5,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -69,4 +70,7 @@ interface RestApiServices {
         startDate: Long?,
         endDate: Long?
     ): Response<List<Payment>>
+
+    @GET("subscription/find")
+    suspend fun findSubscription(@Query("dni") dni: Int): Response<List<Subscription>>
 }
