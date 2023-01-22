@@ -72,5 +72,5 @@ interface RestApiServices {
     ): Response<List<Payment>>
 
     @GET("subscription/find")
-    suspend fun findSubscription(@Query("dni") dni: Int): Response<List<Subscription>>
+    suspend fun findSubscription(): Response<List<Subscription>>
 }

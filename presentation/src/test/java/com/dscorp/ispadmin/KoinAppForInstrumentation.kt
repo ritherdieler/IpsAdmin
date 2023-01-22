@@ -6,11 +6,13 @@ import com.dscorp.ispadmin.presentation.di.apiModule
 import com.dscorp.ispadmin.presentation.di.repositoryModule
 import com.dscorp.ispadmin.presentation.di.viewModelModule
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
+import com.example.data2.data.di.BASE_URL
 import com.example.data2.data.di.provideRetrofit
 import com.example.data2.data.di.retrofitModule
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
@@ -34,25 +36,22 @@ class KoinAppForInstrumentation : Application() {
     override fun onCreate() = runTest {
         super.onCreate()
 
-
-        val repository = spy(IRepository::class.java)
-
-
         launch {
             startKoin {
+                getKoin().run {
+                    setProperty(BASE_URL, FAKE_BASE_URL)
+                }
+
                 modules(
                     listOf(
+                        apiModule,
                         retrofitModule,
                         viewModelModule,
-                        apiModule,
-                        module {
-                            single<IRepository> { repository }
-                        }
+                        repositoryModule
                     )
                 )
+
             }
-
-
         }
 
 

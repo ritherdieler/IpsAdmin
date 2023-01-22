@@ -180,7 +180,7 @@ class Repository : IRepository, KoinComponent {
     }
 
     override suspend fun findSubscription(dni: Int): List<Subscription> {
-        val response = restApiServices.findSubscription(dni)
+        val response = restApiServices.findSubscription()
         if (response.code() == 200) {
             return response.body()!!
         } else {
