@@ -40,6 +40,8 @@
         <entry key="presentation/src/main/res/layout/fragment_find_subscription.xml" value="0.35833333333333334" />
         <entry key="presentation/src/main/res/layout/fragment_place.xml" value="0.35833333333333334" />
         <entry key="presentation/src/main/res/layout/fragment_subscription.xml" value="0.30666961669921877" />
+        <entry key="presentation/src/main/res/layout/item_find_subscription.xml" value="0.27104373508029517" />
+        <entry key="presentation/src/main/res/layout/item_subscription.xml" value="0.35833333333333334" />
         <entry key="presentation/src/main/res/menu/activity_main_drawer.xml" value="0.35833333333333334" />
         <entry key="presentation/src/main/res/menu/main.xml" value="0.35833333333333334" />
         <entry key="presentation/src/main/res/menu/main_activity2.xml" value="0.35833333333333334" />
@@ -47,7 +49,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

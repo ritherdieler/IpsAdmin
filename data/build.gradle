@@ -17,24 +17,23 @@ android {
 
     buildTypes {
         debug {
-            debuggable true
-            buildConfigField 'String', "BASE_URL", '"http://192.168.0.104:8080/api/"'
+            buildConfigField 'String', "BASE_URL", '"http://192.168.0.101:8080/api/"'
 
         }
         release {
             minifyEnabled false
-            buildConfigField 'String', "BASE_URL", '"http://192.168.0.104:8080/api/"'
+            buildConfigField 'String', "BASE_URL", '"http://192.168.0.101:8080/api/"'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
 
@@ -43,7 +42,7 @@ android {
         implementation project(':domain')
 
 
-        implementation 'androidx.core:core-ktx:1.7.0'
+        implementation 'androidx.core:core-ktx:1.9.0'
         implementation 'androidx.appcompat:appcompat:1.6.0'
         implementation 'com.google.android.material:material:1.7.0'
         testImplementation 'junit:junit:4.13.2'
@@ -57,7 +56,7 @@ android {
         implementation 'androidx.legacy:legacy-support-v4:1.0.0'
         implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
-        def koin_version = "3.3.0"
+        def koin_version = "3.3.1"
         api "io.insert-koin:koin-android:$koin_version"
 
     }

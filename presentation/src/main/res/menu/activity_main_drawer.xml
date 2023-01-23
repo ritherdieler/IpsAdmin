@@ -53,5 +53,10 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/consult_payments" />
 
+        <item
+            android:id="@+id/nav_find_subscriptions"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/find_subscriptions" />
+
     </group>
 </menu>

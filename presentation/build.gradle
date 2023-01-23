@@ -60,6 +60,7 @@ android {
             includeAndroidResources = true
         }
     }
+    namespace 'com.dscorp.ispadmin'
 }
 
 dependencies {

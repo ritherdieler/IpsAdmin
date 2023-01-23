@@ -25,6 +25,7 @@ class KoinApplication : Application() {
             allowOverride(true)
             modules(
                 retrofitModule,
+                apiModule,
                 repositoryModule,
                 viewModelModule
             )

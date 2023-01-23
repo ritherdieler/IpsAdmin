@@ -31,4 +31,12 @@ package com.example.cleanarchitecture.domain.domain.entity
   override fun toString(): String {
     return firstName
   }
+
+  override fun equals(other: Any?): Boolean {
+    return if (other is Subscription) {
+      other.id == id
+    } else {
+      false
+    }
+  }
 }

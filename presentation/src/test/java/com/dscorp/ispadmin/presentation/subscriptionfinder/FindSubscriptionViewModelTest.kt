@@ -1,93 +1,102 @@
 package com.dscorp.ispadmin.presentation.subscriptionfinder
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.KoinAppForInstrumentation
-import com.dscorp.ispadmin.mockdata.subscriptionListMock
 import com.dscorp.ispadmin.util.asAndroidX
 import com.dscorp.ispadmin.util.fromJson
+import com.dscorp.ispadmin.util.getValueForTest
+import com.dscorp.ispadmin.util.mockService
 import com.jakewharton.espresso.OkHttp3IdlingResource
-import kotlinx.coroutines.*
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import okhttp3.OkHttpClient
-import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.robolectric.annotation.Config
-import kotlin.test.assertEquals
+import org.robolectric.annotation.LooperMode
 import kotlin.test.assertNotNull
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
-//@LooperMode(LooperMode.Mode.PAUSED)
+@LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = KoinAppForInstrumentation::class)
 class FindSubscriptionViewModelTest : KoinTest {
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    private val mockWebServer = MockWebServer()
 
-//    @get:Rule
-//    val coroutineScope = MainCoroutineScopeRule()
-
-    val mockWebServer = MockWebServer()
-
-    lateinit var viewModel: FindSubscriptionViewModel
+    private lateinit var viewModel: FindSubscriptionViewModel
 
     private val DNI = 48271836
 
     private val httpClient: OkHttpClient by inject()
 
-    var resource = OkHttp3IdlingResource.create("OkHttp", httpClient).asAndroidX()
+    private lateinit var okHttp3IdlingResource: IdlingResource
 
     @Before
     fun setUp() {
-        IdlingRegistry.getInstance().register(resource)
         viewModel = FindSubscriptionViewModel()
+
+
+        okHttp3IdlingResource = OkHttp3IdlingResource.create(
+            "okhttp",
+            httpClient
+        ).asAndroidX()
+        IdlingRegistry.getInstance().register(
+            okHttp3IdlingResource
+        )
         mockWebServer.start(8080)
     }
 
     @After
     fun tearDown() {
+        IdlingRegistry.getInstance().unregister(okHttp3IdlingResource)
         mockWebServer.shutdown()
         stopKoin()
     }
 
     @Test
-    fun whenMainClicked_updatesTaps() = runTest {
-        launch {
-            mockApi()
-            viewModel.findSubscription(DNI)
-            Espresso.onIdle()
-            viewModel.uiStateLiveData.observeForever {
-                assertNotNull(
-                    (it as FindSubscriptionUiState.OnSubscriptionFound).subscriptions
-                )
-            }
-        }
-    }
+    fun `when findSubscription is called then liveData should emit subscriptions`() =
+        runBlockingTest() {
+            //given
+            mockService(
+                mockWebServer = mockWebServer,
+                urlToMock = "/subscription/find?dni=48271836",
+                response = MockResponse().fromJson("SubscriptionList.json")
+            )
 
-    private fun mockApi() {
-        mockWebServer.dispatcher = object : Dispatcher() {
-            override fun dispatch(request: RecordedRequest): MockResponse {
-                return when (request.path) {
-                    "/subscription/find" -> {
-                        MockResponse().fromJson("SubscriptionList.json")
-                    }
-                    else -> throw  Exception("No se encontro el path ${request.path}")
-                }
-            }
+            //when
+            viewModel.findSubscription(DNI)
+
+            //then
+            val value = viewModel.uiStateLiveData.getValueForTest()
+            assertNotNull(value)
         }
+
+    @Test
+    fun `when findSubscription has error then liveData should emit error`() = runBlockingTest {
+        //given
+        mockService(
+            mockWebServer = mockWebServer,
+            urlToMock = "/subscription/find?dni=$DNI",
+            response = MockResponse().setResponseCode(500)
+        )
+
+        //when
+        viewModel.findSubscription(DNI)
+
+        //then
+        val value = viewModel.uiErrorStateLiveData.getValueForTest()
+        assertNotNull(value)
     }
 
 }

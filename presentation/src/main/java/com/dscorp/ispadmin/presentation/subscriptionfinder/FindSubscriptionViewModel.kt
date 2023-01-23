@@ -14,7 +14,7 @@ class FindSubscriptionViewModel : ViewModel(), KoinComponent {
     val uiStateLiveData = MutableLiveData<FindSubscriptionUiState>()
     val uiErrorStateLiveData = MutableLiveData<FindSubscriptionUiErrorState>()
 
-    fun findSubscription(dni: Int) = viewModelScope.launch {
+    fun findSubscription(dni: String) = viewModelScope.launch {
         try {
             val response = repository.findSubscription(dni)
             uiStateLiveData.postValue(FindSubscriptionUiState.OnSubscriptionFound(response))

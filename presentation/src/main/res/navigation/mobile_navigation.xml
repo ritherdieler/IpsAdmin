@@ -120,5 +120,10 @@
         android:label="fragment_find_subscription"
         tools:layout="@layout/fragment_find_subscription" />
 
-
+    <fragment
+        android:id="@+id/nav_find_subscriptions"
+        tools:layout="@layout/fragment_find_subscription"
+        android:name="com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionFragment"
+        android:label="FindSubscription" >
+    </fragment>
 </navigation>
