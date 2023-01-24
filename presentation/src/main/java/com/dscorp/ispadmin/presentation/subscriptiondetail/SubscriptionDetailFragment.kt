@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.subscriptiondetails
+package com.dscorp.ispadmin.presentation.subscriptiondetail
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,11 +10,12 @@ import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionDetailBinding
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
 class SubscriptionDetailFragment : Fragment() {
     private val args: SubscriptionDetailFragmentArgs by navArgs()
     lateinit var binding: FragmentSubscriptionDetailBinding
-    lateinit var subscription: Subscription
+    lateinit var subscription: SubscriptionResponse
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +31,9 @@ class SubscriptionDetailFragment : Fragment() {
             DataBindingUtil.inflate(
                 layoutInflater, R.layout.fragment_subscription_detail, null, true
             )
-        binding.tvAverSiEstaLlegandoXd.text = subscription.lastName
-        binding.tvAverSiEstaLlegandoXd.text = subscription.firstName
+        binding.subscription = subscription
+        binding.executePendingBindings()
+
         return binding.root
     }
 }

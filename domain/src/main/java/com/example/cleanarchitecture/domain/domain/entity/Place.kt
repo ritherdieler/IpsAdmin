@@ -12,7 +12,7 @@ data class Place(
     val abbreviation: String = "",
     val name: String = "",
     val location: GeoLocation? = null,
-) {
+):java.io.Serializable {
     override fun toString(): String {
         return name
     }

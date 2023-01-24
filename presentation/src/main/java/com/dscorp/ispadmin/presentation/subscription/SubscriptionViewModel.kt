@@ -85,16 +85,18 @@ class SubscriptionViewModel : ViewModel() {
         }
 
         if (subscription.phone.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa Un numero valido"))
+            formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa tu número de telefono"))
             return false
         }
-      /*  if (subscription.phone.isEmpty() || subscription.phone.length < 9) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa Un numero valido de 9 digitos"))
+
+        if (subscription.phone.length<9) {
+            formErrorLiveData.postValue(SubscriptionFormError.OnPhoneIsInvalidError("El Numero de telefono debe tener 9 caracteres"))
             return false
-        }*/
+        }
 
         if (subscription.subscriptionDate == 0L) {
             formErrorLiveData.postValue(SubscriptionFormError.OnEtSubscriptionDateError("Debes colocar una fecha de suscripcion"))
+            return false
         }
 
         if (subscription.location == null) {

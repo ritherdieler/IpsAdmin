@@ -54,13 +54,13 @@
         android:label="ServiceOrderFragment" />
     <fragment
         android:id="@+id/subscriptionDetail"
-        android:name="com.dscorp.ispadmin.presentation.subscriptiondetails.SubscriptionDetailFragment"
+        android:name="com.dscorp.ispadmin.presentation.subscriptiondetail.SubscriptionDetailFragment"
         tools:layout="@layout/fragment_subscription_detail"
 
         android:label="SubscriptionDetailFragment" >
         <argument
             android:name="subscription"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.Subscription" />
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse"/>
     </fragment>
     <fragment
         android:id="@+id/nav_view_services_order_list"
@@ -83,7 +83,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentDetail"
-        android:name="com.dscorp.ispadmin.presentation.subscriptiondetails.SubscriptionDetailFragment"
+        android:name="com.dscorp.ispadmin.presentation.subscriptiondetail.SubscriptionDetailFragment"
         tools:layout="@layout/fragment_subscription_detail"
         android:label="Detalle de subscripcion" />
     <fragment

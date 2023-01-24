@@ -41,10 +41,11 @@ class SubscriptionFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
+
         savedInstanceState: Bundle?,
+
     ): View {
-        binding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscription, null, true)
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscription, null, true)
 
         observeResponse()
         observeFormError()
@@ -56,8 +57,7 @@ class SubscriptionFragment : Fragment() {
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
             val dateValidatorMin = DateValidatorPointForward.from(
-                Calendar.getInstance().timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS)
-            )
+                Calendar.getInstance().timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS))
 
             val dateValidatorMax =
                 DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
@@ -104,13 +104,12 @@ class SubscriptionFragment : Fragment() {
                         viewModel.formErrorLiveData.postValue(OnEtNumberPhoneError("La cantidad mínima de caracteres para el número de teléfono es de 9 (nueve)"))
                         return
                     } else {
-                        viewModel.formErrorLiveData.postValue(OnEtNumberPhoneError(""))
+                        viewModel.formErrorLiveData.postValue(OnEtPhoneHasNotError)
                     }
                 }
             }
         })
         val edDni: EditText = binding.etDni
-/*
         edDni.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
@@ -128,7 +127,7 @@ class SubscriptionFragment : Fragment() {
                     }
                 }
             }
-        })*/
+        })
 
         observeMapDialogResult()
 
@@ -185,6 +184,8 @@ class SubscriptionFragment : Fragment() {
                 is OnSpnNapBoxError -> setSpnNapBoxError(formError)
                 OnEtDniHasNotError -> clearTlDniError()
                 is OnDniIsInvalidError -> binding.tlDni.error = formError.error
+                is OnPhoneIsInvalidError -> binding.tlPhone.error=formError.error
+                OnEtPhoneHasNotError -> binding.tlPhone.error = null
             }
         }
     }
@@ -254,7 +255,7 @@ class SubscriptionFragment : Fragment() {
             address = binding.etAddress.text.toString(),
             phone = binding.etPhone.text.toString(),
             planId = selectedPlan?.id ?: "",
-            networkDeviceId = selectedNetworkDevice?.id ?: "",
+            networkDeviceId = selectedNetworkDevice?.id.toString(),
             placeId = selectedPlace?.id ?: "",
             location = GeoLocation(
                 selectedLocation?.latitude ?: 0.0,

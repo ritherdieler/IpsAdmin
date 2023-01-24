@@ -17,7 +17,7 @@ interface IRepository {
     suspend fun doSubscription(doSubscription: Subscription): Subscription
     suspend fun getplans(): List<Plan>
     suspend fun getDevices(): List<NetworkDevice>
-    suspend fun getSubscriptions(): List<Subscription>
+    suspend fun getSubscriptions(): List<SubscriptionResponse>
     suspend fun registerPlace(registerPlace: Place): Place
     suspend fun getPlaces():List<Place>
     suspend fun registerTechnician(registerTechnician: Technician): Technician
