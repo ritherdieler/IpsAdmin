@@ -111,7 +111,7 @@
         android:label="MapDialog" />
     <fragment
         android:id="@+id/nav_consult_payments"
-        android:name="com.dscorp.ispadmin.presentation.payment.ConsultPaymentsFragment"
+        android:name="com.dscorp.ispadmin.presentation.payment.consult.ConsultPaymentsFragment"
         android:label="fragment_consut_payments"
         tools:layout="@layout/fragment_consult_payments" />
     <fragment

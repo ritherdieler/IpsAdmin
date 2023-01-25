@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.subscriptionfinder
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -12,6 +11,7 @@ import com.dscorp.ispadmin.util.mockService
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -36,7 +36,7 @@ class FindSubscriptionViewModelTest : KoinTest {
 
     private lateinit var viewModel: FindSubscriptionViewModel
 
-    private val DNI = 48271836
+    private val DNI = "48271836"
 
     private val httpClient: OkHttpClient by inject()
 
@@ -65,8 +65,7 @@ class FindSubscriptionViewModelTest : KoinTest {
     }
 
     @Test
-    fun `when findSubscription is called then liveData should emit subscriptions`() =
-        runBlockingTest() {
+    fun `when findSubscription is called then liveData should emit subscriptions`() = runTest {
             //given
             mockService(
                 mockWebServer = mockWebServer,
@@ -83,7 +82,7 @@ class FindSubscriptionViewModelTest : KoinTest {
         }
 
     @Test
-    fun `when findSubscription has error then liveData should emit error`() = runBlockingTest {
+    fun `when findSubscription has error then liveData should emit error`() = runTest {
         //given
         mockService(
             mockWebServer = mockWebServer,

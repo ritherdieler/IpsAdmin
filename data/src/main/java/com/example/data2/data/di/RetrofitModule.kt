@@ -1,5 +1,7 @@
 package com.example.data2.data.di
 
+import com.example.data2.BuildConfig
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,7 +20,6 @@ val retrofitModule = module {
 fun provideRetrofit(url: String, okHttpClient: OkHttpClient): Retrofit {
     val gson = GsonBuilder().create()
 
-
     return Retrofit.Builder()
         .baseUrl(url)
         .addConverterFactory(GsonConverterFactory.create(gson))
@@ -31,5 +32,10 @@ fun provideHttpClient(): OkHttpClient {
     val logging = HttpLoggingInterceptor()
     logging.level = HttpLoggingInterceptor.Level.BODY
     httpClient.addInterceptor(logging)
+    if (BuildConfig.DEBUG) {
+        httpClient.addNetworkInterceptor(StethoInterceptor())
+    }
+
     return httpClient.build()
 }
+

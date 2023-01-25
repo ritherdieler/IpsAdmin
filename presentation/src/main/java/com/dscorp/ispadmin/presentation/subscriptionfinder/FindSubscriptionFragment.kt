@@ -23,7 +23,6 @@ class FindSubscriptionFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding.findSubscriptionRecyclerView.adapter = adapter
         binding.btnFind.setOnClickListener {
             val dni = binding.findSubscriptionEditText.text.toString()
@@ -31,6 +30,7 @@ class FindSubscriptionFragment : Fragment() {
         }
 
         observeUiState()
+
         return binding.root
     }
 

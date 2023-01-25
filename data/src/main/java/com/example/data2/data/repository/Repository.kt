@@ -188,5 +188,9 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun registerPayment(): Payment {
+        return Payment()
+    }
+
 
 }

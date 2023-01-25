@@ -55,6 +55,7 @@ android {
         implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
         implementation 'androidx.legacy:legacy-support-v4:1.0.0'
         implementation 'androidx.recyclerview:recyclerview:1.2.1'
+        implementation 'com.facebook.stetho:stetho-okhttp3:1.6.0'
 
         def koin_version = "3.3.1"
         api "io.insert-koin:koin-android:$koin_version"
