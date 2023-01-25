@@ -9,19 +9,40 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class RegisterPaymentViewModel : ViewModel(),KoinComponent {
+class RegisterPaymentViewModel : ViewModel(), KoinComponent {
 
-    val registerPaymentUiState = MutableLiveData<RegisterPaymentUiState>()
-    val repository :IRepository by inject()
+    val registerPaymentState = MutableLiveData<RegisterPaymentUiState>()
+    val registerPaymentFormErrorState = MutableLiveData<RegisterPaymentErrorUiState>()
+
+
+    val repository: IRepository by inject()
 
     fun registerPayment(payment: Payment) = viewModelScope.launch {
-        try {
-            val response = repository.registerPayment()
-            registerPaymentUiState.postValue(RegisterPaymentUiState.OnPaymentRegistered(response))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            //registerPaymentUiState.postValue(RegisterPaymentUiState.OnError(e.message))
+        if (paymentIsValid(payment))
+            try {
+                val response = repository.registerPayment(payment)
+                registerPaymentState.postValue(RegisterPaymentUiState.OnPaymentRegistered(response))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                registerPaymentState.postValue(RegisterPaymentUiState.OnError(e.message))
+            }
+    }
+
+    private fun paymentIsValid(payment: Payment): Boolean {
+        if (payment.amountPaid <= 0) {
+            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidAmountError)
+            return false
         }
+        if (payment.discount < 0) {
+            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidDiscountError)
+            return false
+        }
+        if (payment.method.isEmpty()) {
+            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidMethodError)
+            return false
+        }
+
+        return true
     }
 
 }

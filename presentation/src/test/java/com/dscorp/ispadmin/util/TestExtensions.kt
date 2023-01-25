@@ -25,7 +25,7 @@ fun KoinTest.registerIdlingResource(httpClient: OkHttpClient): IdlingResource {
     val okHttp3IdlingResource = OkHttp3IdlingResource.create(
         "okhttp",
         httpClient
-    ).asAndroidX()
+    )
     IdlingRegistry.getInstance().register(
         okHttp3IdlingResource
     )

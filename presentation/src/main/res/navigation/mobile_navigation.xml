@@ -54,14 +54,16 @@
         android:label="ServiceOrderFragment" />
     <fragment
         android:id="@+id/subscriptionDetail"
-        android:name="com.dscorp.ispadmin.presentation.subscriptiondetails.SubscriptionDetailFragment"
+        android:name="com.dscorp.ispadmin.presentation.subscriptiondetail.SubscriptionDetailFragment"
         tools:layout="@layout/fragment_subscription_detail"
 
         android:label="SubscriptionDetailFragment" >
         <argument
             android:name="subscription"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.Subscription" />
-    </fragment>
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse"/>
+        <action
+            android:id="@+id/action_subscriptionDetail_to_mapView"
+            app:destination="@id/mapView3" />  </fragment>
     <fragment
         android:id="@+id/nav_view_services_order_list"
         android:name="com.dscorp.ispadmin.presentation.serviceorderlist.ServicesOrderListFragment"
@@ -81,11 +83,11 @@
             android:id="@+id/action_nav_see_nap_boxes_to_napBoxeDetailsFragment"
             app:destination="@id/napBoxeDetailsFragment" />
     </fragment>
-    <fragment
+<!--    <fragment
         android:id="@+id/fragmentDetail"
         android:name="com.dscorp.ispadmin.presentation.subscriptiondetails.SubscriptionDetailFragment"
         tools:layout="@layout/fragment_subscription_detail"
-        android:label="Detalle de subscripcion" />
+        android:label="Detalle de subscripcion" />-->
     <fragment
         android:id="@+id/nav_see_subscriptions"
         tools:layout="@layout/fragment_subscriptions_list"
@@ -110,6 +112,26 @@
         android:name="com.dscorp.ispadmin.presentation.util.MapDialog"
         android:label="MapDialog" />
 
+    <dialog
+        android:id="@+id/mapView3"
+        android:name="com.dscorp.ispadmin.presentation.util.MapViewDialogFragment"
+        android:label="MapView" >
+        <argument
+            android:name="location"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.GeoLocation"
+            app:nullable="true" />
 
+    </dialog>
 
+    <fragment
+        android:id="@+id/nav_find_subscriptions"
+        tools:layout="@layout/fragment_find_subscription"
+        android:name="com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionFragment"
+        android:label="FindSubscription" >
+    </fragment>
+    <fragment
+        android:id="@+id/nav_consult_payments"
+        android:name="com.dscorp.ispadmin.presentation.payment.consult.ConsultPaymentsFragment"
+        android:label="fragment_consut_payments"
+        tools:layout="@layout/fragment_consult_payments" />
 </navigation>

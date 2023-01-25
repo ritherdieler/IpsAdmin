@@ -38,6 +38,7 @@ class FindSubscriptionFragment : Fragment() {
         viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is FindSubscriptionUiState.OnSubscriptionFound -> adapter.submitList(it.subscriptions)
+                is FindSubscriptionUiState.OnError -> TODO()
             }
         }
     }

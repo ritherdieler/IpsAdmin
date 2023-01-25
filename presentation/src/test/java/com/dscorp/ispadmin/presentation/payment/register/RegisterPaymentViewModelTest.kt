@@ -1,12 +1,17 @@
 package com.dscorp.ispadmin.presentation.payment.register
 
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.KoinAppForInstrumentation
+import com.dscorp.ispadmin.presentation.payment.register.RegisterPaymentErrorUiState.*
+import com.dscorp.ispadmin.presentation.payment.register.RegisterPaymentUiState.*
 import com.dscorp.ispadmin.util.fromJson
+import com.dscorp.ispadmin.util.getValueForTest
 import com.dscorp.ispadmin.util.mockService
 import com.dscorp.ispadmin.util.registerIdlingResource
+import com.example.cleanarchitecture.domain.domain.entity.Payment
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -16,6 +21,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.robolectric.annotation.Config
@@ -45,23 +51,93 @@ class RegisterPaymentViewModelTest : KoinTest {
     fun tearDown() {
         mockWebServer.shutdown()
         IdlingRegistry.getInstance().unregister(okHttp3IdlingResource)
+        stopKoin()
     }
 
     @Test
     fun `when register payment then return success`() {
         //Given
-        val urlToMock = "/api/payment/register"
+        val urlToMock = "/payment"
         val response = MockResponse().setResponseCode(200).fromJson("payment/register/success.json")
         mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
 
+        val payment = Payment(
+            id = 1,
+            amountPaid = 1.0,
+            discount = 1.0,
+            date = 0,
+            subscriptionId = 1,
+            method = "Yape",
+            paid = false
+        )
+
         //When
-        //viewModel.registerPayment()
+        viewModel.registerPayment(payment)
 
         //Then
-        viewModel.registerPaymentUiState.observeForever {
-            assertNotNull(it)
-        }
+        Espresso.onIdle()
+        val value = viewModel.registerPaymentState.value as OnPaymentRegistered
+        assertNotNull(value.payment.id != null)
     }
 
+    @Test
+    fun ` when payment amount is less than 0 then return error`() {
+        //Given
+        val payment = Payment(1, -10.0, 1.0, 0, 1, "Yape", false)
+
+        //when
+        viewModel.registerPayment(payment)
+
+        //then
+        viewModel.registerPaymentFormErrorState.getValueForTest()
+        val value = viewModel.registerPaymentFormErrorState.value as InvalidAmountError
+        assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_INVALID_AMOUNT)
+
+    }
+
+    @Test
+    fun ` when discount is less than 0 then return error`() {
+        //Given
+        val payment = Payment(
+            id = 1,
+            amountPaid = 10.0,
+            date = 0,
+            subscriptionId = 1,
+            method = "Yape",
+            discount = -1.0,
+            paid = false
+        )
+
+        //when
+        viewModel.registerPayment(payment)
+
+        //then
+        viewModel.registerPaymentFormErrorState.getValueForTest()
+        val value = viewModel.registerPaymentFormErrorState.value as InvalidDiscountError
+        assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_INVALID_DISCOUNT)
+
+    }
+
+    @Test
+    fun ` when payment method is empty then return error`() {
+        //Given
+        val payment = Payment(
+            id = 1,
+            amountPaid = 10.0,
+            date = 0,
+            subscriptionId = 1,
+            method = "",
+            discount = 1.0,
+            paid = false
+        )
+
+        //when
+        viewModel.registerPayment(payment)
+
+        //then
+        viewModel.registerPaymentFormErrorState.getValueForTest()
+        val value = viewModel.registerPaymentFormErrorState.value as InvalidMethodError
+        assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_INVALID_METHOD)
+    }
 
 }

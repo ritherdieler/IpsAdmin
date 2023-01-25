@@ -50,7 +50,7 @@
     <string name="cajas_nap">Cajas Nap</string>
     <string name="consult_payments">Consultar Pagos</string>
     <string name="find_subscriptions">Buscar suscripciones</string>
-
+    <string name="register_payment">Registrar pago</string>
 
 
 </resources>

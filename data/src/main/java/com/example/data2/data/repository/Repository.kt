@@ -188,8 +188,13 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun registerPayment(): Payment {
-        return Payment()
+    override suspend fun registerPayment(payment: Payment): Payment {
+        val response = restApiServices.registerPayment(payment)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
     }
 
 
