@@ -3,12 +3,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemSubscriptionBinding
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
 class SubscriptionAdapter(val listener: SubscriptionsListFragment): RecyclerView.Adapter<SubscriptionAdapter.SubscriptionListViewHolder>() {
-    private var subscriptionList:List<Subscription> = emptyList()
+    private var subscriptionList:List<SubscriptionResponse> = emptyList()
 
-    fun submitList(subscription :List<Subscription>) {
+    fun submitList(subscription: List<SubscriptionResponse>) {
         this.subscriptionList = subscription
         notifyDataSetChanged()
     }
@@ -25,16 +25,19 @@ class SubscriptionAdapter(val listener: SubscriptionsListFragment): RecyclerView
 
     class SubscriptionListViewHolder(private val binding: ItemSubscriptionBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(subscription: Subscription) {
-            binding.tvSeePlanId.text = subscription.code
-            binding.tvSeeFirstName.text = subscription.address
+        fun bind(subscription: SubscriptionResponse) {
+            binding.tvSeePlanId.text = subscription.plan?.id
+            binding.tvSeeFirstName.text = subscription.firstName
             binding.tvSeeId.text = subscription.id
+            binding.tvSeePlace.text = subscription.lastName
+
         }
     }
 
     override fun onBindViewHolder(holder: SubscriptionListViewHolder, position: Int) {
         holder.bind(subscriptionList[position])
-        holder.itemView.setOnClickListener { listener?.onItemClick(subscriptionList[position])
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(subscriptionList[position])
         }
     }
 

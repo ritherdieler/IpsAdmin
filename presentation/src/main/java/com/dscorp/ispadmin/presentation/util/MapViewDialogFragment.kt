@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.databinding.DialogMapBinding
+import com.dscorp.ispadmin.databinding.ViewMapBinding
+import com.dscorp.ispadmin.presentation.subscriptiondetail.SubscriptionDetailFragmentArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 /**
  * Created by Sergio Carrillo Diestra on 15/01/2023.
@@ -21,13 +23,13 @@ import com.google.android.gms.maps.model.LatLng
  * Huacho, Peru.
  *
  **/
-class MapDialog : DialogFragment(), OnMapReadyCallback {
+class MapViewDialogFragment : DialogFragment(), OnMapReadyCallback {
 
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
-    private lateinit var selectedLatLng: LatLng
+    private  val args: MapViewDialogFragmentArgs by navArgs()
 
-    lateinit var binding: DialogMapBinding
+    lateinit var binding: ViewMapBinding
 
     override fun getTheme(): Int = R.style.Theme_IspAdminAndroid
 
@@ -36,34 +38,22 @@ class MapDialog : DialogFragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DialogMapBinding.inflate(inflater, container, false)
+        binding = ViewMapBinding.inflate(inflater, container, false)
 
-        mapView = binding.mapView
+        mapView = binding.mapView2
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
-        binding.btn.setOnClickListener {
-            val navController = findNavController()
-            navController.previousBackStackEntry?.savedStateHandle?.set("location", selectedLatLng)
-            dismiss()
-        }
-
         return binding.root
     }
-
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        val santaRosa = LatLng(-11.234996, -77.380347)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(santaRosa))
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.5f))
-
-        googleMap.setOnCameraMoveListener {
-            selectedLatLng = googleMap.cameraPosition.target
-            if (this@MapDialog::selectedLatLng.isInitialized) {
-                binding.btn.isEnabled = true
-            }
-        }
-
+        val location = LatLng(args.location?.latitude?:0.0,args.location?.longitude?:0.0)
+        googleMap.addMarker(MarkerOptions()
+            .position(location)
+            .title("HOLAAAAAAAAAAA "))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(location))
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(13.5f))
     }
 
 

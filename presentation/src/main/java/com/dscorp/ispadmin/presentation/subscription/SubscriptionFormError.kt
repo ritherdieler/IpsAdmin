@@ -12,10 +12,8 @@ import com.dscorp.ispadmin.presentation.place.FormError
 sealed class
 SubscriptionFormError {
     object OnFirstNameHasNotErrors : SubscriptionFormError()
-    object OnEtDniHasNotError : SubscriptionFormError() {
-
-    }
-
+    object OnEtDniHasNotError : SubscriptionFormError()
+    object OnEtPhoneHasNotError : SubscriptionFormError()
     class OnEtFirstNameError(val error: String) : SubscriptionFormError()
     class OnEtLastNameError(val error: String) : SubscriptionFormError()
     class OnEtDniError(val error: String) : SubscriptionFormError()
@@ -28,4 +26,7 @@ SubscriptionFormError {
     class OnSpnPlaceError(val error: String) : SubscriptionFormError()
     class OnEtLocationError(val error: String) : SubscriptionFormError()
     class OnSpnNapBoxError(val error: String) : SubscriptionFormError()
+    class OnDniIsInvalidError(val error: String) : SubscriptionFormError()
+    class OnPhoneIsInvalidError(val error: String) : SubscriptionFormError()
+
 }

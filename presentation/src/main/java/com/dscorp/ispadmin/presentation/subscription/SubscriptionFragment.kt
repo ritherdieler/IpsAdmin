@@ -21,9 +21,12 @@ import com.dscorp.ispadmin.presentation.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionResponse.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.time.Duration.Companion.days
+import kotlin.time.DurationUnit
 
 class SubscriptionFragment : Fragment() {
     lateinit var binding: FragmentSubscriptionBinding
@@ -38,10 +41,11 @@ class SubscriptionFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
+
         savedInstanceState: Bundle?,
+
     ): View {
-        binding =
-            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscription, null, true)
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscription, null, true)
 
         observeResponse()
         observeFormError()
@@ -50,16 +54,33 @@ class SubscriptionFragment : Fragment() {
             registerSubscription()
         }
         binding.etSubscriptionDate.setOnClickListener {
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+            val dateValidatorMin = DateValidatorPointForward.from(
+                Calendar.getInstance().timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS))
+
+            val dateValidatorMax =
+                DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
+
+            val dateValidator =
+                CompositeDateValidator.allOf(listOf(dateValidatorMin, dateValidatorMax))
+
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
+                .setCalendarConstraints(
+                    CalendarConstraints.Builder()
+                        .setValidator(dateValidator)
+                        .build()
+                )
                 .build()
 
             datePicker.addOnPositiveButtonClickListener {
                 selectedDate = it
                 val formatter = SimpleDateFormat("dd/MM/yyyy")
-                val formattedDate = formatter.format(it)
+                val formattedDate = formatter.format(calendar.timeInMillis)
                 binding.etSubscriptionDate.setText(formattedDate)
             }
+
 
             datePicker.show(childFragmentManager, "DatePicker")
         }
@@ -79,17 +100,16 @@ class SubscriptionFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s != null) {
-                    if (s.length <7) {
+                    if (s.length < 9) {
                         viewModel.formErrorLiveData.postValue(OnEtNumberPhoneError("La cantidad mínima de caracteres para el número de teléfono es de 9 (nueve)"))
                         return
                     } else {
-                        viewModel.formErrorLiveData.postValue(OnEtNumberPhoneError(""))
+                        viewModel.formErrorLiveData.postValue(OnEtPhoneHasNotError)
                     }
                 }
             }
         })
         val edDni: EditText = binding.etDni
-
         edDni.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
@@ -102,7 +122,7 @@ class SubscriptionFragment : Fragment() {
                     if (s.length < 8) {
                         viewModel.formErrorLiveData.postValue(OnEtDniError("La cantidad mínima de caracteres para el número de teléfono es de 8"))
 
-                    }else{
+                    } else {
                         viewModel.formErrorLiveData.postValue(OnEtDniHasNotError)
                     }
                 }
@@ -163,6 +183,9 @@ class SubscriptionFragment : Fragment() {
                 is OnEtLocationError -> setEtLocationError(formError)
                 is OnSpnNapBoxError -> setSpnNapBoxError(formError)
                 OnEtDniHasNotError -> clearTlDniError()
+                is OnDniIsInvalidError -> binding.tlDni.error = formError.error
+                is OnPhoneIsInvalidError -> binding.tlPhone.error=formError.error
+                OnEtPhoneHasNotError -> binding.tlPhone.error = null
             }
         }
     }
@@ -224,7 +247,6 @@ class SubscriptionFragment : Fragment() {
     }
 
     private fun registerSubscription() {
-
         val subscription = Subscription(
             firstName = binding.etFirstName.text.toString(),
             lastName = binding.etLastName.text.toString(),
@@ -233,9 +255,11 @@ class SubscriptionFragment : Fragment() {
             address = binding.etAddress.text.toString(),
             phone = binding.etPhone.text.toString(),
             planId = selectedPlan?.id ?: "",
-            networkDeviceId = selectedNetworkDevice?.id ?: "",
+            networkDeviceId = selectedNetworkDevice?.id.toString(),
             placeId = selectedPlace?.id ?: "",
-            location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude),
+            location = GeoLocation(
+                selectedLocation?.latitude ?: 0.0,
+                selectedLocation?.longitude ?: 0.0),
             technicianId = selectedTechnician?.id ?: "",
             napBoxId = selectedNapBox?.id ?: "",
             subscriptionDate = selectedDate

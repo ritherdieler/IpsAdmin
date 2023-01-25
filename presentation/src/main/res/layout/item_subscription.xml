@@ -17,32 +17,31 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="119dp">
 
             <TextView
                 android:id="@+id/tvPlanId"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="PlanId"
+                android:text="PlanId:"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toTopOf="@+id/tvName"
-                app:layout_constraintEnd_toStartOf="@+id/tvSeePlanId"
+                app:layout_constraintEnd_toStartOf="@id/tvSeeFirstName"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed" />
+                app:layout_constraintVertical_chainStyle="spread"
+
+                />
 
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Name"
+                android:text="Name:"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                app:layout_constraintBottom_toTopOf="@id/tvId"
+                app:layout_constraintBottom_toTopOf="@+id/tvId"
                 app:layout_constraintEnd_toEndOf="@+id/tvPlanId"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/tvPlanId"
                 app:layout_constraintTop_toBottomOf="@+id/tvPlanId" />
 
@@ -50,77 +49,69 @@
                 android:id="@+id/tvId"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Id"
+                android:text="ID:"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                app:layout_constraintBottom_toTopOf="@id/tvPlace"
+                app:layout_constraintBottom_toTopOf="@+id/tvPlace"
                 app:layout_constraintEnd_toEndOf="@+id/tvName"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/tvName"
-                app:layout_constraintTop_toBottomOf="@id/tvName" />
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
             <TextView
 
                 android:id="@+id/tvPlace"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:text="Lugar:"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/tvId"
-                app:layout_constraintStart_toStartOf="@id/tvId"
-                app:layout_constraintTop_toBottomOf="@+id/tvId"
-                android:text="Lugar" />
+                app:layout_constraintEnd_toEndOf="@+id/tvId"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/tvId"
+                app:layout_constraintTop_toBottomOf="@+id/tvId" />
 
             <TextView
                 android:id="@+id/tvSeePlanId"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="@id/tvPlanId"
+                app:layout_constraintBottom_toTopOf="@+id/tvSeeFirstName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvPlanId"
-                app:layout_constraintTop_toTopOf="@+id/tvPlanId"
-                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread"
                 tools:text="saul" />
 
             <TextView
                 android:id="@+id/tvSeeFirstName"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tvName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/tvSeeId"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeePlanId"
-                app:layout_constraintHorizontal_bias="0.375"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/tvSeePlanId"
-                app:layout_constraintTop_toTopOf="@+id/tvName"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintTop_toBottomOf="@+id/tvSeePlanId"
                 tools:text="renato" />
 
             <TextView
                 android:id="@+id/tvSeeId"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tvId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/tvSeePlace"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeeFirstName"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/tvSeeFirstName"
-                app:layout_constraintTop_toTopOf="@+id/tvId"
+                app:layout_constraintTop_toBottomOf="@+id/tvSeeFirstName"
                 tools:text="vacalola" />
 
             <TextView
                 android:id="@+id/tvSeePlace"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tvPlace"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeeId"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@id/tvSeeId"
-                app:layout_constraintTop_toTopOf="@+id/tvPlace"
-                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/tvSeeId"
+                app:layout_constraintTop_toBottomOf="@+id/tvSeeId"
                 tools:text="place" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

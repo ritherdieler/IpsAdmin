@@ -1,36 +1,372 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <variable
+            name="subscription"
+            type="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.subscriptiondetails.SubscriptionDetailFragment">
+        tools:context=".presentation.subscriptiondetail.SubscriptionDetailFragment">
 
-
-        <TextView
-            android:id="@+id/tvAverSiEstaLlegandoXd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/hello_blank_fragment"
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
-        <TextView
-            android:id="@+id/tvFirstnameSubscription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tvAverSiEstaLlegandoXd"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="aver aver aver " />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailCode"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Codigo:"
+                    app:layout_constraintBottom_toTopOf="@id/tvSubscriptionDetailFirstName"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailId"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailId"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailId" />
+
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailCode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.code}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailCode"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailId"
+                    app:layout_constraintHorizontal_bias="0.2"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailId"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailCode"
+                    tools:text="Codigo Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailFirstName"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Nombres:"
+                    app:layout_constraintBottom_toTopOf="@id/tvSubscriptionDetailLastName"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailCode"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailCode"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailCode"
+
+                    />
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailFirstName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.firstName}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailFirstName"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailCode"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailCode"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailFirstName"
+                    tools:text="Nombres Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailLastName"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Apellidos:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailDni"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailFirstName"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailFirstName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailFirstName" />
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailId"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailId"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tvSubscriptionDetailId"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailId"
+                    tools:text="ID Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailLastName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.lastName}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailLastName"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailFirstName"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailFirstName"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailLastName"
+                    tools:text="Apellidos aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailDni"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="DNI:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailAddresses"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailLastName"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailLastName"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailLastName" />
+
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+
+                    android:text="ID de la Subscripcion:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailCode"
+                    app:layout_constraintEnd_toStartOf="@id/tvSeeSubscriptionDetailId"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="spread" />
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailDni"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.dni}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailDni"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailLastName"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailLastName"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailDni"
+                    tools:text="Dni Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailAddresses"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Dirección:"
+                    app:layout_constraintBottom_toTopOf="@id/tvSubscriptionDetailLocation"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailDni"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailDni"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailDni" />
+
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailAddresses"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.address}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailAddresses"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailDni"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailDni"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailAddresses"
+                    tools:text="Direccion Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailLocation"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Ubicacion:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailPhone"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailAddresses"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailAddresses"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailAddresses" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailPhone"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Número de telefono:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailDate"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailLocation"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailLocation"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailLocation" />
+
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailPhone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.phone}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailPhone"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailAddresses"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailAddresses"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailPhone"
+                    tools:text="Numero de telefono Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailDate"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Fecha de subscripcion:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailSpnPlan"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailPhone"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailPhone"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailPhone" />
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailDate"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailPhone"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailPhone"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailDate"
+                    tools:text="Fecha de subscripcion " />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailSpnPlan"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Plan:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailDate"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailDate"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailDate" />
+
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailSpnPlan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.plan.name}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnPlan"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailDate"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailDate"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnPlan"
+                    tools:text="spinner plan  Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailSpnNetworkDevice"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Dispositivo de red:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailSpnPlace"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailSpnPlan"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailSpnPlan"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailSpnPlan" />
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.networkDevice.name}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnPlan"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnPlan"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
+                    tools:text="spn Dispositivo de red Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailSpnPlace"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Lugar:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailSpnTechnician"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailSpnNetworkDevice" />
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailSpnPlace"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.place.name}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnPlace"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnPlace"
+                    tools:text="spn Lugar Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailSpnTechnician"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Técnico:"
+                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailNapBox"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailSpnPlace"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailSpnPlace"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailSpnPlace" />
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailSpnTechnician"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.technician.firstName}"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnTechnician"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnPlace"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnPlace"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnTechnician"
+                    tools:text="spn Tecnicos Aqui" />
+
+                <TextView
+                    android:id="@+id/tvSubscriptionDetailNapBox"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:text="Caja nap:"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailSpnTechnician"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailSpnTechnician"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailSpnTechnician" />
+
+                <TextView
+                    android:id="@+id/tvSeeSubscriptionDetailSpnNapBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.napBox.address}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnTechnician"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnTechnician"
+                    app:layout_constraintTop_toBottomOf="@+id/tvSeeSubscriptionDetailSpnTechnician"
+                    tools:text="Caja nap Aqui" />
+
+                <ImageView
+                    android:id="@+id/ivMap"
+                    android:layout_width="48dp"
+                    android:layout_height="43dp"
+                    android:layout_marginEnd="32dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailLocation"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailAddresses"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailAddresses"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailLocation"
+                    app:srcCompat="@drawable/mapa" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

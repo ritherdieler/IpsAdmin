@@ -10,12 +10,12 @@ package com.example.cleanarchitecture.domain.domain.entity
 data class Plan(
 
     val id: String? =null,
-    val name:String,
-    val price: String,
-    val downloadSpeed: String,
-    val uploadSpeed: String,
+    val name:String="",
+    val price: String="",
+    val downloadSpeed: String="",
+    val uploadSpeed: String="",
 
-    )
+    ):java.io.Serializable
 {
     override fun toString(): String {
         return name
