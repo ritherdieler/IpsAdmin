@@ -25,7 +25,6 @@ class RegisterPaymentFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         setupView()
         return binding.root
     }
@@ -40,24 +39,27 @@ class RegisterPaymentFragment : Fragment() {
                     discount = binding.etPaymentDiscount.text.toString().toDouble(),
                     discountReason = binding.etPaymentDiscountReason.text.toString(),
                     method = binding.etPaymentMethod.text.toString(),
-                    subscriptionId = args.subscription.id?.toInt()?:0
+                    subscriptionId = args.subscription.id?.toInt() ?: 0
                 )
             )
         }
 
-        viewModel.registerPaymentState.observe(viewLifecycleOwner) {
-            when (it) {
-                is RegisterPaymentUiState.OnPaymentRegistered -> {
-                    showMaterialSuccessDialog()
-                }
-                is RegisterPaymentUiState.OnError -> {
-                    showMaterialErrorDialog(it.message)
-                }
-            }
-        }
+        observeUiState()
+        observeFormErrorUiState()
+    }
 
+    private fun observeFormErrorUiState() {
         viewModel.registerPaymentFormErrorState.observe(viewLifecycleOwner) {
             showMaterialErrorDialog(it.message)
+        }
+    }
+
+    private fun observeUiState() {
+        viewModel.registerPaymentState.observe(viewLifecycleOwner) {
+            when (it) {
+                is RegisterPaymentUiState.OnPaymentRegistered -> showMaterialSuccessDialog()
+                is RegisterPaymentUiState.OnError -> showMaterialErrorDialog(it.message)
+            }
         }
     }
 
@@ -80,6 +82,5 @@ class RegisterPaymentFragment : Fragment() {
             }
             .show()
     }
-
 
 }

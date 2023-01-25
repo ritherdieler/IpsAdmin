@@ -17,7 +17,7 @@ class PlanViewModel : ViewModel() {
 
         try {
             if (formIsValid(plan)) {
-                var planFromRepository = repository.registerPlan(plan)
+                val planFromRepository = repository.registerPlan(plan)
                 planResponseLiveData.postValue(PlanResponse.OnPlanRegistered(planFromRepository))
             }
         } catch (error: Exception) {
