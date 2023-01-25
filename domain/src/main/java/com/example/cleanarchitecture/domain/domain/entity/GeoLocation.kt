@@ -7,7 +7,7 @@ package com.example.cleanarchitecture.domain.domain.entity
  * Huacho, Peru.
  *
  **/
-data class GeoLocation(val latitude: Double=0.0, val longitude: Double=0.0):java.io.Serializable{
+data class GeoLocation(val latitude: Double =0.0, val longitude: Double=0.0):java.io.Serializable{
     override fun toString(): String {
         return "$longitude´'+$latitude"
     }

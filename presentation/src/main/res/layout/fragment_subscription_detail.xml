@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-    <variable
-        name="subscription"
-        type="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+
+        <variable
+            name="subscription"
+            type="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.subscription.SubscriptionFragment">
+        tools:context=".presentation.subscriptiondetail.SubscriptionDetailFragment">
 
         <ScrollView
             android:layout_width="0dp"
@@ -19,10 +21,10 @@
             android:fillViewport="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0">
+            app:layout_constraintVertical_bias="0.0">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -44,16 +46,15 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailCode"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.code}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailCode"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailId"
                     app:layout_constraintHorizontal_bias="0.2"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailId"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailCode"
-                    tools:text="Codigo Aqui"
-                    android:text="@{subscription.code}"/>
+                    tools:text="Codigo Aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailFirstName"
@@ -73,12 +74,12 @@
                     android:id="@+id/tvSeeSubscriptionDetailFirstName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.firstName}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailFirstName"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailCode"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailCode"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailFirstName"
-                    tools:text="Nombres Aqui"
-                    android:text="@{subscription.firstName}"/>
+                    tools:text="Nombres Aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailLastName"
@@ -94,7 +95,6 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailId"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailId"
@@ -105,15 +105,14 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailLastName"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.lastName}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailLastName"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailFirstName"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailFirstName"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailLastName"
-                    tools:text="Apellidos aqui"
-                    android:text="@{subscription.lastName}"/>
+                    tools:text="Apellidos aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailDni"
@@ -130,10 +129,11 @@
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailId"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
+
                     android:text="ID de la Subscripcion:"
                     app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailCode"
                     app:layout_constraintEnd_toStartOf="@id/tvSeeSubscriptionDetailId"
@@ -143,15 +143,14 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailDni"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.dni}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailDni"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailLastName"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailLastName"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailDni"
-                    tools:text="Dni Aqui"
-                    android:text="@{subscription.dni}"/>
+                    tools:text="Dni Aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailAddresses"
@@ -168,15 +167,14 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailAddresses"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.address}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailAddresses"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailDni"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailDni"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailAddresses"
-                    tools:text="Direccion Aqui"
-                    android:text="@{subscription.address}"/>
+                    tools:text="Direccion Aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailLocation"
@@ -189,18 +187,6 @@
                     app:layout_constraintEnd_toEndOf="@+id/tvSubscriptionDetailAddresses"
                     app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailAddresses"
                     app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailAddresses" />
-
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailLocation"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailLocation"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailAddresses"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailAddresses"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailLocation"
-                    tools:text="Ubicacion Aqui"
-                    android:text="@{subscription.location.toString()}"/>
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailPhone"
@@ -217,15 +203,14 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailPhone"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.phone}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailPhone"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailLocation"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailLocation"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailAddresses"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailAddresses"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailPhone"
-                    tools:text="Numero de telefono Aqui"
-                    android:text="@{subscription.phone}"/>
+                    tools:text="Numero de telefono Aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailDate"
@@ -241,7 +226,6 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailDate"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailDate"
@@ -265,15 +249,14 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailSpnPlan"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.plan.name}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnPlan"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailDate"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailDate"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnPlan"
-                    tools:text="spinner plan  Aqui"
-                    android:text="@{subscription.plan.name}"/>
+                    tools:text="spinner plan  Aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailSpnNetworkDevice"
@@ -289,15 +272,14 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.networkDevice.name}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnPlan"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnPlan"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
-                    tools:text="spn Dispositivo de red Aqui"
-                    android:text="@{subscription.networkDevice.name}"/>
+                    tools:text="spn Dispositivo de red Aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailSpnPlace"
@@ -313,15 +295,14 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailSpnPlace"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.place.name}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnPlace"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnPlace"
-                    tools:text="spn Lugar Aqui"
-                    android:text="@{subscription.place.name}"/>
+                    tools:text="spn Lugar Aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailSpnTechnician"
@@ -337,15 +318,14 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailSpnTechnician"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.technician.firstName}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnTechnician"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnPlace"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnPlace"
                     app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnTechnician"
-                    tools:text="spn Tecnicos Aqui"
-                    android:text="@{subscription.technician.firstName}"/>
+                    tools:text="spn Tecnicos Aqui" />
 
                 <TextView
                     android:id="@+id/tvSubscriptionDetailNapBox"
@@ -363,16 +343,25 @@
 
                 <TextView
                     android:id="@+id/tvSeeSubscriptionDetailSpnNapBox"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@{subscription.napBox.address}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnTechnician"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnTechnician"
                     app:layout_constraintTop_toBottomOf="@+id/tvSeeSubscriptionDetailSpnTechnician"
-                    tools:text="Caja nap Aqui"
-                    android:text="@{subscription.napBox.address}"/>
+                    tools:text="Caja nap Aqui" />
 
+                <ImageView
+                    android:id="@+id/ivMap"
+                    android:layout_width="48dp"
+                    android:layout_height="43dp"
+                    android:layout_marginEnd="32dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailLocation"
+                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailAddresses"
+                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailAddresses"
+                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailLocation"
+                    app:srcCompat="@drawable/mapa" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

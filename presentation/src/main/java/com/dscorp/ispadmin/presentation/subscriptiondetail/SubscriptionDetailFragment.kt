@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionDetailBinding
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
 class SubscriptionDetailFragment : Fragment() {
@@ -34,6 +35,13 @@ class SubscriptionDetailFragment : Fragment() {
         binding.subscription = subscription
         binding.executePendingBindings()
 
+        binding.ivMap.setOnClickListener {
+            findNavController().navigate(SubscriptionDetailFragmentDirections.actionSubscriptionDetailToMapView(subscription.location))
+        }
+
+
+
         return binding.root
     }
+
 }
