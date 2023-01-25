@@ -1,44 +1,39 @@
 package com.dscorp.ispadmin.presentation.subscriptionlist
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemSubscriptionBinding
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 
-class SubscriptionAdapter(val listener: SubscriptionsListFragment): RecyclerView.Adapter<SubscriptionAdapter.SubscriptionListViewHolder>() {
-    private var subscriptionList:List<Subscription> = emptyList()
+class SubscriptionAdapter: ListAdapter<Subscription, SubscriptionAdapterViewHolder>(SubscriptionDiffCallback()) {
 
-    fun submitList(subscription :List<Subscription>) {
-        this.subscriptionList = subscription
-        notifyDataSetChanged()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionAdapterViewHolder {
+        val binding =
+            ItemSubscriptionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return SubscriptionAdapterViewHolder(binding)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionListViewHolder {
-        return SubscriptionListViewHolder(
-            ItemSubscriptionBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+    override fun onBindViewHolder(holder: SubscriptionAdapterViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+}
+
+class SubscriptionAdapterViewHolder(private val binding: ItemSubscriptionBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    fun bind(subscription: Subscription) {
+        binding.subscriptionList = subscription
+        binding.executePendingBindings()
+    }
+}
+
+private class SubscriptionDiffCallback : DiffUtil.ItemCallback<Subscription>() {
+    override fun areItemsTheSame(oldItem: Subscription, newItem: Subscription): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    class SubscriptionListViewHolder(private val binding: ItemSubscriptionBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(subscription: Subscription) {
-            binding.tvSeePlanId.text = subscription.code
-            binding.tvSeeFirstName.text = subscription.address
-            binding.tvSeeId.text = subscription.id
-        }
-    }
-
-    override fun onBindViewHolder(holder: SubscriptionListViewHolder, position: Int) {
-        holder.bind(subscriptionList[position])
-        holder.itemView.setOnClickListener { listener?.onItemClick(subscriptionList[position])
-        }
-    }
-
-    override fun getItemCount(): Int {
-        return subscriptionList.size
+    override fun areContentsTheSame(oldItem: Subscription, newItem: Subscription): Boolean {
+        return oldItem == newItem
     }
 }

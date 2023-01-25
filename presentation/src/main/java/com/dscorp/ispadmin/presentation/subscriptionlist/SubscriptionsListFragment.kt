@@ -46,7 +46,7 @@ class SubscriptionsListFragment : Fragment(),SubscriptionItemClickListener {
     }
 
     private fun fillRecycleView(it: SubscriptionsListResponse.OnSubscriptionFound) {
-        val adapter = SubscriptionAdapter(this)
+        val adapter = SubscriptionAdapter()
         adapter.submitList(it.subscriptions)
         binding.rvSubscription.adapter = adapter
 
