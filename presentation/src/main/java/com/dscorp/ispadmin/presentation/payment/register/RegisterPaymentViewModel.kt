@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitecture.domain.domain.entity.Payment
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -14,6 +15,7 @@ class RegisterPaymentViewModel : ViewModel(), KoinComponent {
     val registerPaymentState = MutableLiveData<RegisterPaymentUiState>()
     val registerPaymentFormErrorState = MutableLiveData<RegisterPaymentErrorUiState>()
 
+    var subscription: SubscriptionResponse? = null
 
     val repository: IRepository by inject()
 
@@ -39,6 +41,18 @@ class RegisterPaymentViewModel : ViewModel(), KoinComponent {
         }
         if (payment.method.isEmpty()) {
             registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidMethodError)
+            return false
+        }
+        if (payment.subscriptionId <= 0) {
+            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.GenericError)
+            return false
+        }
+        if (payment.amountPaid + payment.discount < (subscription?.plan?.price ?: 0f)) {
+            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.AmountPaidLessThanPlanPriceError)
+            return false
+        }
+        if ((subscription?.plan?.price ?: 0f) < payment.amountPaid + payment.discount) {
+            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.AmountPaidGreaterThanPlanPriceError)
             return false
         }
 

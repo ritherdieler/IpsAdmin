@@ -102,4 +102,6 @@ class FindSubscriptionViewModelTest : KoinTest {
         assertNotEquals("", value.message)
     }
 
+
+
 }

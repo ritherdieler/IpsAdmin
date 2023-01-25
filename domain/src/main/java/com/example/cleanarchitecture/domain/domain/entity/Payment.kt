@@ -6,7 +6,7 @@ data class Payment(
     val discount: Double = 0.0,
     val discountReason:String = "",
     var date: Long = 0,
-    var subscriptionId: Int = 0,
     var method: String = "",
-    var paid: Boolean = false
+    var paid: Boolean = false,
+    var subscriptionId: Int = 0
 )

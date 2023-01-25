@@ -12,6 +12,8 @@ import com.dscorp.ispadmin.util.getValueForTest
 import com.dscorp.ispadmin.util.mockService
 import com.dscorp.ispadmin.util.registerIdlingResource
 import com.example.cleanarchitecture.domain.domain.entity.Payment
+import com.example.cleanarchitecture.domain.domain.entity.Plan
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -61,17 +63,20 @@ class RegisterPaymentViewModelTest : KoinTest {
         val response = MockResponse().setResponseCode(200).fromJson("payment/register/success.json")
         mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
 
+        val plan = Plan(id = null, name = "", price = 100f, downloadSpeed = "", uploadSpeed = "")
         val payment = Payment(
             id = 1,
-            amountPaid = 1.0,
-            discount = 1.0,
-            date = 0,
+            amountPaid = 90.0,
+            date = -1,
             subscriptionId = 1,
             method = "Yape",
+            discount = 10.0,
             paid = false
         )
+        viewModel.subscription = SubscriptionResponse().apply { this.plan = plan }
 
         //When
+
         viewModel.registerPayment(payment)
 
         //Then
@@ -83,7 +88,15 @@ class RegisterPaymentViewModelTest : KoinTest {
     @Test
     fun ` when payment amount is less than 0 then return error`() {
         //Given
-        val payment = Payment(1, -10.0, 1.0, 0, 1, "Yape", false)
+        val payment = Payment(
+            id = 1,
+            amountPaid = -1.0,
+            date = 0,
+            subscriptionId = 1,
+            method = "Yape",
+            discount = 1.0,
+            paid = false
+        )
 
         //when
         viewModel.registerPayment(payment)
@@ -138,6 +151,52 @@ class RegisterPaymentViewModelTest : KoinTest {
         viewModel.registerPaymentFormErrorState.getValueForTest()
         val value = viewModel.registerPaymentFormErrorState.value as InvalidMethodError
         assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_INVALID_METHOD)
+    }
+
+    @Test
+    fun ` when payment subscription id is less or equal to 0 then return error`() {
+        //Given
+        val payment = Payment(
+            id = 0,
+            amountPaid = 10.0,
+            date = 0,
+            subscriptionId = -1,
+            method = "Yape",
+            discount = 1.0,
+            paid = false
+        )
+
+        //when
+        viewModel.registerPayment(payment)
+
+        //then
+        viewModel.registerPaymentFormErrorState.getValueForTest()
+        val value = viewModel.registerPaymentFormErrorState.value as GenericError
+        assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_GENERIC)
+    }
+
+    @Test
+    fun `when payment amount is greater than amountPaid plus discount then return error`() {
+        //Given
+        val plan = Plan(id = null, name = "", price = 100f, downloadSpeed = "", uploadSpeed = "")
+        val payment = Payment(
+            id = 1,
+            amountPaid = 100.0,
+            date = -1,
+            subscriptionId = 1,
+            method = "Yape",
+            discount = 1.0,
+            paid = false
+        )
+        viewModel.subscription = SubscriptionResponse().apply { this.plan = plan }
+
+        //when
+        viewModel.registerPayment(payment)
+
+        //then
+        viewModel.registerPaymentFormErrorState.getValueForTest()
+        val value = viewModel.registerPaymentFormErrorState.value as AmountPaidGreaterThanPlanPriceError
+        assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_AMOUNT_PAID_GREATER_THAN_PLAN_PRICE)
     }
 
 }

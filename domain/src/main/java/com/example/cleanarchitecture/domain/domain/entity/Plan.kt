@@ -11,7 +11,7 @@ data class Plan(
 
     val id: String? =null,
     val name:String="",
-    val price: String="",
+    val price: Float = 0f ,
     val downloadSpeed: String="",
     val uploadSpeed: String="",
 

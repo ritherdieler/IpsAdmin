@@ -71,7 +71,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    fun showSucessDialog(plan: String) {
+    private fun showSucessDialog(plan: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Plan Registrado con Exito")
         builder.setMessage(plan)
@@ -80,7 +80,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         builder.show()
     }
 
-    fun showErrorDialog(error: String) {
+    private fun showErrorDialog(error: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("El plan no fue registrado")
         builder.setMessage(error)
@@ -89,10 +89,10 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         builder.show()
     }
 
-    fun registerPlan() {
+    private fun registerPlan() {
         val plan = Plan(
             name = binding.etNamePlan.text.toString(),
-            price = binding.etPrice.text.toString(),
+            price = binding.etPrice.text.toString().toFloat(),
             downloadSpeed = binding.etDownloadSpeed.text.toString(),
             uploadSpeed = binding.etUploadSpeed.text.toString()
         )

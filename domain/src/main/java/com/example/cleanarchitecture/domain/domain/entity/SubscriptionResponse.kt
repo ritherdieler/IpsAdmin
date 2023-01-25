@@ -1,20 +1,20 @@
 package com.example.cleanarchitecture.domain.domain.entity
 
 data class SubscriptionResponse(
-    val address: String,
-    val code: String? = null,
-    val dni: String,
-    val firstName: String,
-    val id: String? = null,
-    val lastName: String,
-    val location: GeoLocation? = null,
-    val napBox: NapBox? = null,
-    val networkDevice: NetworkDevice ? = null,
-    val new: Boolean,
-    val password: String,
-    val phone: String,
-    val place: Place? = null,
-    val plan: Plan? = null,
-    val serviceIsSuspended: Boolean,
-    val technician: Technician? = null
+    var address: String? = null,
+    var code: String? = null,
+    var dni: String? = null,
+    var firstName: String? = null,
+    var id: String? = null,
+    var lastName: String? = null,
+    var location: GeoLocation? = null,
+    var napBox: NapBox? = null,
+    var networkDevice: NetworkDevice ? = null,
+    var new: Boolean? = null,
+    var password: String? = null,
+    var phone: String? = null,
+    var place: Place? = null,
+    var plan: Plan? = null,
+    var serviceIsSuspended: Boolean? = null,
+    var technician: Technician? = null
 ):java.io.Serializable

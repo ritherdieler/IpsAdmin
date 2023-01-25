@@ -74,7 +74,7 @@ interface RestApiServices {
     ): Response<List<Payment>>
 
     @GET("subscription/find")
-    suspend fun findSubscription(@Query("dni") dni: String): Response<List<Subscription>>
+    suspend fun findSubscription(@Query("dni") dni: String): Response<List<SubscriptionResponse>>
     @POST("payment")
    suspend fun registerPayment(@Body payment: Payment): Response<Payment>
 

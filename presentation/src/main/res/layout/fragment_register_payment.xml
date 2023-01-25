@@ -20,6 +20,15 @@
             android:layout_marginTop="16dp"
             android:text="Register Payment"
             android:textSize="20sp" />
+       <!-- plan-->
+        <TextView
+            android:id="@+id/tvPlan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Plan"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/textView2"
@@ -84,8 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ems="10"
-
-            android:inputType="numberDecimal" />
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/btnRegisterPayment"

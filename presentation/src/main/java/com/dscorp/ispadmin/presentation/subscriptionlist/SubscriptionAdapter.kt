@@ -26,9 +26,9 @@ class SubscriptionAdapter(val listener: SubscriptionsListFragment): RecyclerView
     class SubscriptionListViewHolder(private val binding: ItemSubscriptionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(subscription: SubscriptionResponse) {
-            binding.tvSeePlanId.text = subscription.plan?.id
+            binding.tvSeePlanId.text = subscription.plan?.id.toString()
             binding.tvSeeFirstName.text = subscription.firstName
-            binding.tvSeeId.text = subscription.id
+            binding.tvSeeId.text = subscription.id.toString()
             binding.tvSeePlace.text = subscription.lastName
 
         }

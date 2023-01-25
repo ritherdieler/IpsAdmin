@@ -51,7 +51,7 @@ val subscriptionListMock = listOf(
         plan = Plan(
             id = "1",
             name = "asd",
-            price = "23",
+            price = 23f,
             downloadSpeed = "12",
             uploadSpeed = "123"
         ),
