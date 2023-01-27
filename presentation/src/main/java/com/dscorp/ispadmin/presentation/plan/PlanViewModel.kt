@@ -32,7 +32,7 @@ class PlanViewModel : ViewModel() {
 
         }
 
-        if (plan.price == 0f) {
+        if (plan.price == 0.0) {
             formErrorLiveData.postValue(PlanFormError.OnEtPriceError("El precio no puede estar vacio"))
             return false
         }

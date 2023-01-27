@@ -35,7 +35,7 @@ class MapDialog : DialogFragment(), OnMapReadyCallback {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DialogMapBinding.inflate(inflater, container, false)
 
         mapView = binding.mapView

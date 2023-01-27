@@ -35,7 +35,7 @@ class RegisterPaymentFragment : Fragment() {
         binding.btnRegisterPayment.setOnClickListener {
             viewModel.registerPayment(
                 Payment(
-                    amountPaid = binding.etPaymentAmount.text.toString().toDouble(),
+                    amountPaid = viewModel.subscription?.plan?.price?.toDouble()?: 0.0,
                     discount = binding.etPaymentDiscount.text.toString().toDouble(),
                     discountReason = binding.etPaymentDiscountReason.text.toString(),
                     method = binding.etPaymentMethod.text.toString(),

@@ -92,7 +92,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     private fun registerPlan() {
         val plan = Plan(
             name = binding.etNamePlan.text.toString(),
-            price = binding.etPrice.text.toString().toFloat(),
+            price = binding.etPrice.text.toString().toDouble(),
             downloadSpeed = binding.etDownloadSpeed.text.toString(),
             uploadSpeed = binding.etUploadSpeed.text.toString()
         )

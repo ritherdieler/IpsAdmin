@@ -46,7 +46,7 @@ class RegisterPaymentViewModelTest : KoinTest {
     fun setUp() {
         viewModel = RegisterPaymentViewModel()
         okHttp3IdlingResource = registerIdlingResource(httpClient)
-        mockWebServer.start(8080)
+        mockWebServer.start(8081)
     }
 
     @After
@@ -59,14 +59,12 @@ class RegisterPaymentViewModelTest : KoinTest {
     @Test
     fun `when register payment then return success`() {
         //Given
-        val urlToMock = "/payment"
-        val response = MockResponse().setResponseCode(200).fromJson("payment/register/success.json")
-        mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
+        mockRegisterPaymentService()
 
-        val plan = Plan(id = null, name = "", price = 100f, downloadSpeed = "", uploadSpeed = "")
+        val plan = Plan(id = null, name = "", price = 100.0, downloadSpeed = "", uploadSpeed = "")
         val payment = Payment(
             id = 1,
-            amountPaid = 90.0,
+            amountPaid = 110.0,
             date = -1,
             subscriptionId = 1,
             method = "Yape",
@@ -83,6 +81,12 @@ class RegisterPaymentViewModelTest : KoinTest {
         Espresso.onIdle()
         val value = viewModel.registerPaymentState.value as OnPaymentRegistered
         assertNotNull(value.payment.id != null)
+    }
+
+    private fun mockRegisterPaymentService() {
+        val urlToMock = "/payment"
+        val response = MockResponse().setResponseCode(200).fromJson("payment/register/success.json")
+        mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
     }
 
     @Test
@@ -176,27 +180,28 @@ class RegisterPaymentViewModelTest : KoinTest {
     }
 
     @Test
-    fun `when payment amount is greater than amountPaid plus discount then return error`() {
+    fun `when discount is greater than plan price then return error`() {
         //Given
-        val plan = Plan(id = null, name = "", price = 100f, downloadSpeed = "", uploadSpeed = "")
+        val plan = Plan(id = null, name = "", price = 50.0, downloadSpeed = "", uploadSpeed = "")
         val payment = Payment(
             id = 1,
-            amountPaid = 100.0,
+            amountPaid = 50.0,
             date = -1,
             subscriptionId = 1,
             method = "Yape",
-            discount = 1.0,
+            discount = 55.0,
             paid = false
         )
         viewModel.subscription = SubscriptionResponse().apply { this.plan = plan }
 
-        //when
+        //When
         viewModel.registerPayment(payment)
 
-        //then
+        //Then
         viewModel.registerPaymentFormErrorState.getValueForTest()
-        val value = viewModel.registerPaymentFormErrorState.value as AmountPaidGreaterThanPlanPriceError
-        assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_AMOUNT_PAID_GREATER_THAN_PLAN_PRICE)
+        val value = viewModel.registerPaymentFormErrorState.value as InvalidDiscountError
+        assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_INVALID_DISCOUNT)
     }
+
 
 }
