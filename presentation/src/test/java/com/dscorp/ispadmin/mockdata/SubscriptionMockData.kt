@@ -12,8 +12,7 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 
 val subscriptionListMock = listOf(
     SubscriptionResponse(
-        id = "123",
-        code = "123",
+        id = 123,
         firstName = "Sergio",
         lastName = "Carrillo",
         dni = "48271836",

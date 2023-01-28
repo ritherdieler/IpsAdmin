@@ -57,7 +57,7 @@ class FindSubscriptionViewModelTest : KoinTest {
         IdlingRegistry.getInstance().register(
             okHttp3IdlingResource
         )
-        mockWebServer.start(8080)
+        mockWebServer.start(8081)
     }
 
     @After

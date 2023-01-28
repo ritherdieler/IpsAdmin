@@ -33,13 +33,15 @@ class RegisterPaymentFragment : Fragment() {
         binding.tvPlan.text = "Plan: ${viewModel.subscription?.plan?.price}"
 
         binding.btnRegisterPayment.setOnClickListener {
+            val discount = if (binding.etPaymentDiscount.text.toString().isEmpty()) 0.0
+            else binding.etPaymentDiscount.text.toString().toDouble()
             viewModel.registerPayment(
                 Payment(
-                    amountPaid = viewModel.subscription?.plan?.price?.toDouble()?: 0.0,
-                    discount = binding.etPaymentDiscount.text.toString().toDouble(),
+                    amountPaid = viewModel.subscription?.plan?.price ?: 0.0,
+                    discount = discount,
                     discountReason = binding.etPaymentDiscountReason.text.toString(),
                     method = binding.etPaymentMethod.text.toString(),
-                    subscriptionId = args.subscription.id?.toInt() ?: 0
+                    subscriptionId = args.subscription.id ?: 0
                 )
             )
         }
