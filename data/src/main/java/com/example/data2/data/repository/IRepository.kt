@@ -18,7 +18,7 @@ interface IRepository {
     suspend fun doSubscription(doSubscription: Subscription): Subscription
     suspend fun getPlans(): List<Plan>
     suspend fun getDevices(): List<NetworkDevice>
-    suspend fun getSubscriptions(): List<Subscription>
+    suspend fun getSubscriptions(): List<SubscriptionResponse>
     suspend fun registerPlace(registerPlace: Place): Place
     suspend fun getPlaces():List<Place>
     suspend fun registerTechnician(registerTechnician: Technician): Technician
@@ -28,5 +28,6 @@ interface IRepository {
     suspend fun getTechnicians():List<Technician>
     suspend fun getNapBoxes():List<NapBox>
     suspend fun consultPayments(request:SearchPaymentsRequest):List<Payment>
-    suspend fun findSubscription(dni: String): List<Subscription>
+    suspend fun findSubscription(dni: String): List<SubscriptionResponse>
+    suspend fun registerPayment(payment: Payment): Payment
 }

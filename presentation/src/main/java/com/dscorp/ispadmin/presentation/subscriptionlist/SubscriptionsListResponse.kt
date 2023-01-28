@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.subscriptionlist
 
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
 /**
  * Created by Sergio Carrillo Diestra on 19/12/2022.
@@ -10,7 +10,7 @@ import com.example.cleanarchitecture.domain.domain.entity.Subscription
  *
  **/
 sealed class SubscriptionsListResponse {
-    class OnSubscriptionFound(val subscriptions: List<Subscription>) : SubscriptionsListResponse()
+    class OnSubscriptionFound(val subscriptions: List<SubscriptionResponse>) : SubscriptionsListResponse()
     class OnError(val error: Exception) : SubscriptionsListResponse()
 
 }

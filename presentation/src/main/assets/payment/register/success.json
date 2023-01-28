@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "amount": 50.0,
+  "date": 99999,
+  "subscriptionId": 1,
+  "method": "YAPE",
+  "paid": false
+}

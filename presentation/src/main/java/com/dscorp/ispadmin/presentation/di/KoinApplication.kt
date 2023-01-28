@@ -4,6 +4,7 @@ import android.app.Application
 import com.dscorp.ispadmin.BuildConfig
 import com.example.data2.data.di.BASE_URL
 import com.example.data2.data.di.retrofitModule
+import com.facebook.stetho.Stetho
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -20,6 +21,7 @@ class KoinApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Stetho.initializeWithDefaults(this);
 
         startKoin {
             allowOverride(true)
@@ -27,7 +29,8 @@ class KoinApplication : Application() {
                 retrofitModule,
                 apiModule,
                 repositoryModule,
-                viewModelModule
+                viewModelModule,
+                dialogFactoryModule
             )
 
         }

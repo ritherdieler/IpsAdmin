@@ -1,8 +1,12 @@
 package com.dscorp.ispadmin.presentation.subscriptionfinder
 
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
-sealed class FindSubscriptionUiState {
-    class OnSubscriptionFound(val subscriptions: List<Subscription>) : FindSubscriptionUiState()
+sealed interface FindSubscriptionUiState {
+    class OnSubscriptionFound(val subscriptions: List<SubscriptionResponse>) :
+        FindSubscriptionUiState
+
+    class OnError(val message: String?) : FindSubscriptionUiState
+
 
 }

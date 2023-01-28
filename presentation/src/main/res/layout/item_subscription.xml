@@ -6,7 +6,7 @@
     <data>
         <variable
             name="subscriptionList"
-            type="com.example.cleanarchitecture.domain.domain.entity.Subscription" />
+            type="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -19,70 +19,74 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="125dp">
 
             <TextView
                 android:id="@+id/tvPlanId"
-                android:layout_width="176dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="PlanID :"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="PlanId:"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toTopOf="@+id/tvName"
-                app:layout_constraintEnd_toStartOf="@+id/tvSeePlanId"
+                app:layout_constraintEnd_toStartOf="@id/tvSeeFirstName"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed" />
+                app:layout_constraintVertical_chainStyle="spread" />
 
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="16dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="Name :"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                app:layout_constraintBottom_toTopOf="@id/tvId"
+                app:layout_constraintBottom_toTopOf="@+id/tvId"
                 app:layout_constraintEnd_toEndOf="@+id/tvPlanId"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/tvPlanId"
                 app:layout_constraintTop_toBottomOf="@+id/tvPlanId" />
 
             <TextView
                 android:id="@+id/tvId"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="16dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="DNI :"
+
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                app:layout_constraintBottom_toTopOf="@id/tvPlace"
+                app:layout_constraintBottom_toTopOf="@+id/tvPlace"
                 app:layout_constraintEnd_toEndOf="@+id/tvName"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/tvName"
-                app:layout_constraintTop_toBottomOf="@id/tvName" />
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
             <TextView
 
                 android:id="@+id/tvPlace"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="16dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="Numero de telefono :"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/tvId"
                 app:layout_constraintStart_toStartOf="@id/tvId"
+
                 app:layout_constraintTop_toBottomOf="@+id/tvId" />
 
             <TextView
                 android:id="@+id/tvSeePlanId"
-                android:layout_width="58dp"
-                android:layout_height="17dp"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="@{subscriptionList.id}"
                 app:layout_constraintBottom_toBottomOf="@id/tvPlanId"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvPlanId"
-                app:layout_constraintTop_toTopOf="@+id/tvPlanId"
-                app:layout_constraintVertical_chainStyle="packed"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread"
                 tools:text="saul" />
 
             <TextView
@@ -94,7 +98,6 @@
                 app:layout_constraintEnd_toEndOf="@+id/tvSeePlanId"
                 app:layout_constraintStart_toStartOf="@+id/tvSeePlanId"
                 app:layout_constraintTop_toTopOf="@+id/tvName"
-                app:layout_constraintVertical_bias="0.0"
                 tools:text="renato" />
 
             <TextView
@@ -104,6 +107,7 @@
                 android:text="@{subscriptionList.id}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvId"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeeFirstName"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/tvSeeFirstName"
                 app:layout_constraintTop_toTopOf="@+id/tvId"
                 tools:text="vacalola" />

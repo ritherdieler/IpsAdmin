@@ -46,7 +46,7 @@ class NapBoxesListFragment : Fragment() , OnItemClickListener {
         }
 
         private fun fillRecycleView(it: NapBoxesListResponse.OnNapBoxesListFound) {
-            val adapter = NapBoxesAdapter(this)
+            val adapter = NapBoxeAdapter(this)
             adapter.submitList(it.napBoxesList)
             binding.rvNapBoxesList.adapter = adapter
 

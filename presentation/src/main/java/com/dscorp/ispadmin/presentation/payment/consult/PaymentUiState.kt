@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.payment
+package com.dscorp.ispadmin.presentation.payment.consult
 
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 

@@ -1,9 +1,9 @@
-package com.dscorp.ispadmin.presentation.payment
+package com.dscorp.ispadmin.presentation.payment.consult
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.payment.PaymentUiState.*
+import com.dscorp.ispadmin.presentation.payment.consult.PaymentUiState.*
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch

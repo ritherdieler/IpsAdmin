@@ -83,7 +83,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getSubscriptions(): List<Subscription> {
+    override suspend fun getSubscriptions(): List<SubscriptionResponse> {
         val response = restApiServices.getSubscriptions()
         if (response.code() == 200) {
             return response.body()!!
@@ -179,8 +179,17 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun findSubscription(dni: String): List<Subscription> {
+    override suspend fun findSubscription(dni: String): List<SubscriptionResponse> {
         val response = restApiServices.findSubscription(dni)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun registerPayment(payment: Payment): Payment {
+        val response = restApiServices.registerPayment(payment)
         if (response.code() == 200) {
             return response.body()!!
         } else {

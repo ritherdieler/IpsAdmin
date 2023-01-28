@@ -2,45 +2,40 @@ package com.dscorp.ispadmin.presentation.technicianslist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.dscorp.ispadmin.databinding.ItemTechniciansListBinding
+import com.dscorp.ispadmin.databinding.ItemTechnicianListBinding
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 
-class TechniciansListAdapter :
-    RecyclerView.Adapter<TechniciansListAdapter.TechniciansListViewHolder>() {
-    private var techniciansList: List<Technician> = emptyList()
+class TechniciansListAdapter(techniciansListFragment: TechniciansListFragment) : ListAdapter<Technician, TechniciansListAdapter.TechnicianAdapterViewHolder>(TechnicianDiffCallback()) {
 
-    fun submitList(techniciansList: List<Technician>) {
-        this.techniciansList = techniciansList
-        notifyDataSetChanged()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TechnicianAdapterViewHolder {
+        val binding =
+            ItemTechnicianListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return TechnicianAdapterViewHolder(binding)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TechniciansListViewHolder {
-        return TechniciansListViewHolder(
-            ItemTechniciansListBinding.inflate(
-                LayoutInflater.from(
-                    parent.context
-                ), parent, false
-            )
-        )
+    override fun onBindViewHolder(holder: TechnicianAdapterViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
-
-    class TechniciansListViewHolder(private val binding: ItemTechniciansListBinding) :
+    inner class TechnicianAdapterViewHolder(private val binding: ItemTechnicianListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(techniciansList: Technician) {
-            binding.tvPrueba0Technician.text = techniciansList.firstName
-            binding.tvPrueba1Technician.text = techniciansList.id
-            binding.tvPrueba2Technician.text = techniciansList.lastName
-
+        fun bind(technician: Technician) {
+            binding.technicianList = technician
+            binding.executePendingBindings()
         }
     }
+}
 
-    override fun onBindViewHolder(holder: TechniciansListViewHolder, position: Int) {
-        holder.bind(techniciansList[position])
+
+
+private class TechnicianDiffCallback : DiffUtil.ItemCallback<Technician>() {
+    override fun areItemsTheSame(oldItem: Technician, newItem: Technician): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun getItemCount(): Int {
-        return techniciansList.size
+    override fun areContentsTheSame(oldItem: Technician, newItem: Technician): Boolean {
+        return oldItem == newItem
     }
-
 }

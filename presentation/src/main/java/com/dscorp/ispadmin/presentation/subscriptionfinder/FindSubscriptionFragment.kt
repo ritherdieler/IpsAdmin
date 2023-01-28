@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.dscorp.ispadmin.R
+import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
 import org.koin.android.ext.android.inject
 
-class FindSubscriptionFragment : Fragment() {
+class FindSubscriptionFragment : Fragment(), SelectableSubscriptionListener {
 
     private val viewModel: FindSubscriptionViewModel by inject()
 
@@ -17,13 +20,12 @@ class FindSubscriptionFragment : Fragment() {
         FragmentFindSubscriptionBinding.inflate(layoutInflater)
     }
 
-    private val adapter = FindSubscriptionAdapter()
+    private val adapter = FindSubscriptionAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         binding.findSubscriptionRecyclerView.adapter = adapter
         binding.btnFind.setOnClickListener {
             val dni = binding.findSubscriptionEditText.text.toString()
@@ -31,6 +33,7 @@ class FindSubscriptionFragment : Fragment() {
         }
 
         observeUiState()
+
         return binding.root
     }
 
@@ -38,8 +41,25 @@ class FindSubscriptionFragment : Fragment() {
         viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is FindSubscriptionUiState.OnSubscriptionFound -> adapter.submitList(it.subscriptions)
+                is FindSubscriptionUiState.OnError -> showMaterialDialog(it.message)
             }
         }
+    }
+
+    private fun showMaterialDialog(message: String?) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Error")
+            .setMessage(message)
+            .setPositiveButton("Aceptar") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    override fun onSubscriptionSelected(subscription: SubscriptionResponse) {
+        findNavController().navigate(
+            FindSubscriptionFragmentDirections.findSubscriptionToRegisterPayment(subscription)
+        )
     }
 
 }

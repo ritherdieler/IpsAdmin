@@ -1,5 +1,6 @@
 package com.example.data2.data.api
 
+import androidx.core.telephony.SubscriptionManagerCompat
 import com.example.cleanarchitecture.domain.domain.entity.*
 import retrofit2.Response
 import retrofit2.http.Body
@@ -39,7 +40,7 @@ interface RestApiServices {
     suspend fun getDevices(): Response<List<NetworkDevice>>
 
     @GET("subscription")
-    suspend fun getSubscriptions(): Response<List<Subscription>>
+    suspend fun getSubscriptions(): Response<List<SubscriptionResponse>>
 
     @POST("place")
     suspend fun registerPlace(@Body place: Place): Response<Place>
@@ -73,7 +74,9 @@ interface RestApiServices {
     ): Response<List<Payment>>
 
     @GET("subscription/find")
-    suspend fun findSubscription(@Query("dni") dni: String): Response<List<Subscription>>
+    suspend fun findSubscription(@Query("dni") dni: String): Response<List<SubscriptionResponse>>
+    @POST("payment")
+   suspend fun registerPayment(@Body payment: Payment): Response<Payment>
 
 }
 

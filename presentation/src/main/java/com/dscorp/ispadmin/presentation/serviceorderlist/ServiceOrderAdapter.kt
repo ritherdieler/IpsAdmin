@@ -2,35 +2,40 @@ package com.dscorp.ispadmin.presentation.serviceorderlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemServicesOrderBinding
 import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
 
-class ServiceOrderAdapter : RecyclerView.Adapter<ServiceOrderAdapter.ServicesOrderViewHolder>() {
-    private var servicesOrderList: List<ServiceOrder> = emptyList()
+class ServiceOrderAdapter : ListAdapter<ServiceOrder, ServiceOrderAdapter.ServiceOrderAdapterViewHolder>(ServiceOrderDiffCallback()) {
 
-    fun submitList(servicesOrder: List<ServiceOrder>){
-        this.servicesOrderList = servicesOrder
-        notifyDataSetChanged()
-    }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServicesOrderViewHolder {
-       return ServicesOrderViewHolder(ItemServicesOrderBinding.inflate(LayoutInflater.from(parent.context),parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServiceOrderAdapterViewHolder {
+        val binding =
+            ItemServicesOrderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ServiceOrderAdapterViewHolder(binding)
     }
 
-    class ServicesOrderViewHolder(private val binding: ItemServicesOrderBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(serviceOrder: ServiceOrder){
-            binding.tvSeeLongitude.text = serviceOrder.longitude.toString()
-            binding.tvSeeLatitude.text = serviceOrder.latitude.toString()
-            binding.tvSeeId.text = serviceOrder.id
+    override fun onBindViewHolder(holder: ServiceOrderAdapterViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+    inner class ServiceOrderAdapterViewHolder(private val binding: ItemServicesOrderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(serviceOrder: ServiceOrder) {
+            binding.serviceOrderList = serviceOrder
+            binding.executePendingBindings()
         }
     }
+}
 
-    override fun onBindViewHolder(holder: ServicesOrderViewHolder, position: Int) {
-      holder.bind(servicesOrderList[position])
+
+
+private class ServiceOrderDiffCallback : DiffUtil.ItemCallback<ServiceOrder>() {
+    override fun areItemsTheSame(oldItem: ServiceOrder, newItem: ServiceOrder): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun getItemCount(): Int {
-        return servicesOrderList.size
+    override fun areContentsTheSame(oldItem: ServiceOrder, newItem: ServiceOrder): Boolean {
+        return oldItem == newItem
     }
-
 }

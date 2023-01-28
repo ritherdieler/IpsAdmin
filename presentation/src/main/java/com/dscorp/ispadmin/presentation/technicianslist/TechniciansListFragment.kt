@@ -8,7 +8,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
 import com.dscorp.ispadmin.databinding.FragmentTechniciansListBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -38,11 +37,13 @@ class TechniciansListFragment : Fragment() {
     }
 
     private fun fillRecycleView(it: TechniciansListResponse.OnTechniciansListFound) {
-        val adapter = TechniciansListAdapter()
+        val adapter = TechniciansListAdapter(this)
         adapter.submitList(it.techniciansList)
         binding.rvTechnicianList.adapter = adapter
 
         binding.rvTechnicianList.visibility = if (it.techniciansList.isNotEmpty()) View.VISIBLE else View.GONE
     }
+
+
 }
 

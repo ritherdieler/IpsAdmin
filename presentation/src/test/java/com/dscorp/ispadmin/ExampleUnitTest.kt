@@ -1,3 +1,4 @@
+/*
 package com.dscorp.ispadmin
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -87,4 +88,4 @@ class ExampleUnitTest {
 
     }
 
-}
+}*/

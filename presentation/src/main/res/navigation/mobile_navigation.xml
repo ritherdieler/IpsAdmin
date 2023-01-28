@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/nav_plan"
         android:name="com.dscorp.ispadmin.presentation.plan.PlanFragment"
-        tools:layout="@layout/fragment_plan"
-        android:label="PlanFragment" />
+        android:label="PlanFragment"
+        tools:layout="@layout/fragment_plan" />
     <fragment
         android:id="@+id/nav_device"
         android:name="com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFragment"
-        tools:layout="@layout/fragment_network_device"
-        android:label="NetworkDeviceFragment" />
+        android:label="NetworkDeviceFragment"
+        tools:layout="@layout/fragment_network_device" />
     <fragment
         android:id="@+id/nav_subscription"
         android:name="com.dscorp.ispadmin.presentation.subscription.SubscriptionFragment"
-        tools:layout="@layout/fragment_subscription"
-        android:label="SubscriptionFragment" >
+        android:label="SubscriptionFragment"
+        tools:layout="@layout/fragment_subscription">
         <action
             android:id="@+id/action_nav_subscription_to_mapDialog"
             app:destination="@id/mapDialog" />
@@ -27,8 +27,8 @@
     <fragment
         android:id="@+id/nav_register_place"
         android:name="com.dscorp.ispadmin.presentation.place.PlaceFragment"
-        tools:layout="@layout/fragment_place"
-        android:label="PlaceFragment" >
+        android:label="PlaceFragment"
+        tools:layout="@layout/fragment_place">
         <action
             android:id="@+id/action_nav_register_place_to_mapDialog"
             app:destination="@id/mapDialog" />
@@ -36,13 +36,13 @@
     <fragment
         android:id="@+id/nav_to_register_technician"
         android:name="com.dscorp.ispadmin.presentation.technician.TechnicianFragment"
-        tools:layout="@layout/fragment_technician"
-        android:label="TechnicianFragment" />
+        android:label="TechnicianFragment"
+        tools:layout="@layout/fragment_technician" />
     <fragment
         android:id="@+id/nav_to_register_nap_box"
         android:name="com.dscorp.ispadmin.presentation.napbox.NapBoxFragment"
-        tools:layout="@layout/fragment_nap_box"
-        android:label="NapBoxFragment" >
+        android:label="NapBoxFragment"
+        tools:layout="@layout/fragment_nap_box">
         <action
             android:id="@+id/action_nav_to_register_nap_box_to_mapDialog"
             app:destination="@id/mapDialog" />
@@ -50,80 +50,99 @@
     <fragment
         android:id="@+id/nav_to_register_service_order"
         android:name="com.dscorp.ispadmin.presentation.serviceorden.ServiceOrderFragment"
-        tools:layout="@layout/fragment_service_order"
-        android:label="ServiceOrderFragment" />
+        android:label="ServiceOrderFragment"
+        tools:layout="@layout/fragment_service_order" />
     <fragment
         android:id="@+id/subscriptionDetail"
-        android:name="com.dscorp.ispadmin.presentation.subscriptiondetails.SubscriptionDetailFragment"
-        tools:layout="@layout/fragment_subscription_detail"
+        android:name="com.dscorp.ispadmin.presentation.subscriptiondetail.SubscriptionDetailFragment"
+        android:label="SubscriptionDetailFragment"
 
-        android:label="SubscriptionDetailFragment" >
+        tools:layout="@layout/fragment_subscription_detail">
         <argument
             android:name="subscription"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.Subscription" />
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+        <action
+            android:id="@+id/action_subscriptionDetail_to_mapView"
+            app:destination="@id/mapView3" />
     </fragment>
     <fragment
         android:id="@+id/nav_view_services_order_list"
         android:name="com.dscorp.ispadmin.presentation.serviceorderlist.ServicesOrderListFragment"
-        tools:layout="@layout/fragment_services_order_list"
-        android:label="ServicesOrderListFragment" />
+        android:label="ServicesOrderListFragment"
+        tools:layout="@layout/fragment_services_order_list" />
     <fragment
         android:id="@+id/nav_see_technician_list"
         android:name="com.dscorp.ispadmin.presentation.technicianslist.TechniciansListFragment"
-        tools:layout="@layout/fragment_technicians_list"
-        android:label="TechniciansListFragment" />
+        android:label="TechniciansListFragment"
+        tools:layout="@layout/fragment_technicians_list" />
     <fragment
         android:id="@+id/nav_see_nap_boxes"
         android:name="com.dscorp.ispadmin.presentation.napboxeslist.NapBoxesListFragment"
-        tools:layout="@layout/fragment_nap_boxes_list"
-        android:label="NapBoxesListFragment" >
+        android:label="NapBoxesListFragment"
+        tools:layout="@layout/fragment_nap_boxes_list">
         <action
             android:id="@+id/action_nav_see_nap_boxes_to_napBoxeDetailsFragment"
             app:destination="@id/napBoxeDetailsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/fragmentDetail"
-        android:name="com.dscorp.ispadmin.presentation.subscriptiondetails.SubscriptionDetailFragment"
-        tools:layout="@layout/fragment_subscription_detail"
-        android:label="Detalle de subscripcion" />
-    <fragment
         android:id="@+id/nav_see_subscriptions"
-        tools:layout="@layout/fragment_subscriptions_list"
         android:name="com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment"
-        android:label="SubscriptionsListFragment" >
+        android:label="SubscriptionsListFragment"
+        tools:layout="@layout/fragment_subscriptions_list">
         <action
             android:id="@+id/subscriptionList_to_SubscriptionDetail"
             app:destination="@id/subscriptionDetail" />
     </fragment>
     <fragment
         android:id="@+id/napBoxeDetailsFragment"
-        tools:layout="@layout/fragment_nap_box_detail"
         android:name="com.dscorp.ispadmin.presentation.napboxeslist.napboxdetails.NapBoxDetailsFragment"
-        android:label="NapBoxeDetailsFragment" >
+        android:label="NapBoxeDetailsFragment"
+        tools:layout="@layout/fragment_nap_box_detail">
         <argument
             android:name="NapBox"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBox" />
     </fragment>
     <dialog
         android:id="@+id/mapDialog"
-        tools:layout="@layout/dialog_map"
         android:name="com.dscorp.ispadmin.presentation.util.MapDialog"
-        android:label="MapDialog" />
-    <fragment
-        android:id="@+id/nav_consult_payments"
-        android:name="com.dscorp.ispadmin.presentation.payment.ConsultPaymentsFragment"
-        android:label="fragment_consut_payments"
-        tools:layout="@layout/fragment_consult_payments" />
-    <fragment
-        android:id="@+id/FIndSubscriptionFragment"
-        android:name="com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionFragment"
-        android:label="fragment_find_subscription"
-        tools:layout="@layout/fragment_find_subscription" />
+        android:label="MapDialog"
+        tools:layout="@layout/dialog_map" />
+
+    <dialog
+        android:id="@+id/mapView3"
+        android:name="com.dscorp.ispadmin.presentation.util.MapViewDialogFragment"
+        android:label="MapView">
+        <argument
+            android:name="location"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.GeoLocation"
+            app:nullable="true" />
+
+    </dialog>
 
     <fragment
         android:id="@+id/nav_find_subscriptions"
-        tools:layout="@layout/fragment_find_subscription"
         android:name="com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionFragment"
-        android:label="FindSubscription" >
+        android:label="FindSubscription"
+        tools:layout="@layout/fragment_find_subscription">
+
+        <action
+            android:id="@+id/findSubscription_to_registerPayment"
+            app:destination="@id/register_payment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/register_payment"
+        android:name="com.dscorp.ispadmin.presentation.payment.register.RegisterPaymentFragment"
+        android:label="Registrar Pago"
+        tools:layout="@layout/fragment_register_payment">
+        <argument
+            android:name="subscription"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_consult_payments"
+        android:name="com.dscorp.ispadmin.presentation.payment.consult.ConsultPaymentsFragment"
+        android:label="fragment_consut_payments"
+        tools:layout="@layout/fragment_consult_payments" />
 </navigation>

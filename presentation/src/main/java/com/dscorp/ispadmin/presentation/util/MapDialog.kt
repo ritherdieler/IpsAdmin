@@ -47,6 +47,7 @@ class MapDialog : DialogFragment(), OnMapReadyCallback {
             navController.previousBackStackEntry?.savedStateHandle?.set("location", selectedLatLng)
             dismiss()
         }
+
         return binding.root
     }
 

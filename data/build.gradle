@@ -17,12 +17,12 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField 'String', "BASE_URL", '"http://192.168.0.101:8080/api/"'
+            buildConfigField 'String', "BASE_URL", '"http://192.168.0.108:8080/api/"'
 
         }
         release {
             minifyEnabled false
-            buildConfigField 'String', "BASE_URL", '"http://192.168.0.101:8080/api/"'
+            buildConfigField 'String', "BASE_URL", '"http://192.168.0.108:8080/api/"'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
@@ -55,6 +55,7 @@ android {
         implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
         implementation 'androidx.legacy:legacy-support-v4:1.0.0'
         implementation 'androidx.recyclerview:recyclerview:1.2.1'
+        implementation 'com.facebook.stetho:stetho-okhttp3:1.6.0'
 
         def koin_version = "3.3.1"
         api "io.insert-koin:koin-android:$koin_version"

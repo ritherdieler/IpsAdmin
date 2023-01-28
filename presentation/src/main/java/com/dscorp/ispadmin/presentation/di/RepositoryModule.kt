@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.di
 
 import com.example.data2.data.repository.IRepository
+import com.example.data2.data.repository.Repository
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
@@ -14,7 +15,7 @@ import retrofit2.Retrofit
 
 
 val repositoryModule = module {
-    single<IRepository> { com.example.data2.data.repository.Repository() }
+    single<IRepository> { Repository() }
 }
 
 

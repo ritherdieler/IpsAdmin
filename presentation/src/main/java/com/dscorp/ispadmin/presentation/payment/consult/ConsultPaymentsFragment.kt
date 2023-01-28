@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.payment
+package com.dscorp.ispadmin.presentation.payment.consult
 
 import android.os.Bundle
 import android.view.LayoutInflater

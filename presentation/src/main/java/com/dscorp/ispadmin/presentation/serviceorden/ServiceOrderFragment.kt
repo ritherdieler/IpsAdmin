@@ -10,9 +10,12 @@ import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentServiceOrderBinding
 import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
-import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.time.Duration.Companion.days
+import kotlin.time.DurationUnit
 
 class ServiceOrderFragment : Fragment() {
     lateinit var binding: FragmentServiceOrderBinding
@@ -47,16 +50,34 @@ class ServiceOrderFragment : Fragment() {
             datePicker.show(childFragmentManager, "DatePicker")
         }
         binding.etAttentionDate.setOnClickListener {
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+            val dateValidatorMin = DateValidatorPointForward.from(
+                Calendar.getInstance().timeInMillis - 385.days.toLong(DurationUnit.MILLISECONDS)
+            )
+
+            val dateValidatorMax =
+                DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
+
+            val dateValidator =
+                CompositeDateValidator.allOf(listOf(dateValidatorMin, dateValidatorMax))
+
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
+                .setCalendarConstraints(
+                    CalendarConstraints.Builder()
+                        .setValidator(dateValidator)
+                        .build()
+                )
                 .build()
-            datePicker
+
             datePicker.addOnPositiveButtonClickListener {
-                selectedAttentionDate = it
+                selectedDate = it
                 val formatter = SimpleDateFormat("dd/MM/yyyy")
-                val formattedDate = formatter.format(it)
+                val formattedDate = formatter.format(calendar.timeInMillis)
                 binding.etAttentionDate.setText(formattedDate)
             }
+
 
             datePicker.show(childFragmentManager, "DatePicker")
         }

@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentServicesOrderListBinding
-import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

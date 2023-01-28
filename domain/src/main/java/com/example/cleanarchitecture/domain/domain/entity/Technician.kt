@@ -9,16 +9,16 @@ package com.example.cleanarchitecture.domain.domain.entity
  **/
 data class Technician(
     val id: String? = null,
-    val firstName: String,
-    val lastName: String,
-    val dni: String,
-    val type: String,
-    val username: String,
-    val password: String,
+    val firstName: String="",
+    val lastName: String="",
+    val dni: String="",
+    val type: String="",
+    val username: String="",
+    val password: String="",
     val verified: Boolean = false,
-    val address: String,
-    val phone: String,
-    val birthday: Long
-) {
+    val address: String="",
+    val phone: String="",
+    val birthday: Long=0
+):java.io.Serializable {
     override fun toString() = "$firstName $lastName"
 }

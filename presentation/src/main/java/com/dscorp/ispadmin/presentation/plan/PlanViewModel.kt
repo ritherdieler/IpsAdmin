@@ -17,7 +17,7 @@ class PlanViewModel : ViewModel() {
 
         try {
             if (formIsValid(plan)) {
-                var planFromRepository = repository.registerPlan(plan)
+                val planFromRepository = repository.registerPlan(plan)
                 planResponseLiveData.postValue(PlanResponse.OnPlanRegistered(planFromRepository))
             }
         } catch (error: Exception) {
@@ -32,7 +32,7 @@ class PlanViewModel : ViewModel() {
 
         }
 
-        if (plan.price.isEmpty()) {
+        if (plan.price == 0f) {
             formErrorLiveData.postValue(PlanFormError.OnEtPriceError("El precio no puede estar vacio"))
             return false
         }

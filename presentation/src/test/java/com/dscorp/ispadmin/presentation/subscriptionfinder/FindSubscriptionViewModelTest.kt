@@ -1,17 +1,18 @@
 package com.dscorp.ispadmin.presentation.subscriptionfinder
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.KoinAppForInstrumentation
-import com.dscorp.ispadmin.util.asAndroidX
+import com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionUiState.*
 import com.dscorp.ispadmin.util.fromJson
 import com.dscorp.ispadmin.util.getValueForTest
 import com.dscorp.ispadmin.util.mockService
+import com.example.cleanarchitecture.domain.domain.entity.Payment
+import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -24,6 +25,8 @@ import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
 
@@ -36,7 +39,7 @@ class FindSubscriptionViewModelTest : KoinTest {
 
     private lateinit var viewModel: FindSubscriptionViewModel
 
-    private val DNI = 48271836
+    private val DNI = "48271836"
 
     private val httpClient: OkHttpClient by inject()
 
@@ -50,7 +53,7 @@ class FindSubscriptionViewModelTest : KoinTest {
         okHttp3IdlingResource = OkHttp3IdlingResource.create(
             "okhttp",
             httpClient
-        ).asAndroidX()
+        )
         IdlingRegistry.getInstance().register(
             okHttp3IdlingResource
         )
@@ -65,25 +68,25 @@ class FindSubscriptionViewModelTest : KoinTest {
     }
 
     @Test
-    fun `when findSubscription is called then liveData should emit subscriptions`() =
-        runBlockingTest() {
-            //given
-            mockService(
-                mockWebServer = mockWebServer,
-                urlToMock = "/subscription/find?dni=48271836",
-                response = MockResponse().fromJson("SubscriptionList.json")
-            )
+    fun `when findSubscription is called then liveData should emit subscriptions`() = runTest {
+        //given
+        mockService(
+            mockWebServer = mockWebServer,
+            urlToMock = "/subscription/find?dni=48271836",
+            response = MockResponse().fromJson("SubscriptionList.json")
+        )
 
-            //when
-            viewModel.findSubscription(DNI)
+        //when
+        viewModel.findSubscription(DNI)
 
-            //then
-            val value = viewModel.uiStateLiveData.getValueForTest()
-            assertNotNull(value)
-        }
+        //then
+        val value = viewModel.uiStateLiveData.getValueForTest() as OnSubscriptionFound
+        assertNotNull(value)
+
+    }
 
     @Test
-    fun `when findSubscription has error then liveData should emit error`() = runBlockingTest {
+    fun `when findSubscription has error then liveData should emit error`() = runTest {
         //given
         mockService(
             mockWebServer = mockWebServer,
@@ -95,8 +98,10 @@ class FindSubscriptionViewModelTest : KoinTest {
         viewModel.findSubscription(DNI)
 
         //then
-        val value = viewModel.uiErrorStateLiveData.getValueForTest()
-        assertNotNull(value)
+        val value = viewModel.uiStateLiveData.getValueForTest() as OnError
+        assertNotEquals("", value.message)
     }
+
+
 
 }

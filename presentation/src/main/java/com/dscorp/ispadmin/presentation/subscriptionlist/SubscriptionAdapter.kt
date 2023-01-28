@@ -6,8 +6,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemSubscriptionBinding
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
-class SubscriptionAdapter: ListAdapter<Subscription, SubscriptionAdapterViewHolder>(SubscriptionDiffCallback()) {
+class SubscriptionAdapter(val listener: SubscriptionItemClickListener): ListAdapter<SubscriptionResponse, SubscriptionAdapter.SubscriptionAdapterViewHolder>(SubscriptionDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionAdapterViewHolder {
         val binding =
@@ -18,22 +19,24 @@ class SubscriptionAdapter: ListAdapter<Subscription, SubscriptionAdapterViewHold
     override fun onBindViewHolder(holder: SubscriptionAdapterViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-}
-
-class SubscriptionAdapterViewHolder(private val binding: ItemSubscriptionBinding) :
-    RecyclerView.ViewHolder(binding.root) {
-    fun bind(subscription: Subscription) {
-        binding.subscriptionList = subscription
-        binding.executePendingBindings()
+   inner class SubscriptionAdapterViewHolder(private val binding: ItemSubscriptionBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(subscription: SubscriptionResponse) {
+            binding.root.setOnClickListener{listener.onItemClick(subscription)}
+            binding.subscriptionList = subscription
+            binding.executePendingBindings()
+        }
     }
 }
 
-private class SubscriptionDiffCallback : DiffUtil.ItemCallback<Subscription>() {
-    override fun areItemsTheSame(oldItem: Subscription, newItem: Subscription): Boolean {
+
+
+private class SubscriptionDiffCallback : DiffUtil.ItemCallback<SubscriptionResponse>() {
+    override fun areItemsTheSame(oldItem: SubscriptionResponse, newItem: SubscriptionResponse): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Subscription, newItem: Subscription): Boolean {
+    override fun areContentsTheSame(oldItem: SubscriptionResponse, newItem: SubscriptionResponse): Boolean {
         return oldItem == newItem
     }
 }

@@ -12,10 +12,11 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionsListBinding
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragmentDirections.*
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SubscriptionsListFragment : Fragment(),SubscriptionItemClickListener {
+class SubscriptionsListFragment : Fragment(), SubscriptionItemClickListener {
     private lateinit var binding: FragmentSubscriptionsListBinding
     private val viewModel: SubscriptionsListViewModel by viewModel()
 
@@ -46,18 +47,17 @@ class SubscriptionsListFragment : Fragment(),SubscriptionItemClickListener {
     }
 
     private fun fillRecycleView(it: SubscriptionsListResponse.OnSubscriptionFound) {
-        val adapter = SubscriptionAdapter()
+        val adapter = SubscriptionAdapter(this)
         adapter.submitList(it.subscriptions)
         binding.rvSubscription.adapter = adapter
 
         binding.rvSubscription.visibility =
             if (it.subscriptions.isNotEmpty()) View.VISIBLE else View.GONE
     }
-    override fun onItemClick(subscription: Subscription) {
-        parentFragmentManager.beginTransaction().apply {
-            val destination = subscriptionListToSubscriptionDetail(subscription)
-            findNavController().navigate(destination)
-        }
+
+    override fun onItemClick(subscription: SubscriptionResponse) {
+        val destination = subscriptionListToSubscriptionDetail(subscription)
+        findNavController().navigate(destination)
     }
 }
 
