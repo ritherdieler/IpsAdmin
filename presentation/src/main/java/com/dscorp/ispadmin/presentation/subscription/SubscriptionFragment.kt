@@ -29,35 +29,34 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
 
 class SubscriptionFragment : Fragment() {
-    lateinit var binding: FragmentSubscriptionBinding
-    var selectedDate: Long = 0
+    private val binding by lazy { FragmentSubscriptionBinding.inflate(layoutInflater) }
+    private var selectedDate: Long = 0
     private var selectedLocation: LatLng? = null
-    var selectedPlan: Plan? = null
-    var selectedNetworkDevice: NetworkDevice? = null
-    var selectedPlace: Place? = null
+    private var selectedPlan: Plan? = null
+    private var selectedNetworkDevice: NetworkDevice? = null
+    private var selectedPlace: Place? = null
     private var selectedTechnician: Technician? = null
-    var selectedNapBox: NapBox? = null
-    val viewModel: SubscriptionViewModel by viewModel()
+    private var selectedNapBox: NapBox? = null
+    private val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
-
     ): View {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_subscription, null, true)
-
         observeResponse()
         observeFormError()
 
         binding.btSubscribirse.setOnClickListener {
             registerSubscription()
         }
+
         binding.etSubscriptionDate.setOnClickListener {
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
             val dateValidatorMin = DateValidatorPointForward.from(
-                Calendar.getInstance().timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS))
+                Calendar.getInstance().timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS)
+            )
 
             val dateValidatorMax =
                 DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
@@ -184,7 +183,7 @@ class SubscriptionFragment : Fragment() {
                 is OnSpnNapBoxError -> setSpnNapBoxError(formError)
                 OnEtDniHasNotError -> clearTlDniError()
                 is OnDniIsInvalidError -> binding.tlDni.error = formError.error
-                is OnPhoneIsInvalidError -> binding.tlPhone.error=formError.error
+                is OnPhoneIsInvalidError -> binding.tlPhone.error = formError.error
                 OnEtPhoneHasNotError -> binding.tlPhone.error = null
             }
         }
@@ -259,7 +258,8 @@ class SubscriptionFragment : Fragment() {
             placeId = selectedPlace?.id ?: "",
             location = GeoLocation(
                 selectedLocation?.latitude ?: 0.0,
-                selectedLocation?.longitude ?: 0.0),
+                selectedLocation?.longitude ?: 0.0
+            ),
             technicianId = selectedTechnician?.id ?: "",
             napBoxId = selectedNapBox?.id ?: "",
             subscriptionDate = selectedDate

@@ -45,7 +45,7 @@ class RegisterPaymentViewModelTest : KoinTest {
     @Before
     fun setUp() {
         viewModel = RegisterPaymentViewModel()
-        okHttp3IdlingResource = registerIdlingResource(httpClient)
+        okHttp3IdlingResource = registerIdlingResource()
         mockWebServer.start(8081)
     }
 
@@ -81,12 +81,6 @@ class RegisterPaymentViewModelTest : KoinTest {
         Espresso.onIdle()
         val value = viewModel.registerPaymentState.value as OnPaymentRegistered
         assertNotNull(value.payment.id != null)
-    }
-
-    private fun mockRegisterPaymentService() {
-        val urlToMock = "/payment"
-        val response = MockResponse().setResponseCode(200).fromJson("payment/register/success.json")
-        mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
     }
 
     @Test
@@ -204,4 +198,9 @@ class RegisterPaymentViewModelTest : KoinTest {
     }
 
 
+    private fun mockRegisterPaymentService() {
+        val urlToMock = "/payment"
+        val response = MockResponse().setResponseCode(200).fromJson("payment/register/success.json")
+        mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
+    }
 }

@@ -130,7 +130,6 @@ class Repository : IRepository, KoinComponent {
     }
 
     override suspend fun registerServiceOrder(serviceOrder: ServiceOrder): ServiceOrder {
-
         val response = restApiServices.registerServiceOrder(serviceOrder)
         if (response.code() == 200) {
             return response.body()!!
@@ -139,7 +138,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getServicesOrder(): List<ServiceOrder> {
+    override suspend fun getServicesOrder(): List<ServiceOrderResponse> {
         val response = restApiServices.getServicesOrder()
         if (response.code() == 200) {
             return response.body()!!

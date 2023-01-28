@@ -1,15 +1,15 @@
-package com.dscorp.ispadmin.presentation.serviceorderlist
+package com.dscorp.ispadmin.presentation.serviceorder.history
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemServicesOrderBinding
-import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
+import com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse
 
 class ServiceOrderAdapter : RecyclerView.Adapter<ServiceOrderAdapter.ServicesOrderViewHolder>() {
-    private var servicesOrderList: List<ServiceOrder> = emptyList()
+    private var servicesOrderList: List<ServiceOrderResponse> = emptyList()
 
-    fun submitList(servicesOrder: List<ServiceOrder>){
+    fun submitList(servicesOrder: List<ServiceOrderResponse>){
         this.servicesOrderList = servicesOrder
         notifyDataSetChanged()
     }
@@ -18,10 +18,10 @@ class ServiceOrderAdapter : RecyclerView.Adapter<ServiceOrderAdapter.ServicesOrd
     }
 
     class ServicesOrderViewHolder(private val binding: ItemServicesOrderBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(serviceOrder: ServiceOrder){
+        fun bind(serviceOrder: ServiceOrderResponse){
             binding.tvSeeLongitude.text = serviceOrder.longitude.toString()
             binding.tvSeeLatitude.text = serviceOrder.latitude.toString()
-            binding.tvSeeId.text = serviceOrder.id
+            binding.tvSeeId.text = serviceOrder.id.toString()
         }
     }
 

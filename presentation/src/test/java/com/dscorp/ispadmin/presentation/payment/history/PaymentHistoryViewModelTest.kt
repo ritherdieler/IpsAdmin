@@ -31,15 +31,13 @@ class PaymentHistoryViewModelTest : KoinTest {
 
     private lateinit var viewModel: PaymentHistoryViewModel
 
-    private val httpClient: OkHttpClient by inject()
-
     private lateinit var okHttp3IdlingResource: IdlingResource
 
     @Before
     fun setUp() {
         mockWebServer = MockWebServer()
         viewModel = PaymentHistoryViewModel()
-        okHttp3IdlingResource = registerIdlingResource(httpClient)
+        okHttp3IdlingResource = registerIdlingResource()
         mockWebServer.start(8081)
     }
 

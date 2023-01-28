@@ -7,10 +7,10 @@ package com.example.cleanarchitecture.domain.domain.entity
  * Huacho, Peru.
  *
  **/
-data class ServiceOrder(
-    val id: Int? = null,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
-    val issue: String? = null,
-    val subscriptionId: Int? = null,
+data class ServiceOrderResponse(
+    val id: Int,
+    val latitude: Double,
+    val longitude: Double,
+    val issue: String,
+    val subscriptionId: Int,
 )

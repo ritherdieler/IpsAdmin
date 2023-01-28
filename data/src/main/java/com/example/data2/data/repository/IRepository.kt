@@ -24,7 +24,7 @@ interface IRepository {
     suspend fun registerTechnician(registerTechnician: Technician): Technician
     suspend fun registerNapBox(napBox: NapBox): NapBox
     suspend fun registerServiceOrder(serviceOrder: ServiceOrder): ServiceOrder
-    suspend fun getServicesOrder():List<ServiceOrder>
+    suspend fun getServicesOrder():List<ServiceOrderResponse>
     suspend fun getTechnicians():List<Technician>
     suspend fun getNapBoxes():List<NapBox>
     suspend fun getPaymentHistory(request:SearchPaymentsRequest):List<Payment>

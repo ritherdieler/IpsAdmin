@@ -58,37 +58,48 @@ class FindSubscriptionFragment : Fragment(), SelectableSubscriptionListener {
     }
 
     override fun onSubscriptionSelected(subscription: SubscriptionResponse, view: View) {
+        showPopupMenu(view, subscription)
+    }
 
-        PopupMenu(requireContext(), view).apply {
-            setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.btn_register_payment -> {
-                        findNavController().navigate(
-                            FindSubscriptionFragmentDirections.findSubscriptionToRegisterPayment(
-                                subscription
-                            )
-                        )
-                        true
-                    }
-                    R.id.btn_show_payment_history -> {
-                        findNavController().navigate(
-                            FindSubscriptionFragmentDirections.findSubscriptionToPaymentHistoryFragment(
-                                subscription
-                            )
-                        )
-                        true
-                    }
-                    else -> false
-                }
-
-
+    private fun showPopupMenu(view: View,subscription: SubscriptionResponse) {
+        val popupMenu = PopupMenu(requireContext(), view)
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.btn_register_payment -> navigateToRegisterPayment(subscription)
+                R.id.btn_show_payment_history -> navigateToPaymentHistory(subscription)
+                R.id.btn_register_service_order -> navigateToRegisterServiceOrder(subscription)
+                else -> false
             }
-            inflate(R.menu.subscription_menu)
-            show()
         }
+        popupMenu.inflate(R.menu.subscription_menu)
+        popupMenu.show()
+    }
 
+    private fun navigateToRegisterServiceOrder(subscription: SubscriptionResponse): Boolean {
+        findNavController().navigate(
+            FindSubscriptionFragmentDirections.findSubscriptionToRegisterServiceOrder(
+                subscription
+            )
+        )
+        return true
+    }
 
+    private fun navigateToPaymentHistory(subscription: SubscriptionResponse): Boolean {
+        findNavController().navigate(
+            FindSubscriptionFragmentDirections.findSubscriptionToPaymentHistoryFragment(
+                subscription
+            )
+        )
+        return true
+    }
 
+    private fun navigateToRegisterPayment(subscription: SubscriptionResponse): Boolean {
+        findNavController().navigate(
+            FindSubscriptionFragmentDirections.findSubscriptionToRegisterPayment(
+                subscription
+            )
+        )
+        return true
     }
 
 }

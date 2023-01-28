@@ -15,3 +15,4 @@ fun NavController.navigateSafe(destinationId: Int) {
 }
 
 fun LatLng.toGeoLocation(): GeoLocation = GeoLocation(latitude, longitude)
+fun LatLng.toStringLocation(): String = "$latitude, $longitude"

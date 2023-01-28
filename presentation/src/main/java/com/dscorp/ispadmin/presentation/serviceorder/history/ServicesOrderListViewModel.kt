@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.serviceorderlist
+package com.dscorp.ispadmin.presentation.serviceorder.history
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,7 +22,11 @@ class ServicesOrderListViewModel : ViewModel(), KoinComponent {
     private fun initGetSubscriptions() = viewModelScope.launch {
         try {
             val servicesOrderListFromRepository = repository.getServicesOrder()
-            responseLiveData.postValue(ServicesOrderListResponse.OnServicesOrderListFound(servicesOrderListFromRepository))
+            responseLiveData.postValue(
+                ServicesOrderListResponse.OnServicesOrderListFound(
+                    servicesOrderListFromRepository
+                )
+            )
         } catch (error: Exception) {
             error.printStackTrace()
             responseLiveData.postValue(ServicesOrderListResponse.OnError(error))

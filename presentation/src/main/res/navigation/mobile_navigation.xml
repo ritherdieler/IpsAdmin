@@ -48,10 +48,18 @@
             app:destination="@id/mapDialog" />
     </fragment>
     <fragment
-        android:id="@+id/nav_to_register_service_order"
-        android:name="com.dscorp.ispadmin.presentation.serviceorden.ServiceOrderFragment"
+        android:id="@+id/register_service_order_fragment"
+        android:name="com.dscorp.ispadmin.presentation.serviceorder.register.RegisterServiceOrderFragment"
         android:label="ServiceOrderFragment"
-        tools:layout="@layout/fragment_service_order" />
+        tools:layout="@layout/fragment_service_order">
+        <argument
+            android:name="subscription"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+
+        <action
+            android:id="@+id/action_register_service_order_fragment_to_mapDialog"
+            app:destination="@id/mapDialog" />
+    </fragment>
     <fragment
         android:id="@+id/subscriptionDetail"
         android:name="com.dscorp.ispadmin.presentation.subscriptiondetail.SubscriptionDetailFragment"
@@ -67,7 +75,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_view_services_order_list"
-        android:name="com.dscorp.ispadmin.presentation.serviceorderlist.ServicesOrderListFragment"
+        android:name="com.dscorp.ispadmin.presentation.serviceorder.history.ServicesOrderListFragment"
         android:label="ServicesOrderListFragment"
         tools:layout="@layout/fragment_services_order_list" />
     <fragment
@@ -137,7 +145,9 @@
             android:id="@+id/findSubscription_to_paymentHistoryFragment"
             app:destination="@id/paymentHistoryFragment" />
 
-
+        <action
+            android:id="@+id/findSubscription_to_register_serviceOrder"
+            app:destination="@id/register_service_order_fragment" />
     </fragment>
 
     <fragment
@@ -159,7 +169,7 @@
         android:id="@+id/paymentHistoryFragment"
         android:name="com.dscorp.ispadmin.presentation.payment.history.PaymentHistoryFragment"
         android:label="fragment_payment_history"
-        tools:layout="@layout/fragment_payment_history" >
+        tools:layout="@layout/fragment_payment_history">
         <argument
             android:name="subscription"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />

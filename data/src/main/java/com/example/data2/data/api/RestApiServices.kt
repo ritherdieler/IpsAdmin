@@ -56,7 +56,7 @@ interface RestApiServices {
     suspend fun registerServiceOrder(@Body serviceOrder: ServiceOrder): Response<ServiceOrder>
 
     @GET("service-order")
-    suspend fun getServicesOrder(): Response<List<ServiceOrder>>
+    suspend fun getServicesOrder(): Response<List<ServiceOrderResponse>>
 
     @GET("technician")
     suspend fun getTechnicians(): Response<List<Technician>>

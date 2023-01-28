@@ -9,8 +9,8 @@ import com.dscorp.ispadmin.presentation.payment.register.RegisterPaymentViewMode
 import com.dscorp.ispadmin.presentation.place.PlaceViewModel
 import com.dscorp.ispadmin.presentation.plan.PlanViewModel
 import com.dscorp.ispadmin.presentation.registration.RegisterViewModel
-import com.dscorp.ispadmin.presentation.serviceorden.ServiceOrderViewModel
-import com.dscorp.ispadmin.presentation.serviceorderlist.ServicesOrderListViewModel
+import com.dscorp.ispadmin.presentation.serviceorder.history.ServicesOrderListViewModel
+import com.dscorp.ispadmin.presentation.serviceorder.register.RegisterServiceOrderViewModel
 import com.dscorp.ispadmin.presentation.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListViewModel
@@ -36,8 +36,8 @@ val viewModelModule = module {
     viewModel { SubscriptionsListViewModel() }
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel() }
-    viewModel { ServiceOrderViewModel() }
-    viewModel {ServicesOrderListViewModel()}
+    viewModel { RegisterServiceOrderViewModel() }
+    viewModel { ServicesOrderListViewModel() }
     viewModel {TechniciansListViewModel()}
     viewModel {NapBoxesListViewModel()}
     viewModel { PaymentHistoryViewModel() }

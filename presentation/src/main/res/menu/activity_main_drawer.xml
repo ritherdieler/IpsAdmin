@@ -29,7 +29,7 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/registrar_caja_nap" />
         <item
-            android:id="@+id/nav_to_register_service_order"
+            android:id="@+id/register_service_order_fragment"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/registrar_orden_de_servicio" />
         <item

@@ -6,4 +6,7 @@
     <item
         android:id="@+id/btn_show_payment_history"
         android:title="@string/show_payment_history" />
+    <item
+        android:id="@+id/btn_register_service_order"
+        android:title="@string/register_service_order" />
 </menu>
