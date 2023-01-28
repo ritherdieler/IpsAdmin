@@ -29,7 +29,8 @@ class KoinApplication : Application() {
                 retrofitModule,
                 apiModule,
                 repositoryModule,
-                viewModelModule
+                viewModelModule,
+                dialogFactoryModule
             )
 
         }

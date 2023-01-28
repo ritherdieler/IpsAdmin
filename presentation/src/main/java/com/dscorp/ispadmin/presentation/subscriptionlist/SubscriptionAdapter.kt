@@ -1,47 +1,42 @@
 package com.dscorp.ispadmin.presentation.subscriptionlist
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemSubscriptionBinding
+import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
-class SubscriptionAdapter(val listener: SubscriptionsListFragment): RecyclerView.Adapter<SubscriptionAdapter.SubscriptionListViewHolder>() {
-    private var subscriptionList:List<SubscriptionResponse> = emptyList()
+class SubscriptionAdapter(val listener: SubscriptionItemClickListener): ListAdapter<SubscriptionResponse, SubscriptionAdapter.SubscriptionAdapterViewHolder>(SubscriptionDiffCallback()) {
 
-    fun submitList(subscription: List<SubscriptionResponse>) {
-        this.subscriptionList = subscription
-        notifyDataSetChanged()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionAdapterViewHolder {
+        val binding =
+            ItemSubscriptionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return SubscriptionAdapterViewHolder(binding)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionListViewHolder {
-        return SubscriptionListViewHolder(
-            ItemSubscriptionBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+    override fun onBindViewHolder(holder: SubscriptionAdapterViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
-
-    class SubscriptionListViewHolder(private val binding: ItemSubscriptionBinding) :
+   inner class SubscriptionAdapterViewHolder(private val binding: ItemSubscriptionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(subscription: SubscriptionResponse) {
-            binding.tvSeePlanId.text = subscription.plan?.id.toString()
-            binding.tvSeeFirstName.text = subscription.firstName
-            binding.tvSeeId.text = subscription.id.toString()
-            binding.tvSeePlace.text = subscription.lastName
-
+            binding.root.setOnClickListener{listener.onItemClick(subscription)}
+            binding.subscriptionList = subscription
+            binding.executePendingBindings()
         }
     }
+}
 
-    override fun onBindViewHolder(holder: SubscriptionListViewHolder, position: Int) {
-        holder.bind(subscriptionList[position])
-        holder.itemView.setOnClickListener {
-            listener.onItemClick(subscriptionList[position])
-        }
+
+
+private class SubscriptionDiffCallback : DiffUtil.ItemCallback<SubscriptionResponse>() {
+    override fun areItemsTheSame(oldItem: SubscriptionResponse, newItem: SubscriptionResponse): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun getItemCount(): Int {
-        return subscriptionList.size
+    override fun areContentsTheSame(oldItem: SubscriptionResponse, newItem: SubscriptionResponse): Boolean {
+        return oldItem == newItem
     }
 }

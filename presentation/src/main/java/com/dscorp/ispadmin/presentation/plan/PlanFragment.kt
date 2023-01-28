@@ -4,18 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlanBinding
+import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.dscorp.ispadmin.presentation.plan.PlanFormError.*
 import com.example.cleanarchitecture.domain.domain.entity.Plan
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanFragment : Fragment(R.layout.fragment_plan) {
     lateinit var binding: FragmentPlanBinding
+    val dialogFactory: IDialogFactory by inject()
+
     val viewModel: PlanViewModel by viewModel()
+
+
 
 
     override fun onCreateView(
@@ -33,13 +38,15 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         return binding.root
     }
 
-    private fun observePlanResponse() { viewModel.planResponseLiveData.observe(viewLifecycleOwner){ response ->
-            when(response){
-                is PlanResponse.OnError ->showErrorDialog(response.error.message.toString())
-                is PlanResponse.OnPlanRegistered ->showSucessDialog(response.plan.name)
+    private fun observePlanResponse() {
+        viewModel.planResponseLiveData.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is PlanResponse.OnError -> showErrorDialog(response.error.message.toString())
+                is PlanResponse.OnPlanRegistered -> showSuccessDialog(response.plan.name)
             }
         }
     }
+
     private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
@@ -71,22 +78,14 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun showSucessDialog(plan: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Plan Registrado con Exito")
-        builder.setMessage(plan)
-        builder.setPositiveButton("Ok") { p0, p1 ->
-        }
-        builder.show()
+    private fun showSuccessDialog(plan: String) {
+        val message = "el plan $plan ah sido procesado correctamente"
+        dialogFactory.createSuccessDialog(requireContext(), message).show()
     }
 
     private fun showErrorDialog(error: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("El plan no fue registrado")
-        builder.setMessage(error)
-        builder.setPositiveButton("Ok") { p0, p1 ->
-        }
-        builder.show()
+        val errorDialog = dialogFactory.createErrorDialog(requireContext())
+        errorDialog.show()
     }
 
     private fun registerPlan() {
@@ -98,6 +97,4 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         )
         viewModel.registerPlan(plan)
     }
-
-
 }

@@ -14,10 +14,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlaceBinding
+import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.toGeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.google.android.gms.maps.model.LatLng
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaceFragment() : Fragment() {
@@ -26,6 +28,8 @@ class PlaceFragment() : Fragment() {
         ActivityResultContracts.RequestPermission(),
         ::onLocationPermissionResult
     )
+    val dialogFactory: IDialogFactory by inject()
+
     lateinit var binding: FragmentPlaceBinding
     val viewModel: PlaceViewModel by viewModel()
 
@@ -87,22 +91,14 @@ class PlaceFragment() : Fragment() {
         }
     }
 
-    private fun showSuccessDialog(place: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Lugar registrado con exito")
-        builder.setMessage(place)
-        builder.setPositiveButton("Ok") { p0, p1 ->
-        }
-        builder.show()
-    }
 
+private fun showSuccessDialog(placeName: String) {
+    val successDialog = dialogFactory.createSuccessDialog(requireContext(),"el lugar $placeName fue registrado exitosamente ")
+    successDialog.show()
+}
     private fun showErrorDialog(error: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("El lugar no fue registrado")
-        builder.setMessage(error)
-        builder.setPositiveButton("Ok") { p0, p1 ->
-        }
-        builder.show()
+        val errorDialog = dialogFactory.createErrorDialog(requireContext())
+        errorDialog.show()
     }
 
     private fun onLocationPermissionResult(isGranted: Boolean) {

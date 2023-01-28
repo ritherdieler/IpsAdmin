@@ -92,11 +92,6 @@
             android:id="@+id/action_nav_see_nap_boxes_to_napBoxeDetailsFragment"
             app:destination="@id/napBoxeDetailsFragment" />
     </fragment>
-    <!--    <fragment
-            android:id="@+id/fragmentDetail"
-            android:name="com.dscorp.ispadmin.presentation.subscriptiondetails.SubscriptionDetailFragment"
-            tools:layout="@layout/fragment_subscription_detail"
-            android:label="Detalle de subscripcion" />-->
     <fragment
         android:id="@+id/nav_see_subscriptions"
         android:name="com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment"

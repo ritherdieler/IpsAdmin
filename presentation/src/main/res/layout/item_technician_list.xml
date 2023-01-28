@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+    <variable
+        name="technicianList"
+        type="com.example.cleanarchitecture.domain.domain.entity.Technician" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -69,12 +71,13 @@
                 app:layout_constraintEnd_toEndOf="@id/tvTechnician2"
                 app:layout_constraintStart_toStartOf="@id/tvTechnician2"
                 app:layout_constraintTop_toBottomOf="@+id/tvTechnician2"
-                tools:text="@string/Lugar" />
+                tools:text="DNI :" />
 
             <TextView
                 android:id="@+id/tvPrueba0Technician"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@{technicianList.firstName}"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
@@ -91,6 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="10dp"
+                android:text="@{technicianList.id}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTechnician1"
                 app:layout_constraintEnd_toEndOf="@+id/tvPrueba0Technician"
                 app:layout_constraintHorizontal_bias="0.375"
@@ -101,9 +105,10 @@
 
             <TextView
                 android:id="@+id/tvPrueba2Technician"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_width="51dp"
+                android:layout_height="13dp"
                 android:layout_marginStart="10dp"
+                android:text="@{technicianList.lastName}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTechnician2"
                 app:layout_constraintEnd_toEndOf="@+id/tvPrueba1Technician"
                 app:layout_constraintStart_toStartOf="@+id/tvPrueba1Technician"
@@ -115,6 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
+                android:text="@{technicianList.dni}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTechnician3"
                 app:layout_constraintEnd_toEndOf="@+id/tvPrueba2Technician"
                 app:layout_constraintHorizontal_bias="1.0"
