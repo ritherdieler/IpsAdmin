@@ -2,7 +2,7 @@ package com.dscorp.ispadmin.presentation.di.app
 
 import android.app.Application
 import com.dscorp.ispadmin.presentation.di.modules.apiModule
-import com.dscorp.ispadmin.presentation.di.dialogFactoryModule
+import com.dscorp.ispadmin.presentation.di.modules.dialogFactoryModule
 import com.dscorp.ispadmin.presentation.di.repositoryModule
 import com.dscorp.ispadmin.presentation.di.viewModelModule
 import com.example.data2.data.di.BASE_URL

@@ -17,8 +17,6 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-//        testInstrumentationRunner "com.dscorp.ispadmin.InstrumentationTestRunner"
-
         testInstrumentationRunner "com.dscorp.ispadmin.test.InstrumentationTestRunner"
     }
 
@@ -57,12 +55,13 @@ android {
 }
 
 dependencies {
+
     implementation project(':data')
     implementation project(':domain')
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
@@ -77,10 +76,8 @@ dependencies {
 
     //Http retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6'
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.10'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-
-
 
     //Truth
     testImplementation "com.google.truth:truth:1.1.3"
@@ -98,15 +95,14 @@ dependencies {
     //TEST
     debugImplementation "androidx.fragment:fragment-testing:1.5.5"
     testImplementation 'org.robolectric:robolectric:4.9.2'
-    testImplementation 'org.mockito:mockito-inline:4.9.0'
+    testImplementation 'org.mockito:mockito-inline:5.0.0'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
     testImplementation 'androidx.test.espresso:espresso-contrib:3.5.1'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "com.squareup.okhttp3:mockwebserver:5.0.0-alpha.6"
     testImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
 
-    def koin_version = "3.3.0"
+    def koin_version = "3.3.2"
     // Koin Test features
     testImplementation "io.insert-koin:koin-test:$koin_version"
 
@@ -120,9 +116,8 @@ dependencies {
     testImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:31.1.1')
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.3'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.2.0'
     implementation 'com.google.firebase:firebase-messaging-ktx:23.1.1'
 
 
