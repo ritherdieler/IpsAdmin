@@ -21,6 +21,8 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     val viewModel: PlanViewModel by viewModel()
 
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
