@@ -5,21 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.google.android.material.datepicker.MaterialDatePicker
+import org.koin.android.ext.android.inject
 
 class PaymentHistoryFragment : Fragment(), View.OnClickListener {
 
+    private val args: PaymentHistoryFragmentArgs by navArgs()
     private var selectedEndDate: Long? = null
     private var selectedStartDate: Long? = null
 
-    private lateinit var viewModel: PaymentHistoryViewModel
-    val binding: FragmentConsultPaymentsBinding by lazy {
-        FragmentConsultPaymentsBinding.inflate(
-            layoutInflater
-        )
-    }
+    private val viewModel: PaymentHistoryViewModel by inject()
+    val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,7 +57,7 @@ class PaymentHistoryFragment : Fragment(), View.OnClickListener {
                 viewModel.getPaymentHistory(SearchPaymentsRequest().apply {
                     startDate = selectedStartDate
                     endDate = selectedEndDate
-                    subscriptionCode = binding.etSubscriptionCode.text.toString().toInt()
+                    subscriptionId = args.subscription.id!!
                 })
             }
         }

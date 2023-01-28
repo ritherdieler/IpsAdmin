@@ -66,7 +66,7 @@ interface RestApiServices {
 
     @GET("payment")
     suspend fun getPaymentHistory(
-        @Query("subscriptionCode") subscriptionCode: Int?,
+        @Query("subscriptionId") subscriptionCode: Int,
         @Query("startDate") startDate: Long?,
         @Query("endDate") endDate: Long?
     ): Response<List<Payment>>

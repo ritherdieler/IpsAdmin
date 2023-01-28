@@ -27,7 +27,7 @@ import org.robolectric.annotation.Config
 @Config(application = KoinAppForInstrumentation::class)
 class PaymentHistoryViewModelTest : KoinTest {
 
-    private val mockWebServer = MockWebServer()
+    private lateinit var mockWebServer: MockWebServer
 
     private lateinit var viewModel: PaymentHistoryViewModel
 
@@ -37,6 +37,7 @@ class PaymentHistoryViewModelTest : KoinTest {
 
     @Before
     fun setUp() {
+        mockWebServer = MockWebServer()
         viewModel = PaymentHistoryViewModel()
         okHttp3IdlingResource = registerIdlingResource(httpClient)
         mockWebServer.start(8081)
@@ -54,7 +55,7 @@ class PaymentHistoryViewModelTest : KoinTest {
         // Given
         mockGetPaymentHistoryService()
         val request = SearchPaymentsRequest(
-            subscriptionCode = 1, startDate = 1, endDate = 2
+            subscriptionId = 1, startDate = 1, endDate = 2
         )
         // When
         viewModel.getPaymentHistory(request)
@@ -63,7 +64,21 @@ class PaymentHistoryViewModelTest : KoinTest {
         // Then
         val value = viewModel.resultLiveData.getValueForTest()
         assertTrue(value is PaymentHistoryUiState.OnPaymentResponseHistory)
+    }
 
+    @Test
+    fun `when throw error then emmit OnError`() {
+        // Given
+        mockErrorGetPaymentHistoryService()
+        val request = SearchPaymentsRequest(subscriptionId = 1, startDate = 1, endDate = 2)
+
+        // When
+        viewModel.getPaymentHistory(request)
+        Espresso.onIdle()
+
+        // Then
+        val value = (viewModel.resultLiveData.getValueForTest() as PaymentHistoryUiState.OnError)
+        assertTrue(!value.message.isNullOrEmpty())
     }
 
     private fun mockGetPaymentHistoryService() {
@@ -73,4 +88,10 @@ class PaymentHistoryViewModelTest : KoinTest {
         mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
     }
 
+    private fun mockErrorGetPaymentHistoryService() {
+        val urlToMock = "/payment?subscriptionCode=1&startDate=1&endDate=2"
+        val response =
+            MockResponse().setResponseCode(500).fromJson("payment/history/payment_list.json")
+        mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
+    }
 }

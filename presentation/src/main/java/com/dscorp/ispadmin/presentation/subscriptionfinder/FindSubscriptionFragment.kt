@@ -70,14 +70,14 @@ class FindSubscriptionFragment : Fragment(), SelectableSubscriptionListener {
                         )
                         true
                     }
-    /*                R.id.btn_show_payment_history -> {
+                    R.id.btn_show_payment_history -> {
                         findNavController().navigate(
-                            FindSubscriptionFragmentDirections.findSubscriptionToShowPaymentHis(
+                            FindSubscriptionFragmentDirections.findSubscriptionToPaymentHistoryFragment(
                                 subscription
                             )
                         )
                         true
-                    }*/
+                    }
                     else -> false
                 }
 

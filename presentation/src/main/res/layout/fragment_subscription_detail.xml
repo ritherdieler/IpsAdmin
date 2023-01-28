@@ -48,7 +48,7 @@
                     android:id="@+id/tvSeeSubscriptionDetailCode"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{subscription.code}"
+                    android:text="@{subscription.id}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailCode"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailId"
                     app:layout_constraintHorizontal_bias="0.2"

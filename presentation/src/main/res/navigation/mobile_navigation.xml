@@ -134,7 +134,7 @@
             android:id="@+id/findSubscription_to_registerPayment"
             app:destination="@id/register_payment" />
         <action
-            android:id="@+id/action_nav_find_subscriptions_to_paymentHistoryFragment"
+            android:id="@+id/findSubscription_to_paymentHistoryFragment"
             app:destination="@id/paymentHistoryFragment" />
 
 

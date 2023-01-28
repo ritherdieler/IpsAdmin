@@ -168,7 +168,7 @@ class Repository : IRepository, KoinComponent {
 
     override suspend fun getPaymentHistory(request: SearchPaymentsRequest): List<Payment> {
         val response = restApiServices.getPaymentHistory(
-            request.subscriptionCode,
+            request.subscriptionId!!,
             request.startDate,
             request.endDate
         )

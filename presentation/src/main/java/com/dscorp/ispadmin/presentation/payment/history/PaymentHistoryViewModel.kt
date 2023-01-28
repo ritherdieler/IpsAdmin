@@ -18,7 +18,8 @@ class PaymentHistoryViewModel:ViewModel() {
 
     fun getPaymentHistory(request: SearchPaymentsRequest) = viewModelScope.launch {
         try {
-            resultLiveData.postValue(OnPaymentResponseHistory(repository.getPaymentHistory(request)))
+            val response = repository.getPaymentHistory(request)
+            resultLiveData.postValue(OnPaymentResponseHistory(response))
         } catch (e: Exception) {
             resultLiveData.postValue(OnError(e.message))
         }
