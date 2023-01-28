@@ -10,7 +10,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.payment.history.PaymentHistoryFragment">
+        tools:context=".presentation.ui.features.payment.history.PaymentHistoryFragment">
 
 
         <androidx.recyclerview.widget.RecyclerView

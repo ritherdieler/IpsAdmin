@@ -8,7 +8,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ViewMapBinding
-import com.dscorp.ispadmin.presentation.subscriptiondetail.SubscriptionDetailFragmentArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView

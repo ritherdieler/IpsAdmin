@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.place.PlaceFragment">
+        tools:context=".presentation.ui.features.place.PlaceFragment">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlNamePlace"

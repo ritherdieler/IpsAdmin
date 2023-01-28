@@ -4,9 +4,11 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.dscorp.ispadmin.KoinAppForInstrumentation
-import com.dscorp.ispadmin.presentation.serviceorder.register.RegisterServiceOrderFormError.*
-import com.dscorp.ispadmin.presentation.serviceorder.register.RegisterServiceOrderResponse.*
+import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
+import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderFormError.*
+import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderResponse.*
+import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderFormError
+import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderViewModel
 import com.dscorp.ispadmin.util.fromJson
 import com.dscorp.ispadmin.util.getValueForTest
 import com.dscorp.ispadmin.util.mockService

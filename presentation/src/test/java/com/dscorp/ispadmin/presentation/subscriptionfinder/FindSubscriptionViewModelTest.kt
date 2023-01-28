@@ -3,13 +3,12 @@ package com.dscorp.ispadmin.presentation.subscriptionfinder
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.dscorp.ispadmin.KoinAppForInstrumentation
-import com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionUiState.*
+import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel
 import com.dscorp.ispadmin.util.fromJson
 import com.dscorp.ispadmin.util.getValueForTest
 import com.dscorp.ispadmin.util.mockService
-import com.example.cleanarchitecture.domain.domain.entity.Payment
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -25,7 +24,6 @@ import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 

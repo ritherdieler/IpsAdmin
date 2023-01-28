@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.technician.TechnicianFragment">
+        tools:context=".presentation.ui.features.technician.TechnicianFragment">
 
         <ScrollView
             android:layout_width="0dp"

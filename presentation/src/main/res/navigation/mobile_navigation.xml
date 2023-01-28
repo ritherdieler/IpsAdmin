@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/nav_plan"
-        android:name="com.dscorp.ispadmin.presentation.plan.PlanFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.plan.PlanFragment"
         android:label="PlanFragment"
         tools:layout="@layout/fragment_plan" />
     <fragment
         android:id="@+id/nav_device"
-        android:name="com.dscorp.ispadmin.presentation.networkdevice.NetworkDeviceFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceFragment"
         android:label="NetworkDeviceFragment"
         tools:layout="@layout/fragment_network_device" />
     <fragment
         android:id="@+id/nav_subscription"
-        android:name="com.dscorp.ispadmin.presentation.subscription.SubscriptionFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFragment"
         android:label="SubscriptionFragment"
         tools:layout="@layout/fragment_subscription">
         <action
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_register_place"
-        android:name="com.dscorp.ispadmin.presentation.place.PlaceFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.place.PlaceFragment"
         android:label="PlaceFragment"
         tools:layout="@layout/fragment_place">
         <action
@@ -35,12 +35,12 @@
     </fragment>
     <fragment
         android:id="@+id/nav_to_register_technician"
-        android:name="com.dscorp.ispadmin.presentation.technician.TechnicianFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianFragment"
         android:label="TechnicianFragment"
         tools:layout="@layout/fragment_technician" />
     <fragment
         android:id="@+id/nav_to_register_nap_box"
-        android:name="com.dscorp.ispadmin.presentation.napbox.NapBoxFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxFragment"
         android:label="NapBoxFragment"
         tools:layout="@layout/fragment_nap_box">
         <action
@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/register_service_order_fragment"
-        android:name="com.dscorp.ispadmin.presentation.serviceorder.register.RegisterServiceOrderFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderFragment"
         android:label="ServiceOrderFragment"
         tools:layout="@layout/fragment_service_order">
         <argument
@@ -62,7 +62,7 @@
     </fragment>
     <fragment
         android:id="@+id/subscriptionDetail"
-        android:name="com.dscorp.ispadmin.presentation.subscriptiondetail.SubscriptionDetailFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailFragment"
         android:label="SubscriptionDetailFragment"
 
         tools:layout="@layout/fragment_subscription_detail">
@@ -75,17 +75,17 @@
     </fragment>
     <fragment
         android:id="@+id/nav_view_services_order_list"
-        android:name="com.dscorp.ispadmin.presentation.serviceorder.history.ServicesOrderListFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListFragment"
         android:label="ServicesOrderListFragment"
         tools:layout="@layout/fragment_services_order_list" />
     <fragment
         android:id="@+id/nav_see_technician_list"
-        android:name="com.dscorp.ispadmin.presentation.technicianslist.TechniciansListFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.technicianslist.TechniciansListFragment"
         android:label="TechniciansListFragment"
         tools:layout="@layout/fragment_technicians_list" />
     <fragment
         android:id="@+id/nav_see_nap_boxes"
-        android:name="com.dscorp.ispadmin.presentation.napboxeslist.NapBoxesListFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListFragment"
         android:label="NapBoxesListFragment"
         tools:layout="@layout/fragment_nap_boxes_list">
         <action
@@ -94,7 +94,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_see_subscriptions"
-        android:name="com.dscorp.ispadmin.presentation.subscriptionlist.SubscriptionsListFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscriptionlist.SubscriptionsListFragment"
         android:label="SubscriptionsListFragment"
         tools:layout="@layout/fragment_subscriptions_list">
         <action
@@ -103,7 +103,7 @@
     </fragment>
     <fragment
         android:id="@+id/napBoxeDetailsFragment"
-        android:name="com.dscorp.ispadmin.presentation.napboxeslist.napboxdetails.NapBoxDetailsFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.napboxeslist.napboxdetails.NapBoxDetailsFragment"
         android:label="NapBoxeDetailsFragment"
         tools:layout="@layout/fragment_nap_box_detail">
         <argument
@@ -129,7 +129,7 @@
 
     <fragment
         android:id="@+id/nav_find_subscriptions"
-        android:name="com.dscorp.ispadmin.presentation.subscriptionfinder.FindSubscriptionFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionFragment"
         android:label="FindSubscription"
         tools:layout="@layout/fragment_find_subscription">
 
@@ -147,7 +147,7 @@
 
     <fragment
         android:id="@+id/register_payment"
-        android:name="com.dscorp.ispadmin.presentation.payment.register.RegisterPaymentFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentFragment"
         android:label="Registrar Pago"
         tools:layout="@layout/fragment_register_payment">
         <argument
@@ -157,12 +157,12 @@
 
     <fragment
         android:id="@+id/nav_consult_payments"
-        android:name="com.dscorp.ispadmin.presentation.payment.history.PaymentHistoryFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
         android:label="fragment_consut_payments"
         tools:layout="@layout/fragment_consult_payments" />
     <fragment
         android:id="@+id/paymentHistoryFragment"
-        android:name="com.dscorp.ispadmin.presentation.payment.history.PaymentHistoryFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
         android:label="fragment_payment_history"
         tools:layout="@layout/fragment_payment_history">
         <argument

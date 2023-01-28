@@ -4,13 +4,14 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.dscorp.ispadmin.KoinAppForInstrumentation
+import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryViewModel
 import com.dscorp.ispadmin.util.fromJson
 import com.dscorp.ispadmin.util.getValueForTest
 import com.dscorp.ispadmin.util.mockService
 import com.dscorp.ispadmin.util.registerIdlingResource
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
-import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -20,7 +21,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
-import org.koin.test.inject
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
