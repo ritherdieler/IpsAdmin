@@ -92,7 +92,7 @@ class NapBoxFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Caja nap registrado con exito")
         builder.setMessage(napBox)
-        builder.setPositiveButton("Ok") { p0, p1 ->
+        builder.setPositiveButton("Ok") { _, _ ->
         }
         builder.show()
     }
@@ -101,7 +101,7 @@ class NapBoxFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("El Caja nap no fue registrado")
         builder.setMessage(error)
-        builder.setPositiveButton("Ok") { p0, p1 ->
+        builder.setPositiveButton("Ok") { _, _ ->
         }
         builder.show()
     }

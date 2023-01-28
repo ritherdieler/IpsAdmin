@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.dialog.MaterialDialogs
 import org.koin.android.ext.android.inject
 
 class FindSubscriptionFragment : Fragment(), SelectableSubscriptionListener {
@@ -56,10 +57,38 @@ class FindSubscriptionFragment : Fragment(), SelectableSubscriptionListener {
             .show()
     }
 
-    override fun onSubscriptionSelected(subscription: SubscriptionResponse) {
-        findNavController().navigate(
-            FindSubscriptionFragmentDirections.findSubscriptionToRegisterPayment(subscription)
-        )
+    override fun onSubscriptionSelected(subscription: SubscriptionResponse, view: View) {
+
+        PopupMenu(requireContext(), view).apply {
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.btn_register_payment -> {
+                        findNavController().navigate(
+                            FindSubscriptionFragmentDirections.findSubscriptionToRegisterPayment(
+                                subscription
+                            )
+                        )
+                        true
+                    }
+    /*                R.id.btn_show_payment_history -> {
+                        findNavController().navigate(
+                            FindSubscriptionFragmentDirections.findSubscriptionToShowPaymentHis(
+                                subscription
+                            )
+                        )
+                        true
+                    }*/
+                    else -> false
+                }
+
+
+            }
+            inflate(R.menu.subscription_menu)
+            show()
+        }
+
+
+
     }
 
 }

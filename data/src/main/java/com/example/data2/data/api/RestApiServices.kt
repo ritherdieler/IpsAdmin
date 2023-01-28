@@ -1,12 +1,10 @@
 package com.example.data2.data.api
 
-import androidx.core.telephony.SubscriptionManagerCompat
 import com.example.cleanarchitecture.domain.domain.entity.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -67,16 +65,17 @@ interface RestApiServices {
     suspend fun getNapBoxes(): Response<List<NapBox>>
 
     @GET("payment")
-    suspend fun consultPayments(
-        subscriptionCode: Int?,
-        startDate: Long?,
-        endDate: Long?
+    suspend fun getPaymentHistory(
+        @Query("subscriptionCode") subscriptionCode: Int?,
+        @Query("startDate") startDate: Long?,
+        @Query("endDate") endDate: Long?
     ): Response<List<Payment>>
 
     @GET("subscription/find")
     suspend fun findSubscription(@Query("dni") dni: String): Response<List<SubscriptionResponse>>
+
     @POST("payment")
-   suspend fun registerPayment(@Body payment: Payment): Response<Payment>
+    suspend fun registerPayment(@Body payment: Payment): Response<Payment>
 
 }
 

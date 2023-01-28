@@ -98,6 +98,17 @@
                 app:layout_constraintTop_toTopOf="@+id/tvName2"
                 tools:text="renato" />
 
+            <Button
+                android:id="@+id/btnMenu"
+                style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                app:icon="@drawable/ic_more_dot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvSeeFirstName"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>

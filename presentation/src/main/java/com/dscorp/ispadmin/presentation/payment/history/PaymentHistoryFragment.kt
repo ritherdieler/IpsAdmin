@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.payment.consult
+package com.dscorp.ispadmin.presentation.payment.history
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,12 +9,12 @@ import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.google.android.material.datepicker.MaterialDatePicker
 
-class ConsultPaymentsFragment : Fragment(), View.OnClickListener {
+class PaymentHistoryFragment : Fragment(), View.OnClickListener {
 
     private var selectedEndDate: Long? = null
     private var selectedStartDate: Long? = null
 
-    private lateinit var viewModel: ConsultPaymentsViewModel
+    private lateinit var viewModel: PaymentHistoryViewModel
     val binding: FragmentConsultPaymentsBinding by lazy {
         FragmentConsultPaymentsBinding.inflate(
             layoutInflater
@@ -55,7 +55,7 @@ class ConsultPaymentsFragment : Fragment(), View.OnClickListener {
             binding.etStartDate -> showStartDatePickerDialog { selectedStartDate = it }
             binding.etEndDate -> showEndDatePickerDialog { selectedEndDate = it }
             binding.btnConsult -> {
-                viewModel.consultPayments(SearchPaymentsRequest().apply {
+                viewModel.getPaymentHistory(SearchPaymentsRequest().apply {
                     startDate = selectedStartDate
                     endDate = selectedEndDate
                     subscriptionCode = binding.etSubscriptionCode.text.toString().toInt()

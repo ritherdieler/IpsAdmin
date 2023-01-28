@@ -51,6 +51,7 @@
     <string name="consult_payments">Consultar Pagos</string>
     <string name="find_subscriptions">Buscar suscripciones</string>
     <string name="register_payment">Registrar pago</string>
+    <string name="show_payment_history">Mostrar historial de pagos</string>
 
 
 </resources>

@@ -133,6 +133,11 @@
         <action
             android:id="@+id/findSubscription_to_registerPayment"
             app:destination="@id/register_payment" />
+        <action
+            android:id="@+id/action_nav_find_subscriptions_to_paymentHistoryFragment"
+            app:destination="@id/paymentHistoryFragment" />
+
+
     </fragment>
 
     <fragment
@@ -147,7 +152,16 @@
 
     <fragment
         android:id="@+id/nav_consult_payments"
-        android:name="com.dscorp.ispadmin.presentation.payment.consult.ConsultPaymentsFragment"
+        android:name="com.dscorp.ispadmin.presentation.payment.history.PaymentHistoryFragment"
         android:label="fragment_consut_payments"
         tools:layout="@layout/fragment_consult_payments" />
+    <fragment
+        android:id="@+id/paymentHistoryFragment"
+        android:name="com.dscorp.ispadmin.presentation.payment.history.PaymentHistoryFragment"
+        android:label="fragment_payment_history"
+        tools:layout="@layout/fragment_payment_history" >
+        <argument
+            android:name="subscription"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+    </fragment>
 </navigation>

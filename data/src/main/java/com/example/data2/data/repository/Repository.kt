@@ -166,8 +166,8 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun consultPayments(request: SearchPaymentsRequest): List<Payment> {
-        val response = restApiServices.consultPayments(
+    override suspend fun getPaymentHistory(request: SearchPaymentsRequest): List<Payment> {
+        val response = restApiServices.getPaymentHistory(
             request.subscriptionCode,
             request.startDate,
             request.endDate
