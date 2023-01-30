@@ -1,7 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.napbox
 
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFormError
-
 /**
  * Created by Sergio Carrillo Diestra on 20/12/2022.
  * scarrillo.peruapps@gmail.com

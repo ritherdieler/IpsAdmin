@@ -12,4 +12,5 @@ import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 sealed class NetworkDeviceResponse {
     class OnNetworkDeviceRegistered(val networkDevice: NetworkDevice) : NetworkDeviceResponse()
     class OnError(val error: Exception) : NetworkDeviceResponse()
+    class OnNetworkDeviceTypesReceived(val networkDeviceTypes: List<String>) : NetworkDeviceResponse()
 }

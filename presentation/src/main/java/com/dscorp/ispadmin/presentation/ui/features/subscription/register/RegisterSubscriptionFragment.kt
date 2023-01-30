@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.subscription
+package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -11,14 +11,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFormError.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionResponse.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormError.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionResponse.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
@@ -28,7 +27,7 @@ import java.util.*
 import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
 
-class SubscriptionFragment : Fragment() {
+class RegisterSubscriptionFragment : Fragment() {
     private val binding by lazy { FragmentSubscriptionBinding.inflate(layoutInflater) }
     private var selectedDate: Long = 0
     private var selectedLocation: LatLng? = null
@@ -37,7 +36,7 @@ class SubscriptionFragment : Fragment() {
     private var selectedPlace: Place? = null
     private var selectedTechnician: Technician? = null
     private var selectedNapBox: NapBox? = null
-    private val viewModel: SubscriptionViewModel by viewModel()
+    private val viewModel: RegisterSubscriptionViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -151,7 +150,7 @@ class SubscriptionFragment : Fragment() {
             when (response) {
                 is OnError -> showErrorDialog(response.error.message.toString())
                 is OnFormDataFound -> fillFormSpinners(response)
-                is OnSubscriptionRegistered -> showSucessDialog(response.subscription.firstName)
+                is OnRegisterSubscriptionRegistered -> showSucessDialog(response.subscription.firstName)
             }
         }
     }

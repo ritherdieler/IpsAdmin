@@ -27,10 +27,15 @@ class FindSubscriptionFragment : Fragment(), SelectableSubscriptionListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding.findSubscriptionRecyclerView.adapter = adapter
         binding.btnFind.setOnClickListener {
-            val dni = binding.findSubscriptionEditText.text.toString()
+            val dni = binding.findSubscriptionEditText.text.toString().toInt()
             viewModel.findSubscription(dni)
+        }
+
+        viewModel.loadingUiState.observe(viewLifecycleOwner) {
+            binding.pbarFindSubscription.visibility = if (it) View.VISIBLE else View.GONE
         }
 
         observeUiState()

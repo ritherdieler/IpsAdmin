@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_network_device" />
     <fragment
         android:id="@+id/nav_subscription"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFragment"
         android:label="SubscriptionFragment"
         tools:layout="@layout/fragment_subscription">
         <action

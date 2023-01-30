@@ -17,7 +17,7 @@
     <string name="label" />
     <string name="title_activity_main2">MainActivity2</string>
     <string name="plan">Plan</string>
-    <string name="networkdevice">Dispositivo De Red</string>
+    <string name="network_device">Dispositivo De Red</string>
     <string name="login_Error_Tittle">Ocurrio un Error</string>
     <string name="menu_plan">Plan</string>
     <string name="menu_device">Equipos</string>
@@ -52,6 +52,9 @@
     <string name="describe_issue">Describe el problema</string>
     <string name="select_location">Seleccione la ubicacion</string>
     <string name="register_service_order">Registrar orden de servicio</string>
+    <string name="installed_device">Dispositivo de red instalado</string>
+    <string name="device_type">Tipo de dispositivo</string>
+    <string name="ip_address">Direccion ip</string>
 
 
 </resources>

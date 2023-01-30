@@ -178,8 +178,16 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun findSubscription(dni: String): List<SubscriptionResponse> {
-        val response = restApiServices.findSubscription(dni)
+    override suspend fun findSubscription(id: Int): List<SubscriptionResponse> {
+        val response = restApiServices.findSubscription(id)
+        return when (response.code()) {
+            200 -> response.body()!!.ifEmpty { listOf() }
+            else -> throw Exception("Error")
+        }
+    }
+
+    override suspend fun registerPayment(payment: Payment): Payment {
+        val response = restApiServices.registerPayment(payment)
         if (response.code() == 200) {
             return response.body()!!
         } else {
@@ -187,8 +195,8 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun registerPayment(payment: Payment): Payment {
-        val response = restApiServices.registerPayment(payment)
+    override suspend fun getNetworkDeviceTypes(): List<String> {
+        val response = restApiServices.getNetworkDeviceTypes()
         if (response.code() == 200) {
             return response.body()!!
         } else {

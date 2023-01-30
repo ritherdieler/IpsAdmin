@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.subscription
+package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import com.example.cleanarchitecture.domain.domain.entity.*
 
@@ -9,7 +9,7 @@ import com.example.cleanarchitecture.domain.domain.entity.*
  * Huacho, Peru.
  *
  **/
-sealed class SubscriptionResponse {
+sealed class RegisterSubscriptionResponse {
     class OnFormDataFound(
         val plans: List<Plan>,
         val networkDevice: List<NetworkDevice>,
@@ -17,8 +17,8 @@ sealed class SubscriptionResponse {
         val technicians: List<Technician>,
         val napBoxs: List<NapBox>
     ) :
-        SubscriptionResponse()
+        RegisterSubscriptionResponse()
 
-    class OnSubscriptionRegistered(val subscription: Subscription) : SubscriptionResponse()
-    class OnError(val error: Exception) : SubscriptionResponse()
+    class OnRegisterSubscriptionRegistered(val subscription: Subscription) : RegisterSubscriptionResponse()
+    class OnError(val error: Exception) : RegisterSubscriptionResponse()
 }

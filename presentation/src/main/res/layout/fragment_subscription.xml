@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.features.subscription.SubscriptionFragment">
+        tools:context=".presentation.ui.features.subscription.register.RegisterSubscriptionFragment">
 
         <ScrollView
             android:layout_width="0dp"
@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="24dp"
                     android:layout_marginEnd="32dp"
                     android:hint="Nombres"
                     app:endIconMode="clear_text"
@@ -39,6 +39,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.41000003"
                     app:layout_constraintVertical_chainStyle="packed">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -149,8 +150,7 @@
                         android:id="@+id/etLocationSubscription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
-                        />
+                        android:focusable="false" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -173,8 +173,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:maxLength="9"
-                        />
+                        android:maxLength="9" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -226,7 +225,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:hint="@string/networkdevice"
+                    android:hint="@string/installed_device"
                     app:layout_constraintBottom_toTopOf="@+id/spnPlace"
                     app:layout_constraintEnd_toEndOf="@+id/spnPlan"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -240,6 +239,7 @@
                         android:inputType="none"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
+
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnPlace"
@@ -282,6 +282,7 @@
                         android:inputType="none"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnNapBox"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
@@ -289,9 +290,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:hint="@string/cajas_nap"
-                    app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
+                    app:layout_constraintBottom_toTopOf="@+id/spnHostDevice"
                     app:layout_constraintEnd_toEndOf="@+id/spnTechnician"
                     app:layout_constraintStart_toStartOf="@+id/spnTechnician"
+
                     app:layout_constraintTop_toBottomOf="@+id/spnTechnician">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -302,18 +304,40 @@
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/spnHostDevice"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+
+                    android:layout_marginBottom="24dp"
+                    android:hint="@string/installed_device"
+                    app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
+                    app:layout_constraintEnd_toEndOf="@+id/spnNapBox"
+                    app:layout_constraintStart_toStartOf="@+id/spnNapBox"
+                    app:layout_constraintTop_toBottomOf="@+id/spnNapBox">
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/etHostDevice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <Button
                     android:id="@+id/btSubscribirse"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="24dp"
                     android:text="Registrar"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/spnNapBox"
+                    app:layout_constraintEnd_toEndOf="@+id/spnHostDevice"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/spnNapBox"
-                    app:layout_constraintTop_toBottomOf="@+id/spnNapBox" />
+                    app:layout_constraintStart_toStartOf="@+id/spnHostDevice"
+                    app:layout_constraintTop_toBottomOf="@+id/spnHostDevice" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>

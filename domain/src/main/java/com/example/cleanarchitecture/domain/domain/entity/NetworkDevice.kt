@@ -8,19 +8,21 @@ package com.example.cleanarchitecture.domain.domain.entity
  *
  **/
 data class NetworkDevice(
-        val id:Int? = null,
-        val name:String="",
-        val password:String="",
-        val username:String="",
-        val ipAddress:String="",
-        ):java.io.Serializable
-{
-        override fun toString(): String {
-                return name
-        }
+    val id: Int? = null,
+    val name: String = "",
+    val password: String = "",
+    val username: String = "",
+    val ipAddress: String = "",
+    val networkDeviceType: String? = null,
 
-        override fun hashCode(): Int {
-                return super.hashCode()
-        }
+    ) : java.io.Serializable {
+    override fun toString(): String {
+        return name
+    }
+
+    override fun hashCode(): Int {
+        return super.hashCode()
+    }
+
 }
 

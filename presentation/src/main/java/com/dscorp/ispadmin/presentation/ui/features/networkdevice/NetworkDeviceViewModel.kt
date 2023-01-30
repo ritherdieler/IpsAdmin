@@ -3,6 +3,8 @@ package com.dscorp.ispadmin.presentation.ui.features.networkdevice
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceFormError.*
+import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceResponse.*
 import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import kotlinx.coroutines.launch
@@ -15,38 +17,55 @@ class NetworkDeviceViewModel() : ViewModel() {
     val networkDeviceResponseLiveData = MutableLiveData<NetworkDeviceResponse>()
     val networkDeviceFormErrorLiveData = MutableLiveData<NetworkDeviceFormError>()
 
+    init {
+        getFormData()
+    }
+
+    private fun getFormData() = viewModelScope.launch {
+        try {
+            val networkDeviceTypes = repository.getNetworkDeviceTypes()
+            networkDeviceResponseLiveData.postValue(OnNetworkDeviceTypesReceived(networkDeviceTypes))
+        } catch (error: Exception) {
+            networkDeviceResponseLiveData.postValue(OnError(error))
+        }
+    }
+
     fun registerNetworkDevice(networkDevice: NetworkDevice) = viewModelScope.launch {
         try {
-            if (formIsValid(networkDevice)) {
+            if (!formIsValid(networkDevice)) return@launch
+            val networkDeviceFromRepository = repository.registerNetworkDevice(networkDevice)
+            networkDeviceResponseLiveData.postValue(
+                OnNetworkDeviceRegistered(
+                    networkDeviceFromRepository
+                )
+            )
 
-                var networkDeviceFromRepository = repository.registerNetworkDevice(networkDevice)
-                networkDeviceResponseLiveData.postValue(
-                   NetworkDeviceResponse.OnNetworkDeviceRegistered
-                    (networkDeviceFromRepository))
-            }
         } catch (error: Exception) {
-            networkDeviceResponseLiveData.postValue(NetworkDeviceResponse.OnError(error))
+            networkDeviceResponseLiveData.postValue(OnError(error))
         }
     }
 
     private fun formIsValid(networkDevice: NetworkDevice): Boolean {
 
         if (networkDevice.name.isEmpty()) {
-            networkDeviceFormErrorLiveData.postValue(NetworkDeviceFormError.OnEtNameError("El nombre del dispositivo de red no puede estar vacio"))
-            return false
-        }
-        if (networkDevice.password.isEmpty()) {
-            networkDeviceFormErrorLiveData.postValue(NetworkDeviceFormError.OnEtPassword("La contraseña no puede estar vacia"))
+            networkDeviceFormErrorLiveData.postValue(OnEtNameError())
             return false
         }
         if (networkDevice.username.isEmpty()) {
-            networkDeviceFormErrorLiveData.postValue(NetworkDeviceFormError.OnEtUserName("El usuario no puede estar vacio"))
+            networkDeviceFormErrorLiveData.postValue(OnEtUserNameError())
+            return false
+        }
+        if (networkDevice.password.isEmpty()) {
+            networkDeviceFormErrorLiveData.postValue(OnEtPasswordError())
             return false
         }
         if (networkDevice.ipAddress.isEmpty()) {
-            networkDeviceFormErrorLiveData.postValue(NetworkDeviceFormError.OnEtAddress("La direccion de ip no puede estar vacia"))
+            networkDeviceFormErrorLiveData.postValue(OnEtAddressError())
             return false
-
+        }
+        if (networkDevice.networkDeviceType.isNullOrEmpty()) {
+            networkDeviceFormErrorLiveData.postValue(OnDeviceTypeError())
+            return false
         }
         return true
     }

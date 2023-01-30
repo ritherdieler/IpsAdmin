@@ -12,7 +12,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFormError
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker

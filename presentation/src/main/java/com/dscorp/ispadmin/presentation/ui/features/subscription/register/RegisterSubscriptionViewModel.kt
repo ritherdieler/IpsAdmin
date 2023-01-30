@@ -1,20 +1,20 @@
-package com.dscorp.ispadmin.presentation.ui.features.subscription
+package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionResponse.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionResponse.*
 import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
-class SubscriptionViewModel : ViewModel() {
+class RegisterSubscriptionViewModel : ViewModel() {
 
     private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
-    val responseLiveData = MutableLiveData<SubscriptionResponse>()
-    val formErrorLiveData = MutableLiveData<SubscriptionFormError>()
+    val responseLiveData = MutableLiveData<RegisterSubscriptionResponse>()
+    val formErrorLiveData = MutableLiveData<RegisterSubscriptionFormError>()
 
     init {
         getFormData()
@@ -47,7 +47,7 @@ class SubscriptionViewModel : ViewModel() {
         try {
             if (formIsValid(subscription)) {
                 val subscriptionFromRepository = repository.doSubscription(subscription)
-                responseLiveData.postValue(OnSubscriptionRegistered(subscriptionFromRepository))
+                responseLiveData.postValue(OnRegisterSubscriptionRegistered(subscriptionFromRepository))
             }
 
         } catch (error: Exception) {
@@ -59,73 +59,73 @@ class SubscriptionViewModel : ViewModel() {
     private fun formIsValid(subscription: Subscription): Boolean {
 
         if (subscription.firstName.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtFirstNameError("Ingresa tu nombre. "))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnEtFirstNameError("Ingresa tu nombre. "))
             return false
         }
         if (subscription.lastName.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtLastNameError("Ingresa Tu Apellido"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnEtLastNameError("Ingresa Tu Apellido"))
             return false
         }
         if (subscription.dni.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtDniError("Ingresa tu nuemero de DNI."))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnEtDniError("Ingresa tu nuemero de DNI."))
             return false
         }
         if (subscription.dni.length<8) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnDniIsInvalidError("El DNI debe tener 8 caracteres"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnDniIsInvalidError("El DNI debe tener 8 caracteres"))
             return false
         }
         if (subscription.password.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtPasswordError("Ingresa una contrasena."))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnEtPasswordError("Ingresa una contrasena."))
             return false
         }
 
         if (subscription.address.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtAddressesError("Ingresa una Direccion"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnEtAddressesError("Ingresa una Direccion"))
             return false
         }
 
         if (subscription.phone.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtNumberPhoneError("Ingresa tu número de telefono"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnEtNumberPhoneError("Ingresa tu número de telefono"))
             return false
         }
 
         if (subscription.phone.length<9) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnPhoneIsInvalidError("El Numero de telefono debe tener 9 caracteres"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnPhoneIsInvalidError("El Numero de telefono debe tener 9 caracteres"))
             return false
         }
 
         if (subscription.subscriptionDate == 0L) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtSubscriptionDateError("Debes colocar una fecha de suscripcion"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnEtSubscriptionDateError("Debes colocar una fecha de suscripcion"))
             return false
         }
 
         if (subscription.location == null) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnEtLocationError("La ubicacion no puede estar vacia"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnEtLocationError("La ubicacion no puede estar vacia"))
             return false
         }
 
         if (subscription.planId.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnSpnPlanError("Debes seleccionar un plan"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnSpnPlanError("Debes seleccionar un plan"))
             return false
         }
 
         if (subscription.networkDeviceId.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un dispositivo de red"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un dispositivo de red"))
             return false
         }
 
         if (subscription.placeId.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnSpnPlaceError("Debes seleccionar un lugar"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnSpnPlaceError("Debes seleccionar un lugar"))
             return false
         }
         if (subscription.napBoxId.isEmpty()) {
-            formErrorLiveData.postValue(SubscriptionFormError.OnSpnNapBoxError("Debes seleccionar una Caja Nap"))
+            formErrorLiveData.postValue(RegisterSubscriptionFormError.OnSpnNapBoxError("Debes seleccionar una Caja Nap"))
             return false
         }
 
         if (subscription.networkDeviceId.isEmpty()) {
             formErrorLiveData.postValue(
-                SubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un técnico")
+                RegisterSubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un técnico")
             )
             return false
         }
