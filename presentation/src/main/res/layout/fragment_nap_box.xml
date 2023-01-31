@@ -7,9 +7,11 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
         tools:context=".presentation.place.NapBoxFragment">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -17,15 +19,10 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="35dp"
             android:hint="@string/codigo"
-            app:layout_constraintBottom_toTopOf="@+id/tlAddress"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed">
+            android:layout_marginTop="20dp"
+            tools:layout_editor_absoluteX="35dp"
+            tools:layout_editor_absoluteY="232dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etCode"
@@ -37,14 +34,12 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlAddress"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="@string/direccion"
-            app:layout_constraintBottom_toTopOf="@+id/tlLocationNapBox"
-            app:layout_constraintEnd_toEndOf="@+id/tlCode"
-            app:layout_constraintStart_toStartOf="@+id/tlCode"
-            app:layout_constraintTop_toBottomOf="@+id/tlCode">
+            tools:layout_editor_absoluteX="35dp"
+            tools:layout_editor_absoluteY="306dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAddress"
@@ -52,37 +47,35 @@
                 android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlLocationNapBox"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="false"
             android:layout_marginTop="20dp"
+            android:focusable="false"
             android:hint="@string/ubicaci_n"
-            app:layout_constraintBottom_toTopOf="@+id/btRegisterNapBox"
-            app:layout_constraintEnd_toEndOf="@+id/tlAddress"
-            app:layout_constraintStart_toStartOf="@+id/tlAddress"
-            app:layout_constraintTop_toBottomOf="@+id/tlAddress">
+
+            tools:layout_editor_absoluteX="35dp"
+            tools:layout_editor_absoluteY="379dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLocationNapBox"
                 android:layout_width="match_parent"
-                android:focusable="false"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:focusable="false" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btRegisterNapBox"
-            android:layout_width="0dp"
+            android:layout_width="372dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:text="@string/registrar"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tlLocationNapBox"
-            app:layout_constraintStart_toStartOf="@+id/tlLocationNapBox"
-            app:layout_constraintTop_toBottomOf="@+id/tlLocationNapBox" />
+            tools:layout_editor_absoluteX="35dp"
+            tools:layout_editor_absoluteY="472dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

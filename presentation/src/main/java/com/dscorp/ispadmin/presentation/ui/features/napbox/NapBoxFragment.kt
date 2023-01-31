@@ -83,9 +83,13 @@ class NapBoxFragment : Fragment() {
         viewModel.napBoxResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NapBoxResponse.OnError -> showErrorDialog()
-                is NapBoxResponse.OnNapBoxRegister -> showSuccessDialog(response.napBox.code)
+                is NapBoxResponse.OnNapBoxRegister -> showSuccessDialog(response)
 
             }
         }
+    }
+
+    private fun showSuccessDialog(response: NapBoxResponse.OnNapBoxRegister) {
+        showSuccessDialog("La Caja Nap ${response.napBox.code} Ah Sido Registrado Correctamente.")
     }
 }

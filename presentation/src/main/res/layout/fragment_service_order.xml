@@ -7,10 +7,11 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginHorizontal="20dp"
         tools:context=".presentation.serviceOrder.ServiceOrderFragment">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -18,16 +19,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
             android:focusable="false"
             android:hint="@string/select_location"
-            app:layout_constraintBottom_toTopOf="@+id/tlIssue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed">
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="269dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLocation"
@@ -42,33 +38,28 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlIssue"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="@string/describe_issue"
-            app:layout_constraintBottom_toTopOf="@+id/btRegisterServiceOrder"
-            app:layout_constraintEnd_toEndOf="@+id/tlLocation"
-            app:layout_constraintStart_toStartOf="@+id/tlLocation"
-            app:layout_constraintTop_toBottomOf="@+id/tlLocation">
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="342dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etIssue"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                 />
+                android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btRegisterServiceOrder"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:text="Registrar"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tlIssue"
-            app:layout_constraintStart_toStartOf="@+id/tlIssue"
-            app:layout_constraintTop_toBottomOf="@+id/tlIssue" />
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="435dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

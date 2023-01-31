@@ -7,40 +7,35 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+
         tools:context=".presentation.ui.features.subscription.register.RegisterSubscriptionFragment">
 
         <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:fillViewport="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+          >
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                >
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlFirstName"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginTop="20dp"
                     android:hint="Nombres"
                     app:endIconMode="clear_text"
-                    app:layout_constraintBottom_toTopOf="@+id/tlLastName"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.41000003"
-                    app:layout_constraintVertical_chainStyle="packed">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="24dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
@@ -52,15 +47,13 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlLastName"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="Apellidos"
                     app:endIconMode="clear_text"
-                    app:layout_constraintBottom_toTopOf="@+id/tlDni"
-                    app:layout_constraintEnd_toEndOf="@+id/tlFirstName"
-                    app:layout_constraintStart_toStartOf="@+id/tlFirstName"
-                    app:layout_constraintTop_toBottomOf="@+id/tlFirstName">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="101dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLastName"
@@ -72,15 +65,13 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlDni"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="DNI"
                     app:endIconMode="clear_text"
-                    app:layout_constraintBottom_toTopOf="@+id/tlPassword"
-                    app:layout_constraintEnd_toEndOf="@+id/tlLastName"
-                    app:layout_constraintStart_toStartOf="@+id/tlLastName"
-                    app:layout_constraintTop_toBottomOf="@+id/tlLastName">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="177dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etDni"
@@ -94,15 +85,13 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlPassword"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="Contraseña"
                     app:endIconMode="password_toggle"
-                    app:layout_constraintBottom_toTopOf="@+id/tlAddress"
-                    app:layout_constraintEnd_toEndOf="@+id/tlDni"
-                    app:layout_constraintStart_toStartOf="@+id/tlDni"
-                    app:layout_constraintTop_toBottomOf="@+id/tlDni">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="254dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPassword"
@@ -115,15 +104,13 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlAddress"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="Dirección"
                     app:endIconMode="clear_text"
-                    app:layout_constraintBottom_toTopOf="@+id/tlLocationSubscription"
-                    app:layout_constraintEnd_toEndOf="@+id/tlPassword"
-                    app:layout_constraintStart_toStartOf="@+id/tlPassword"
-                    app:layout_constraintTop_toBottomOf="@+id/tlPassword">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="332dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAddress"
@@ -135,16 +122,14 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlLocationSubscription"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
                     android:focusable="false"
+                    android:layout_marginTop="20dp"
                     android:hint="Ubicación"
                     app:endIconMode="clear_text"
-                    app:layout_constraintBottom_toTopOf="@+id/tlPhone"
-                    app:layout_constraintEnd_toEndOf="@+id/tlAddress"
-                    app:layout_constraintStart_toStartOf="@+id/tlAddress"
-                    app:layout_constraintTop_toBottomOf="@+id/tlAddress">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="409dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLocationSubscription"
@@ -157,16 +142,14 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlPhone"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="Numero de telefono"
                     app:endIconMode="clear_text"
 
-                    app:layout_constraintBottom_toTopOf="@+id/tlSubscriptionDate"
-                    app:layout_constraintEnd_toEndOf="@+id/tlLocationSubscription"
-                    app:layout_constraintStart_toStartOf="@+id/tlLocationSubscription"
-                    app:layout_constraintTop_toBottomOf="@+id/tlLocationSubscription">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="486dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPhone"
@@ -180,16 +163,14 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlSubscriptionDate"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:focusable="false"
                     android:hint="Fecha de Suscripción"
                     app:endIconMode="clear_text"
-                    app:layout_constraintBottom_toTopOf="@+id/spnPlan"
-                    app:layout_constraintEnd_toEndOf="@+id/tlPhone"
-                    app:layout_constraintStart_toStartOf="@+id/tlPhone"
-                    app:layout_constraintTop_toBottomOf="@+id/tlPhone">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="563dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etSubscriptionDate"
@@ -202,19 +183,18 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnPlan"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="@string/plan"
-                    app:layout_constraintBottom_toTopOf="@+id/spnDevice"
-                    app:layout_constraintEnd_toEndOf="@+id/tlSubscriptionDate"
-                    app:layout_constraintStart_toStartOf="@+id/tlSubscriptionDate"
-                    app:layout_constraintTop_toBottomOf="@+id/tlSubscriptionDate">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="640dp">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etPlan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
                         android:inputType="none"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -222,15 +202,12 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnDevice"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="@string/installed_device"
-                    app:layout_constraintBottom_toTopOf="@+id/spnPlace"
-                    app:layout_constraintEnd_toEndOf="@+id/spnPlan"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/spnPlan"
-                    app:layout_constraintTop_toBottomOf="@+id/spnPlan">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="717dp">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etNetworkDevice"
@@ -244,15 +221,12 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnPlace"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="@string/lugar"
-                    app:layout_constraintBottom_toTopOf="@+id/spnTechnician"
-                    app:layout_constraintEnd_toEndOf="@+id/spnDevice"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/spnDevice"
-                    app:layout_constraintTop_toBottomOf="@+id/spnDevice">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="794dp">
 
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -266,14 +240,12 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnTechnician"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="@string/technician"
-                    app:layout_constraintBottom_toTopOf="@+id/spnNapBox"
-                    app:layout_constraintEnd_toEndOf="@+id/spnPlace"
-                    app:layout_constraintStart_toStartOf="@+id/spnPlace"
-                    app:layout_constraintTop_toBottomOf="@+id/spnPlace">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="872dp">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etTechnician"
@@ -286,15 +258,12 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnNapBox"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
                     android:hint="@string/cajas_nap"
-                    app:layout_constraintBottom_toTopOf="@+id/spnHostDevice"
-                    app:layout_constraintEnd_toEndOf="@+id/spnTechnician"
-                    app:layout_constraintStart_toStartOf="@+id/spnTechnician"
-
-                    app:layout_constraintTop_toBottomOf="@+id/spnTechnician">
+                    android:layout_marginTop="20dp"
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="949dp">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etNapBox"
@@ -308,16 +277,12 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnHostDevice"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginTop="20dp"
                     android:hint="@string/installed_device"
-                    app:layout_constraintBottom_toTopOf="@+id/btSubscribirse"
-                    app:layout_constraintEnd_toEndOf="@+id/spnNapBox"
-                    app:layout_constraintStart_toStartOf="@+id/spnNapBox"
-                    app:layout_constraintTop_toBottomOf="@+id/spnNapBox">
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="1026dp">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etHostDevice"
@@ -329,19 +294,17 @@
 
                 <Button
                     android:id="@+id/btSubscribirse"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     android:text="Registrar"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/spnHostDevice"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/spnHostDevice"
-                    app:layout_constraintTop_toBottomOf="@+id/spnHostDevice" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    tools:layout_editor_absoluteX="20dp"
+                    tools:layout_editor_absoluteY="1104dp" />
+            </LinearLayout>
 
         </ScrollView>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

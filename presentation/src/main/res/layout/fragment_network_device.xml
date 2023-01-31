@@ -22,8 +22,6 @@
             android:layout_marginTop="20dp"
             android:hint="Nombre"
             app:endIconMode="clear_text">
-
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
                 android:layout_width="match_parent"
@@ -39,7 +37,6 @@
             android:layout_marginTop="20dp"
             android:hint="Username"
             app:endIconMode="clear_text">
-
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUsername"

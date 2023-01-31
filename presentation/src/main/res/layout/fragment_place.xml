@@ -7,9 +7,11 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp"
         tools:context=".presentation.ui.features.place.PlaceFragment">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -17,16 +19,10 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="35dp"
+            android:layout_marginTop="20dp"
             android:hint="Nombre del Lugar"
-            app:layout_constraintBottom_toTopOf="@+id/tlAbbreviation"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.52"
-            app:layout_constraintVertical_chainStyle="packed">
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="234dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNamePlace"
@@ -38,14 +34,12 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlAbbreviation"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Abreviatura"
-            app:layout_constraintBottom_toTopOf="@+id/tlLocation"
-            app:layout_constraintEnd_toEndOf="@+id/tlNamePlace"
-            app:layout_constraintStart_toStartOf="@+id/tlNamePlace"
-            app:layout_constraintTop_toBottomOf="@+id/tlNamePlace">
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="307dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAbbreviation"
@@ -57,15 +51,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlLocation"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:focusable="false"
             android:hint="@string/location"
-            app:layout_constraintBottom_toTopOf="@+id/btRegisterPlace"
-            app:layout_constraintEnd_toEndOf="@+id/tlNamePlace"
-            app:layout_constraintStart_toStartOf="@+id/tlNamePlace"
-            app:layout_constraintTop_toBottomOf="@+id/tlAbbreviation">
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="381dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLocation"
@@ -77,15 +69,12 @@
 
         <Button
             android:id="@+id/btRegisterPlace"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="32dp"
             android:text="@string/register"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tlAbbreviation"
-            app:layout_constraintStart_toStartOf="@+id/tlAbbreviation"
-            app:layout_constraintTop_toBottomOf="@+id/tlLocation" />
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="454dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

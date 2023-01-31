@@ -7,26 +7,20 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="20dp"
         tools:context=".presentation.ui.features.plan.PlanFragment">
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/tlNamePlan"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
-            android:hint="Nombre plan"
-            app:layout_constraintBottom_toTopOf="@+id/tlprice"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed">
+            android:hint="Nombre plan">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNamePlan"
@@ -39,14 +33,10 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlprice"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="0dp"
+            android:layout_width="371dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:hint="Precio"
-            app:layout_constraintBottom_toTopOf="@+id/tlDownloadSpeed"
-            app:layout_constraintEnd_toEndOf="@+id/tlNamePlan"
-            app:layout_constraintStart_toStartOf="@+id/tlNamePlan"
-            app:layout_constraintTop_toBottomOf="@+id/tlNamePlan">
+            android:layout_marginTop="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPrice"
@@ -57,16 +47,12 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/tlDownloadSpeed"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="371dp"
             android:layout_marginTop="20dp"
-            android:hint="Velocidad de descarga"
-            app:layout_constraintBottom_toTopOf="@+id/tlUploadSpeed"
-            app:layout_constraintEnd_toEndOf="@+id/tlprice"
-            app:layout_constraintStart_toStartOf="@+id/tlprice"
-            app:layout_constraintTop_toBottomOf="@+id/tlprice">
+            android:layout_height="wrap_content"
+            android:hint="Velocidad de descarga">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDownloadSpeed"
@@ -78,16 +64,13 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/tlUploadSpeed"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="371dp"
             android:layout_marginTop="20dp"
+            android:layout_height="wrap_content"
             android:hint="Velocidad de subida"
-            app:layout_constraintBottom_toTopOf="@+id/btRegisterPlan"
-            app:layout_constraintEnd_toEndOf="@+id/tlDownloadSpeed"
-            app:layout_constraintStart_toStartOf="@+id/tlDownloadSpeed"
-            app:layout_constraintTop_toBottomOf="@+id/tlDownloadSpeed">
+     >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUploadSpeed"
@@ -99,14 +82,10 @@
 
         <Button
             android:id="@+id/btRegisterPlan"
-            android:layout_width="0dp"
+            android:layout_width="371dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
             android:text="Registrar"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tlUploadSpeed"
-            app:layout_constraintStart_toStartOf="@+id/tlUploadSpeed"
-            app:layout_constraintTop_toBottomOf="@+id/tlUploadSpeed" />
+            android:layout_marginTop="20dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>
