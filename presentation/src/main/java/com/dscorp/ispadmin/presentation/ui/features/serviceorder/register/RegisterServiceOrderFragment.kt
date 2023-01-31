@@ -4,15 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentServiceOrderBinding
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.extension.toStringLocation
-
+import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
 import com.google.android.gms.maps.model.LatLng
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterServiceOrderFragment() : Fragment() {
@@ -41,8 +43,8 @@ class RegisterServiceOrderFragment() : Fragment() {
     private fun observeServiceOrderResponse() {
         viewModel.serviceOrderResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is RegisterServiceOrderResponse.OnError -> showErrorDialog(response.error.message.toString())
-                is RegisterServiceOrderResponse.ServiceOrderRegisterSuccess -> showSuccessDialog()
+                is RegisterServiceOrderResponse.OnError -> showErrorDialog()
+                is RegisterServiceOrderResponse.ServiceOrderRegisterSuccess -> showSuccessDialog("")
             }
         }
     }
@@ -54,7 +56,7 @@ class RegisterServiceOrderFragment() : Fragment() {
                     error.error
                 is RegisterServiceOrderFormError.OnEtLocationError -> binding.tlLocation.error =
                     error.error
-                is RegisterServiceOrderFormError.OnSubscriptionError -> showErrorDialog(error.error)
+                is RegisterServiceOrderFormError.OnSubscriptionError -> showErrorDialog()
             }
         }
     }
@@ -77,23 +79,5 @@ class RegisterServiceOrderFragment() : Fragment() {
     private fun onLocationSelected(location: LatLng?) {
         binding.etLocation.setText(location?.toStringLocation() ?: "")
         this.selectedLocation = location
-    }
-
-    private fun showSuccessDialog() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Orden de servicio registrada con Exito")
-        builder.setMessage("")
-        builder.setPositiveButton("Ok") { p0, p1 ->
-        }
-        builder.show()
-    }
-
-    private fun showErrorDialog(error: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("El service_orden no fue registrado")
-        builder.setMessage(error)
-        builder.setPositiveButton("Ok") { p0, p1 ->
-        }
-        builder.show()
     }
 }

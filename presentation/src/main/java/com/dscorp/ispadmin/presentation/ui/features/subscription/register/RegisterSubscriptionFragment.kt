@@ -16,11 +16,15 @@ import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionResponse.*
+import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -148,9 +152,9 @@ class RegisterSubscriptionFragment : Fragment() {
     private fun observeResponse() {
         viewModel.responseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is OnError -> showErrorDialog(response.error.message.toString())
+                is OnError -> showErrorDialog()
+                is OnRegisterSubscriptionRegistered -> showSuccessDialog(response.subscription.firstName)
                 is OnFormDataFound -> fillFormSpinners(response)
-                is OnRegisterSubscriptionRegistered -> showSucessDialog(response.subscription.firstName)
             }
         }
     }
@@ -264,24 +268,6 @@ class RegisterSubscriptionFragment : Fragment() {
             subscriptionDate = selectedDate
         )
         viewModel.registerSubscription(subscription)
-    }
-
-    private fun showSucessDialog(subscriptionFirstName: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Te Subscribiste con exito ")
-        builder.setMessage(subscriptionFirstName)
-        builder.setPositiveButton("ok") { p0, p1 ->
-        }
-        builder.show()
-    }
-
-    private fun showErrorDialog(error: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("La subscripcion no fue procesada")
-        builder.setMessage(error)
-        builder.setPositiveButton("ok") { p0, p1 ->
-        }
-        builder.show()
     }
 
     private fun setUpPlansSpinner(plans: List<Plan>) {

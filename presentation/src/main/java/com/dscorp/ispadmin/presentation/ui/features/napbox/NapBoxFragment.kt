@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.napbox
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.google.android.gms.maps.model.LatLng
@@ -19,7 +20,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NapBoxFragment : Fragment() {
     var selectedLocation: LatLng? = null
-
     lateinit var binding: FragmentNapBoxBinding
     val viewModel: NapBoxViewModel by viewModel()
 
@@ -82,27 +82,10 @@ class NapBoxFragment : Fragment() {
     private fun observeNapBoxResponse() {
         viewModel.napBoxResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is NapBoxResponse.OnError -> showErrorDialog(response.error.message.toString())
-                is NapBoxResponse.OnNapBoxRegister -> showSucessDialog(response.napBox.code)
+                is NapBoxResponse.OnError -> showErrorDialog()
+                is NapBoxResponse.OnNapBoxRegister -> showSuccessDialog(response.napBox.code)
+
             }
         }
-    }
-
-    private fun showSucessDialog(napBox: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Caja nap registrado con exito")
-        builder.setMessage(napBox)
-        builder.setPositiveButton("Ok") { _, _ ->
-        }
-        builder.show()
-    }
-
-    private fun showErrorDialog(error: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("El Caja nap no fue registrado")
-        builder.setMessage(error)
-        builder.setPositiveButton("Ok") { _, _ ->
-        }
-        builder.show()
     }
 }

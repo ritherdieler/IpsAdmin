@@ -1,12 +1,12 @@
 package com.dscorp.ispadmin.presentation.ui.features.registration
 
 import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityRegisterBinding
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterActivity : AppCompatActivity() {
@@ -36,8 +36,8 @@ class RegisterActivity : AppCompatActivity() {
     private fun observeRegisterResponse() {
         viewModel.registerResponseLiveData.observe(this) { it ->
             when (it) {
-                is RegisterResponse.OnError -> showErrorDialog(it.error.message.toString())
-                is RegisterResponse.OnRegister -> showSucessDialog(it.register.name.toString())
+                is RegisterResponse.OnError -> showErrorDialog()
+                is RegisterResponse.OnRegister -> showSuccessDialog(it.register.name)
             }
         }
     }
@@ -57,25 +57,6 @@ class RegisterActivity : AppCompatActivity() {
     fun observe() {
         ObserveRegisterFormError()
         observeRegisterResponse()
-    }
-
-    fun showSucessDialog(nombre: String) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Usuario Registrado con Exito")
-        builder.setMessage(nombre)
-        builder.setPositiveButton("Ok") { p0, p1 ->
-            finish()
-        }
-        builder.show()
-    }
-
-    fun showErrorDialog(error: String) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("El usuario no fue registrado")
-        builder.setMessage(error)
-        builder.setPositiveButton("Ok") { p0, p1 ->
-        }
-        builder.show()
     }
 
     fun register() {

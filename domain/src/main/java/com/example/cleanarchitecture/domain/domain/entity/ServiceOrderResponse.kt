@@ -13,4 +13,4 @@ data class ServiceOrderResponse(
     val longitude: Double,
     val issue: String,
     val subscriptionId: Int,
-)
+):java.io.Serializable

@@ -12,9 +12,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,6 +26,7 @@ import java.util.*
 class TechnicianFragment : Fragment(R.layout.fragment_technician) {
     lateinit var binding: FragmentTechnicianBinding
     var selectedDate: Long = 0
+    private val dialogFactory: IDialogFactory by inject()
     val viewModel: TechnicianViewModel by viewModel()
 
     override fun onCreateView(
@@ -124,29 +129,10 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
     private fun observeResponse() {
         viewModel.technicianResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is TechnicianResponse.OnError -> showErrorDialog(response.error.message.toString())
-                is TechnicianResponse.OnTechnicianRegistered -> showSucessDialog(response.technician.firstName)
+                is TechnicianResponse.OnError -> showErrorDialog()
+                is TechnicianResponse.OnTechnicianRegistered -> showSuccessDialog(response.technician.firstName)
             }
         }
-    }
-
-    private fun showSucessDialog(technician: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("El tecnico fue registrado con exito")
-        builder.setMessage(technician)
-        builder.setPositiveButton("Ok") { p0, p1 ->
-        }
-        builder.show()
-    }
-
-    private fun showErrorDialog(error: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("El Tenico no fue registrado")
-        builder.setMessage(error)
-        builder.setPositiveButton("Ok") { p0, p1 ->
-        }
-        builder.show()
-
     }
 
     private fun observeFromError() {
@@ -161,7 +147,6 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
                 is TechnicianFromError.OnEtAddressError -> binding.etAddress.setError(formError.error)
                 is TechnicianFromError.OnEtPhoneError -> binding.etPhone.setError(formError.error)
                 is TechnicianFromError.OnEtBirthdayError -> binding.etBirthday.setError(formError.error)
-
             }
         }
     }

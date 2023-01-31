@@ -1,12 +1,16 @@
 package com.dscorp.ispadmin.presentation.extension
 
 import android.R
+import android.app.Activity
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import org.koin.android.ext.android.inject
 
 
 fun NavController.navigateSafe(destinationId: Int) {
@@ -29,3 +33,25 @@ fun MaterialAutoCompleteTextView.fillWithList(data: List<Any>, onItemSelected: (
             onItemSelected(data[pos])
         }
 }
+
+fun Fragment.showSuccessDialog(text:String){
+    val dialogFactory : IDialogFactory by inject ()
+    val successDialog = dialogFactory.createSuccessDialog(requireContext(),text)
+    successDialog.show()
+}
+fun Fragment.showErrorDialog() {
+    val dialogFactory:IDialogFactory by inject()
+    val errorDialog = dialogFactory.createErrorDialog(requireContext())
+    errorDialog.show()
+}
+fun Activity.showSuccessDialog(text:String){
+    val dialogFactory : IDialogFactory by inject ()
+    val successDialog = dialogFactory.createSuccessDialog(this,text)
+    successDialog.show()
+}
+fun Activity.showErrorDialog() {
+    val dialogFactory:IDialogFactory by inject()
+    val errorDialog = dialogFactory.createErrorDialog(this)
+    errorDialog.show()
+}
+

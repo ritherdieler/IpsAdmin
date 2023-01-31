@@ -14,12 +14,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlaceBinding
-import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.extension.toGeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.google.android.gms.maps.model.LatLng
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaceFragment() : Fragment() {
@@ -28,8 +28,6 @@ class PlaceFragment() : Fragment() {
         ActivityResultContracts.RequestPermission(),
         ::onLocationPermissionResult
     )
-    val dialogFactory: IDialogFactory by inject()
-
     lateinit var binding: FragmentPlaceBinding
     val viewModel: PlaceViewModel by viewModel()
 
@@ -85,22 +83,11 @@ class PlaceFragment() : Fragment() {
     private fun observePlaceResponse() {
         viewModel.placePlaceResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is PlaceResponse.OnError -> showErrorDialog(response.error.message.toString())
+                is PlaceResponse.OnError -> showErrorDialog()
                 is PlaceResponse.OnPlaceRegister -> showSuccessDialog(response.place.name)
             }
         }
     }
-
-
-private fun showSuccessDialog(placeName: String) {
-    val successDialog = dialogFactory.createSuccessDialog(requireContext(),"el lugar $placeName fue registrado exitosamente ")
-    successDialog.show()
-}
-    private fun showErrorDialog(error: String) {
-        val errorDialog = dialogFactory.createErrorDialog(requireContext())
-        errorDialog.show()
-    }
-
     private fun onLocationPermissionResult(isGranted: Boolean) {
         if (isGranted) {
             findNavController().navigateSafe(R.id.action_nav_register_place_to_mapDialog)
