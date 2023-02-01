@@ -44,9 +44,12 @@ class RegisterServiceOrderFragment() : Fragment() {
         viewModel.serviceOrderResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is RegisterServiceOrderResponse.OnError -> showErrorDialog()
-                is RegisterServiceOrderResponse.ServiceOrderRegisterSuccess -> showSuccessDialog("")
+                is RegisterServiceOrderResponse.ServiceOrderRegisterSuccess -> showSuccessDialog()
             }
         }
+    }
+
+    private fun showSuccessDialog() { showSuccessDialog("se ah registrado correctamente")
     }
 
     private fun observeServiceFormError() {

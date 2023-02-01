@@ -18,9 +18,6 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     lateinit var binding: FragmentPlanBinding
     val viewModel: PlanViewModel by viewModel()
 
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,9 +37,13 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         viewModel.planResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is PlanResponse.OnError -> showErrorDialog()
-                is PlanResponse.OnPlanRegistered -> showSuccessDialog(response.plan.name)
+                is PlanResponse.OnPlanRegistered -> showSuccesDialog(response)
             }
         }
+    }
+
+    private fun showSuccesDialog(response: PlanResponse.OnPlanRegistered) {
+        showSuccessDialog("El plan ${response.plan.name} ah sido registrado correctamente")
     }
 
     private fun observeFormError() {
@@ -57,19 +58,19 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     }
 
     private fun setErrorEtUploadSpeed(formError: OnEtUploadSpeedError) {
-        binding.etUploadSpeed.setError((formError.error))
+        binding.etUploadSpeed.error = (formError.error)
     }
 
     private fun setErrorEtPrice(formError: OnEtPriceError) {
-        binding.etPrice.setError(formError.error)
+        binding.etPrice.error = formError.error
     }
 
     private fun setErrorEtNamePlan(formError: OnEtNamePlanError) {
-        binding.etNamePlan.setError(formError.error)
+        binding.etNamePlan.error = formError.error
     }
 
     private fun setErrorEtDowloadSpeed(formError: OnEtDowloadSpeedError) {
-        binding.etDownloadSpeed.setError(formError.error)
+        binding.etDownloadSpeed.error = formError.error
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

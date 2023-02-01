@@ -84,10 +84,15 @@ class PlaceFragment() : Fragment() {
         viewModel.placePlaceResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is PlaceResponse.OnError -> showErrorDialog()
-                is PlaceResponse.OnPlaceRegister -> showSuccessDialog(response.place.name)
+                is PlaceResponse.OnPlaceRegister -> showSuccessDialog(response)
             }
         }
     }
+
+    private fun showSuccessDialog(response: PlaceResponse.OnPlaceRegister) {
+        showSuccessDialog(" ${response.place.name} Ah sido registrado con extio" )
+    }
+
     private fun onLocationPermissionResult(isGranted: Boolean) {
         if (isGranted) {
             findNavController().navigateSafe(R.id.action_nav_register_place_to_mapDialog)

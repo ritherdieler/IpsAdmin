@@ -29,7 +29,6 @@ class PlanViewModel : ViewModel() {
         if (plan.name.isEmpty()) {
             formErrorLiveData.postValue(PlanFormError.OnEtNamePlanError("El nombre del plan no puede estar vacio"))
             return false
-
         }
 
         if (plan.price == 0.0) {

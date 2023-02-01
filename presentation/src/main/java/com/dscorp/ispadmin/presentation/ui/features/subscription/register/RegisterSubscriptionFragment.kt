@@ -11,7 +11,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
@@ -24,6 +26,7 @@ import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -48,7 +51,7 @@ class RegisterSubscriptionFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         observeResponse()
-        observeFormError()
+        lifecycleScope.launch { observeFormError() }
 
         binding.btSubscribirse.setOnClickListener {
             registerSubscription()
@@ -91,7 +94,7 @@ class RegisterSubscriptionFragment : Fragment() {
             findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
 
         }
-        val edPhone: EditText = binding.etPhone
+   /*     val edPhone: EditText = binding.etPhone
 
         edPhone.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -110,8 +113,8 @@ class RegisterSubscriptionFragment : Fragment() {
                     }
                 }
             }
-        })
-        val edDni: EditText = binding.etDni
+        })*/
+   /*     val edDni: EditText = binding.etDni
         edDni.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
@@ -129,7 +132,26 @@ class RegisterSubscriptionFragment : Fragment() {
                     }
                 }
             }
-        })
+        })*/
+        /*       val edLastName: EditText = binding.etLastName
+               edLastName.addTextChangedListener(object : TextWatcher {
+                   override fun afterTextChanged(s: Editable?) {
+                   }
+
+                   override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                   }
+
+                   override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                       if (s != null) {
+                           if (s.length < 8) {
+                               viewModel.formErrorLiveData.postValue(OnEtLastNameHasNotErrors)
+
+                           } *//*else {
+                        viewModel.formErrorLiveData.postValue(OnEtDniHasNotError)
+                    }*//*
+                }
+            }
+        })*/
 
         observeMapDialogResult()
 
@@ -168,11 +190,11 @@ class RegisterSubscriptionFragment : Fragment() {
     }
 
 
-    private fun observeFormError() {
-        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
+    private suspend fun observeFormError() {
+        viewModel.formErrorLiveData.collect { formError ->
             when (formError) {
                 is OnEtAddressesError -> setEtAddressError(formError)
-                OnFirstNameHasNotErrors -> clearTlFirstNameErrors()
+                OnEtFirstNameHasNotErrors -> clearTlFirstNameErrors()
                 is OnEtDniError -> setEtDniError(formError)
                 is OnEtFirstNameError -> setEtFirstNameError(formError)
                 is OnEtLastNameError -> setEtLastNameError(formError)
@@ -188,6 +210,8 @@ class RegisterSubscriptionFragment : Fragment() {
                 is OnDniIsInvalidError -> binding.tlDni.error = formError.error
                 is OnPhoneIsInvalidError -> binding.tlPhone.error = formError.error
                 OnEtPhoneHasNotError -> binding.tlPhone.error = null
+                OnEtLastNameHasNotErrors -> binding.tlLastName.error = null
+                Idle -> {}
             }
         }
     }

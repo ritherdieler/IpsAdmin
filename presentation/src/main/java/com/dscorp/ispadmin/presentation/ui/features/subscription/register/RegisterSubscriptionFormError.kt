@@ -9,9 +9,11 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
  **/
 sealed class
 RegisterSubscriptionFormError {
-    object OnFirstNameHasNotErrors : RegisterSubscriptionFormError()
+    object OnEtLastNameHasNotErrors : RegisterSubscriptionFormError()
+    object OnEtFirstNameHasNotErrors : RegisterSubscriptionFormError()
     object OnEtDniHasNotError : RegisterSubscriptionFormError()
     object OnEtPhoneHasNotError : RegisterSubscriptionFormError()
+    object Idle : RegisterSubscriptionFormError()
     class OnEtFirstNameError(val error: String) : RegisterSubscriptionFormError()
     class OnEtLastNameError(val error: String) : RegisterSubscriptionFormError()
     class OnEtDniError(val error: String) : RegisterSubscriptionFormError()

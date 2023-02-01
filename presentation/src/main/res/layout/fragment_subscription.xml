@@ -40,7 +40,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                       />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,6 +71,8 @@
                     android:layout_marginTop="20dp"
                     android:hint="DNI"
                     app:endIconMode="clear_text"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="8"
                     tools:layout_editor_absoluteX="20dp"
                     tools:layout_editor_absoluteY="177dp">
 

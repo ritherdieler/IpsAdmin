@@ -31,12 +31,10 @@ class PlaceViewModel : ViewModel() {
     private fun formIsInvalid(place: Place): Boolean {
         if (place.name.isEmpty()) {
             formErrorLiveData.postValue(FormError.OnEtNamePlaceError("El nombre del lugar no puede estar vacio"))
-            println("Debes escribir un  nombre del lugar")
             return true
         }
         if (place.abbreviation.isEmpty()) {
             formErrorLiveData.postValue(FormError.OnEtAbbreviationError("La abreviatura no puede estar vacia"))
-            println("FALTA EDITAR FALTA EDITAR")
             return true
         }
         if (place.location == null) {
