@@ -11,8 +11,11 @@ sealed class
 RegisterSubscriptionFormError {
     object OnEtLastNameHasNotErrors : RegisterSubscriptionFormError()
     object OnEtFirstNameHasNotErrors : RegisterSubscriptionFormError()
-    object OnEtDniHasNotError : RegisterSubscriptionFormError()
-    object OnEtPhoneHasNotError : RegisterSubscriptionFormError()
+/*    object OnEtAddressesHasNotErrors : RegisterSubscriptionFormError()
+    object OnEtSubscriptionDateHasNotErrors : RegisterSubscriptionFormError()*/
+
+/*    object OnEtDniHasNotError : RegisterSubscriptionFormError()
+    object OnEtPhoneHasNotError : RegisterSubscriptionFormError()*/
     object Idle : RegisterSubscriptionFormError()
     class OnEtFirstNameError(val error: String) : RegisterSubscriptionFormError()
     class OnEtLastNameError(val error: String) : RegisterSubscriptionFormError()

@@ -190,8 +190,8 @@ class RegisterSubscriptionFragment : Fragment() {
     }
 
 
-    private suspend fun observeFormError() {
-        viewModel.formErrorLiveData.collect { formError ->
+    private  fun observeFormError() {
+        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
                 is OnEtAddressesError -> setEtAddressError(formError)
                 OnEtFirstNameHasNotErrors -> clearTlFirstNameErrors()
@@ -206,10 +206,14 @@ class RegisterSubscriptionFragment : Fragment() {
                 is OnSpnPlaceError -> setSpnPlaceError(formError)
                 is OnEtLocationError -> setEtLocationError(formError)
                 is OnSpnNapBoxError -> setSpnNapBoxError(formError)
+/*
                 OnEtDniHasNotError -> clearTlDniError()
+*/
                 is OnDniIsInvalidError -> binding.tlDni.error = formError.error
                 is OnPhoneIsInvalidError -> binding.tlPhone.error = formError.error
+/*
                 OnEtPhoneHasNotError -> binding.tlPhone.error = null
+*/
                 OnEtLastNameHasNotErrors -> binding.tlLastName.error = null
                 Idle -> {}
             }
