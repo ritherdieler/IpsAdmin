@@ -13,7 +13,6 @@ RegisterSubscriptionFormError {
     object OnEtFirstNameHasNotErrors : RegisterSubscriptionFormError()
 /*    object OnEtAddressesHasNotErrors : RegisterSubscriptionFormError()
     object OnEtSubscriptionDateHasNotErrors : RegisterSubscriptionFormError()*/
-
 /*    object OnEtDniHasNotError : RegisterSubscriptionFormError()
     object OnEtPhoneHasNotError : RegisterSubscriptionFormError()*/
     object Idle : RegisterSubscriptionFormError()
