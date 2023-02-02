@@ -1,0 +1,154 @@
+[
+  {
+    "id": 28,
+    "code": null,
+    "firstName": "kkwkeke",
+    "lastName": "jdjdkd",
+    "dni": "98997",
+    "password": "hshsh",
+    "address": "jsjwjw ",
+    "phone": "9494",
+    "serviceIsSuspended": false,
+    "plan": {
+      "id": 21,
+      "name": "tía paola",
+      "price": 100.0,
+      "downloadSpeed": 5454,
+      "uploadSpeed": 9794
+    },
+    "place": {
+      "id": 23,
+      "abbreviation": "bdbdb",
+      "name": "Kilombo",
+      "location": {
+        "latitude": -11.23499609724645,
+        "longitude": -77.38034706562757
+      }
+    },
+    "networkDevice": {
+      "id": 22,
+      "name": "Nimbus 3000",
+      "password": null,
+      "username": "jejej",
+      "ipAddress": "bbzbs"
+    },
+    "location": null,
+    "technician": null,
+    "napBox": null,
+    "new": false
+  },
+  {
+    "id": 44,
+    "code": null,
+    "firstName": "uwueueu",
+    "lastName": "ksje",
+    "dni": "94646",
+    "password": "shshs",
+    "address": "jdjd",
+    "phone": "1",
+    "serviceIsSuspended": false,
+    "plan": {
+      "id": 21,
+      "name": "tía paola",
+      "price": 100.0,
+      "downloadSpeed": 5454,
+      "uploadSpeed": 9794
+    },
+    "place": {
+      "id": 23,
+      "abbreviation": "bdbdb",
+      "name": "Kilombo",
+      "location": {
+        "latitude": -11.23499609724645,
+        "longitude": -77.38034706562757
+      }
+    },
+    "networkDevice": {
+      "id": 22,
+      "name": "Nimbus 3000",
+      "password": null,
+      "username": "jejej",
+      "ipAddress": "bbzbs"
+    },
+    "location": null,
+    "technician": null,
+    "napBox": null,
+    "new": false
+  },
+  {
+    "id": 45,
+    "code": null,
+    "firstName": "jejrj",
+    "lastName": "jdjdj",
+    "dni": "67656",
+    "password": "hdhdhe",
+    "address": "wjdjdj",
+    "phone": "1",
+    "serviceIsSuspended": false,
+    "plan": {
+      "id": 37,
+      "name": "porquereeee",
+      "price": 94646.0,
+      "downloadSpeed": 949494,
+      "uploadSpeed": 94944
+    },
+    "place": {
+      "id": 36,
+      "abbreviation": "carin",
+      "name": "la garra",
+      "location": {
+        "latitude": -11.23499609724645,
+        "longitude": -77.38034706562757
+      }
+    },
+    "networkDevice": {
+      "id": 31,
+      "name": "skynet",
+      "password": "sjsj",
+      "username": "nwkw",
+      "ipAddress": "nskskw"
+    },
+    "location": null,
+    "technician": null,
+    "napBox": null,
+    "new": false
+  },
+  {
+    "id": 46,
+    "code": null,
+    "firstName": "6f 6rc",
+    "lastName": "jdju",
+    "dni": "46",
+    "password": "hh",
+    "address": "hj",
+    "phone": "1",
+    "serviceIsSuspended": false,
+    "plan": {
+      "id": 37,
+      "name": "porquereeee",
+      "price": 94646.0,
+      "downloadSpeed": 949494,
+      "uploadSpeed": 94944
+    },
+    "place": {
+      "id": 8,
+      "abbreviation": "djdjdj",
+      "name": "jsjs",
+      "location": {
+        "latitude": -11.23499609724645,
+        "longitude": -77.38034706562757
+      }
+    },
+    "networkDevice": {
+      "id": 31,
+      "name": "skynet",
+      "password": "sjsj",
+      "username": "nwkw",
+      "ipAddress": "nskskw"
+    },
+    "location": null,
+    "technician": null,
+    "napBox": null,
+    "new": false
+  }
+]

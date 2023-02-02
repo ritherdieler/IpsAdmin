@@ -4,6 +4,7 @@ import com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.debtors.DebtorsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryViewModel
 import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentViewModel
 import com.dscorp.ispadmin.presentation.ui.features.place.PlaceViewModel
@@ -43,5 +44,5 @@ val viewModelModule = module {
     viewModel { PaymentHistoryViewModel() }
     viewModel { FindSubscriptionViewModel() }
     viewModel { RegisterPaymentViewModel() }
-
+    viewModel { DebtorsViewModel() }
 }
