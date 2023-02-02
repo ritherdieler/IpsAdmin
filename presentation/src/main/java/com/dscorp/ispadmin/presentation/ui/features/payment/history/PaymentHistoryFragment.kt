@@ -22,7 +22,6 @@ class PaymentHistoryFragment : Fragment(), View.OnClickListener {
     private val args: PaymentHistoryFragmentArgs by navArgs()
     private var selectedEndDate: Long? = null
     private var selectedStartDate: Long? = null
-    private var selectedDate: Long? = null
 
     private val viewModel: PaymentHistoryViewModel by inject()
     val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
@@ -66,22 +65,18 @@ class PaymentHistoryFragment : Fragment(), View.OnClickListener {
     }*/
 
 
-    private fun showStartDatePickerDialog() {
-
+    private fun showStartDatePickerDialog(callback: (Long) -> Unit = {}) {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.DAY_OF_MONTH, 1)
-
         val dateValidator = object : CalendarConstraints.DateValidator {
             override fun isValid(date: Long): Boolean {
                 val calendar = Calendar.getInstance()
                 calendar.timeInMillis = date
                 return calendar.get(Calendar.DAY_OF_MONTH) == 1
             }
-
             override fun writeToParcel(parcel: Parcel, flags: Int) {}
             override fun describeContents(): Int = 0
         }
-
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select date")
             .setSelection(calendar.timeInMillis)
@@ -93,31 +88,48 @@ class PaymentHistoryFragment : Fragment(), View.OnClickListener {
             .build()
 
         datePicker.addOnPositiveButtonClickListener {
-            selectedDate = it
             val formatter = SimpleDateFormat("dd/MM/yyyy")
             val formattedDate = formatter.format(it)
             binding.etStartDate.setText(formattedDate)
+            callback(it)
         }
-
         datePicker.show(childFragmentManager, "DatePicker")
-
-
     }
-
-
     private fun showEndDatePickerDialog(callback: (Long) -> Unit = {}) {
-        MaterialDatePicker.Builder.datePicker().build().apply {
-            addOnPositiveButtonClickListener {
-                binding.etEndDate.setText(it.toString())
-                callback(it)
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        val dateValidator = object : CalendarConstraints.DateValidator {
+            override fun isValid(date: Long): Boolean {
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = date
+                return calendar.get(Calendar.DAY_OF_MONTH) == 1
             }
-        }.show(childFragmentManager, "DATE_PICKER_END")
+            override fun writeToParcel(parcel: Parcel, flags: Int) {}
+            override fun describeContents(): Int = 0
+        }
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select date")
+            .setSelection(calendar.timeInMillis)
+            .setCalendarConstraints(
+                CalendarConstraints.Builder()
+                    .setValidator(dateValidator)
+                    .build()
+            )
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener {
+            val formatter = SimpleDateFormat("dd/MM/yyyy")
+            val formattedDate = formatter.format(it)
+            binding.etEndDate.setText(formattedDate)
+            callback(it)
+        }
+        datePicker.show(childFragmentManager, "DatePicker")
     }
 
     override fun onClick(view: View?) {
 
         when (view) {
-            binding.etStartDate -> showStartDatePickerDialog()
+            binding.etStartDate -> showStartDatePickerDialog{selectedStartDate = it}
             binding.etEndDate -> showEndDatePickerDialog { selectedEndDate = it }
             binding.btnConsult -> {
                 viewModel.getPaymentHistory(SearchPaymentsRequest().apply {

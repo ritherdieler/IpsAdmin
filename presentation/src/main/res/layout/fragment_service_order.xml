@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginHorizontal="20dp"
+        android:paddingHorizontal="20dp"
         tools:context=".presentation.serviceOrder.ServiceOrderFragment">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -22,8 +22,7 @@
             android:layout_marginTop="20dp"
             android:focusable="false"
             android:hint="@string/select_location"
-            tools:layout_editor_absoluteX="20dp"
-            tools:layout_editor_absoluteY="269dp">
+ >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLocation"
