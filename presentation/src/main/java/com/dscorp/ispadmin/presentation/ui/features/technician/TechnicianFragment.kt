@@ -37,6 +37,7 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
 
         observeResponse()
         observeFromError()
+        observeErroCleanForm()
 
         binding.btRegisterTechnician.setOnClickListener {
             registerTechnician()
@@ -62,52 +63,11 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
 
             datePicker.show(childFragmentManager, "DatePicker")
         }
-        val edDni: EditText = binding.etDni
 
-        edDni.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null) {
-                    if (s.length < 8) {
-                        viewModel.technicianFromErrorLiveData.postValue(
-                            TechnicianFromError.OnEtDniError(
-                                "La cantidad mínima de caracteres para el número de teléfono es de 8"
-                            )
-                        )
-                        return
-                    }
-                }
-            }
-        })
-        val edPhone: EditText = binding.etPhone
-
-        edPhone.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null) {
-                    if (s.length < 9) {
-                        viewModel.technicianFromErrorLiveData.postValue(
-                            TechnicianFromError.OnEtPhoneError(
-                                "La cantidad mínima de caracteres para el número de teléfono es de 9"
-                            )
-                        )
-                        return
-                    }
-                }
-            }
-        })
         return binding.root
     }
+
+
 
     private fun registerTechnician() {
         val technician = Technician(
@@ -138,15 +98,30 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
     private fun observeFromError() {
         viewModel.technicianFromErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is TechnicianFromError.OnEtFirstNameError -> binding.etFirstName.setError(formError.error)
-                is TechnicianFromError.OnEtLastNameError -> binding.etLastName.setError(formError.error)
-                is TechnicianFromError.OnEtDniError -> binding.etDni.setError(formError.error)
-                is TechnicianFromError.OnEtTypeError -> binding.etType.setError(formError.error)
-                is TechnicianFromError.OnEtUserNameError -> binding.etUsername.setError(formError.error)
-                is TechnicianFromError.OnEtPasswordError -> binding.etPassword.setError(formError.error)
-                is TechnicianFromError.OnEtAddressError -> binding.etAddress.setError(formError.error)
-                is TechnicianFromError.OnEtPhoneError -> binding.etPhone.setError(formError.error)
-                is TechnicianFromError.OnEtBirthdayError -> binding.etBirthday.setError(formError.error)
+                is TechnicianFromError.OnEtFirstNameError -> binding.tlFirstName.error = formError.error
+                is TechnicianFromError.OnEtLastNameError -> binding.tlLastName.error = formError.error
+                is TechnicianFromError.OnEtDniError -> binding.tlDni.error = formError.error
+                is TechnicianFromError.OnEtTypeError -> binding.tlType.error = formError.error
+                is TechnicianFromError.OnEtUserNameError -> binding.tlUserName.error = formError.error
+                is TechnicianFromError.OnEtPasswordError -> binding.tlPassword.error = formError.error
+                is TechnicianFromError.OnEtAddressError -> binding.tlAddress.error = formError.error
+                is TechnicianFromError.OnEtPhoneError -> binding.tlPhone.error = formError.error
+                is TechnicianFromError.OnEtBirthdayError -> binding.tlBirthday.error = formError.error
+            }
+        }
+    }
+    private fun observeErroCleanForm() {
+        viewModel.technicianErrorCleanFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
+            when(errorCleanForm){
+                TechnicianErrorCleanForm.OnEtAddressError -> binding.tlAddress.error = null
+                TechnicianErrorCleanForm.OnEtBirthdayError -> binding.tlBirthday.error = null
+                TechnicianErrorCleanForm.OnEtDniError -> binding.tlDni.error = null
+                TechnicianErrorCleanForm.OnEtFirstNameError -> binding.tlFirstName.error = null
+                TechnicianErrorCleanForm.OnEtLastNameError -> binding.tlLastName.error = null
+                TechnicianErrorCleanForm.OnEtPasswordError -> binding.tlPassword.error = null
+                TechnicianErrorCleanForm.OnEtPhoneError -> binding.tlPhone.error = null
+                TechnicianErrorCleanForm.OnEtTypeError -> binding.tlType.error = null
+                TechnicianErrorCleanForm.OnEtUserNameError -> binding.tlUserName.error = null
             }
         }
     }

@@ -2,32 +2,24 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionCleanForm.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionResponse.*
-import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
-import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -51,8 +43,8 @@ class RegisterSubscriptionFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         observeResponse()
-        lifecycleScope.launch { observeFormError() }
-
+        observeFormError()
+        observeCleanForm()
         binding.btSubscribirse.setOnClickListener {
             registerSubscription()
         }
@@ -94,69 +86,13 @@ class RegisterSubscriptionFragment : Fragment() {
             findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
 
         }
-   /*     val edPhone: EditText = binding.etPhone
 
-        edPhone.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null) {
-                    if (s.length < 9) {
-                        viewModel.formErrorLiveData.postValue(OnEtNumberPhoneError("La cantidad mínima de caracteres para el número de teléfono es de 9 (nueve)"))
-                        return
-                    } else {
-                        viewModel.formErrorLiveData.postValue(OnEtPhoneHasNotError)
-                    }
-                }
-            }
-        })*/
-   /*     val edDni: EditText = binding.etDni
-        edDni.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null) {
-                    if (s.length < 8) {
-                        viewModel.formErrorLiveData.postValue(OnEtDniError("La cantidad mínima de caracteres para el número de teléfono es de 8"))
-
-                    } else {
-                        viewModel.formErrorLiveData.postValue(OnEtDniHasNotError)
-                    }
-                }
-            }
-        })*/
-        /*       val edLastName: EditText = binding.etLastName
-               edLastName.addTextChangedListener(object : TextWatcher {
-                   override fun afterTextChanged(s: Editable?) {
-                   }
-
-                   override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                   }
-
-                   override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                       if (s != null) {
-                           if (s.length < 8) {
-                               viewModel.formErrorLiveData.postValue(OnEtLastNameHasNotErrors)
-
-                           } *//*else {
-                        viewModel.formErrorLiveData.postValue(OnEtDniHasNotError)
-                    }*//*
-                }
-            }
-        })*/
 
         observeMapDialogResult()
 
         return binding.root
     }
+
 
     private fun observeMapDialogResult() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")
@@ -190,11 +126,10 @@ class RegisterSubscriptionFragment : Fragment() {
     }
 
 
-    private  fun observeFormError() {
+    private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
                 is OnEtAddressesError -> setEtAddressError(formError)
-                OnEtFirstNameHasNotErrors -> clearTlFirstNameErrors()
                 is OnEtDniError -> setEtDniError(formError)
                 is OnEtFirstNameError -> setEtFirstNameError(formError)
                 is OnEtLastNameError -> setEtLastNameError(formError)
@@ -206,18 +141,33 @@ class RegisterSubscriptionFragment : Fragment() {
                 is OnSpnPlaceError -> setSpnPlaceError(formError)
                 is OnEtLocationError -> setEtLocationError(formError)
                 is OnSpnNapBoxError -> setSpnNapBoxError(formError)
-/*
-                OnEtDniHasNotError -> clearTlDniError()
-*/
                 is OnDniIsInvalidError -> binding.tlDni.error = formError.error
                 is OnPhoneIsInvalidError -> binding.tlPhone.error = formError.error
-/*
-                OnEtPhoneHasNotError -> binding.tlPhone.error = null
-*/
-                OnEtLastNameHasNotErrors -> binding.tlLastName.error = null
-                Idle -> {}
+                is OnPasswordIsInvalidError -> binding.tlPassword.error = formError.error
+                is OnSpnTechnicianError -> binding.spnTechnician.error = formError.error
             }
         }
+    }
+
+    private fun observeCleanForm() {
+        viewModel.cleanFormLiveData.observe(viewLifecycleOwner) { cleanForm ->
+            when (cleanForm) {
+                is OnEtDniHasNotErrors -> clearTlDniError()
+                is OnEtFirstNameHasNotErrors -> clearTlFirstNameErrors()
+                is OnEtLastNameHasNotErrors -> binding.tlLastName.error = null
+                is OnEtPasswordHasNotErrors -> binding.tlPassword.error = null
+                is OnEtAddressHasNotErrors -> binding.tlAddress.error = null
+                is OnEtPhoneHasNotErrors -> binding.tlPhone.error = null
+                OnEtSubscriptionDateNotErrors -> binding.tlSubscriptionDate.error = null
+                OnEtPlanNotErrors -> binding.spnPlan.error = null
+                OnEtNetworkDeviceNotErrors -> binding.spnNetworkDevice.error = null
+                OnEtNapBoxNotErrors -> binding.spnNapBox.error = null
+                OnEtPlaceNotErrors -> binding.spnPlace.error = null
+                OnEtTechnicianNotErrors -> binding.spnTechnician.error = null
+            }
+
+        }
+
     }
 
     private fun clearTlDniError() {
@@ -245,7 +195,7 @@ class RegisterSubscriptionFragment : Fragment() {
     }
 
     private fun setSpnNetworkDeviceError(formError: OnSpnNetworkDeviceError) {
-        binding.spnDevice.error = formError.error
+        binding.spnNetworkDevice.error = formError.error
     }
 
     private fun setSubscriptionDateError(formError: OnEtSubscriptionDateError) {
@@ -285,7 +235,7 @@ class RegisterSubscriptionFragment : Fragment() {
             address = binding.etAddress.text.toString(),
             phone = binding.etPhone.text.toString(),
             planId = selectedPlan?.id ?: "",
-            networkDeviceId = selectedNetworkDevice?.id.toString(),
+            networkDeviceId = selectedNetworkDevice?.id ?: "",
             placeId = selectedPlace?.id ?: "",
             location = GeoLocation(
                 selectedLocation?.latitude ?: 0.0,

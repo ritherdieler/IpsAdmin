@@ -25,6 +25,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_plan, null, true)
         observePlanResponse()
         observeFormError()
+        observeErrorCleanForm()
 
         binding.btRegisterPlan.setOnClickListener {
             registerPlan()
@@ -33,16 +34,18 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         return binding.root
     }
 
+
+
     private fun observePlanResponse() {
         viewModel.planResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is PlanResponse.OnError -> showErrorDialog()
-                is PlanResponse.OnPlanRegistered -> showSuccesDialog(response)
+                is PlanResponse.OnPlanRegistered -> showSuccessDialog(response)
             }
         }
     }
 
-    private fun showSuccesDialog(response: PlanResponse.OnPlanRegistered) {
+    private fun showSuccessDialog(response: PlanResponse.OnPlanRegistered) {
         showSuccessDialog("El plan ${response.plan.name} ah sido registrado correctamente")
     }
 
@@ -58,29 +61,39 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     }
 
     private fun setErrorEtUploadSpeed(formError: OnEtUploadSpeedError) {
-        binding.etUploadSpeed.error = (formError.error)
+        binding.tlUploadSpeed.error = (formError.error)
     }
 
     private fun setErrorEtPrice(formError: OnEtPriceError) {
-        binding.etPrice.error = formError.error
+        binding.tlPrice.error = formError.error
     }
 
     private fun setErrorEtNamePlan(formError: OnEtNamePlanError) {
-        binding.etNamePlan.error = formError.error
+        binding.tlNamePlan.error = formError.error
     }
 
     private fun setErrorEtDowloadSpeed(formError: OnEtDowloadSpeedError) {
-        binding.etDownloadSpeed.error = formError.error
+        binding.tlDownloadSpeed.error = formError.error
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
+    private fun observeErrorCleanForm() {
+        viewModel.errorCleanFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
+            when(errorCleanForm){
+                PlanErrorCleanForm.OnEtDownloadSpeedError -> binding.tlDownloadSpeed.error = null
+                PlanErrorCleanForm.OnEtNamePlanError -> binding.tlNamePlan.error = null
+                PlanErrorCleanForm.OnEtPriceError -> binding.tlPrice.error = null
+                PlanErrorCleanForm.OnEtUploadSpeedError -> binding.tlUploadSpeed.error = null
+            }
+        }
+    }
 
     private fun registerPlan() {
         val plan = Plan(
             name = binding.etNamePlan.text.toString(),
-            price = binding.etPrice.text.toString().toDouble(),
+            price = 0.0,
             downloadSpeed = binding.etDownloadSpeed.text.toString(),
             uploadSpeed = binding.etUploadSpeed.text.toString()
         )

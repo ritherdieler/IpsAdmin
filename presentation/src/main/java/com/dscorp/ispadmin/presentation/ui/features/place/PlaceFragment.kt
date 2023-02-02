@@ -38,9 +38,11 @@ class PlaceFragment() : Fragment() {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_place, null, true)
         observePlaceResponse()
         observeFormError()
+        observeCleanErrorForm()
         registerPlace()
 
-        binding.btRegisterPlace.setOnClickListener { registerPlace() }
+        binding.btRegisterPlace.setOnClickListener {
+            registerPlace() }
         binding.etLocation.setOnClickListener {
             locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -79,6 +81,16 @@ class PlaceFragment() : Fragment() {
             }
         }
     }
+    private fun observeCleanErrorForm() {
+        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
+            when(errorCleanForm){
+                is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error = null
+                is FormError.OnEtLocationError -> binding.tlLocation.error = null
+                is FormError.OnEtNamePlaceError -> binding.tlNamePlace.error = null
+            }
+        }
+
+        }
 
     private fun observePlaceResponse() {
         viewModel.placePlaceResponseLiveData.observe(viewLifecycleOwner) { response ->

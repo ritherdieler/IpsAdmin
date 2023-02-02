@@ -14,6 +14,7 @@ class PlaceViewModel : ViewModel() {
 
     val placePlaceResponseLiveData = MutableLiveData<PlaceResponse>()
     val formErrorLiveData = MutableLiveData<FormError>()
+    val cleanErrorFormLiveData = MutableLiveData<CleanFormErrorsPlace>()
 
     fun registerPlace(place: Place) = viewModelScope.launch {
 
@@ -30,18 +31,24 @@ class PlaceViewModel : ViewModel() {
 
     private fun formIsInvalid(place: Place): Boolean {
         if (place.name.isEmpty()) {
-            formErrorLiveData.postValue(FormError.OnEtNamePlaceError("El nombre del lugar no puede estar vacio"))
-            return true
+            formErrorLiveData.value =(FormError.OnEtNamePlaceError("El nombre del lugar no puede estar vacio"))
+             return false
+        }else{
+            cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtNamePlaceError
         }
         if (place.abbreviation.isEmpty()) {
-            formErrorLiveData.postValue(FormError.OnEtAbbreviationError("La abreviatura no puede estar vacia"))
-            return true
+            formErrorLiveData.value =(FormError.OnEtAbbreviationError("La abreviatura no puede estar vacia"))
+            return false
+        }else{
+            cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtAbbreviationError
         }
         if (place.location == null) {
-            formErrorLiveData.postValue(FormError.OnEtLocationError("La ubicacion no puede estar vacia"))
-            return true
+            formErrorLiveData.value =(FormError.OnEtLocationError("La ubicacion no puede estar vacia"))
+            return false
+        }else{
+            cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtLocationError
         }
-        return false
+        return true
     }
 }
 

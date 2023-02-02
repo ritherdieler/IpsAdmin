@@ -7,15 +7,8 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
  * Huacho, Peru.
  *
  **/
-sealed class
-RegisterSubscriptionFormError {
-    object OnEtLastNameHasNotErrors : RegisterSubscriptionFormError()
-    object OnEtFirstNameHasNotErrors : RegisterSubscriptionFormError()
-/*    object OnEtAddressesHasNotErrors : RegisterSubscriptionFormError()
-    object OnEtSubscriptionDateHasNotErrors : RegisterSubscriptionFormError()*/
-/*    object OnEtDniHasNotError : RegisterSubscriptionFormError()
-    object OnEtPhoneHasNotError : RegisterSubscriptionFormError()*/
-    object Idle : RegisterSubscriptionFormError()
+sealed class RegisterSubscriptionFormError {
+
     class OnEtFirstNameError(val error: String) : RegisterSubscriptionFormError()
     class OnEtLastNameError(val error: String) : RegisterSubscriptionFormError()
     class OnEtDniError(val error: String) : RegisterSubscriptionFormError()
@@ -26,9 +19,13 @@ RegisterSubscriptionFormError {
     class OnSpnPlanError(val error: String) : RegisterSubscriptionFormError()
     class OnSpnNetworkDeviceError(val error: String) : RegisterSubscriptionFormError()
     class OnSpnPlaceError(val error: String) : RegisterSubscriptionFormError()
-    class OnEtLocationError(val error: String) : RegisterSubscriptionFormError()
+    class OnSpnTechnicianError(val error: String) : RegisterSubscriptionFormError()
     class OnSpnNapBoxError(val error: String) : RegisterSubscriptionFormError()
+    class OnEtLocationError(val error: String) : RegisterSubscriptionFormError()
+
     class OnDniIsInvalidError(val error: String) : RegisterSubscriptionFormError()
+    class OnPasswordIsInvalidError(val error: String) : RegisterSubscriptionFormError()
     class OnPhoneIsInvalidError(val error: String) : RegisterSubscriptionFormError()
+
 
 }

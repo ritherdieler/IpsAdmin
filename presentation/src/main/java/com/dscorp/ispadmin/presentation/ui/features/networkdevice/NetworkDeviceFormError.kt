@@ -15,6 +15,7 @@ sealed class NetworkDeviceFormError(val message: String) {
         const val USERNAME_ERROR = "El usuario no puede estar vacío"
         const val ADDRESS_ERROR = "La dirección IP no puede estar vacía"
         const val DEVICE_TYPE_ERROR = "El tipo de dispositivo no puede estar vacío"
+        const val PASSWORD_Has_Not_Errors = "Contraseña requiere entre 8 a 20 caracteres"
     }
 
     class OnEtNameError : NetworkDeviceFormError(NAME_ERROR)
@@ -22,5 +23,6 @@ sealed class NetworkDeviceFormError(val message: String) {
     class OnEtUserNameError : NetworkDeviceFormError(USERNAME_ERROR)
     class OnEtAddressError : NetworkDeviceFormError(ADDRESS_ERROR)
     class OnDeviceTypeError : NetworkDeviceFormError(DEVICE_TYPE_ERROR)
+    class OnEtPasswordHasNotErrors: NetworkDeviceFormError(PASSWORD_Has_Not_Errors)
 
 }
