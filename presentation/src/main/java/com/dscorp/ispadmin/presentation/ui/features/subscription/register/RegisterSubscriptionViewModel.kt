@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionResponse.*
-import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import kotlinx.coroutines.async

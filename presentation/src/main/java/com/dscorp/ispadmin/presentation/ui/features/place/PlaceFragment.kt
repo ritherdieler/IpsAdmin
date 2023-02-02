@@ -18,6 +18,7 @@ import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.extension.toGeoLocation
+import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -67,7 +68,10 @@ class PlaceFragment() : Fragment() {
         val placeObject = Place(
             abbreviation = binding.etAbbreviation.text.toString(),
             name = binding.etNamePlace.text.toString(),
-            location = selectedLocation?.toGeoLocation()
+            location = GeoLocation(
+                selectedLocation?.latitude ?: 0.0,
+                selectedLocation?.longitude ?: 0.0
+            )
         )
         viewModel.registerPlace(placeObject)
     }
@@ -75,9 +79,9 @@ class PlaceFragment() : Fragment() {
     private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is FormError.OnEtAbbreviationError -> binding.etAbbreviation.error = formError.error
-                is FormError.OnEtNamePlaceError -> binding.etNamePlace.error = formError.error
-                is FormError.OnEtLocationError -> binding.etLocation.error = formError.error
+                is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error = formError.error
+                is FormError.OnEtNamePlaceError -> binding.tlNamePlace.error = formError.error
+                is FormError.OnEtLocationError -> binding.tlNamePlace.error = formError.error
             }
         }
     }

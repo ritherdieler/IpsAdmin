@@ -235,7 +235,7 @@ class RegisterSubscriptionFragment : Fragment() {
             address = binding.etAddress.text.toString(),
             phone = binding.etPhone.text.toString(),
             planId = selectedPlan?.id ?: "",
-            networkDeviceId = selectedNetworkDevice?.id ?: "",
+            networkDeviceId = selectedNetworkDevice?.id.toString(),
             placeId = selectedPlace?.id ?: "",
             location = GeoLocation(
                 selectedLocation?.latitude ?: 0.0,

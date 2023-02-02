@@ -37,7 +37,7 @@ class FindRegisterSubscriptionViewModelTest : KoinTest {
 
     private lateinit var viewModel: FindSubscriptionViewModel
 
-    private val DNI = "48271836"
+    private val id = 1001
 
     private val httpClient: OkHttpClient by inject()
 
@@ -70,12 +70,12 @@ class FindRegisterSubscriptionViewModelTest : KoinTest {
         //given
         mockService(
             mockWebServer = mockWebServer,
-            urlToMock = "/subscription/find?dni=48271836",
+            urlToMock = "/subscription/find?id=1001",
             response = MockResponse().fromJson("SubscriptionList.json")
         )
 
         //when
-        viewModel.findSubscription(DNI)
+        viewModel.findSubscription(id)
 
         //then
         val value = viewModel.uiStateLiveData.getValueForTest() as OnSubscriptionFound
@@ -88,12 +88,12 @@ class FindRegisterSubscriptionViewModelTest : KoinTest {
         //given
         mockService(
             mockWebServer = mockWebServer,
-            urlToMock = "/subscription/find?dni=$DNI",
+            urlToMock = "/subscription/find?id=$id",
             response = MockResponse().setResponseCode(500)
         )
 
         //when
-        viewModel.findSubscription(DNI)
+        viewModel.findSubscription(id)
 
         //then
         val value = viewModel.uiStateLiveData.getValueForTest() as OnError

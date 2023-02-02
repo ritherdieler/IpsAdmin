@@ -16,6 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanFragment : Fragment(R.layout.fragment_plan) {
     lateinit var binding: FragmentPlanBinding
+    val price :Double = 0.0
     val viewModel: PlanViewModel by viewModel()
 
     override fun onCreateView(
@@ -93,7 +94,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     private fun registerPlan() {
         val plan = Plan(
             name = binding.etNamePlan.text.toString(),
-            price = 0.0,
+            price = price,
             downloadSpeed = binding.etDownloadSpeed.text.toString(),
             uploadSpeed = binding.etUploadSpeed.text.toString()
         )
