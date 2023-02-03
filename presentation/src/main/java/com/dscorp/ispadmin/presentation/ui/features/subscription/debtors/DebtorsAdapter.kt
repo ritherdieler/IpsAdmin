@@ -23,7 +23,7 @@ class DebtorsAdapter(debtorsFragment: DebtorsFragment) : ListAdapter<Subscriptio
     inner class DebtorsAdapterViewHolder(private val binding: ItemDebtorsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(subscription: SubscriptionResponse) {
-            binding.debtorsList = subscription
+            binding.subscription = subscription
             binding.executePendingBindings()
         }
     }
