@@ -18,6 +18,7 @@ import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.extension.toGeoLocation
+import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -38,9 +39,11 @@ class PlaceFragment() : Fragment() {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_place, null, true)
         observePlaceResponse()
         observeFormError()
+        observeCleanErrorForm()
         registerPlace()
 
-        binding.btRegisterPlace.setOnClickListener { registerPlace() }
+        binding.btRegisterPlace.setOnClickListener {
+            registerPlace() }
         binding.etLocation.setOnClickListener {
             locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -65,7 +68,10 @@ class PlaceFragment() : Fragment() {
         val placeObject = Place(
             abbreviation = binding.etAbbreviation.text.toString(),
             name = binding.etNamePlace.text.toString(),
-            location = selectedLocation?.toGeoLocation()
+            location = GeoLocation(
+                selectedLocation?.latitude ?: 0.0,
+                selectedLocation?.longitude ?: 0.0
+            )
         )
         viewModel.registerPlace(placeObject)
     }
@@ -73,21 +79,36 @@ class PlaceFragment() : Fragment() {
     private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is FormError.OnEtAbbreviationError -> binding.etAbbreviation.error = formError.error
-                is FormError.OnEtNamePlaceError -> binding.etNamePlace.error = formError.error
-                is FormError.OnEtLocationError -> binding.etLocation.error = formError.error
+                is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error = formError.error
+                is FormError.OnEtNamePlaceError -> binding.tlNamePlace.error = formError.error
+                is FormError.OnEtLocationError -> binding.tlNamePlace.error = formError.error
             }
         }
     }
+    private fun observeCleanErrorForm() {
+        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
+            when(errorCleanForm){
+                is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error = null
+                is FormError.OnEtLocationError -> binding.tlLocation.error = null
+                is FormError.OnEtNamePlaceError -> binding.tlNamePlace.error = null
+            }
+        }
+
+        }
 
     private fun observePlaceResponse() {
         viewModel.placePlaceResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is PlaceResponse.OnError -> showErrorDialog()
-                is PlaceResponse.OnPlaceRegister -> showSuccessDialog(response.place.name)
+                is PlaceResponse.OnPlaceRegister -> showSuccessDialog(response)
             }
         }
     }
+
+    private fun showSuccessDialog(response: PlaceResponse.OnPlaceRegister) {
+        showSuccessDialog(" ${response.place.name} Ah sido registrado con extio" )
+    }
+
     private fun onLocationPermissionResult(isGranted: Boolean) {
         if (isGranted) {
             findNavController().navigateSafe(R.id.action_nav_register_place_to_mapDialog)

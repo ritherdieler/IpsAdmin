@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:text="Register Payment"
             android:textSize="20sp" />
        <!-- plan-->
@@ -26,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:textColor="@color/purple_700"
             android:text="Plan"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
             android:textSize="16sp" />
@@ -35,49 +37,74 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:text="Payment Method"
             android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/etPaymentMethod"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlPaymentMethod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:inputType="text" />
+            android:inputType="text" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPaymentMethod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/textView43"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+
             android:text="Payment Discount"
             android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/etPaymentDiscount"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlPaymentDiscount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_marginTop="8dp"
             android:ems="10"
+            android:inputType="numberDecimal" >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPaymentDiscount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-            android:inputType="numberDecimal" />
 
         <TextView
             android:id="@+id/textView432"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:text="Payment Discount Reason"
             android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/etPaymentDiscountReason"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlPaymentDiscountReason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+
             android:layout_marginTop="8dp"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName" >
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPaymentDiscountReason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/btnRegisterPayment"

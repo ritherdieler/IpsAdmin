@@ -66,6 +66,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="DNI"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="8"
                     app:endIconMode="clear_text"
                     tools:layout_editor_absoluteX="32dp"
                     tools:layout_editor_absoluteY="178dp">
@@ -84,7 +86,6 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:hint="Tipo"
                     app:endIconMode="clear_text"
                     tools:layout_editor_absoluteX="32dp"
@@ -131,7 +132,8 @@
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPassword" />
+                        android:inputType="textPassword"
+                        android:maxLength="20"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 

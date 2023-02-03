@@ -13,6 +13,7 @@ class PlanViewModel : ViewModel() {
 
     val planResponseLiveData = MutableLiveData<PlanResponse>()
     val formErrorLiveData = MutableLiveData<PlanFormError>()
+    val errorCleanFormLiveData = MutableLiveData<PlanErrorCleanForm>()
     fun registerPlan(plan: Plan) = viewModelScope.launch {
 
         try {
@@ -27,24 +28,31 @@ class PlanViewModel : ViewModel() {
 
     private fun formIsValid(plan: Plan): Boolean {
         if (plan.name.isEmpty()) {
-            formErrorLiveData.postValue(PlanFormError.OnEtNamePlanError("El nombre del plan no puede estar vacio"))
+            formErrorLiveData.value =(PlanFormError.OnEtNamePlanError("El nombre del plan no puede estar vacio"))
             return false
-
+        }else{
+            errorCleanFormLiveData.value = PlanErrorCleanForm.OnEtNamePlanError
         }
 
         if (plan.price == 0.0) {
-            formErrorLiveData.postValue(PlanFormError.OnEtPriceError("El precio no puede estar vacio"))
+            formErrorLiveData.value =(PlanFormError.OnEtPriceError("El precio no puede estar vacio"))
             return false
+        }else{
+            errorCleanFormLiveData.value = PlanErrorCleanForm.OnEtPriceError
         }
 
         if (plan.downloadSpeed.isEmpty()) {
-            formErrorLiveData.postValue(PlanFormError.OnEtDowloadSpeedError("La velocidad de descarga no puede estar vacia"))
+            formErrorLiveData.value =(PlanFormError.OnEtDowloadSpeedError("La velocidad de descarga no puede estar vacia"))
             return false
+        }else{
+            errorCleanFormLiveData.value = PlanErrorCleanForm.OnEtDownloadSpeedError
         }
 
         if (plan.uploadSpeed.isEmpty()) {
-            formErrorLiveData.postValue(PlanFormError.OnEtUploadSpeedError("La velocidad de subida no puede estar vacia"))
+            formErrorLiveData.value =(PlanFormError.OnEtUploadSpeedError("La velocidad de subida no puede estar vacia"))
             return false
+        }else{
+            errorCleanFormLiveData.value = PlanErrorCleanForm.OnEtUploadSpeedError
         }
         return true
     }

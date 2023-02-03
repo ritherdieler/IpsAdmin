@@ -24,6 +24,7 @@ class NetworkDeviceFragment : Fragment(R.layout.fragment_network_device) {
     ): View {
         observeNetWorkDeviceResponse()
         observeNetworkDeviceFormError()
+        observeCleanNetworkDeviceErrorForm()
         binding.btRegisterNetworkDevice.setOnClickListener {
             registerNetworkDevice()
         }
@@ -61,6 +62,18 @@ class NetworkDeviceFragment : Fragment(R.layout.fragment_network_device) {
                 is OnEtPasswordError -> binding.tlPassword.error = formError.message
                 is OnEtUserNameError -> binding.tlUserName.error = formError.message
                 is OnDeviceTypeError -> binding.spnDeviceType.error = formError.message
+                is OnEtPasswordHasNotErrors -> binding.tlPassword.error = formError.message
+            }
+        }
+    }
+    private fun observeCleanNetworkDeviceErrorForm() {
+        viewModel.cleanNetworkDeviceErrorFormLiveData.observe(viewLifecycleOwner) {cleanForm ->
+            when(cleanForm){
+                is CleanFormErrors.OnDeviceTypeError -> binding.spnDeviceType.error = null
+                is CleanFormErrors.OnEtAddressError -> binding.tlIpAddress.error = null
+                is CleanFormErrors.OnEtNameError -> binding.tlName.error = null
+                is CleanFormErrors.OnEtPasswordError -> binding.tlPassword.error = null
+                is CleanFormErrors.OnEtUserNameError -> binding.tlUserName.error = null
             }
         }
     }

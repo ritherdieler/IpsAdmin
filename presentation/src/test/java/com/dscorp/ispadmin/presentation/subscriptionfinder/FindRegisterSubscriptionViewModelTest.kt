@@ -39,6 +39,7 @@ class FindRegisterSubscriptionViewModelTest : KoinTest {
 
     private val id = 1003
 
+
     private val httpClient: OkHttpClient by inject()
 
     private lateinit var okHttp3IdlingResource: IdlingResource
@@ -70,8 +71,9 @@ class FindRegisterSubscriptionViewModelTest : KoinTest {
         //given
         mockService(
             mockWebServer = mockWebServer,
-            urlToMock = "/subscription/find?id=48271836",
+            urlToMock = "/subscription/find?id=$id",
             response = MockResponse().fromJson("subscription/SubscriptionList.json")
+
         )
 
         //when

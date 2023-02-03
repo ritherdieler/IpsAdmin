@@ -16,6 +16,7 @@ class NetworkDeviceViewModel() : ViewModel() {
 
     val networkDeviceResponseLiveData = MutableLiveData<NetworkDeviceResponse>()
     val networkDeviceFormErrorLiveData = MutableLiveData<NetworkDeviceFormError>()
+    val cleanNetworkDeviceErrorFormLiveData =MutableLiveData<CleanFormErrors>()
 
     init {
         getFormData()
@@ -48,24 +49,38 @@ class NetworkDeviceViewModel() : ViewModel() {
     private fun formIsValid(networkDevice: NetworkDevice): Boolean {
 
         if (networkDevice.name.isEmpty()) {
-            networkDeviceFormErrorLiveData.postValue(OnEtNameError())
+            networkDeviceFormErrorLiveData.value=(OnEtNameError())
             return false
+        }else{
+            cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtNameError
         }
         if (networkDevice.username.isEmpty()) {
-            networkDeviceFormErrorLiveData.postValue(OnEtUserNameError())
+            networkDeviceFormErrorLiveData.value=(OnEtUserNameError())
             return false
+        }else{
+            cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtUserNameError
         }
         if (networkDevice.password.isEmpty()) {
-            networkDeviceFormErrorLiveData.postValue(OnEtPasswordError())
+            networkDeviceFormErrorLiveData.value=(OnEtPasswordError())
             return false
+        }
+        if (networkDevice.password.length < 8) {
+            networkDeviceFormErrorLiveData.value=(OnEtPasswordHasNotErrors())
+            return false
+        }else{
+            cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtPasswordError
         }
         if (networkDevice.ipAddress.isEmpty()) {
-            networkDeviceFormErrorLiveData.postValue(OnEtAddressError())
+            networkDeviceFormErrorLiveData.value=(OnEtAddressError())
             return false
+        }else{
+            cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtAddressError
         }
         if (networkDevice.networkDeviceType.isNullOrEmpty()) {
-            networkDeviceFormErrorLiveData.postValue(OnDeviceTypeError())
+            networkDeviceFormErrorLiveData.value=(OnDeviceTypeError())
             return false
+        }else{
+            cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnDeviceTypeError
         }
         return true
     }

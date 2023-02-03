@@ -15,10 +15,6 @@ data class Place(
 ):java.io.Serializable {
     override fun toString(): String {
         return name
-        fun showLatLong(): String {
-            return location.toString()
-
-        }
     }
 }
 
