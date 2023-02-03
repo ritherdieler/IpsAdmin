@@ -16,7 +16,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanFragment : Fragment(R.layout.fragment_plan) {
     lateinit var binding: FragmentPlanBinding
-    val price :Double = 0.0
     val viewModel: PlanViewModel by viewModel()
 
     override fun onCreateView(
@@ -83,15 +82,17 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     private fun observeErrorCleanForm() {
         viewModel.errorCleanFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
             when(errorCleanForm){
-                PlanErrorCleanForm.OnEtDownloadSpeedError -> binding.tlDownloadSpeed.error = null
-                PlanErrorCleanForm.OnEtNamePlanError -> binding.tlNamePlan.error = null
-                PlanErrorCleanForm.OnEtPriceError -> binding.tlPrice.error = null
-                PlanErrorCleanForm.OnEtUploadSpeedError -> binding.tlUploadSpeed.error = null
+                PlanErrorCleanForm.OnEtDownloadSpeedHasNotError -> binding.tlDownloadSpeed.error = null
+                PlanErrorCleanForm.OnEtNamePlanHasNotError -> binding.tlNamePlan.error = null
+                PlanErrorCleanForm.OnEtPriceHasNotError -> binding.tlPrice.error = null
+                PlanErrorCleanForm.OnEtUploadSpeedHasNotError -> binding.tlUploadSpeed.error = null
             }
         }
     }
 
     private fun registerPlan() {
+
+        val price= if (binding.etPrice.text.toString().isEmpty()) 0.0 else binding.etPrice.text.toString().toDouble()
         val plan = Plan(
             name = binding.etNamePlan.text.toString(),
             price = price,
@@ -101,3 +102,4 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         viewModel.registerPlan(plan)
     }
 }
+
