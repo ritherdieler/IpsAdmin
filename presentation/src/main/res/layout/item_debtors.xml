@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="subscription"
+            type="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="125dp">
+
+            <TextView
+                android:id="@+id/tvPlanId"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="Plan:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toTopOf="@+id/tvName"
+                app:layout_constraintEnd_toStartOf="@id/tvSeeFirstName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread" />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Name :"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toTopOf="@+id/tvId"
+                app:layout_constraintEnd_toEndOf="@+id/tvPlanId"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/tvPlanId"
+                app:layout_constraintTop_toBottomOf="@+id/tvPlanId" />
+
+            <TextView
+                android:id="@+id/tvId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Lugar :"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tvName"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/tvName"
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+            <TextView
+                android:id="@+id/tvSeePlanId"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@{subscription.plan.name}"
+                app:layout_constraintBottom_toBottomOf="@id/tvPlanId"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvPlanId"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread"
+                tools:text="saul" />
+
+            <TextView
+                android:id="@+id/tvSeeFirstName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{subscription.firstName}"
+                app:layout_constraintBottom_toBottomOf="@+id/tvName"
+                app:layout_constraintEnd_toEndOf="@+id/tvSeePlanId"
+                app:layout_constraintStart_toStartOf="@+id/tvSeePlanId"
+                app:layout_constraintTop_toTopOf="@+id/tvName"
+                tools:text="renato" />
+
+            <TextView
+                android:id="@+id/tvSeeId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{subscription.place.name}"
+                app:layout_constraintBottom_toBottomOf="@+id/tvId"
+                app:layout_constraintEnd_toEndOf="@+id/tvSeeFirstName"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/tvSeeFirstName"
+                app:layout_constraintTop_toTopOf="@+id/tvId"
+                tools:text="vacalola" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

@@ -10,9 +10,10 @@ import org.koin.core.component.inject
 
 class DebtorsViewModel : ViewModel(), KoinComponent {
     private val repository: IRepository by inject()
-
     val uiState = MutableLiveData<DebtorsUiState>()
-
+    init {
+        fetchDebtors()
+    }
 
     fun fetchDebtors() = viewModelScope.launch {
         try {
@@ -24,4 +25,5 @@ class DebtorsViewModel : ViewModel(), KoinComponent {
         }
 
     }
+
 }

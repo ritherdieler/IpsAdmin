@@ -26,7 +26,6 @@ import java.util.*
 class TechnicianFragment : Fragment(R.layout.fragment_technician) {
     lateinit var binding: FragmentTechnicianBinding
     var selectedDate: Long = 0
-    private val dialogFactory: IDialogFactory by inject()
     val viewModel: TechnicianViewModel by viewModel()
 
     override fun onCreateView(
