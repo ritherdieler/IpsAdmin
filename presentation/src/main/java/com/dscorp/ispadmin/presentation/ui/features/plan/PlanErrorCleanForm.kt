@@ -8,8 +8,8 @@ package com.dscorp.ispadmin.presentation.ui.features.plan
  *
  **/
 sealed class PlanErrorCleanForm {
-    object OnEtNamePlanError : PlanErrorCleanForm()
-    object OnEtPriceError : PlanErrorCleanForm()
-    object OnEtDownloadSpeedError : PlanErrorCleanForm()
-    object OnEtUploadSpeedError : PlanErrorCleanForm()
+    object OnEtNamePlanHasNotError : PlanErrorCleanForm()
+    object OnEtPriceHasNotError : PlanErrorCleanForm()
+    object OnEtDownloadSpeedHasNotError : PlanErrorCleanForm()
+    object OnEtUploadSpeedHasNotError : PlanErrorCleanForm()
 }

@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             style="@style/TextAppearance.MaterialComponents.Headline5"
-            android:text="Register Payment"
+            android:text="@string/registrar_pagos"
             android:textSize="20sp" />
        <!-- plan-->
         <TextView
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textColor="@color/purple_700"
-            android:text="Plan"
+            android:text="@string/planPayment"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
             android:textSize="16sp" />
 
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:text="Payment Method"
+            android:text="@string/metodo_de_pago"
             android:textSize="16sp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -63,8 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             style="@style/TextAppearance.MaterialComponents.Subtitle1"
-
-            android:text="Payment Discount"
+            android:text="@string/descuento"
             android:textSize="16sp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -88,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:text="Payment Discount Reason"
+            android:text="@string/motivo_de_descuento"
             android:textSize="16sp" />
 
         <com.google.android.material.textfield.TextInputLayout

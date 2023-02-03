@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.networkdevice
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.extension.isValidIpv4
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceFormError.*
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceResponse.*
 import com.example.data2.data.repository.IRepository
@@ -49,35 +50,40 @@ class NetworkDeviceViewModel() : ViewModel() {
     private fun formIsValid(networkDevice: NetworkDevice): Boolean {
 
         if (networkDevice.name.isEmpty()) {
-            networkDeviceFormErrorLiveData.value=(OnEtNameError())
+            networkDeviceFormErrorLiveData.value=OnEtNameError()
             return false
         }else{
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtNameError
         }
         if (networkDevice.username.isEmpty()) {
-            networkDeviceFormErrorLiveData.value=(OnEtUserNameError())
+            networkDeviceFormErrorLiveData.value=OnEtUserNameError()
             return false
         }else{
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtUserNameError
         }
         if (networkDevice.password.isEmpty()) {
-            networkDeviceFormErrorLiveData.value=(OnEtPasswordError())
+            networkDeviceFormErrorLiveData.value=OnEtPasswordError()
             return false
         }
         if (networkDevice.password.length < 8) {
-            networkDeviceFormErrorLiveData.value=(OnEtPasswordHasNotErrors())
+            networkDeviceFormErrorLiveData.value=OnEtPasswordHasNotErrors()
             return false
         }else{
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtPasswordError
         }
         if (networkDevice.ipAddress.isEmpty()) {
-            networkDeviceFormErrorLiveData.value=(OnEtAddressError())
+            networkDeviceFormErrorLiveData.value=OnEtAddressError()
             return false
         }else{
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtAddressError
         }
+        if (!networkDevice.ipAddress.isValidIpv4()){
+            networkDeviceFormErrorLiveData.value=OnEtIpv4AddressHasNotErrors()
+            return false
+        }
+
         if (networkDevice.networkDeviceType.isNullOrEmpty()) {
-            networkDeviceFormErrorLiveData.value=(OnDeviceTypeError())
+            networkDeviceFormErrorLiveData.value=OnDeviceTypeError()
             return false
         }else{
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnDeviceTypeError

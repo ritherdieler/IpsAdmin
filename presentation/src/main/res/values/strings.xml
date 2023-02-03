@@ -55,6 +55,11 @@
     <string name="installed_device">Dispositivo de red instalado</string>
     <string name="device_type">Tipo de dispositivo</string>
     <string name="ip_address">Direccion ip</string>
+    <string name="motivo_de_descuento">Motivo de Descuento</string>
+    <string name="descuento">Descuento</string>
+    <string name="metodo_de_pago">Metodo de Pago</string>
+    <string name="planPayment">Plan</string>
+    <string name="registrar_pagos">Registrar Pagos</string>
 
 
 </resources>
