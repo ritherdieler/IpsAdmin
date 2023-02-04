@@ -3,9 +3,10 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.extension.hasOnlyLetters
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionResponse.*
-import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
@@ -67,42 +68,50 @@ class RegisterSubscriptionViewModel : ViewModel() {
 
         if (subscription.firstName.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnEtFirstNameError("Ingresa tu nombre. ")
+                RegisterSubscriptionFormError.OnEtFirstNameError()
             return false
 
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtFirstNameHasNotErrors
 
         }
+        if(!subscription.firstName.hasOnlyLetters()){
+            formErrorLiveData.value = RegisterSubscriptionFormError.OnEtFirstNameIsInvalidError()
+            return false
+        }
 
         if (subscription.lastName.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnEtLastNameError("Ingresa Tu Apellido")
+                RegisterSubscriptionFormError.OnEtLastNameError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtLastNameHasNotErrors
         }
+        if(!subscription.lastName.hasOnlyLetters()){
+            formErrorLiveData.value = RegisterSubscriptionFormError.OnEtLastNameError()
+            return false
+        }
 
         if (subscription.dni.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnEtDniError("Ingresa tu nuemero de DNI.")
+                RegisterSubscriptionFormError.OnEtDniError()
             return false
         }
         if (subscription.dni.length < 8) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnDniIsInvalidError("DNI requiere 8 caracteres")
+                RegisterSubscriptionFormError.OnDniIsInvalidError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtDniHasNotErrors
         }
         if (subscription.password.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnEtPasswordError("Ingresa una contrasena.")
+                RegisterSubscriptionFormError.OnEtPasswordError()
             return false
         }
         if (subscription.password.length < 8) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnEtPasswordError("✓ Entre 8 y 20 carcteres.")
+                RegisterSubscriptionFormError.OnPasswordIsInvalidError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtPasswordHasNotErrors
@@ -110,7 +119,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
 
         if (subscription.address.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnEtAddressesError("Ingresa una Direccion")
+                RegisterSubscriptionFormError.OnEtAddressesError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtAddressHasNotErrors
@@ -118,19 +127,19 @@ class RegisterSubscriptionViewModel : ViewModel() {
 
         if (subscription.location == null) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnEtLocationError("La ubicacion no puede estar vacia")
+                RegisterSubscriptionFormError.OnEtLocationError()
             return false
         }
 
         if (subscription.phone.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnEtNumberPhoneError("Ingresa tu número de telefono")
+                RegisterSubscriptionFormError.OnEtNumberPhoneError()
             return false
         }
 
         if (subscription.phone.length < 9) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnPhoneIsInvalidError("Requiere 9 caracteres")
+                RegisterSubscriptionFormError.OnPhoneIsInvalidError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtPhoneHasNotErrors
@@ -138,7 +147,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
 
         if (subscription.subscriptionDate == 0L) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnEtSubscriptionDateError("Debes colocar una fecha de suscripcion")
+                RegisterSubscriptionFormError.OnEtSubscriptionDateError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtSubscriptionDateNotErrors
@@ -146,7 +155,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
 
         if (subscription.planId.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnSpnPlanError("Debes seleccionar un plan")
+                RegisterSubscriptionFormError.OnSpnPlanError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtPlanNotErrors
@@ -154,7 +163,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
 
         if (subscription.networkDeviceId.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnSpnNetworkDeviceError("Debes seleccionar un dispositivo de red")
+                RegisterSubscriptionFormError.OnSpnNetworkDeviceError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtNetworkDeviceNotErrors
@@ -162,14 +171,14 @@ class RegisterSubscriptionViewModel : ViewModel() {
 
         if (subscription.placeId.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnSpnPlaceError("Debes seleccionar un lugar")
+                RegisterSubscriptionFormError.OnSpnPlaceError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtPlaceNotErrors
         }
         if (subscription.technicianId.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnSpnTechnicianError("Debes seleccionar un técnico")
+                RegisterSubscriptionFormError.OnSpnTechnicianError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtTechnicianNotErrors
@@ -177,7 +186,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
 
         if (subscription.napBoxId.isEmpty()) {
             formErrorLiveData.value =
-                RegisterSubscriptionFormError.OnSpnNapBoxError("Debes seleccionar una Caja Nap")
+                RegisterSubscriptionFormError.OnSpnNapBoxError()
             return false
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtNapBoxNotErrors

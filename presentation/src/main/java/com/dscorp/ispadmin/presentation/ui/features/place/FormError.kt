@@ -7,8 +7,14 @@ package com.dscorp.ispadmin.presentation.ui.features.place
  * Huacho, Peru.
  *
  **/
-sealed class FormError {
-    class OnEtNamePlaceError(val error: String) : FormError()
-    class OnEtAbbreviationError(val error: String) : FormError()
-    class OnEtLocationError(val error: String) : FormError()
+sealed class FormError(val message:String) {
+
+    companion object{
+        const val NAME_ERROR = "el nombre no puede estar vacio"
+        const val  ABBREVIATION_ERROR="Este campo no puede estar vacio"
+        const val LOCATION_ERROR="Este campo no puede estar vacio"
+    }
+    class OnEtNameError : FormError(NAME_ERROR)
+    class OnEtAbbreviationError: FormError(ABBREVIATION_ERROR)
+    class OnEtLocationError : FormError(LOCATION_ERROR)
 }

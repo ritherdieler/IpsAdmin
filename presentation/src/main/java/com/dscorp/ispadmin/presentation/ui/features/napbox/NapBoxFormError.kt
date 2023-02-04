@@ -7,9 +7,16 @@ package com.dscorp.ispadmin.presentation.ui.features.napbox
  * Huacho, Peru.
  *
  **/
-sealed class NapBoxFormError {
-    class OnEtNameNapBoxError(val error: String) : NapBoxFormError()
-    class OnEtAbbreviationError(val error: String) : NapBoxFormError()
-    class OnEtLocationError(val error: String) : NapBoxFormError()
+sealed class NapBoxFormError (val message: String){
+
+    companion object {
+        const val CODE_ERROR = "El codigo no puede estar vacio"
+        const val ADDRESS_ERROR = "La dirección no puede estar vacio"
+        const val LOCATION_ERROR = "La ubicación no puede estar vacio"
+    }
+
+    class OnEtCodeError : NapBoxFormError(CODE_ERROR)
+    class OnEtAddressError : NapBoxFormError(ADDRESS_ERROR)
+    class OnEtLocationError : NapBoxFormError(LOCATION_ERROR)
 
 }

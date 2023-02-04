@@ -7,11 +7,20 @@ package com.dscorp.ispadmin.presentation.ui.features.registration
  * Huacho, Peru.
  *
  **/
-sealed class RegisterFormError {
-    class OnEtUserError(val error: String) : RegisterFormError()
-    class OnEtFirstNameError(val error: String) : RegisterFormError()
-    class OnEtLastNameError(val error: String) : RegisterFormError()
-    class OnEtPassword1Error(val error: String) : RegisterFormError()
-    class OnEtPassword2Error(val error: String) : RegisterFormError()
+sealed class RegisterFormError(val error: String) {
+    companion object {
+        const val USER_ERROR = "Este campo no puede estar vacio"
+        const val FIRST_NAME_ERROR = "Este campo no puede estar vacio"
+        const val LAST_NAME_ERROR = "Este campo no puede estar vacio"
+        const val PASSWORD_ERROR = "Este campo no puede estar vacio"
+        const val VERIFY_PASSWORD_ERROR = "Este campo no puede estar vacio"
+
+    }
+
+    class OnEtUserError : RegisterFormError(USER_ERROR)
+    class OnEtFirstNameError : RegisterFormError(FIRST_NAME_ERROR)
+    class OnEtLastNameError : RegisterFormError(LAST_NAME_ERROR)
+    class OnEtPassword1Error : RegisterFormError(PASSWORD_ERROR)
+    class OnEtPassword2Error : RegisterFormError(VERIFY_PASSWORD_ERROR)
 
 }

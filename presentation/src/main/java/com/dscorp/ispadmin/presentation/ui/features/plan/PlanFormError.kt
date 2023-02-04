@@ -7,9 +7,16 @@ package com.dscorp.ispadmin.presentation.ui.features.plan
  * Huacho, Peru.
  *
  **/
-sealed class PlanFormError {
-    class OnEtNamePlanError(val error: String) : PlanFormError()
-    class OnEtPriceError(val error: String) : PlanFormError()
-    class OnEtDowloadSpeedError(val error: String) : PlanFormError()
-    class OnEtUploadSpeedError(val error: String) : PlanFormError()
+sealed class PlanFormError(val message: String) {
+    companion object {
+        const val NAME_ERROR = "Este campo no puede estar vacio"
+        const val PRICE_ERROR = "Este campo no puede estar vacio"
+        const val DOWNLOAD_SPEED_ERROR = "Este campo no puede estar vacio"
+        const val UPLOAD_SPEED_ERROR = "Este campo no puede estar vacio"
+    }
+
+    class OnEtNamePlanError : PlanFormError(NAME_ERROR)
+    class OnEtPriceError : PlanFormError(PRICE_ERROR)
+    class OnEtDowloadSpeedError : PlanFormError(DOWNLOAD_SPEED_ERROR)
+    class OnEtUploadSpeedError : PlanFormError(UPLOAD_SPEED_ERROR)
 }

@@ -51,7 +51,6 @@ class RegisterPaymentViewModel : ViewModel(), KoinComponent {
             registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidDiscountError)
             return false
         }
-
         return true
     }
 

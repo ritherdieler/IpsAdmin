@@ -45,11 +45,11 @@ class RegisterActivity : AppCompatActivity() {
     private fun ObserveRegisterFormError() {
         viewModel.registerFormErrorLiveData.observe(this) { it ->
             when (it) {
-                is RegisterFormError.OnEtFirstNameError -> binding.etFirstName.setError(it.error)
-                is RegisterFormError.OnEtLastNameError -> binding.etLastName.setError(it.error)
-                is RegisterFormError.OnEtPassword1Error -> binding.etPassword1.setError(it.error)
-                is RegisterFormError.OnEtPassword2Error -> binding.etPassword2.setError(it.error)
-                is RegisterFormError.OnEtUserError -> binding.etUser.setError(it.error)
+                is RegisterFormError.OnEtFirstNameError -> binding.tlFirstName.error = it.error
+                is RegisterFormError.OnEtLastNameError -> binding.tlLastName.error = it.error
+                is RegisterFormError.OnEtPassword1Error -> binding.tlPassword1.error = it.error
+                is RegisterFormError.OnEtPassword2Error -> binding.tlPassword2.error = it.error
+                is RegisterFormError.OnEtUserError -> binding.tlUser.error = it.error
             }
         }
     }

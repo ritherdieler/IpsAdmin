@@ -8,7 +8,6 @@ package com.dscorp.ispadmin.presentation.ui.features.place
  *
  **/
 sealed class CleanFormErrorsPlace {
-    object OnEtNamePlaceError : CleanFormErrorsPlace()
-    object OnEtAbbreviationError : CleanFormErrorsPlace()
-    object OnEtLocationError : CleanFormErrorsPlace()
+    object OnEtNamePlaceCleanError : CleanFormErrorsPlace()
+    object OnEtAbbreviationCleanError : CleanFormErrorsPlace()
 }

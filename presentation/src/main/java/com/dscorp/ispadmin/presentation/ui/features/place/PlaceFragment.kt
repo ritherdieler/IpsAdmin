@@ -17,7 +17,6 @@ import com.dscorp.ispadmin.databinding.FragmentPlaceBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
-import com.dscorp.ispadmin.presentation.extension.toGeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.google.android.gms.maps.model.LatLng
@@ -40,7 +39,6 @@ class PlaceFragment() : Fragment() {
         observePlaceResponse()
         observeFormError()
         observeCleanErrorForm()
-        registerPlace()
 
         binding.btRegisterPlace.setOnClickListener {
             registerPlace() }
@@ -79,25 +77,25 @@ class PlaceFragment() : Fragment() {
     private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error = formError.error
-                is FormError.OnEtNamePlaceError -> binding.tlNamePlace.error = formError.error
-                is FormError.OnEtLocationError -> binding.tlNamePlace.error = formError.error
+                is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error = formError.message
+                is FormError.OnEtNameError -> binding.tlNamePlace.error = formError.message
+                is FormError.OnEtLocationError -> binding.tlNamePlace.error = formError.message
             }
         }
     }
     private fun observeCleanErrorForm() {
-        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
+        viewModel.cleanErrorFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
             when(errorCleanForm){
-                is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error = null
-                is FormError.OnEtLocationError -> binding.tlLocation.error = null
-                is FormError.OnEtNamePlaceError -> binding.tlNamePlace.error = null
+
+                CleanFormErrorsPlace.OnEtAbbreviationCleanError -> binding.tlAbbreviation.error = null
+                CleanFormErrorsPlace.OnEtNamePlaceCleanError -> binding.tlNamePlace.error = null
             }
         }
 
         }
 
     private fun observePlaceResponse() {
-        viewModel.placePlaceResponseLiveData.observe(viewLifecycleOwner) { response ->
+        viewModel.placeResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is PlaceResponse.OnError -> showErrorDialog()
                 is PlaceResponse.OnPlaceRegister -> showSuccessDialog(response)

@@ -9,14 +9,14 @@ package com.dscorp.ispadmin.presentation.ui.features.technician
  **/
 sealed class TechnicianErrorCleanForm {
 
-    object OnEtFirstNameError : TechnicianErrorCleanForm()
-    object OnEtLastNameError : TechnicianErrorCleanForm()
-    object OnEtDniError : TechnicianErrorCleanForm()
-    object OnEtTypeError: TechnicianErrorCleanForm()
-    object OnEtUserNameError : TechnicianErrorCleanForm()
-    object OnEtPasswordError : TechnicianErrorCleanForm()
-    object OnEtAddressError : TechnicianErrorCleanForm()
-    object OnEtPhoneError : TechnicianErrorCleanForm()
-    object OnEtBirthdayError : TechnicianErrorCleanForm()
+    object OnEtFirstNameCleanError : TechnicianErrorCleanForm()
+    object OnEtLastNameCleanError : TechnicianErrorCleanForm()
+    object OnEtDniCleanError : TechnicianErrorCleanForm()
+    object OnEtTypeCleanError: TechnicianErrorCleanForm()
+    object OnEtUserNameCleanError : TechnicianErrorCleanForm()
+    object OnEtPasswordCleanError : TechnicianErrorCleanForm()
+    object OnEtAddressCleanError : TechnicianErrorCleanForm()
+    object OnEtPhoneCleanError : TechnicianErrorCleanForm()
+    object OnEtBirthdayCleanError : TechnicianErrorCleanForm()
 }
 
