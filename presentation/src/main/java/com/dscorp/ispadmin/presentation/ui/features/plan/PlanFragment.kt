@@ -52,7 +52,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is OnEtDowloadSpeedError -> setErrorEtDowloadSpeed(formError)
+                is OnEtDowloadSpeedError -> setErrorEtDownloadSpeed(formError)
                 is OnEtNamePlanError -> setErrorEtNamePlan(formError)
                 is OnEtPriceError -> setErrorEtPrice(formError)
                 is OnEtUploadSpeedError -> setErrorEtUploadSpeed(formError)
@@ -61,19 +61,19 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     }
 
     private fun setErrorEtUploadSpeed(formError: OnEtUploadSpeedError) {
-        binding.tlUploadSpeed.error = (formError.error)
+        binding.tlUploadSpeed.error = (formError.message)
     }
 
     private fun setErrorEtPrice(formError: OnEtPriceError) {
-        binding.tlPrice.error = formError.error
+        binding.tlPrice.error = formError.message
     }
 
     private fun setErrorEtNamePlan(formError: OnEtNamePlanError) {
-        binding.tlNamePlan.error = formError.error
+        binding.tlNamePlan.error = formError.message
     }
 
-    private fun setErrorEtDowloadSpeed(formError: OnEtDowloadSpeedError) {
-        binding.tlDownloadSpeed.error = formError.error
+    private fun setErrorEtDownloadSpeed(formError: OnEtDowloadSpeedError) {
+        binding.tlDownloadSpeed.error = formError.message
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

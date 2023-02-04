@@ -29,25 +29,19 @@ class LoginViewModel : ViewModel() {
     ) {
 
         if (user.isEmpty()) {
-
-            println("debes escribir un usuario")
             etUser.setError("el usuario no puede estar vacio")
             return
         }
 
         if (password.isEmpty()) {
-
-            println("debes escribir una contrasena")
             etPassword.setError("la contrana no puede estar vacia")
             return
         }
-
 
         var loginObject = Loging(
 
             username = user,
             password = password
-
         )
 
         viewModelScope.launch {
@@ -58,12 +52,7 @@ class LoginViewModel : ViewModel() {
 
             } catch (error: Exception) {
                 loginResponseLiveData.postValue(LoginResponse.OnError(error))
-
             }
-
-
         }
-
-
     }
 }

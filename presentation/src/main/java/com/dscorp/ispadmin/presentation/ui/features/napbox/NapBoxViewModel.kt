@@ -13,6 +13,7 @@ class NapBoxViewModel : ViewModel() {
 
     val napBoxResponseLiveData = MutableLiveData<NapBoxResponse>()
     val formErrorLiveData = MutableLiveData<NapBoxFormError>()
+    private val cleanErrorLiveData = MutableLiveData<CleanFormErrors>()
 
     fun registerNapBox(registerNapBox: NapBox) = viewModelScope.launch {
         try {
@@ -30,19 +31,25 @@ class NapBoxViewModel : ViewModel() {
 
     }
 
-    private fun formIsValid(napbox: NapBox): Boolean {
+    private fun formIsValid(napBox: NapBox): Boolean {
 
-        if (napbox.code.isEmpty()) {
-            formErrorLiveData.postValue(NapBoxFormError.OnEtNameNapBoxError("El codigo no puede estar vacio"))
+        if (napBox.code.isEmpty()) {
+            formErrorLiveData.value=NapBoxFormError.OnEtCodeError()
             return false
+        }else{
+            cleanErrorLiveData.value = CleanFormErrors.OnEtCodeCleanError
         }
-        if (napbox.address.isEmpty()) {
-            formErrorLiveData.postValue(NapBoxFormError.OnEtAbbreviationError("la direccion no puede estar vacia"))
+        if (napBox.address.isEmpty()) {
+            formErrorLiveData.value=NapBoxFormError.OnEtAddressError()
             return false
+        }else{
+            cleanErrorLiveData.value = CleanFormErrors.OnEtAddressCleanError
         }
-        if (napbox.location == null) {
-            formErrorLiveData.postValue(NapBoxFormError.OnEtLocationError("La ubicacion no puede estar vacia"))
+        if (napBox.location == null) {
+            formErrorLiveData.value=NapBoxFormError.OnEtLocationError()
             return false
+        }else{
+            cleanErrorLiveData.value = CleanFormErrors.OnEtLocationCleanError
         }
         return true
     }

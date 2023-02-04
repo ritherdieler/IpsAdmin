@@ -94,6 +94,8 @@ class RegisterSubscriptionFragment : Fragment() {
     }
 
 
+
+
     private fun observeMapDialogResult() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")
             ?.observe(viewLifecycleOwner) {
@@ -141,12 +143,17 @@ class RegisterSubscriptionFragment : Fragment() {
                 is OnSpnPlaceError -> setSpnPlaceError(formError)
                 is OnEtLocationError -> setEtLocationError(formError)
                 is OnSpnNapBoxError -> setSpnNapBoxError(formError)
-                is OnDniIsInvalidError -> binding.tlDni.error = formError.error
+                is OnDniIsInvalidError -> setDniIsInvalidError(formError)
                 is OnPhoneIsInvalidError -> binding.tlPhone.error = formError.error
                 is OnPasswordIsInvalidError -> binding.tlPassword.error = formError.error
                 is OnSpnTechnicianError -> binding.spnTechnician.error = formError.error
+                is OnEtFirstNameIsInvalidError -> binding.tlFirstName.error = formError.error
             }
         }
+    }
+
+    private fun setDniIsInvalidError(formError: RegisterSubscriptionFormError) {
+        binding.tlDni.error = formError.error
     }
 
     private fun observeCleanForm() {

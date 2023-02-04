@@ -26,34 +26,33 @@ class RegisterViewModel : ViewModel() {
         firstName: String,
         lastName: String
     ) {
-
         if (user.isEmpty()) {
-            registerFormErrorLiveData.postValue(RegisterFormError.OnEtUserError("Debes escribir un usuario"))
+            registerFormErrorLiveData.value=RegisterFormError.OnEtUserError()
             return
         }
 
         if (firstName.isEmpty()) {
-            registerFormErrorLiveData.postValue(RegisterFormError.OnEtFirstNameError("debes escribir un nombre"))
+            registerFormErrorLiveData.value=RegisterFormError.OnEtFirstNameError()
             return
         }
 
         if (lastName.isEmpty()) {
-            registerFormErrorLiveData.postValue(RegisterFormError.OnEtLastNameError("debes escribir un apellido"))
+            registerFormErrorLiveData.value=RegisterFormError.OnEtLastNameError()
             return
         }
         if (password1.isEmpty()) {
-            registerFormErrorLiveData.postValue(RegisterFormError.OnEtPassword1Error("debes escribir una contrasena"))
+            registerFormErrorLiveData.value=RegisterFormError.OnEtPassword1Error()
             return
         }
 
         if (password2.isEmpty()) {
-            registerFormErrorLiveData.postValue(RegisterFormError.OnEtPassword2Error("debes escribir una contrasena"))
+            registerFormErrorLiveData.value=RegisterFormError.OnEtPassword2Error()
             return
         }
 
         if (password1 != password2) {
-            registerFormErrorLiveData.postValue(RegisterFormError.OnEtPassword1Error("las contrasenas no coinciden"))
-            registerFormErrorLiveData.postValue(RegisterFormError.OnEtPassword2Error("las contrasenas no coinciden"))
+            registerFormErrorLiveData.value=RegisterFormError.OnEtPassword1Error()
+            registerFormErrorLiveData.value=RegisterFormError.OnEtPassword2Error()
             return
 
         }

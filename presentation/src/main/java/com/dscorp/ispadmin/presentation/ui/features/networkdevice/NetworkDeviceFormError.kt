@@ -24,7 +24,7 @@ sealed class NetworkDeviceFormError(val message: String) {
     class OnEtUserNameError : NetworkDeviceFormError(USERNAME_ERROR)
     class OnEtAddressError : NetworkDeviceFormError(ADDRESS_ERROR)
     class OnDeviceTypeError : NetworkDeviceFormError(DEVICE_TYPE_ERROR)
-    class OnEtPasswordHasNotErrors: NetworkDeviceFormError(PASSWORD_HAS_NOT_ERRORS)
-    class OnEtIpv4AddressHasNotErrors: NetworkDeviceFormError(IPV4_ADDRESS_HAS_NOT_ERRORS)
+    class OnEtPasswordIsInvalidError: NetworkDeviceFormError(PASSWORD_HAS_NOT_ERRORS)
+    class OnEtIpv4AddressIsInvalidError: NetworkDeviceFormError(IPV4_ADDRESS_HAS_NOT_ERRORS)
 
 }

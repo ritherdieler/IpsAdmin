@@ -17,7 +17,7 @@ class NetworkDeviceViewModel() : ViewModel() {
 
     val networkDeviceResponseLiveData = MutableLiveData<NetworkDeviceResponse>()
     val networkDeviceFormErrorLiveData = MutableLiveData<NetworkDeviceFormError>()
-    val cleanNetworkDeviceErrorFormLiveData =MutableLiveData<CleanFormErrors>()
+    val cleanNetworkDeviceErrorFormLiveData = MutableLiveData<CleanFormErrors>()
 
     init {
         getFormData()
@@ -50,42 +50,41 @@ class NetworkDeviceViewModel() : ViewModel() {
     private fun formIsValid(networkDevice: NetworkDevice): Boolean {
 
         if (networkDevice.name.isEmpty()) {
-            networkDeviceFormErrorLiveData.value=OnEtNameError()
+            networkDeviceFormErrorLiveData.value = OnEtNameError()
             return false
-        }else{
+        } else {
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtNameError
         }
         if (networkDevice.username.isEmpty()) {
-            networkDeviceFormErrorLiveData.value=OnEtUserNameError()
+            networkDeviceFormErrorLiveData.value = OnEtUserNameError()
             return false
-        }else{
+        } else {
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtUserNameError
         }
         if (networkDevice.password.isEmpty()) {
-            networkDeviceFormErrorLiveData.value=OnEtPasswordError()
+            networkDeviceFormErrorLiveData.value = OnEtPasswordError()
             return false
         }
         if (networkDevice.password.length < 8) {
-            networkDeviceFormErrorLiveData.value=OnEtPasswordHasNotErrors()
+            networkDeviceFormErrorLiveData.value = OnEtPasswordIsInvalidError()
             return false
-        }else{
+        } else {
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtPasswordError
         }
         if (networkDevice.ipAddress.isEmpty()) {
-            networkDeviceFormErrorLiveData.value=OnEtAddressError()
+            networkDeviceFormErrorLiveData.value = OnEtAddressError()
             return false
-        }else{
+        } else {
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnEtAddressError
         }
-        if (!networkDevice.ipAddress.isValidIpv4()){
-            networkDeviceFormErrorLiveData.value=OnEtIpv4AddressHasNotErrors()
+        if (!networkDevice.ipAddress.isValidIpv4()) {
+            networkDeviceFormErrorLiveData.value = OnEtIpv4AddressIsInvalidError()
             return false
         }
-
         if (networkDevice.networkDeviceType.isNullOrEmpty()) {
-            networkDeviceFormErrorLiveData.value=OnDeviceTypeError()
+            networkDeviceFormErrorLiveData.value = OnDeviceTypeError()
             return false
-        }else{
+        } else {
             cleanNetworkDeviceErrorFormLiveData.value = CleanFormErrors.OnDeviceTypeError
         }
         return true

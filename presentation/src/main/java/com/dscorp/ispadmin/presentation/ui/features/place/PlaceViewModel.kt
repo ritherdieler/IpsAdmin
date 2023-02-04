@@ -3,51 +3,47 @@ package com.dscorp.ispadmin.presentation.ui.features.place
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Place
-import kotlinx.coroutines.cancel
+import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
 class PlaceViewModel : ViewModel() {
     private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
 
-    val placePlaceResponseLiveData = MutableLiveData<PlaceResponse>()
+    val placeResponseLiveData = MutableLiveData<PlaceResponse>()
     val formErrorLiveData = MutableLiveData<FormError>()
     val cleanErrorFormLiveData = MutableLiveData<CleanFormErrorsPlace>()
-
     fun registerPlace(place: Place) = viewModelScope.launch {
 
-        if (formIsInvalid(place)) this.cancel()
-
         try {
-            val placeFromRepository = repository.registerPlace(place)
-            placePlaceResponseLiveData.postValue(PlaceResponse.OnPlaceRegister(placeFromRepository))
+            if (formIsValid(place)) {
+                val placeFromRepository = repository.registerPlace(place)
+                placeResponseLiveData.postValue(PlaceResponse.OnPlaceRegister(placeFromRepository))
+            }
         } catch (error: Exception) {
-            placePlaceResponseLiveData.postValue(PlaceResponse.OnError(error))
+            placeResponseLiveData.postValue(PlaceResponse.OnError(error))
         }
-
     }
 
-    private fun formIsInvalid(place: Place): Boolean {
+    private fun formIsValid(place: Place): Boolean {
         if (place.name.isEmpty()) {
-            formErrorLiveData.value =(FormError.OnEtNamePlaceError("El nombre del lugar no puede estar vacio"))
-             return false
-        }else{
-            cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtNamePlaceError
-        }
-        if (place.abbreviation.isEmpty()) {
-            formErrorLiveData.value =(FormError.OnEtAbbreviationError("La abreviatura no puede estar vacia"))
+            formErrorLiveData.value = FormError.OnEtNameError()
             return false
-        }else{
-            cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtAbbreviationError
+        } else {
+            cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtNamePlaceCleanError
         }
         if (place.location == null) {
-            formErrorLiveData.value =(FormError.OnEtLocationError("La ubicacion no puede estar vacia"))
+            formErrorLiveData.value = FormError.OnEtLocationError()
             return false
-        }else{
-            cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtLocationError
         }
+        if (place.abbreviation.isEmpty()) {
+            formErrorLiveData.value = FormError.OnEtAbbreviationError()
+            return false
+        } else {
+            cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtAbbreviationCleanError
+        }
+
         return true
     }
 }

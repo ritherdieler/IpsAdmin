@@ -32,17 +32,17 @@ class RegisterServiceOrderViewModel : ViewModel() {
     private fun formIsValid(serviceOrder: ServiceOrder): Boolean {
 
         if (serviceOrder.latitude == null || serviceOrder.longitude == null) {
-            formErrorLiveData.postValue(RegisterServiceOrderFormError.OnEtLocationError())
+            formErrorLiveData.value=RegisterServiceOrderFormError.OnEtLocationError()
             return false
         }
 
         if (serviceOrder.issue.isNullOrEmpty()) {
-            formErrorLiveData.postValue(RegisterServiceOrderFormError.OnEtIssueError())
+            formErrorLiveData.value=RegisterServiceOrderFormError.OnEtIssueError()
             return false
         }
 
         if (serviceOrder.subscriptionId == null) {
-            formErrorLiveData.postValue(RegisterServiceOrderFormError.OnSubscriptionError())
+            formErrorLiveData.value=RegisterServiceOrderFormError.OnSubscriptionError()
             return false
         }
 

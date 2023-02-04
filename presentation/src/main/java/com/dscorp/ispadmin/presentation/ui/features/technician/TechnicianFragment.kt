@@ -112,15 +112,15 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
     private fun observeErroCleanForm() {
         viewModel.technicianErrorCleanFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
             when(errorCleanForm){
-                TechnicianErrorCleanForm.OnEtAddressError -> binding.tlAddress.error = null
-                TechnicianErrorCleanForm.OnEtBirthdayError -> binding.tlBirthday.error = null
-                TechnicianErrorCleanForm.OnEtDniError -> binding.tlDni.error = null
-                TechnicianErrorCleanForm.OnEtFirstNameError -> binding.tlFirstName.error = null
-                TechnicianErrorCleanForm.OnEtLastNameError -> binding.tlLastName.error = null
-                TechnicianErrorCleanForm.OnEtPasswordError -> binding.tlPassword.error = null
-                TechnicianErrorCleanForm.OnEtPhoneError -> binding.tlPhone.error = null
-                TechnicianErrorCleanForm.OnEtTypeError -> binding.tlType.error = null
-                TechnicianErrorCleanForm.OnEtUserNameError -> binding.tlUserName.error = null
+                TechnicianErrorCleanForm.OnEtAddressCleanError -> binding.tlAddress.error = null
+                TechnicianErrorCleanForm.OnEtBirthdayCleanError -> binding.tlBirthday.error = null
+                TechnicianErrorCleanForm.OnEtDniCleanError -> binding.tlDni.error = null
+                TechnicianErrorCleanForm.OnEtFirstNameCleanError -> binding.tlFirstName.error = null
+                TechnicianErrorCleanForm.OnEtLastNameCleanError -> binding.tlLastName.error = null
+                TechnicianErrorCleanForm.OnEtPasswordCleanError -> binding.tlPassword.error = null
+                TechnicianErrorCleanForm.OnEtPhoneCleanError -> binding.tlPhone.error = null
+                TechnicianErrorCleanForm.OnEtTypeCleanError -> binding.tlType.error = null
+                TechnicianErrorCleanForm.OnEtUserNameCleanError -> binding.tlUserName.error = null
             }
         }
     }

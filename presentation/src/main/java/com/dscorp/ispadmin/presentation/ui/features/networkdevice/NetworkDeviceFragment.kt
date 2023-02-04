@@ -62,8 +62,8 @@ class NetworkDeviceFragment : Fragment(R.layout.fragment_network_device) {
                 is OnEtPasswordError -> binding.tlPassword.error = formError.message
                 is OnEtUserNameError -> binding.tlUserName.error = formError.message
                 is OnDeviceTypeError -> binding.spnDeviceType.error = formError.message
-                is OnEtPasswordHasNotErrors -> binding.tlPassword.error = formError.message
-                is OnEtIpv4AddressHasNotErrors -> binding.tlIpAddress.error = formError.message
+                is OnEtPasswordIsInvalidError -> binding.tlPassword.error = formError.message
+                is OnEtIpv4AddressIsInvalidError -> binding.tlIpAddress.error = formError.message
             }
         }
     }

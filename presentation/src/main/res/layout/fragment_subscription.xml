@@ -15,15 +15,13 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fillViewport="true"
-          >
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingHorizontal="20dp"
-                >
+                android:paddingHorizontal="20dp">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlFirstName"
@@ -32,15 +30,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="Nombres"
-                    app:endIconMode="clear_text"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="24dp">
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                       />
+                        android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,9 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="Apellidos"
-                    app:endIconMode="clear_text"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="101dp">
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLastName"
@@ -69,11 +62,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:hint="DNI"
-                    app:endIconMode="clear_text"
                     app:counterEnabled="true"
                     app:counterMaxLength="8"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="177dp">
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etDni"
@@ -92,16 +83,14 @@
                     android:hint="Contraseña"
                     app:counterEnabled="true"
                     app:counterMaxLength="20"
-                    app:endIconMode="password_toggle"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="254dp">
+                    app:endIconMode="password_toggle">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword"
-                        android:maxLength="20"/>
+                        android:maxLength="20" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -111,9 +100,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Dirección"
-                    app:endIconMode="clear_text"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="332dp">
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAddress"
@@ -127,12 +114,10 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:focusable="false"
                     android:layout_marginTop="20dp"
+                    android:focusable="false"
                     android:hint="Ubicación"
-                    app:endIconMode="clear_text"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="409dp">
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLocationSubscription"
@@ -151,8 +136,7 @@
                     android:hint="Numero de telefono"
                     app:endIconMode="clear_text"
 
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="486dp">
+                    >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPhone"
@@ -171,9 +155,7 @@
                     android:layout_marginTop="20dp"
                     android:focusable="false"
                     android:hint="Fecha de Suscripción"
-                    app:endIconMode="clear_text"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="563dp">
+                    app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etSubscriptionDate"
@@ -189,9 +171,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/plan"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="640dp">
+                    android:hint="@string/plan">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etPlan"
@@ -208,9 +188,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/installed_device"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="717dp">
+                    android:hint="@string/installed_device">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etNetworkDevice"
@@ -227,9 +205,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/lugar"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="794dp">
+                    android:hint="@string/lugar">
 
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -246,9 +222,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/technician"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="872dp">
+                    android:hint="@string/technician">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etTechnician"
@@ -263,10 +237,8 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/cajas_nap"
                     android:layout_marginTop="20dp"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="949dp">
+                    android:hint="@string/cajas_nap">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etNapBox"
@@ -283,9 +255,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/installed_device"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="1026dp">
+                    android:hint="@string/installed_device">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etHostDevice"
@@ -301,9 +271,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
-                    android:text="Registrar"
-                    tools:layout_editor_absoluteX="20dp"
-                    tools:layout_editor_absoluteY="1104dp" />
+                    android:text="Registrar" />
             </LinearLayout>
 
         </ScrollView>

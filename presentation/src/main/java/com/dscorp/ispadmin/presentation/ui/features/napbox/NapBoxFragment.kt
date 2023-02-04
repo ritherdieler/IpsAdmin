@@ -30,6 +30,7 @@ class NapBoxFragment : Fragment() {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_nap_box, null, true)
         observeNapBoxResponse()
         observeNapBoxFormError()
+        observeNapBoxCleanError()
 
         binding.btRegisterNapBox.setOnClickListener {
             registerNapBox()
@@ -43,6 +44,7 @@ class NapBoxFragment : Fragment() {
 
         return binding.root
     }
+
 
     private fun observeMapDialogResult() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")
@@ -70,11 +72,20 @@ class NapBoxFragment : Fragment() {
     private fun observeNapBoxFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is NapBoxFormError.OnEtAbbreviationError -> binding.etAddress.error =
-                    formError.error
-                is NapBoxFormError.OnEtNameNapBoxError -> binding.etCode.error = formError.error
-                is NapBoxFormError.OnEtLocationError -> binding.etLocationNapBox.error =
-                    formError.error
+                is NapBoxFormError.OnEtAddressError -> binding.tlAddress.error = formError.message
+                is NapBoxFormError.OnEtCodeError -> binding.tlCode.error = formError.message
+                is NapBoxFormError.OnEtLocationError -> binding.tlLocationNapBox.error =
+                    formError.message
+            }
+        }
+    }
+
+    private fun observeNapBoxCleanError() {
+        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { cleanError ->
+            when (cleanError) {
+                is NapBoxFormError.OnEtAddressError -> binding.etAddress.error = null
+                is NapBoxFormError.OnEtLocationError -> binding.etAddress.error = null
+                is NapBoxFormError.OnEtCodeError -> binding.etAddress.error = null
             }
         }
     }
