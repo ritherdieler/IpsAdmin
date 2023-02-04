@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.di
 
+import com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolViewModel
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListViewModel
@@ -45,4 +46,5 @@ val viewModelModule = module {
     viewModel { FindSubscriptionViewModel() }
     viewModel { RegisterPaymentViewModel() }
     viewModel { DebtorsViewModel() }
+    viewModel { IpPoolViewModel() }
 }

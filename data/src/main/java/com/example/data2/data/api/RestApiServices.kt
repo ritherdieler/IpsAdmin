@@ -82,6 +82,7 @@ interface RestApiServices {
 
     @GET("subscription/debtors")
     suspend fun getDebtors(): Response<List<SubscriptionResponse>>
-
+    @POST("ip-pool")
+    suspend fun registerIpPool(@Body ipPool: IpPool): Response<IpPool>
 }
 

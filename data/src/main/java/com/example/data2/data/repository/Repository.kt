@@ -213,4 +213,13 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun registerIpPool(ipPool: IpPool): IpPool {
+        val response = restApiServices.registerIpPool(ipPool)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
 }
