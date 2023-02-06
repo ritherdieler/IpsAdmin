@@ -14,4 +14,5 @@ sealed class CleanFormErrors() {
     object OnEtAddressError : CleanFormErrors()
     object OnDeviceTypeError : CleanFormErrors()
 
+
 }

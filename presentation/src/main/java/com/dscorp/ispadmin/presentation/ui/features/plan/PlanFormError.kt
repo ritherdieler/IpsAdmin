@@ -13,10 +13,12 @@ sealed class PlanFormError(val message: String) {
         const val PRICE_ERROR = "Este campo no puede estar vacio"
         const val DOWNLOAD_SPEED_ERROR = "Este campo no puede estar vacio"
         const val UPLOAD_SPEED_ERROR = "Este campo no puede estar vacio"
+        const val NAME_INVALID_ERROR = "Este nombre es invalido."
     }
 
     class OnEtNamePlanError : PlanFormError(NAME_ERROR)
     class OnEtPriceError : PlanFormError(PRICE_ERROR)
     class OnEtDowloadSpeedError : PlanFormError(DOWNLOAD_SPEED_ERROR)
     class OnEtUploadSpeedError : PlanFormError(UPLOAD_SPEED_ERROR)
+    class OnEtNameIsInvalidError : PlanFormError(NAME_INVALID_ERROR)
 }

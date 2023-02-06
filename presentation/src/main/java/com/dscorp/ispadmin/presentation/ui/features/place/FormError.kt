@@ -13,8 +13,10 @@ sealed class FormError(val message:String) {
         const val NAME_ERROR = "el nombre no puede estar vacio"
         const val  ABBREVIATION_ERROR="Este campo no puede estar vacio"
         const val LOCATION_ERROR="Este campo no puede estar vacio"
+        const val NAME_INVALID="Este nombres es invalido"
     }
     class OnEtNameError : FormError(NAME_ERROR)
     class OnEtAbbreviationError: FormError(ABBREVIATION_ERROR)
     class OnEtLocationError : FormError(LOCATION_ERROR)
+    class OnEtNameIsInvalidError : FormError(NAME_INVALID)
 }

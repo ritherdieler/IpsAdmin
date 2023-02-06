@@ -14,6 +14,8 @@ sealed class RegisterFormError(val error: String) {
         const val LAST_NAME_ERROR = "Este campo no puede estar vacio"
         const val PASSWORD_ERROR = "Este campo no puede estar vacio"
         const val VERIFY_PASSWORD_ERROR = "Este campo no puede estar vacio"
+        const val FIRST_NAME_INVALID = "Este nombre es invalido"
+        const val LAST_NAME_INVALID = "Este nombre es invalido"
 
     }
 
@@ -22,5 +24,7 @@ sealed class RegisterFormError(val error: String) {
     class OnEtLastNameError : RegisterFormError(LAST_NAME_ERROR)
     class OnEtPassword1Error : RegisterFormError(PASSWORD_ERROR)
     class OnEtPassword2Error : RegisterFormError(VERIFY_PASSWORD_ERROR)
+    class OnEtFirstNameIsInvalidError : RegisterFormError(FIRST_NAME_INVALID)
+    class OnEtLastNameIsInvalidError : RegisterFormError(LAST_NAME_INVALID)
 
 }

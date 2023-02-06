@@ -148,6 +148,7 @@ class RegisterSubscriptionFragment : Fragment() {
                 is OnPasswordIsInvalidError -> binding.tlPassword.error = formError.error
                 is OnSpnTechnicianError -> binding.spnTechnician.error = formError.error
                 is OnEtFirstNameIsInvalidError -> binding.tlFirstName.error = formError.error
+                is OnEtLastNameIsInvalidError -> binding.tlLastName.error = formError.error
             }
         }
     }

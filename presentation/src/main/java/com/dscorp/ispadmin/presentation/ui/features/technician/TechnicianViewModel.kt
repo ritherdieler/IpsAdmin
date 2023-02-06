@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.technician
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.extension.hasOnlyLetters
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
@@ -40,11 +41,17 @@ class TechnicianViewModel : ViewModel() {
         } else {
             technicianErrorCleanFormLiveData.value = TechnicianErrorCleanForm.OnEtFirstNameCleanError
         }
+        if(technician.firstName.hasOnlyLetters()){
+            technicianFromErrorLiveData.value = TechnicianFromError.OnEtFirstNameIsInvalidError()
+        }
         if (technician.lastName.isEmpty()) {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtLastNameError()
             return false
         } else {
             technicianErrorCleanFormLiveData.value = TechnicianErrorCleanForm.OnEtLastNameCleanError
+        }
+        if(technician.lastName.hasOnlyLetters()){
+            technicianFromErrorLiveData.value = TechnicianFromError.OnEtBLastNameIsInvalidError()
         }
         if (technician.dni.isEmpty()) {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtDniError()

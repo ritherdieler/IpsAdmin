@@ -29,9 +29,12 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         observe()
+        observeCleanError()
 
 
     }
+
+
 
     private fun observeRegisterResponse() {
         viewModel.registerResponseLiveData.observe(this) { it ->
@@ -50,6 +53,8 @@ class RegisterActivity : AppCompatActivity() {
                 is RegisterFormError.OnEtPassword1Error -> binding.tlPassword1.error = it.error
                 is RegisterFormError.OnEtPassword2Error -> binding.tlPassword2.error = it.error
                 is RegisterFormError.OnEtUserError -> binding.tlUser.error = it.error
+                is RegisterFormError.OnEtFirstNameIsInvalidError -> binding.tlFirstName.error = it.error
+                is RegisterFormError.OnEtLastNameIsInvalidError -> binding.tlLastName.error = it.error
             }
         }
     }
@@ -73,5 +78,16 @@ class RegisterActivity : AppCompatActivity() {
             firstName = firstnametext,
             lastName = lastnametext,
         )
+    }
+    private fun observeCleanError() {
+        viewModel.cleanErrorFormLiveData.observe(this) { cleanError ->
+            when(cleanError){
+                CleanFormErrors.OnEtFirstNameCleanError -> binding.tlFirstName.error = null
+                CleanFormErrors.OnEtLastNameCleanError -> binding.tlLastName.error = null
+                CleanFormErrors.OnEtPassword1CleanError -> binding.tlPassword1.error = null
+                CleanFormErrors.OnEtPassword2CleanError -> binding.tlPassword2.error = null
+                CleanFormErrors.OnEtUserCleanError -> binding.tlUser.error = null
+            }
+        }
     }
 }

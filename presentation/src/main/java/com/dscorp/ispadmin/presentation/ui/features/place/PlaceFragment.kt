@@ -79,7 +79,8 @@ class PlaceFragment() : Fragment() {
             when (formError) {
                 is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error = formError.message
                 is FormError.OnEtNameError -> binding.tlNamePlace.error = formError.message
-                is FormError.OnEtLocationError -> binding.tlNamePlace.error = formError.message
+                is FormError.OnEtLocationError -> binding.tlLocation.error = formError.message
+                is FormError.OnEtNameIsInvalidError -> binding.tlNamePlace.error = formError.message
             }
         }
     }
