@@ -18,6 +18,8 @@ sealed class TechnicianFromError(val error:String) {
         const val ADDRESS_ERROR="Este campo no puede estar vacio"
         const val PHONE_ERROR="Este campo no puede estar vacio"
         const val BIRTHDAY_ERROR="Este campo no puede estar vacio"
+        const val FIRST_NAME_INVALID="Este nombre es invalido"
+        const val LAST_NAME_INVALID="Este apellido es invalido"
     }
     class OnEtFirstNameError : TechnicianFromError(FIRST_NAME_ERROR)
     class OnEtLastNameError : TechnicianFromError(LAST_NAME_ERROR)
@@ -28,5 +30,7 @@ sealed class TechnicianFromError(val error:String) {
     class OnEtAddressError : TechnicianFromError(ADDRESS_ERROR)
     class OnEtPhoneError : TechnicianFromError(PHONE_ERROR)
     class OnEtBirthdayError : TechnicianFromError(BIRTHDAY_ERROR)
+    class OnEtFirstNameIsInvalidError : TechnicianFromError(FIRST_NAME_INVALID)
+    class OnEtBLastNameIsInvalidError : TechnicianFromError(LAST_NAME_INVALID)
 }
 

@@ -88,7 +88,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtLastNameHasNotErrors
         }
         if(!subscription.lastName.hasOnlyLetters()){
-            formErrorLiveData.value = RegisterSubscriptionFormError.OnEtLastNameError()
+            formErrorLiveData.value = RegisterSubscriptionFormError.OnEtLastNameIsInvalidError()
             return false
         }
 

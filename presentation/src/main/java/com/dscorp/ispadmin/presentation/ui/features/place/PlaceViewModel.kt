@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.place
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.extension.hasOnlyLetters
 import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
@@ -33,6 +34,11 @@ class PlaceViewModel : ViewModel() {
         } else {
             cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtNamePlaceCleanError
         }
+        if (place.name.hasOnlyLetters()) {
+            formErrorLiveData.value = FormError.OnEtNameIsInvalidError()
+            return false
+        }
+
         if (place.location == null) {
             formErrorLiveData.value = FormError.OnEtLocationError()
             return false

@@ -56,6 +56,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
                 is OnEtNamePlanError -> setErrorEtNamePlan(formError)
                 is OnEtPriceError -> setErrorEtPrice(formError)
                 is OnEtUploadSpeedError -> setErrorEtUploadSpeed(formError)
+                is OnEtNameIsInvalidError -> binding.tlNamePlan.error = formError.message
             }
         }
     }

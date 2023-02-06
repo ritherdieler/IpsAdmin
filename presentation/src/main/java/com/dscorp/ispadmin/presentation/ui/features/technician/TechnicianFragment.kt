@@ -106,6 +106,8 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
                 is TechnicianFromError.OnEtAddressError -> binding.tlAddress.error = formError.error
                 is TechnicianFromError.OnEtPhoneError -> binding.tlPhone.error = formError.error
                 is TechnicianFromError.OnEtBirthdayError -> binding.tlBirthday.error = formError.error
+                is TechnicianFromError.OnEtBLastNameIsInvalidError -> binding.tlLastName.error = formError.error
+                is TechnicianFromError.OnEtFirstNameIsInvalidError -> binding.tlFirstName.error = formError.error
             }
         }
     }
