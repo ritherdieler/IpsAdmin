@@ -1,13 +1,9 @@
 package com.dscorp.ispadmin.presentation.ui.features.technician
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
@@ -21,7 +17,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
-import java.util.*
 
 class TechnicianFragment : Fragment(R.layout.fragment_technician) {
     lateinit var binding: FragmentTechnicianBinding
@@ -90,9 +85,13 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
         viewModel.technicianResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is TechnicianResponse.OnError -> showErrorDialog()
-                is TechnicianResponse.OnTechnicianRegistered -> showSuccessDialog(response.technician.firstName)
+                is TechnicianResponse.OnTechnicianRegistered -> showSuccessDialog(response)
             }
         }
+    }
+
+    private fun showSuccessDialog(response: TechnicianResponse.OnTechnicianRegistered) {
+        showSuccessDialog("El técnico${response.technician.firstName} ah sido registrado exitosamente")
     }
 
     private fun observeFromError() {
@@ -107,8 +106,9 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
                 is TechnicianFromError.OnEtAddressError -> binding.tlAddress.error = formError.error
                 is TechnicianFromError.OnEtPhoneError -> binding.tlPhone.error = formError.error
                 is TechnicianFromError.OnEtBirthdayError -> binding.tlBirthday.error = formError.error
-                is TechnicianFromError.OnEtBLastNameIsInvalidError -> binding.tlLastName.error = formError.error
+                is TechnicianFromError.OnEtLastNameIsInvalidError -> binding.tlLastName.error = formError.error
                 is TechnicianFromError.OnEtFirstNameIsInvalidError -> binding.tlFirstName.error = formError.error
+                is TechnicianFromError.OnEtPasswordIsInvalidError -> binding.tlPassword.error = formError.error
             }
         }
     }
