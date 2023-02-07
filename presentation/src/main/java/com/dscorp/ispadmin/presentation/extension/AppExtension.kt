@@ -59,6 +59,13 @@ fun String.isValidIpv4( ): Boolean {
     val ipv4Regex = Regex(pattern)
     return ipv4Regex.matches(this)
 }
+
+fun String.IsValidIpv4Segment( ): Boolean {
+    val ipv4SegmentRegex = "^(\\d{1,3}\\.){3}\\d{1,3}/\\d{1,2}$".toRegex()
+    return ipv4SegmentRegex.matches(this)
+}
+
+
 fun String.hasOnlyLetters(): Boolean {
     val pattern = "^[a-zA-Z]+\$"
     val stringRegex = Regex(pattern)

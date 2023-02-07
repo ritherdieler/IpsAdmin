@@ -80,5 +80,9 @@ interface RestApiServices {
     @GET("networkDevice/deviceTypes")
     suspend fun getNetworkDeviceTypes(): Response<List<String>>
 
+    @GET("subscription/debtors")
+    suspend fun getDebtors(): Response<List<SubscriptionResponse>>
+    @POST("ip-pool")
+    suspend fun registerIpPool(@Body ipPool: IpPool): Response<IpPool>
 }
 

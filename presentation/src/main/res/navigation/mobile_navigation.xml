@@ -160,6 +160,13 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
         android:label="fragment_consut_payments"
         tools:layout="@layout/fragment_consult_payments" />
+
+    <fragment
+        android:id="@+id/nav_debtors"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.debtors.DebtorsFragment"
+        android:label="@string/debtors"
+        tools:layout="@layout/fragment_debtors" />
+
     <fragment
         android:id="@+id/paymentHistoryFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
@@ -169,4 +176,9 @@
             android:name="subscription"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_ip_pool"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolFragment"
+        android:label="fragment_ip_pool"
+        tools:layout="@layout/fragment_ip_pool" />
 </navigation>

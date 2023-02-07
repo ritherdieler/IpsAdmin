@@ -57,6 +57,7 @@ class RegisterServiceOrderFragmentTest : KoinTest {
         val serviceOrder = ServiceOrder(
             latitude = null,
             longitude = null,
+            issue ="tiene un problema"
         )
 
         // When

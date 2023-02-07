@@ -31,4 +31,6 @@ interface IRepository {
     suspend fun findSubscription(id: Int): List<SubscriptionResponse>
     suspend fun registerPayment(payment: Payment): Payment
     suspend fun getNetworkDeviceTypes() : List<String>
+    suspend fun getDebtors() : List<SubscriptionResponse>
+    suspend fun registerIpPool(ipPool: IpPool): IpPool
 }

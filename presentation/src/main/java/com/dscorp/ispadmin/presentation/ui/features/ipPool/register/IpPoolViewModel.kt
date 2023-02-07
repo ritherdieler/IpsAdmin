@@ -1,0 +1,46 @@
+package com.dscorp.ispadmin.presentation.ui.features.ipPool.register
+
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.extension.IsValidIpv4Segment
+import com.dscorp.ispadmin.presentation.extension.isValidIpv4
+import com.example.cleanarchitecture.domain.domain.entity.IpPool
+import com.example.data2.data.repository.IRepository
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+
+class IpPoolViewModel : ViewModel(), KoinComponent {
+
+    val uiState: MutableLiveData<IpPoolUiState> = MutableLiveData()
+    private val repository: IRepository by inject()
+
+    fun registerIpPool(ipPool: IpPool) = viewModelScope.launch {
+        try {
+            if (!formIsValid(ipPool)) return@launch
+            val response = repository.registerIpPool(ipPool)
+            uiState.value = IpPoolUiState.IpPoolCreated(response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            uiState.value = IpPoolUiState.IpPoolRegisterError(e.message)
+        }
+    }
+
+    private fun formIsValid(ipPool: IpPool): Boolean {
+
+        if (ipPool.ipSegment.isEmpty()) {
+            uiState.value = IpPoolUiState.IpPoolInvalidIpSegment
+            return false
+        }
+
+        if (!ipPool.ipSegment.IsValidIpv4Segment()) {
+            uiState.value = IpPoolUiState.IpPoolInvalidIpSegment
+            return false
+        }
+
+        return true
+    }
+
+
+}

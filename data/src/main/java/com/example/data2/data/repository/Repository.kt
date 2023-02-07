@@ -204,5 +204,22 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun getDebtors(): List<SubscriptionResponse> {
+        val response = restApiServices.getDebtors()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun registerIpPool(ipPool: IpPool): IpPool {
+        val response = restApiServices.registerIpPool(ipPool)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
 
 }

@@ -37,7 +37,8 @@ class FindRegisterSubscriptionViewModelTest : KoinTest {
 
     private lateinit var viewModel: FindSubscriptionViewModel
 
-    private val id = 1001
+    private val id = 1003
+
 
     private val httpClient: OkHttpClient by inject()
 
@@ -70,8 +71,9 @@ class FindRegisterSubscriptionViewModelTest : KoinTest {
         //given
         mockService(
             mockWebServer = mockWebServer,
-            urlToMock = "/subscription/find?id=1001",
-            response = MockResponse().fromJson("SubscriptionList.json")
+            urlToMock = "/subscription/find?id=$id",
+            response = MockResponse().fromJson("subscription/SubscriptionList.json")
+
         )
 
         //when

@@ -29,10 +29,6 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/registrar_caja_nap" />
         <item
-            android:id="@+id/register_service_order_fragment"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/registrar_orden_de_servicio" />
-        <item
             android:id="@+id/nav_see_subscriptions"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/menu_see_subscriptions" />
@@ -53,6 +49,14 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/consult_payments" />
 
+        <item
+            android:id="@+id/nav_ip_pool"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/ip_pool" />
+        <item
+            android:id="@+id/nav_debtors"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/debtors" />
         <item
             android:id="@+id/nav_find_subscriptions"
             android:icon="@drawable/ic_launcher_foreground"
