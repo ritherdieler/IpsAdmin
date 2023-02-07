@@ -48,6 +48,11 @@
             android:id="@+id/nav_consult_payments"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/consult_payments" />
+
+        <item
+            android:id="@+id/nav_ip_pool"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/ip_pool" />
         <item
             android:id="@+id/nav_debtors"
             android:icon="@drawable/ic_launcher_foreground"
