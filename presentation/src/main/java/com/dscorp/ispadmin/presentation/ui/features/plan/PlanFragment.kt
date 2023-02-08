@@ -1,5 +1,7 @@
 package com.dscorp.ispadmin.presentation.ui.features.plan
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,8 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlanBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.ui.features.login.LoginActivity
+import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.plan.PlanFormError.*
 import com.example.cleanarchitecture.domain.domain.entity.Plan
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -30,11 +34,21 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
         binding.btRegisterPlan.setOnClickListener {
             registerPlan()
         }
+        binding.btnLogOut.setOnClickListener { logOut() }
 
         return binding.root
     }
 
+    private fun logOut() {
+        val sp = activity?.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+        sp?.edit()?.apply {
+            putString("active", "false")
+            apply()
+        }
+        activity?.startActivity(Intent(activity, LoginActivity::class.java))
+        activity?.finish()
 
+    }
 
     private fun observePlanResponse() {
         viewModel.planResponseLiveData.observe(viewLifecycleOwner) { response ->

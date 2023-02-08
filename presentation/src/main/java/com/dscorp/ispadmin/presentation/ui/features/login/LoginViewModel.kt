@@ -17,6 +17,7 @@ import org.koin.java.KoinJavaComponent.inject
  *
  **/
 class LoginViewModel : ViewModel() {
+
     private val repository: IRepository by inject(IRepository::class.java)
     val loginResponseLiveData = MutableLiveData<LoginResponse>()
     val loginFormErrorLiveData = MutableLiveData<LoginFormError>()
@@ -47,8 +48,8 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             try {
 
-                var loginFromRepository = repository.doLogin(loginObject)
-                loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(loginFromRepository))
+                var responseFromRepository = repository.doLogin(loginObject)
+                loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(responseFromRepository))
 
             } catch (error: Exception) {
                 loginResponseLiveData.postValue(LoginResponse.OnError(error))

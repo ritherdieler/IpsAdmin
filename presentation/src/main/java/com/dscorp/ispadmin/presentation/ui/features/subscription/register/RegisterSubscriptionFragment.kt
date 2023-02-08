@@ -78,23 +78,17 @@ class RegisterSubscriptionFragment : Fragment() {
                 binding.etSubscriptionDate.setText(formattedDate)
             }
 
-
             datePicker.show(childFragmentManager, "DatePicker")
         }
 
         binding.etLocationSubscription.setOnClickListener {
             findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
-
         }
-
 
         observeMapDialogResult()
 
         return binding.root
     }
-
-
-
 
     private fun observeMapDialogResult() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")
@@ -113,10 +107,14 @@ class RegisterSubscriptionFragment : Fragment() {
         viewModel.responseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is OnError -> showErrorDialog()
-                is OnRegisterSubscriptionRegistered -> showSuccessDialog(response.subscription.firstName)
+                is OnRegisterSubscriptionRegistered -> showSuccessDialog(response)
                 is OnFormDataFound -> fillFormSpinners(response)
             }
         }
+    }
+
+    private fun showSuccessDialog(response: OnRegisterSubscriptionRegistered) {
+        showSuccessDialog("El registro numero ${response.subscription.dni} ah sido registrado correctamente")
     }
 
     private fun fillFormSpinners(response: OnFormDataFound) {

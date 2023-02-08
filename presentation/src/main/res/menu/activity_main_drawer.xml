@@ -61,6 +61,10 @@
             android:id="@+id/nav_find_subscriptions"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/find_subscriptions" />
+        <item
+            android:id="@+id/cerrar_sesion"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/cerrar_sesion" />
 
     </group>
 </menu>

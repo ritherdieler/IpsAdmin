@@ -88,7 +88,6 @@ class TechnicianFragment : Fragment(R.layout.fragment_technician) {
             }
         }
     }
-
     private fun showSuccessDialog(response: TechnicianResponse.OnTechnicianRegistered) {
         showSuccessDialog("El técnico${response.technician.firstName} ah sido registrado exitosamente")
     }

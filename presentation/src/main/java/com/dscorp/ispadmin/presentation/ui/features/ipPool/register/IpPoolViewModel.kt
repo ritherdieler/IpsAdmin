@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.extension.IsValidIpv4Segment
-import com.dscorp.ispadmin.presentation.extension.isValidIpv4
 import com.example.cleanarchitecture.domain.domain.entity.IpPool
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
@@ -30,13 +29,16 @@ class IpPoolViewModel : ViewModel(), KoinComponent {
     private fun formIsValid(ipPool: IpPool): Boolean {
 
         if (ipPool.ipSegment.isEmpty()) {
-            uiState.value = IpPoolUiState.IpPoolInvalidIpSegment
+            uiState.value = IpPoolUiState.IpPoolError()
             return false
+        }else{
+            uiState.value = IpPoolUiState.IpPoolCleanError
         }
-
         if (!ipPool.ipSegment.IsValidIpv4Segment()) {
-            uiState.value = IpPoolUiState.IpPoolInvalidIpSegment
+            uiState.value = IpPoolUiState.IpPoolInvalidIpSegment()
             return false
+        }else{
+            uiState.value = IpPoolUiState.IpPoolCleanInvalidIpSegment
         }
 
         return true

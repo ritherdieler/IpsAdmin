@@ -19,9 +19,15 @@ import org.koin.core.context.startKoin
  *
  **/
 class KoinApplication : Application() {
+   /* companion object{
+        lateinit var prefs:Prefs
+    }*/
 
     override fun onCreate() {
         super.onCreate()
+/*
+        prefs=Prefs(applicationContext)
+*/
         Stetho.initializeWithDefaults(this);
 
         startKoin {
