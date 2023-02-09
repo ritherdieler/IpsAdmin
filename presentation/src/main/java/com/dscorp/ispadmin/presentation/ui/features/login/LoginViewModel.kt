@@ -22,6 +22,15 @@ class LoginViewModel : ViewModel() {
     val loginResponseLiveData = MutableLiveData<LoginResponse>()
     val loginFormErrorLiveData = MutableLiveData<LoginFormError>()
 
+    init {
+        viewModelScope.launch {
+            val response = repository.getUserSessions()
+            if (response != null)
+                loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(response))
+
+        }
+    }
+
     fun validateForm(
         user: String,
         password: String,
@@ -44,6 +53,7 @@ class LoginViewModel : ViewModel() {
             username = user,
             password = password
         )
+
 
         viewModelScope.launch {
             try {

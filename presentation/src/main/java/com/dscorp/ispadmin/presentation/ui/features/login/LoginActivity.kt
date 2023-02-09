@@ -22,20 +22,10 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_login, null, true)
         setContentView(binding.root)
-/*
-        val sp = getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
-*/
-
-/*
-        checkLogin(sp)
-*/
 
         observe()
         binding.btLogin.setOnClickListener {
             doLogin()
-/*
-            rememberUser(sp)
-*/
 
         }
 
@@ -43,45 +33,6 @@ class LoginActivity : AppCompatActivity() {
             navigateToRegister()
         }
     }
-
-  /*  private fun checkLogin(sp: SharedPreferences) {
-        if (sp.getString("active", "") == "true") {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        } else {
-            if (sp.getString("remember", "") == "true") {
-                binding.ltUser.editText?.setText(sp.getString("user", ""))
-                binding.ltPassword.editText?.setText(sp.getString("password", ""))
-            }
-        }
-    }
-
-    private fun rememberUser(sharedpreference: SharedPreferences) {
-        val user = binding.ltUser.editText?.text.toString()
-        val password = binding.ltPassword.editText?.text.toString()
-
-        if (user.isNotEmpty() && password.isNotEmpty()) {
-            val checkBox = binding.checkBox
-            if (checkBox.isChecked) {
-                with(sharedpreference.edit()) {
-                    putString("user", user)
-                    putString("password", password)
-                    putString("active", "true")
-                    putString("remember", "true")
-                    apply()
-                }
-            } else {
-                with(sharedpreference.edit()) {
-                    putString("active", "true")
-                    putString("remember", "false")
-                    apply()
-                }
-            }
-
-        } else {
-            Toast.makeText(this, "Intente Nuevamente", Toast.LENGTH_SHORT).show()
-        }
-    }*/
 
     private fun observeLoginFormError() {
         viewModel.loginFormErrorLiveData.observe(this) { formError ->
@@ -104,7 +55,6 @@ class LoginActivity : AppCompatActivity() {
     private fun navigateToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish()
     }
 
     fun showErrorDialog(message: String?) {

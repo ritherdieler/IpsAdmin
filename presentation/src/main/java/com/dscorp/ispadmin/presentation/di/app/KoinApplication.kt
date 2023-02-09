@@ -3,12 +3,14 @@ package com.dscorp.ispadmin.presentation.di.app
 import android.app.Application
 import com.dscorp.ispadmin.presentation.di.modules.apiModule
 import com.dscorp.ispadmin.presentation.di.modules.dialogFactoryModule
-import com.dscorp.ispadmin.presentation.di.repositoryModule
+import com.dscorp.ispadmin.presentation.di.modules.repositoryModule
 import com.dscorp.ispadmin.presentation.di.viewModelModule
 import com.example.data2.data.di.BASE_URL
+import com.example.data2.data.di.localDataModule
 import com.example.data2.data.di.retrofitModule
 import com.facebook.stetho.Stetho
 import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 /**
@@ -19,25 +21,26 @@ import org.koin.core.context.startKoin
  *
  **/
 class KoinApplication : Application() {
-   /* companion object{
-        lateinit var prefs:Prefs
-    }*/
+
 
     override fun onCreate() {
         super.onCreate()
-/*
-        prefs=Prefs(applicationContext)
-*/
+
         Stetho.initializeWithDefaults(this);
 
         startKoin {
+            androidContext(this@KoinApplication)
             allowOverride(true)
             modules(
                 retrofitModule,
                 apiModule,
                 repositoryModule,
                 viewModelModule,
-                dialogFactoryModule
+                dialogFactoryModule,
+                localDataModule
+
+
+
             )
 
         }

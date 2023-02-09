@@ -40,11 +40,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     }
 
     private fun logOut() {
-        val sp = activity?.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
-        sp?.edit()?.apply {
-            putString("active", "false")
-            apply()
-        }
+      viewModel.logOut()
         activity?.startActivity(Intent(activity, LoginActivity::class.java))
         activity?.finish()
 

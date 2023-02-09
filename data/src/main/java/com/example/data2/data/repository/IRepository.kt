@@ -1,5 +1,6 @@
 package com.example.data2.data.repository
 
+import android.content.SharedPreferences
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 
@@ -13,6 +14,9 @@ import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 interface IRepository {
     suspend fun registerUser(user: User): User
     suspend fun doLogin(login: Loging): User
+    suspend fun saveUserSession(user:User)
+    suspend fun getUserSessions():User?
+    suspend fun clearUserSession()
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
     suspend fun doSubscription(doSubscription: Subscription): Subscription

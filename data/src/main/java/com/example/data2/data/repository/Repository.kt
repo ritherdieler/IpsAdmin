@@ -1,8 +1,11 @@
 package com.example.data2.data.repository
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.api.RestApiServices
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
+import com.example.data2.data.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -13,9 +16,10 @@ import org.koin.core.component.inject
  * Huacho, Peru.
  *
  **/
-class Repository : IRepository, KoinComponent {
+class Repository(val context: Context) : IRepository, KoinComponent {
 
     private val restApiServices: RestApiServices by inject()
+    private val prefs:SharedPreferences by inject()
 
     override suspend fun registerUser(user: User): User {
         val response = restApiServices.registerUser(user)
@@ -30,11 +34,41 @@ class Repository : IRepository, KoinComponent {
     override suspend fun doLogin(login: Loging): User {
         val response = restApiServices.doLoging(login)
         if (response.code() == 200) {
-
+            saveUserSession(response.body()!!)
             return response.body()!!
         } else {
-            throw Exception("error en la respuesta")
+            throw Exception("Usuario o Contraseña Incorrecta")
         }
+    }
+
+    override suspend fun saveUserSession(user: User) {
+        val editor = prefs.edit()
+        editor.putString(SESSION_NAME, user.name)
+        editor.putString(SESSION_LAST_NAME, user.lastName)
+        editor.putString(SESSION_USER_NAME, user.username)
+        editor.putInt(SESSION_TYPE, user.type)
+        editor.putInt(SESSION_ID, user.id)
+        editor.putBoolean(SESSION_VERIFIED, user.verified)
+        editor.apply()
+    }
+
+    override suspend fun getUserSessions(): User? {
+        val user = User(
+            id = prefs.getInt(SESSION_ID, 0),
+            name = prefs.getString(SESSION_NAME, "")!!,
+            lastName = prefs.getString(SESSION_LAST_NAME, "")!!,
+            type = prefs.getInt(SESSION_TYPE, 0),
+            username = prefs.getString(SESSION_USER_NAME, "")!!,
+            password = "",
+            verified = prefs.getBoolean(SESSION_VERIFIED, false)
+        )
+        return if (user.id != 0) user else null
+    }
+
+    override suspend fun clearUserSession() {
+        val editor = prefs.edit()
+        editor.clear()
+        editor.apply()
     }
 
     override suspend fun registerPlan(plan: Plan): Plan {
