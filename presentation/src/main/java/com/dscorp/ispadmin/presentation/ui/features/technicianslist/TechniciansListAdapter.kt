@@ -9,7 +9,7 @@ import com.dscorp.ispadmin.databinding.ItemTechnicianListBinding
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 
 class TechniciansListAdapter(techniciansListFragment: TechniciansListFragment) : ListAdapter<Technician, TechniciansListAdapter.TechnicianAdapterViewHolder>(
-    TechnicianDiffCallback()
+    IpPoolDiffCallback()
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TechnicianAdapterViewHolder {
@@ -32,7 +32,7 @@ class TechniciansListAdapter(techniciansListFragment: TechniciansListFragment) :
 
 
 
-private class TechnicianDiffCallback : DiffUtil.ItemCallback<Technician>() {
+private class IpPoolDiffCallback : DiffUtil.ItemCallback<Technician>() {
     override fun areItemsTheSame(oldItem: Technician, newItem: Technician): Boolean {
         return oldItem.id == newItem.id
     }

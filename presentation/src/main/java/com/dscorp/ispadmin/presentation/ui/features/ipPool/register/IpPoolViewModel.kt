@@ -14,6 +14,9 @@ class IpPoolViewModel : ViewModel(), KoinComponent {
 
     val uiState: MutableLiveData<IpPoolUiState> = MutableLiveData()
     private val repository: IRepository by inject()
+    init {
+        getIpPoolList()
+    }
 
     fun registerIpPool(ipPool: IpPool) = viewModelScope.launch {
         try {

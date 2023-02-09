@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import com.dscorp.ispadmin.databinding.FragmentIpPoolBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.ui.features.IpPoolslist.IpPoolAdapter
+import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxeAdapter
+import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListResponse
 import com.example.cleanarchitecture.domain.domain.entity.IpPool
 import org.koin.android.ext.android.inject
 
@@ -48,7 +51,7 @@ class IpPoolFragment : Fragment() {
                 is IpPoolUiState.IpPoolError -> binding.tlIpSegment.error = response.error
                 is IpPoolUiState.IpPoolInvalidIpSegment -> binding.tlIpSegment.error =
                     response.error
-                is IpPoolUiState.IpPoolList -> {}
+                is IpPoolUiState.IpPoolList -> {fillRecycleView(response)}
                 is IpPoolUiState.IpPoolListError -> {}
             }
         }
@@ -56,5 +59,12 @@ class IpPoolFragment : Fragment() {
 
     private fun showSuccessDialog(response: IpPoolUiState.IpPoolRegister) {
         showSuccessDialog("La Ip ${response.ipPool.ipSegment} ah sido registrado correctamente")
+    }
+    private fun fillRecycleView(it: IpPoolUiState.IpPoolList) {
+        val adapter = IpPoolAdapter(this)
+        adapter.submitList(it.ipPools)
+        binding.rvIpPool.adapter = adapter
+        binding.rvIpPool.visibility =
+            if (it.ipPools.isNotEmpty()) View.VISIBLE else View.GONE
     }
 }
