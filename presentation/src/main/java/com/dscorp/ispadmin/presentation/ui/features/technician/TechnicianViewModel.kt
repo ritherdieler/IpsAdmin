@@ -39,9 +39,10 @@ class TechnicianViewModel : ViewModel() {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtFirstNameError()
             return false
         } else {
-            technicianErrorCleanFormLiveData.value = TechnicianErrorCleanForm.OnEtFirstNameCleanError
+            technicianErrorCleanFormLiveData.value =
+                TechnicianErrorCleanForm.OnEtFirstNameCleanError
         }
-        if(technician.firstName.hasOnlyLetters()){
+        if (technician.firstName.hasOnlyLetters()) {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtFirstNameIsInvalidError()
         }
         if (technician.lastName.isEmpty()) {
@@ -50,8 +51,8 @@ class TechnicianViewModel : ViewModel() {
         } else {
             technicianErrorCleanFormLiveData.value = TechnicianErrorCleanForm.OnEtLastNameCleanError
         }
-        if(technician.lastName.hasOnlyLetters()){
-            technicianFromErrorLiveData.value = TechnicianFromError.OnEtBLastNameIsInvalidError()
+        if (technician.lastName.hasOnlyLetters()) {
+            technicianFromErrorLiveData.value = TechnicianFromError.OnEtLastNameIsInvalidError()
         }
         if (technician.dni.isEmpty()) {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtDniError()
@@ -72,18 +73,16 @@ class TechnicianViewModel : ViewModel() {
         }
         if (technician.username.isEmpty()) {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtUserNameError()
-
             return false
         } else {
             technicianErrorCleanFormLiveData.value = TechnicianErrorCleanForm.OnEtUserNameCleanError
         }
         if (technician.password.isEmpty()) {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtPasswordError()
-
             return false
         }
         if (technician.password.length < 8) {
-            technicianFromErrorLiveData.value = TechnicianFromError.OnEtPasswordError()
+            technicianFromErrorLiveData.value = TechnicianFromError.OnEtPasswordIsInvalidError()
 
             return false
         } else {

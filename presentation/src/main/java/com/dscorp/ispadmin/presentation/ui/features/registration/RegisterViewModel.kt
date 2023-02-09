@@ -77,7 +77,7 @@ class RegisterViewModel : ViewModel() {
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtPassword1CleanError
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtPassword2CleanError
         }
-        val planObject = User(null, firstName, lastName, 0, user, password1, false)
+        val planObject = User(0, firstName, lastName, 0, user, password1, false)
 
         viewModelScope.launch {
             try {

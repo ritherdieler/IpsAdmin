@@ -30,7 +30,6 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUser"
-                android:text="a"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -43,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Escriba su Contrasena"
-            app:layout_constraintBottom_toTopOf="@+id/btLogin"
+            app:layout_constraintBottom_toTopOf="@+id/checkBox"
             app:layout_constraintEnd_toEndOf="@+id/ltUser"
             app:layout_constraintStart_toStartOf="@+id/ltUser"
             app:layout_constraintTop_toBottomOf="@+id/ltUser"
@@ -53,7 +52,6 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:inputType="textPassword"
-                android:text="a"
                 android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -62,12 +60,11 @@
             android:id="@+id/btLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
             android:text="Iniciar Sesion"
             app:layout_constraintBottom_toTopOf="@+id/tvCreateAccount"
             app:layout_constraintEnd_toEndOf="@+id/ltPassword"
             app:layout_constraintStart_toStartOf="@+id/ltPassword"
-            app:layout_constraintTop_toBottomOf="@+id/ltPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
         <TextView
             android:id="@+id/tvCreateAccount"
@@ -80,6 +77,26 @@
             app:layout_constraintEnd_toEndOf="@+id/btLogin"
             app:layout_constraintStart_toStartOf="@+id/btLogin"
             app:layout_constraintTop_toBottomOf="@+id/btLogin" />
+
+        <Button
+            android:id="@+id/btnPrueba"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Guardar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tvCreateAccount"
+            app:layout_constraintStart_toStartOf="@+id/tvCreateAccount"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreateAccount" />
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Guardar Usuario"
+            app:layout_constraintBottom_toTopOf="@id/btLogin"
+            app:layout_constraintStart_toStartOf="@+id/ltPassword"
+            app:layout_constraintTop_toBottomOf="@id/ltPassword" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

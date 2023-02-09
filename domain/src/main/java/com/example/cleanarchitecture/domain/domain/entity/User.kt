@@ -9,7 +9,7 @@ package com.example.cleanarchitecture.domain.domain.entity
  **/
 data class User (
 
-    val id:Int?=null,
+    val id:Int,
     val name:String,
     val lastName:String,
     val type:Int,

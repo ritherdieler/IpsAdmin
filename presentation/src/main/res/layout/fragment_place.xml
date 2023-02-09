@@ -12,6 +12,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
+        android:gravity="center"
+
         tools:context=".presentation.ui.features.place.PlaceFragment">
 
         <com.google.android.material.textfield.TextInputLayout

@@ -1,8 +1,10 @@
 package com.dscorp.ispadmin.presentation.ui.features.login
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.activity.viewModels
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -22,9 +24,9 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         observe()
-
         binding.btLogin.setOnClickListener {
             doLogin()
+
         }
 
         binding.tvCreateAccount.setOnClickListener {
