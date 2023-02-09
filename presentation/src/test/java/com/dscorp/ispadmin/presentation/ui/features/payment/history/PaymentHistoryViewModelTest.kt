@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.payment.history
+package com.dscorp.ispadmin.presentation.ui.features.payment.history
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry

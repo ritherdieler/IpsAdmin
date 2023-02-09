@@ -63,6 +63,7 @@
     <string name="registrar_pagos">Registrar Pagos</string>
     <string name="ip_pool">Pool de ips</string>
     <string name="cerrar_sesion">Cerrar Sesion</string>
+    <string name="ip_segment">Segmento de ip</string>
 
 
 </resources>

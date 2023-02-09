@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.subscriptionfinder
+package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource

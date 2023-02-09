@@ -9,6 +9,7 @@ import com.example.data2.data.di.retrofitModule
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.koin.android.ext.android.getKoin
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.context.unloadKoinModules
@@ -29,6 +30,8 @@ class KoinAppForInstrumentation : Application() {
 
         launch {
             startKoin {
+                androidContext(this@KoinAppForInstrumentation)
+
                 getKoin().run {
                     setProperty(BASE_URL, FAKE_BASE_URL)
                 }

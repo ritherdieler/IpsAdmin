@@ -256,4 +256,13 @@ class Repository(val context: Context) : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun getIpPoolList(): List<IpPool> {
+        val response = restApiServices.getIpPoolList()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
 }

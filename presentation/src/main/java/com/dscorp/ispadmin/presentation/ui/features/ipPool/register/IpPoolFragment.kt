@@ -41,18 +41,20 @@ class IpPoolFragment : Fragment() {
     private fun observeResponse() {
         viewModel.uiState.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is IpPoolUiState.IpPoolCreated -> showSuccessDialog(response)
+                is IpPoolUiState.IpPoolRegister -> showSuccessDialog(response)
                 is IpPoolUiState.IpPoolRegisterError -> showErrorDialog()
                 IpPoolUiState.IpPoolCleanError -> binding.tlIpSegment.error = null
                 IpPoolUiState.IpPoolCleanInvalidIpSegment -> binding.tlIpSegment.error = null
                 is IpPoolUiState.IpPoolError -> binding.tlIpSegment.error = response.error
                 is IpPoolUiState.IpPoolInvalidIpSegment -> binding.tlIpSegment.error =
                     response.error
+                is IpPoolUiState.IpPoolList -> {}
+                is IpPoolUiState.IpPoolListError -> {}
             }
         }
     }
 
-    private fun showSuccessDialog(response: IpPoolUiState.IpPoolCreated) {
+    private fun showSuccessDialog(response: IpPoolUiState.IpPoolRegister) {
         showSuccessDialog("La Ip ${response.ipPool.ipSegment} ah sido registrado correctamente")
     }
 }

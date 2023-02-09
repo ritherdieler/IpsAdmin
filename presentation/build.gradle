@@ -98,8 +98,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-inline:5.0.0'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
     testImplementation 'androidx.test.espresso:espresso-contrib:3.5.1'
-    testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
 
     def koin_version = "3.3.2"

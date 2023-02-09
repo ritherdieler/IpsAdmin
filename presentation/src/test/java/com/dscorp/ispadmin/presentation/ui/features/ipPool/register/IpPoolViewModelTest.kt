@@ -47,6 +47,51 @@ class IpPoolViewModelTest : KoinTest {
         stopKoin()
     }
 
+
+    @Test
+    fun `when get getIpPoolList is called then uiState equals to IpPoolList`() {
+        // Given
+        mockGetIpPoolListService()
+
+        // When
+        viewModel.getIpPoolList()
+        Espresso.onIdle()
+
+        // Then
+        val value = viewModel.uiState.getValueForTest()
+        assert(value is IpPoolUiState.IpPoolList)
+    }
+
+    @Test
+    fun `when get getIpPoolList call has error then uiState equals to IpPoolListError`() {
+        // Given
+        mockGetIpPoolListServiceWithError()
+
+        // When
+        viewModel.getIpPoolList()
+        Espresso.onIdle()
+
+        // Then
+        val value = viewModel.uiState.getValueForTest()
+        assert(value is IpPoolUiState.IpPoolListError)
+    }
+
+    private fun mockGetIpPoolListServiceWithError() {
+        mockService(
+            mockWebServer = mockWebServer,
+            urlToMock = "/ip-pool",
+            response = MockResponse().setResponseCode(500)
+        )
+    }
+
+    private fun mockGetIpPoolListService() {
+        mockService(
+            mockWebServer = mockWebServer,
+            urlToMock = "/ip-pool",
+            response = MockResponse().setResponseCode(200).fromJson("ippool/list/success.json")
+        )
+    }
+
     @Test
     fun `when ip pool is created then return success`() {
         // Given
@@ -59,7 +104,7 @@ class IpPoolViewModelTest : KoinTest {
 
         // Then
         val value = viewModel.uiState.getValueForTest()
-        assert(value is IpPoolUiState.IpPoolCreated)
+        assert(value is IpPoolUiState.IpPoolRegister)
     }
 
     @Test
@@ -88,7 +133,7 @@ class IpPoolViewModelTest : KoinTest {
 
         // Then
         val value = viewModel.uiState.getValueForTest()
-        assert(value is IpPoolUiState.IpPoolInvalidIpSegment)
+        assert(value is IpPoolUiState.IpPoolError)
     }
 
     @Test

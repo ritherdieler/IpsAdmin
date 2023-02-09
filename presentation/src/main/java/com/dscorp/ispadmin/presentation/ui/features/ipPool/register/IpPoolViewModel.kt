@@ -19,7 +19,7 @@ class IpPoolViewModel : ViewModel(), KoinComponent {
         try {
             if (!formIsValid(ipPool)) return@launch
             val response = repository.registerIpPool(ipPool)
-            uiState.value = IpPoolUiState.IpPoolCreated(response)
+            uiState.value = IpPoolUiState.IpPoolRegister(response)
         } catch (e: Exception) {
             e.printStackTrace()
             uiState.value = IpPoolUiState.IpPoolRegisterError(e.message)
@@ -42,6 +42,16 @@ class IpPoolViewModel : ViewModel(), KoinComponent {
         }
 
         return true
+    }
+
+    fun getIpPoolList()  = viewModelScope.launch{
+        try {
+            val response = repository.getIpPoolList()
+            uiState.value = IpPoolUiState.IpPoolList(response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            uiState.value = IpPoolUiState.IpPoolListError(e.message)
+        }
     }
 
 

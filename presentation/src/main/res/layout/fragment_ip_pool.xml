@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -10,9 +10,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:gravity="center"
 
         tools:context=".presentation.ui.features.ipPool.register.IpPoolFragment">
 
@@ -22,21 +22,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:hint="Segmento de Ip"
+            android:hint="@string/ip_segment"
             app:endIconMode="clear_text">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number|phone"/>
+                android:inputType="number|phone" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <Button
             android:id="@+id/btnRegisterIpSegment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="REGISTRAR"/>
+            android:text="@string/register" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvIpPool"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_marginBottom="20dp"
+            tools:listitem="@layout/item_ip_pool" />
 
     </LinearLayout>
 </layout>
