@@ -66,6 +66,6 @@
     <string name="ip_segment">Segmento de ip</string>
     <string name="disclaimer_payment_list">Se estan mostrando solo los ultimos 10 pagos</string>
     <string name="filter">Filtrar</string>
-
+    <string name="mi_perfil">Mi Perfil</string>
 
 </resources>

@@ -9,5 +9,6 @@ package com.example.cleanarchitecture.domain.domain.entity
  **/
 data class Loging(
     val username: String,
-    val password: String
+    val password: String,
+    val checkBox:Boolean
 )

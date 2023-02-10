@@ -32,16 +32,8 @@ class PlanFragment : BaseFragment() {
         binding.btRegisterPlan.setOnClickListener {
             registerPlan()
         }
-        binding.btnLogOut.setOnClickListener { logOut() }
 
         return binding.root
-    }
-
-    private fun logOut() {
-        viewModel.logOut()
-        activity?.startActivity(Intent(activity, LoginActivity::class.java))
-        activity?.finish()
-
     }
 
     private fun observePlanResponse() {

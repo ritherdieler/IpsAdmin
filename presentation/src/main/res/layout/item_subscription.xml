@@ -81,13 +81,13 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="@{subscriptionList.id}"
+                android:text="@{subscriptionList.plan.id}"
                 app:layout_constraintBottom_toBottomOf="@id/tvPlanId"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvPlanId"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread"
-                tools:text="saul" />
+                tools:text="Plan ID" />
 
             <TextView
                 android:id="@+id/tvSeeFirstName"
@@ -98,19 +98,19 @@
                 app:layout_constraintEnd_toEndOf="@+id/tvSeePlanId"
                 app:layout_constraintStart_toStartOf="@+id/tvSeePlanId"
                 app:layout_constraintTop_toTopOf="@+id/tvName"
-                tools:text="renato" />
+                tools:text="firstname" />
 
             <TextView
                 android:id="@+id/tvSeeId"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{subscriptionList.id}"
+                android:text="@{subscriptionList.dni}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvId"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeeFirstName"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/tvSeeFirstName"
                 app:layout_constraintTop_toTopOf="@+id/tvId"
-                tools:text="vacalola" />
+                tools:text="DNI" />
 
             <TextView
                 android:id="@+id/tvSeePlace"
@@ -122,7 +122,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tvSeeId"
                 app:layout_constraintTop_toTopOf="@+id/tvPlace"
                 app:layout_constraintVertical_bias="1.0"
-                tools:text="place" />
+                tools:text="phone" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

@@ -60,7 +60,7 @@ class Repository(val context: Context) : IRepository, KoinComponent {
             type = prefs.getInt(SESSION_TYPE, 0),
             username = prefs.getString(SESSION_USER_NAME, "")!!,
             password = "",
-            verified = prefs.getBoolean(SESSION_VERIFIED, false)
+            verified = prefs.getBoolean(SESSION_VERIFIED, false),
         )
         return if (user.id != 0) user else null
     }

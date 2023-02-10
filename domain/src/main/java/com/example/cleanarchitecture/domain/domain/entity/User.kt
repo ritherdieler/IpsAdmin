@@ -15,7 +15,7 @@ data class User (
     val type:Int,
     val username:String,
     val password:String,
-    val verified:Boolean
+    val verified:Boolean,
 
 
         )

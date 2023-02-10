@@ -62,9 +62,5 @@ class PlanViewModel : ViewModel() {
         return true
     }
 
-    fun logOut() {
-        viewModelScope.launch {
-            repository.clearUserSession()
-        }
-    }
+
 }

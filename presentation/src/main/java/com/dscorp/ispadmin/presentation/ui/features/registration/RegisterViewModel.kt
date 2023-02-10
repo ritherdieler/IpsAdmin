@@ -21,6 +21,7 @@ class RegisterViewModel : ViewModel() {
     val registerResponseLiveData = MutableLiveData<RegisterResponse>()
     val registerFormErrorLiveData = MutableLiveData<RegisterFormError>()
     val cleanErrorFormLiveData = MutableLiveData<CleanFormErrors>()
+    val checkBoxState = MutableLiveData<Boolean>()
     fun validateForm(
         user: String,
         password1: String,
@@ -77,7 +78,7 @@ class RegisterViewModel : ViewModel() {
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtPassword1CleanError
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtPassword2CleanError
         }
-        val planObject = User(0, firstName, lastName, 0, user, password1, false)
+        val planObject = User(0, firstName, lastName, 0, user, password1, false,)
 
         viewModelScope.launch {
             try {
