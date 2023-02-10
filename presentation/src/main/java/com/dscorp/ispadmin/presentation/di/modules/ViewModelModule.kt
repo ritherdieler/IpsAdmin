@@ -10,6 +10,7 @@ import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHisto
 import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentViewModel
 import com.dscorp.ispadmin.presentation.ui.features.place.PlaceViewModel
 import com.dscorp.ispadmin.presentation.ui.features.plan.PlanViewModel
+import com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileViewmodel
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderViewModel
@@ -47,4 +48,5 @@ val viewModelModule = module {
     viewModel { RegisterPaymentViewModel() }
     viewModel { DebtorsViewModel() }
     viewModel { IpPoolViewModel() }
+    viewModel {MyProfileViewmodel()}
 }

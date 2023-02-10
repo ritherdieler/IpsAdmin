@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.login
 
-import android.widget.EditText
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +7,7 @@ import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Loging
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
+import kotlin.math.log
 
 /**
  * Created by Sergio Carrillo Diestra on 20/11/2022.
@@ -27,43 +27,34 @@ class LoginViewModel : ViewModel() {
             val response = repository.getUserSessions()
             if (response != null)
                 loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(response))
-
         }
     }
+    fun doLogin(login: Loging) = viewModelScope.launch {
 
-    fun validateForm(
-        user: String,
-        password: String,
-        etUser: EditText,
-        etPassword: EditText,
-    ) {
-
-        if (user.isEmpty()) {
-            etUser.setError("el usuario no puede estar vacio")
-            return
-        }
-
-        if (password.isEmpty()) {
-            etPassword.setError("la contrana no puede estar vacia")
-            return
-        }
-
-        var loginObject = Loging(
-
-            username = user,
-            password = password
-        )
-
-
-        viewModelScope.launch {
-            try {
-
-                var responseFromRepository = repository.doLogin(loginObject)
+        try {
+            if (formIsValid(login)) {
+                val responseFromRepository = repository.doLogin(login)
                 loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(responseFromRepository))
-
-            } catch (error: Exception) {
-                loginResponseLiveData.postValue(LoginResponse.OnError(error))
             }
+        } catch (error: Exception) {
+            loginResponseLiveData.postValue(LoginResponse.OnError(error))
         }
     }
+
+   private fun formIsValid(login: Loging): Boolean {
+
+       if (login.username.isEmpty()) {
+           loginFormErrorLiveData.value=LoginFormError.OnEtUser("el usuario no puede estar vacio")
+           return false
+       }
+
+       if (login.password.isEmpty()) {
+           loginFormErrorLiveData.value = LoginFormError.OnEtPassword("la contrana no puede estar vacia")
+           return false
+       }
+       if(login.checkBox==true){
+
+       }
+       return true
+   }
 }

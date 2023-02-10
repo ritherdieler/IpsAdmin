@@ -4,10 +4,16 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_my_profile"
+            android:icon="@drawable/ic_person"
+            android:title="@string/mi_perfil" />
         <item
             android:id="@+id/nav_plan"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_plan" />
+
         <item
             android:id="@+id/nav_device"
             android:icon="@drawable/ic_menu_gallery"
@@ -61,10 +67,9 @@
             android:id="@+id/nav_find_subscriptions"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/find_subscriptions" />
-        <item
-            android:id="@+id/cerrar_sesion"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/cerrar_sesion" />
+
+
+
 
     </group>
 </menu>

@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.login
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -12,7 +11,10 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityLoginBinding
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterActivity
+import com.example.cleanarchitecture.domain.domain.entity.Loging
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.inject
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
@@ -31,6 +33,22 @@ class LoginActivity : AppCompatActivity() {
 
         binding.tvCreateAccount.setOnClickListener {
             navigateToRegister()
+        }
+        binding.cbCheckBox.setOnClickListener{
+
+            if(binding.cbCheckBox.isChecked){
+                val context = this
+                val text = "Se ah marcado el check"
+                val duration = Toast.LENGTH_SHORT
+                val toast = Toast.makeText(context, text, duration)
+                toast.show()
+                }else {
+            val context = this
+            val text = "SE QUITO EL CHEEEECK!!!"
+            val duration = Toast.LENGTH_SHORT
+            val toast = Toast.makeText(context, text, duration)
+            toast.show()
+        }
         }
     }
 
@@ -73,15 +91,13 @@ class LoginActivity : AppCompatActivity() {
 
     fun doLogin() {
 
-        var usertext = binding.etUser.text.toString()
-        var passwordtext = binding.etPassword.text.toString()
-
-        viewModel.validateForm(
-            usertext,
-            passwordtext,
-            binding.etUser,
-            binding.etPassword
+        val login = Loging(
+            binding.etUser.text.toString(),
+            binding.etPassword.text.toString(),
+            binding.cbCheckBox.isChecked
         )
+
+        viewModel.doLogin(login)
     }
 
     fun navigateToRegister() {

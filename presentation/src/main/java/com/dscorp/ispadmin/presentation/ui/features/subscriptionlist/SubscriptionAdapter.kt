@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemSubscriptionBinding
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
 class SubscriptionAdapter(val listener: SubscriptionItemClickListener): ListAdapter<SubscriptionResponse, SubscriptionAdapter.SubscriptionAdapterViewHolder>(

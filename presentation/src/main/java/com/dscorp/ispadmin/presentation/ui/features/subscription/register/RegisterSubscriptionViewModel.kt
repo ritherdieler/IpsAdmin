@@ -75,7 +75,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtFirstNameHasNotErrors
 
         }
-        if(!subscription.firstName.hasOnlyLetters()){
+        if(subscription.firstName.hasOnlyLetters()){
             formErrorLiveData.value = RegisterSubscriptionFormError.OnEtFirstNameIsInvalidError()
             return false
         }
@@ -87,7 +87,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtLastNameHasNotErrors
         }
-        if(!subscription.lastName.hasOnlyLetters()){
+        if(subscription.lastName.hasOnlyLetters()){
             formErrorLiveData.value = RegisterSubscriptionFormError.OnEtLastNameIsInvalidError()
             return false
         }
