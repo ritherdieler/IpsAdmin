@@ -1,6 +1,5 @@
 package com.example.data2.data.repository
 
-import android.content.SharedPreferences
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 
@@ -31,11 +30,12 @@ interface IRepository {
     suspend fun getServicesOrder():List<ServiceOrderResponse>
     suspend fun getTechnicians():List<Technician>
     suspend fun getNapBoxes():List<NapBox>
-    suspend fun getPaymentHistory(request:SearchPaymentsRequest):List<Payment>
+    suspend fun getFilteredPaymentHistory(request:SearchPaymentsRequest):List<Payment>
     suspend fun findSubscription(id: Int): List<SubscriptionResponse>
     suspend fun registerPayment(payment: Payment): Payment
     suspend fun getNetworkDeviceTypes() : List<String>
     suspend fun getDebtors() : List<SubscriptionResponse>
     suspend fun registerIpPool(ipPool: IpPool): IpPool
     suspend fun getIpPoolList(): List<IpPool>
+    suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit:Int): List<Payment>
 }

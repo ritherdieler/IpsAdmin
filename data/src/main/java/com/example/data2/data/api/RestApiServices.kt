@@ -65,7 +65,7 @@ interface RestApiServices {
     suspend fun getNapBoxes(): Response<List<NapBox>>
 
     @GET("payment")
-    suspend fun getPaymentHistory(
+    suspend fun getFilteredPaymentHistory(
         @Query("subscriptionId") subscriptionCode: Int,
         @Query("startDate") startDate: Long?,
         @Query("endDate") endDate: Long?
@@ -88,5 +88,11 @@ interface RestApiServices {
 
     @GET("ip-pool")
     suspend fun getIpPoolList(): Response<List<IpPool>>
+
+    @GET("payment")
+    suspend fun getRecentPaymentsHistory(
+        @Query("subscriptionId") idSubscription: Int,
+        @Query("limit") itemsLimit: Int
+    ): Response<List<Payment>>
 }
 

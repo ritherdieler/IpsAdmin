@@ -10,11 +10,12 @@ import com.dscorp.ispadmin.databinding.FragmentNetworkDeviceBinding
 import com.dscorp.ispadmin.presentation.extension.fillWithList
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceFormError.*
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NetworkDeviceFragment : Fragment(R.layout.fragment_network_device) {
+class NetworkDeviceFragment : BaseFragment() {
     private val binding by lazy { FragmentNetworkDeviceBinding.inflate(layoutInflater) }
     private val viewModel: NetworkDeviceViewModel by viewModel()
     private var selectedNetworkDeviceType: String? = null

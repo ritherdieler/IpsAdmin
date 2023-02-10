@@ -5,19 +5,17 @@ import android.os.Parcel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.google.android.material.datepicker.*
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.time.Duration.Companion.days
-import kotlin.time.DurationUnit
 
-class PaymentHistoryFragment : Fragment(), View.OnClickListener {
+class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
 
     private val args: PaymentHistoryFragmentArgs by navArgs()
     private var selectedEndDate: Long? = null
@@ -33,10 +31,12 @@ class PaymentHistoryFragment : Fragment(), View.OnClickListener {
         initClickListeners()
         binding.rvPayments.adapter = adapter
 
-        viewModel.resultLiveData.observe(viewLifecycleOwner) {
+        viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is PaymentHistoryUiState.OnError -> {}
-                is PaymentHistoryUiState.OnPaymentResponseHistory -> fillPaymentHistory(it.payments)
+                is PaymentHistoryUiState.OnPaymentHistoryFilteredResponse -> fillPaymentHistory(it.payments)
+                is PaymentHistoryUiState.GetRecentPaymentsHistoryResponse -> {}
+                is PaymentHistoryUiState.GetRecentPaymentHistoryError -> TODO()
             }
         }
 
@@ -132,7 +132,7 @@ class PaymentHistoryFragment : Fragment(), View.OnClickListener {
             binding.etStartDate -> showStartDatePickerDialog{selectedStartDate = it}
             binding.etEndDate -> showEndDatePickerDialog { selectedEndDate = it }
             binding.btnConsult -> {
-                viewModel.getPaymentHistory(SearchPaymentsRequest().apply {
+                viewModel.getFilteredPaymentHistory(SearchPaymentsRequest().apply {
                     startDate = selectedStartDate
                     endDate = selectedEndDate
                     subscriptionId = args.subscription.id!!

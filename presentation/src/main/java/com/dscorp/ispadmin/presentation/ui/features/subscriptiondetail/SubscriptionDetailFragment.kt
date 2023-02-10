@@ -10,10 +10,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionDetailBinding
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
-class SubscriptionDetailFragment : Fragment() {
+class SubscriptionDetailFragment : BaseFragment() {
     private val args: SubscriptionDetailFragmentArgs by navArgs()
     lateinit var binding: FragmentSubscriptionDetailBinding
     lateinit var subscription: SubscriptionResponse

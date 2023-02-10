@@ -71,6 +71,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <TextView
+            android:id="@+id/tv_disclaimer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/disclaimer_payment_list"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_payments"
             android:layout_width="0dp"
@@ -83,7 +92,7 @@
             app:layout_constraintBottom_toTopOf="@+id/btn_consult"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_disclaimer" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

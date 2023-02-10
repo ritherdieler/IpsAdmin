@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.databinding.FragmentDebtorsBinding
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class DebtorsFragment : Fragment() {
+class DebtorsFragment : BaseFragment() {
 
     private val binding:FragmentDebtorsBinding by lazy { FragmentDebtorsBinding.inflate(layoutInflater) }
     private  val viewModel: DebtorsViewModel by inject()

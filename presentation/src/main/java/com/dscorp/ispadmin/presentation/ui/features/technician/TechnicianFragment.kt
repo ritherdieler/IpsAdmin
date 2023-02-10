@@ -10,6 +10,7 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.google.android.material.datepicker.CalendarConstraints
@@ -18,7 +19,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 
-class TechnicianFragment : Fragment(R.layout.fragment_technician) {
+class TechnicianFragment : BaseFragment() {
     lateinit var binding: FragmentTechnicianBinding
     var selectedDate: Long = 0
     val viewModel: TechnicianViewModel by viewModel()

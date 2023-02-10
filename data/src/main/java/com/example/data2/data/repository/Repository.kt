@@ -199,8 +199,8 @@ class Repository(val context: Context) : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getPaymentHistory(request: SearchPaymentsRequest): List<Payment> {
-        val response = restApiServices.getPaymentHistory(
+    override suspend fun getFilteredPaymentHistory(request: SearchPaymentsRequest): List<Payment> {
+        val response = restApiServices.getFilteredPaymentHistory(
             request.subscriptionId!!,
             request.startDate,
             request.endDate
@@ -258,6 +258,15 @@ class Repository(val context: Context) : IRepository, KoinComponent {
 
     override suspend fun getIpPoolList(): List<IpPool> {
         val response = restApiServices.getIpPoolList()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit:Int): List<Payment> {
+        val response = restApiServices.getRecentPaymentsHistory(idSubscription,itemsLimit)
         if (response.code() == 200) {
             return response.body()!!
         } else {

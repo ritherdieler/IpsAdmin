@@ -10,11 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxesListBinding
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NapBoxesListFragment : Fragment() , OnItemClickListener {
+class NapBoxesListFragment : BaseFragment() , OnItemClickListener {
 
         private lateinit var binding: FragmentNapBoxesListBinding
         private val viewModel: NapBoxesListViewModel by viewModel()

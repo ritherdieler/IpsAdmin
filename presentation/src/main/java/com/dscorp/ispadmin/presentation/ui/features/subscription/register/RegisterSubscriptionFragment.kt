@@ -14,6 +14,7 @@ import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionCleanForm.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionResponse.*
@@ -26,7 +27,7 @@ import java.util.*
 import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
 
-class RegisterSubscriptionFragment : Fragment() {
+class RegisterSubscriptionFragment : BaseFragment() {
     private val binding by lazy { FragmentSubscriptionBinding.inflate(layoutInflater) }
     private var selectedDate: Long = 0
     private var selectedLocation: LatLng? = null

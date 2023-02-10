@@ -1,24 +1,22 @@
 package com.dscorp.ispadmin.presentation.ui.features.plan
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlanBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginActivity
-import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.plan.PlanFormError.*
 import com.example.cleanarchitecture.domain.domain.entity.Plan
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlanFragment : Fragment(R.layout.fragment_plan) {
+class PlanFragment : BaseFragment() {
     lateinit var binding: FragmentPlanBinding
     val viewModel: PlanViewModel by viewModel()
 
@@ -40,7 +38,7 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     }
 
     private fun logOut() {
-      viewModel.logOut()
+        viewModel.logOut()
         activity?.startActivity(Intent(activity, LoginActivity::class.java))
         activity?.finish()
 
@@ -90,10 +88,12 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
+
     private fun observeErrorCleanForm() {
         viewModel.errorCleanFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
-            when(errorCleanForm){
-                PlanErrorCleanForm.OnEtDownloadSpeedHasNotError -> binding.tlDownloadSpeed.error = null
+            when (errorCleanForm) {
+                PlanErrorCleanForm.OnEtDownloadSpeedHasNotError -> binding.tlDownloadSpeed.error =
+                    null
                 PlanErrorCleanForm.OnEtNamePlanHasNotError -> binding.tlNamePlan.error = null
                 PlanErrorCleanForm.OnEtPriceHasNotError -> binding.tlPrice.error = null
                 PlanErrorCleanForm.OnEtUploadSpeedHasNotError -> binding.tlUploadSpeed.error = null
@@ -103,7 +103,9 @@ class PlanFragment : Fragment(R.layout.fragment_plan) {
 
     private fun registerPlan() {
 
-        val price= if (binding.etPrice.text.toString().isEmpty()) 0.0 else binding.etPrice.text.toString().toDouble()
+        val price =
+            if (binding.etPrice.text.toString().isEmpty()) 0.0 else binding.etPrice.text.toString()
+                .toDouble()
         val plan = Plan(
             name = binding.etNamePlan.text.toString(),
             price = price,

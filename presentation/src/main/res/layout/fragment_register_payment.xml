@@ -6,113 +6,102 @@
 
     </data>
 
-    <!--register payment form-->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            style="@style/TextAppearance.MaterialComponents.Headline5"
-            android:text="@string/registrar_pagos"
-            android:textSize="20sp" />
-       <!-- plan-->
-        <TextView
-            android:id="@+id/tvPlan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/purple_700"
-            android:text="@string/planPayment"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:text="@string/metodo_de_pago"
-            android:textSize="16sp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlPaymentMethod"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:inputType="text" >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPaymentMethod"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/textView43"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:text="@string/descuento"
-            android:textSize="16sp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlPaymentDiscount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:inputType="numberDecimal" >
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPaymentDiscount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/textView"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/registrar_pagos"
+                android:textSize="20sp" />
+            <!-- plan-->
+            <TextView
+                android:id="@+id/tvPlan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/planPayment"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                android:textColor="@color/purple_700"
+                android:textSize="16sp" />
 
 
-        <TextView
-            android:id="@+id/textView432"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:text="@string/motivo_de_descuento"
-            android:textSize="16sp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tlPaymentDiscountReason"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:inputType="textPersonName" >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPaymentDiscountReason"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tlPaymentMethod"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/installed_device">
 
-        <Button
-            android:id="@+id/btnRegisterPayment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/register_payment" />
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acPaymentMethod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tlPaymentDiscount"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="@string/descuento"
+                android:inputType="numberDecimal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPaymentDiscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tlPaymentDiscountReason"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:ems="10"
+                android:hint="@string/motivo_de_descuento"
+                android:inputType="textPersonName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPaymentDiscountReason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnRegisterPayment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/register_payment" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </layout>

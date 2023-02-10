@@ -9,11 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
 
-class FindSubscriptionFragment : Fragment(), SelectableSubscriptionListener {
+class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener {
 
     private val viewModel: FindSubscriptionViewModel by inject()
 

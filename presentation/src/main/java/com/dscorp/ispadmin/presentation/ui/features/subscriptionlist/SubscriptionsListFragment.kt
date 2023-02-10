@@ -10,12 +10,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionsListBinding
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionlist.SubscriptionsListFragmentDirections.*
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SubscriptionsListFragment : Fragment(), SubscriptionItemClickListener {
+class SubscriptionsListFragment : BaseFragment(), SubscriptionItemClickListener {
     private lateinit var binding: FragmentSubscriptionsListBinding
     private val viewModel: SubscriptionsListViewModel by viewModel()
 

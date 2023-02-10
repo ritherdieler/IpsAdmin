@@ -9,12 +9,13 @@ import com.dscorp.ispadmin.databinding.FragmentIpPoolBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.IpPoolslist.IpPoolAdapter
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxeAdapter
 import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListResponse
 import com.example.cleanarchitecture.domain.domain.entity.IpPool
 import org.koin.android.ext.android.inject
 
-class IpPoolFragment : Fragment() {
+class IpPoolFragment : BaseFragment() {
 
     val binding by lazy { FragmentIpPoolBinding.inflate(layoutInflater) }
 

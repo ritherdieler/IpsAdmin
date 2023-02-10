@@ -13,12 +13,13 @@ import com.dscorp.ispadmin.databinding.FragmentNapBoxBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NapBoxFragment : Fragment() {
+class NapBoxFragment : BaseFragment() {
     var selectedLocation: LatLng? = null
     lateinit var binding: FragmentNapBoxBinding
     val viewModel: NapBoxViewModel by viewModel()

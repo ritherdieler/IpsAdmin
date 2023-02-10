@@ -1,17 +1,21 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment.register
 
+import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentRegisterPaymentBinding
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class RegisterPaymentFragment : Fragment() {
+class RegisterPaymentFragment : BaseFragment() {
     private val args: RegisterPaymentFragmentArgs by navArgs()
     private val viewModel: RegisterPaymentViewModel by viewModel()
     private val binding by lazy { FragmentRegisterPaymentBinding.inflate(layoutInflater) }
@@ -32,6 +36,10 @@ class RegisterPaymentFragment : Fragment() {
     private fun setupView() {
         binding.tvPlan.text = "Plan: ${viewModel.subscription?.plan?.price}"
 
+        val paymentMethods = resources.getStringArray(com.dscorp.ispadmin.R.array.payment_methods)
+        val adapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, paymentMethods)
+        binding.acPaymentMethod.setAdapter(adapter)
+
         binding.btnRegisterPayment.setOnClickListener {
             val discount = if (binding.etPaymentDiscount.text.toString().isEmpty()) 0.0
             else binding.etPaymentDiscount.text.toString().toDouble()
@@ -40,7 +48,7 @@ class RegisterPaymentFragment : Fragment() {
                     amountPaid = viewModel.subscription?.plan?.price ?: 0.0,
                     discount = discount,
                     discountReason = binding.etPaymentDiscountReason.text.toString(),
-                    method = binding.etPaymentMethod.text.toString(),
+                    method = binding.acPaymentMethod.text.toString(),
                     subscriptionId = args.subscription.id ?: 0
                 )
             )

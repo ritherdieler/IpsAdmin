@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="payment_methods" >
+        <item>Yape</item>
+        <item>Plin</item>
+        <item>Transferencia</item>
+        <item>Efectivo</item>
+    </string-array>
+</resources>

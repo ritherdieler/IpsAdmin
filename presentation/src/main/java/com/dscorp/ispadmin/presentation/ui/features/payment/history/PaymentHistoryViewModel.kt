@@ -13,17 +13,25 @@ class PaymentHistoryViewModel:ViewModel() {
 
     val repository: IRepository by inject(IRepository::class.java)
 
-    val resultLiveData = MutableLiveData<PaymentHistoryUiState>()
+    val uiStateLiveData = MutableLiveData<PaymentHistoryUiState>()
     val formErrorLiveData = MutableLiveData<PaymentHistoryErrorUiState>()
 
-    fun getPaymentHistory(request: SearchPaymentsRequest) = viewModelScope.launch {
+    fun getFilteredPaymentHistory(request: SearchPaymentsRequest) = viewModelScope.launch {
         try {
-            val response = repository.getPaymentHistory(request)
-            resultLiveData.postValue(OnPaymentResponseHistory(response))
+            val response = repository.getFilteredPaymentHistory(request)
+            uiStateLiveData.postValue(OnPaymentHistoryFilteredResponse(response))
         } catch (e: Exception) {
-            resultLiveData.postValue(OnError(e.message))
+            uiStateLiveData.postValue(OnError(e.message))
         }
     }
 
+    fun getLastPayments(idSubscription: Int, itemsLimit: Int) = viewModelScope.launch {
+        try {
+            val response = repository.getRecentPaymentsHistory(idSubscription,itemsLimit)
+            uiStateLiveData.postValue(GetRecentPaymentsHistoryResponse(response))
+        } catch (e: Exception) {
+            uiStateLiveData.postValue(GetRecentPaymentHistoryError(e.message))
+        }
+    }
 
 }
