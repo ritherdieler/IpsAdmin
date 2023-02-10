@@ -64,7 +64,7 @@ interface RestApiServices {
     @GET("napbox")
     suspend fun getNapBoxes(): Response<List<NapBox>>
 
-    @GET("payment")
+    @GET("payment/filtered")
     suspend fun getFilteredPaymentHistory(
         @Query("subscriptionId") subscriptionCode: Int,
         @Query("startDate") startDate: Long?,

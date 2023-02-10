@@ -12,10 +12,10 @@ class DialogFactory: IDialogFactory {
             return builder.create()
         }
 
-        override fun createErrorDialog(context: Context): AlertDialog {
+        override fun createErrorDialog(context: Context, error:String): AlertDialog {
             val builder = AlertDialog.Builder(context)
             builder.setTitle("El registro no fue procesado ")
-            builder.setMessage("ERROR EN EL REGISTRO")
+            builder.setMessage(error)
             builder.setPositiveButton("Aceptar") { _, _ -> }
             return builder.create()
         }

@@ -39,9 +39,9 @@ fun Fragment.showSuccessDialog(text:String){
     val successDialog = dialogFactory.createSuccessDialog(requireContext(),text)
     successDialog.show()
 }
-fun Fragment.showErrorDialog() {
+fun Fragment.showErrorDialog(error:String? = "Error desconocido") {
     val dialogFactory:IDialogFactory by inject()
-    val errorDialog = dialogFactory.createErrorDialog(requireContext())
+    val errorDialog = dialogFactory.createErrorDialog(requireContext(),error!!)
     errorDialog.show()
 }
 fun Activity.showSuccessDialog(text:String){
@@ -49,9 +49,9 @@ fun Activity.showSuccessDialog(text:String){
     val successDialog = dialogFactory.createSuccessDialog(this,text)
     successDialog.show()
 }
-fun Activity.showErrorDialog() {
+fun Activity.showErrorDialog(error:String= "error desconocido") {
     val dialogFactory:IDialogFactory by inject()
-    val errorDialog = dialogFactory.createErrorDialog(this)
+    val errorDialog = dialogFactory.createErrorDialog(this,error)
     errorDialog.show()
 }
 fun String.isValidIpv4( ): Boolean {

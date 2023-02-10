@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
@@ -29,14 +30,20 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View {
         initClickListeners()
+
+        viewModel.getLastPayments(
+            args.subscription.id!!,
+            PaymentHistoryViewModel.LAST_PAYMENTS_LIMIT
+        )
+
         binding.rvPayments.adapter = adapter
 
         viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
             when (it) {
-                is PaymentHistoryUiState.OnError -> {}
-                is PaymentHistoryUiState.OnPaymentHistoryFilteredResponse -> fillPaymentHistory(it.payments)
-                is PaymentHistoryUiState.GetRecentPaymentsHistoryResponse -> {}
-                is PaymentHistoryUiState.GetRecentPaymentHistoryError -> TODO()
+                is PaymentHistoryUiState.OnError -> showErrorDialog(it.message)
+                is PaymentHistoryUiState.OnPaymentHistoryFilteredResponse -> fillPaymentHistoryFiltered(it.payments)
+                is PaymentHistoryUiState.GetRecentPaymentsHistoryResponse -> fillRecentPaymentHistory(it.payments)
+                is PaymentHistoryUiState.GetRecentPaymentHistoryError -> showErrorDialog(it.message)
             }
         }
 
@@ -49,21 +56,14 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
         binding.btnConsult.setOnClickListener(this)
     }
 
-    private fun fillPaymentHistory(payments: List<Payment>) = adapter.submitList(payments)
+    private fun fillPaymentHistoryFiltered(payments: List<Payment>) {
+        binding.tvDisclaimer.visibility = View.GONE
+        adapter.submitList(payments)
+    }
 
-
-   /* private fun showStartDatePickerDialog(callback: (Long) -> Unit = {}) {
-        MaterialDatePicker.Builder.datePicker().build().apply {
-            addOnPositiveButtonClickListener {
-                val selectedTimestamp = it
-                val selectedDate = Date(selectedTimestamp)
-                val formattedDate = SimpleDateFormat("MM/yyyy", Locale.getDefault()).format(selectedDate)
-                binding.etStartDate.setText(formattedDate)
-                callback(it)
-            }
-        }.show(childFragmentManager, "DATE_PICKER_START")
-    }*/
-
+    private fun fillRecentPaymentHistory(payments: List<Payment>) {
+        adapter.submitList(payments)
+    }
 
     private fun showStartDatePickerDialog(callback: (Long) -> Unit = {}) {
         val calendar = Calendar.getInstance()
@@ -74,6 +74,7 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
                 calendar.timeInMillis = date
                 return calendar.get(Calendar.DAY_OF_MONTH) == 1
             }
+
             override fun writeToParcel(parcel: Parcel, flags: Int) {}
             override fun describeContents(): Int = 0
         }
@@ -95,6 +96,7 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
         }
         datePicker.show(childFragmentManager, "DatePicker")
     }
+
     private fun showEndDatePickerDialog(callback: (Long) -> Unit = {}) {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.DAY_OF_MONTH, 1)
@@ -104,6 +106,7 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
                 calendar.timeInMillis = date
                 return calendar.get(Calendar.DAY_OF_MONTH) == 1
             }
+
             override fun writeToParcel(parcel: Parcel, flags: Int) {}
             override fun describeContents(): Int = 0
         }
@@ -129,13 +132,13 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
     override fun onClick(view: View?) {
 
         when (view) {
-            binding.etStartDate -> showStartDatePickerDialog{selectedStartDate = it}
+            binding.etStartDate -> showStartDatePickerDialog { selectedStartDate = it }
             binding.etEndDate -> showEndDatePickerDialog { selectedEndDate = it }
             binding.btnConsult -> {
                 viewModel.getFilteredPaymentHistory(SearchPaymentsRequest().apply {
                     startDate = selectedStartDate
                     endDate = selectedEndDate
-                    subscriptionId = args.subscription.id!!
+                    subscriptionId = args.subscription.id
                 })
             }
         }

@@ -123,14 +123,14 @@ class PaymentHistoryViewModelTest : KoinTest {
 
 
     private fun mockGetPaymentHistoryBetweenTwoDatesService() {
-        val urlToMock = "/payment?subscriptionId=1&startDate=1&endDate=2"
+        val urlToMock = "/payment/filtered?subscriptionId=1&startDate=1&endDate=2"
         val response =
             MockResponse().setResponseCode(200).fromJson("payment/history/payment_list.json")
         mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
     }
 
     private fun mockErrorGetPaymentHistoryBetweenTwoDatesService() {
-        val urlToMock = "/payment?subscriptionId=1&startDate=1&endDate=2"
+        val urlToMock = "/payment/filtered?subscriptionId=1&startDate=1&endDate=2"
         val response =
             MockResponse().setResponseCode(500).fromJson("payment/history/payment_list.json")
         mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
