@@ -7,7 +7,6 @@ import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Loging
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
-import kotlin.math.log
 
 /**
  * Created by Sergio Carrillo Diestra on 20/11/2022.
@@ -24,9 +23,9 @@ class LoginViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            val response = repository.getUserSessions()
-            if (response != null)
-                loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(response))
+            val responseFromRepository = repository.getUserSessions()
+            if (responseFromRepository != null)
+                loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(responseFromRepository))
         }
     }
     fun doLogin(login: Loging) = viewModelScope.launch {
@@ -41,7 +40,9 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-   private fun formIsValid(login: Loging): Boolean {
+
+
+    private fun formIsValid(login: Loging): Boolean {
 
        if (login.username.isEmpty()) {
            loginFormErrorLiveData.value=LoginFormError.OnEtUser("el usuario no puede estar vacio")
@@ -51,9 +52,6 @@ class LoginViewModel : ViewModel() {
        if (login.password.isEmpty()) {
            loginFormErrorLiveData.value = LoginFormError.OnEtPassword("la contrana no puede estar vacia")
            return false
-       }
-       if(login.checkBox==true){
-
        }
        return true
    }
