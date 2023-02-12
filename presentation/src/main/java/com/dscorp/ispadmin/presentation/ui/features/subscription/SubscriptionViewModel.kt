@@ -3,7 +3,9 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState
+import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
@@ -15,9 +17,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
-    val registerSubscriptionUiState = MutableLiveData<RegisterSubscriptionUiState>()
     val editSubscriptionUiState = MutableLiveData<EditSubscriptionUiState>()
+    val editFormErrorLiveData = MutableLiveData<EditSubscriptionFormErrorUiState>()
 
+    val registerSubscriptionUiState = MutableLiveData<RegisterSubscriptionUiState>()
     val registerFormErrorLiveData = MutableLiveData<RegisterSubscriptionFormErrorUiState>()
     var subscription: SubscriptionResponse? = null
 
@@ -46,7 +49,7 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
             editSubscriptionUiState.postValue(
                 EditSubscriptionUiState.FormDataFound(
                     plansFromRepository, devicesFromRepository, placeFromRepository,
-                    technicians, napBoxesFromRepository, coreDevices
+                    napBoxesFromRepository, coreDevices
                 )
             )
 

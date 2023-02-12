@@ -96,7 +96,7 @@ class EditSubscriptionFragment : BaseFragment() {
     }
 
     private fun observeFormError() {
-        viewModel.registerFormErrorLiveData.observe(viewLifecycleOwner) { formError ->
+        viewModel.editSubscriptionUiState.observe(viewLifecycleOwner) { formError ->
             when (formError) {
                 is OnEtAddressesErrorRegisterUiState -> setEtAddressError(formError)
                 is OnEtNumberPhoneErrorRegisterUiState -> setEtNumberPhoneError(formError)

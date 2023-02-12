@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.edit
 
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.example.cleanarchitecture.domain.domain.entity.*
 
 /**
@@ -22,8 +21,8 @@ sealed class EditSubscriptionUiState {
     class FetchFormDataError(val error: String) : EditSubscriptionUiState()
 
 
-    class RegisterSubscriptionSuccess(val subscription: SubscriptionResponse) :EditSubscriptionUiState()
-    class RegisterSubscriptionError(val error: String) : EditSubscriptionUiState()
+    class EditSubscriptionSuccess(val subscription: SubscriptionResponse) :EditSubscriptionUiState()
+    class EditSubscriptionError(val error: String?) : EditSubscriptionUiState()
 
 
 }
