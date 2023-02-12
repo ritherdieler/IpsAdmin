@@ -29,8 +29,6 @@ sealed class EditSubscriptionFormErrorUiState(val error:String? = null) {
         const val LAST_NAME_IS_INVALID_ERROR ="Este nombre no es valido"
 
     }
-    class OnEtFirstNameErrorRegisterUiState : EditSubscriptionFormErrorUiState(FIRST_NAME_ERROR)
-    class OnEtLastNameErrorRegisterUiState : EditSubscriptionFormErrorUiState(LAST_NAME_ERROR)
     class OnEtPasswordErrorRegisterUiState : EditSubscriptionFormErrorUiState(PASSWORD_ERROR)
     class OnEtAddressesErrorRegisterUiState : EditSubscriptionFormErrorUiState(ADDRESS_ERROR)
     class OnEtNumberPhoneErrorRegisterUiState : EditSubscriptionFormErrorUiState(NUMBER_PHONE_ERROR)

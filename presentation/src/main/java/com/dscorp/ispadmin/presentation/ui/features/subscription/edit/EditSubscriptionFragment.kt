@@ -51,7 +51,7 @@ class EditSubscriptionFragment : BaseFragment() {
 
         binding.btSubscribirse.setOnClickListener {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
-            registerSubscription()
+            editSubscription()
         }
 
         binding.etLocationSubscription.setOnClickListener {
@@ -99,10 +99,8 @@ class EditSubscriptionFragment : BaseFragment() {
     private fun observeFormError() {
         viewModel.editFormErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is OnEtFirstNameErrorRegisterUiState -> TODO()
-                is OnEtFirstNameIsInvalidErrorRegisterUiState -> TODO()
-                is OnEtLastNameErrorRegisterUiState -> TODO()
-                is OnEtLastNameIsInvalidErrorRegisterUiState -> TODO()
+                is OnEtFirstNameIsInvalidErrorRegisterUiState -> binding.tlFirstName.error =formError.error
+                is OnEtLastNameIsInvalidErrorRegisterUiState -> binding.tlFirstName.error =formError.error
                 is OnEtAddressesErrorRegisterUiState -> setEtAddressError(formError)
                 is OnEtNumberPhoneErrorRegisterUiState -> setEtNumberPhoneError(formError)
                 is OnEtPasswordErrorRegisterUiState -> setEtPasswordError(formError)
@@ -124,8 +122,8 @@ class EditSubscriptionFragment : BaseFragment() {
                 is CleanEtNetworkDeviceNotErrors -> binding.spnNetworkDeviceOne.error = null
                 is CleanEtNapBoxNotErrors -> binding.spnNapBox.error = null
                 is CleanEtPlaceNotErrors -> binding.spnPlace.error = null
-                CleanEtFirstNameHasNotErrors -> TODO()
-                CleanEtLastNameHasNotErrors -> TODO()
+                CleanEtFirstNameHasNotErrors -> binding.etFirstName.error = null
+                CleanEtLastNameHasNotErrors -> binding.etLastName.error = null
 
             }
         }
@@ -167,7 +165,7 @@ class EditSubscriptionFragment : BaseFragment() {
         binding.tlAddress.error = formError.error
     }
 
-    private fun registerSubscription() {
+    private fun editSubscription() {
 
         val installedDevices = mutableListOf<Int>()
         selectedNetworkDeviceOne?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
@@ -219,7 +217,7 @@ class EditSubscriptionFragment : BaseFragment() {
                 selectedNetworkDeviceOne = networkDevices[pos]
             }
 
-        binding.etNetworkDeviceTwo.setAdapter(adapter)
+        binding.etNetworkDeviceOne.setAdapter(adapter)
         binding.etNetworkDeviceTwo.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
                 selectedNetworkDeviceTwo = networkDevices[pos]
