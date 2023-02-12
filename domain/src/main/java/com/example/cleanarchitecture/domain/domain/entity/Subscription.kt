@@ -40,4 +40,5 @@ package com.example.cleanarchitecture.domain.domain.entity
       false
     }
   }
+
 }

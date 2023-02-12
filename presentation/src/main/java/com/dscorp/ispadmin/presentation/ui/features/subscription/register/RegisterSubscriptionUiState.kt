@@ -19,8 +19,9 @@ sealed class RegisterSubscriptionUiState {
         val hostNetworkDevices: List<NetworkDevice>
     ) : RegisterSubscriptionUiState()
 
-    class RegisterSubscriptionRegistered(val subscription: Subscription) : RegisterSubscriptionUiState()
+    class RegisterSubscriptionSuccess(val subscription: Subscription) :
+        RegisterSubscriptionUiState()
+
     class RegisterSubscriptionError(val error: String) : RegisterSubscriptionUiState()
     class FormDataError(val error: String) : RegisterSubscriptionUiState()
-
 }

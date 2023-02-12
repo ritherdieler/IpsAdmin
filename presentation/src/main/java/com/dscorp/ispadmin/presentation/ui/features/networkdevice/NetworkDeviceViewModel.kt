@@ -3,11 +3,11 @@ package com.dscorp.ispadmin.presentation.ui.features.networkdevice
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.extension.isValidIpv4
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceFormError.*
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceResponse.*
 import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidIpv4
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 

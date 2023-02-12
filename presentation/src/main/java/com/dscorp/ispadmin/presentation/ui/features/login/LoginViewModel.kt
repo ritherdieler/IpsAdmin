@@ -23,7 +23,7 @@ class LoginViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            val response = repository.getUserSessions()
+            val response = repository.getUserSession()
             if (response != null)
                 loginResponseLiveData.postValue(LoginResponse.OnLoginSuccess(response))
         }

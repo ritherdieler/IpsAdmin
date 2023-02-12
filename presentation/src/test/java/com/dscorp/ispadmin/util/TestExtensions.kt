@@ -49,6 +49,9 @@ fun KoinTest.registerIdlingResource(): IdlingResource {
     return okHttp3IdlingResource
 }
 
+fun KoinTest.unregisterIdlingResource(idlingResource: IdlingResource) {
+    IdlingRegistry.getInstance().unregister(idlingResource)
+}
 fun Any.toJson(): String = Gson().toJson(this)
 
 

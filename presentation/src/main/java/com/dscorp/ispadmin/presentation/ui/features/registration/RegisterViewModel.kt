@@ -3,9 +3,9 @@ package com.dscorp.ispadmin.presentation.ui.features.registration
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.extension.hasOnlyLetters
-import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidNameOrLastName
+import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
@@ -30,55 +30,55 @@ class RegisterViewModel : ViewModel() {
         lastName: String
     ) {
         if (user.isEmpty()) {
-            registerFormErrorLiveData.value=RegisterFormError.OnEtUserError()
+            registerFormErrorLiveData.value = RegisterFormError.OnEtUserError()
             return
-        }else{
+        } else {
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtUserCleanError
         }
 
         if (firstName.isEmpty()) {
-            registerFormErrorLiveData.value=RegisterFormError.OnEtFirstNameError()
+            registerFormErrorLiveData.value = RegisterFormError.OnEtFirstNameError()
             return
-        }else{
+        } else {
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtFirstNameCleanError
         }
-        if (firstName.hasOnlyLetters()) {
-            registerFormErrorLiveData.value=RegisterFormError.OnEtFirstNameIsInvalidError()
+        if (firstName.isValidNameOrLastName()) {
+            registerFormErrorLiveData.value = RegisterFormError.OnEtFirstNameIsInvalidError()
             return
         }
 
         if (lastName.isEmpty()) {
-            registerFormErrorLiveData.value=RegisterFormError.OnEtLastNameError()
+            registerFormErrorLiveData.value = RegisterFormError.OnEtLastNameError()
             return
-        }else{
+        } else {
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtLastNameCleanError
         }
-        if (lastName.hasOnlyLetters()){
+        if (lastName.isValidNameOrLastName()) {
             registerFormErrorLiveData.value = RegisterFormError.OnEtLastNameIsInvalidError()
         }
         if (password1.isEmpty()) {
-            registerFormErrorLiveData.value=RegisterFormError.OnEtPassword1Error()
+            registerFormErrorLiveData.value = RegisterFormError.OnEtPassword1Error()
             return
-        }else{
+        } else {
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtPassword1CleanError
         }
 
         if (password2.isEmpty()) {
-            registerFormErrorLiveData.value=RegisterFormError.OnEtPassword2Error()
+            registerFormErrorLiveData.value = RegisterFormError.OnEtPassword2Error()
             return
-        }else{
+        } else {
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtPassword2CleanError
         }
 
         if (password1 != password2) {
-            registerFormErrorLiveData.value=RegisterFormError.OnEtPassword1Error()
-            registerFormErrorLiveData.value=RegisterFormError.OnEtPassword2Error()
+            registerFormErrorLiveData.value = RegisterFormError.OnEtPassword1Error()
+            registerFormErrorLiveData.value = RegisterFormError.OnEtPassword2Error()
             return
-        }else{
+        } else {
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtPassword1CleanError
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtPassword2CleanError
         }
-        val planObject = User(0, firstName, lastName, 0, user, password1, false,)
+        val planObject = User(0, firstName, lastName, 0, user, password1, false)
 
         viewModelScope.launch {
             try {

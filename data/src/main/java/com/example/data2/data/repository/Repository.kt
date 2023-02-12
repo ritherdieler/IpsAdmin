@@ -52,7 +52,7 @@ class Repository(val context: Context) : IRepository, KoinComponent {
         editor.apply()
     }
 
-    override suspend fun getUserSessions(): User? {
+    override suspend fun getUserSession(): User? {
         val user = User(
             id = prefs.getInt(SESSION_ID, 0),
             name = prefs.getString(SESSION_NAME, "")!!,
@@ -276,6 +276,15 @@ class Repository(val context: Context) : IRepository, KoinComponent {
 
     override suspend fun getCoreDevices(): List<NetworkDevice> {
         val response = restApiServices.getCoreDevices()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun editSubscription(subscription: Subscription): SubscriptionResponse {
+        val response = restApiServices.editSubscription(subscription)
         if (response.code() == 200) {
             return response.body()!!
         } else {

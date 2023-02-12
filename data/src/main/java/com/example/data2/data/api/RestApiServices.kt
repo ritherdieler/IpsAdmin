@@ -5,6 +5,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 /**
@@ -97,5 +98,8 @@ interface RestApiServices {
 
     @GET("networkDevice/coreTypes")
    suspend fun getCoreDevices(): Response<List<NetworkDevice>>
+
+   @PUT("subscription")
+    suspend fun editSubscription(@Body subscription: Subscription):Response<SubscriptionResponse>
 }
 

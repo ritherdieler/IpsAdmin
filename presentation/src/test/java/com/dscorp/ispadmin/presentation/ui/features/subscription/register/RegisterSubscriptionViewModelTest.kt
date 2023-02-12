@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
+import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.util.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.repository.IRepository
@@ -33,11 +34,13 @@ class RegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
         `when`(repository.getNapBoxes()).thenReturn(listOf())
         `when`(repository.getTechnicians()).thenReturn(listOf())
         `when`(repository.getNetworkDeviceTypes()).thenReturn(listOf())
+        `when`(repository.getCoreDevices()).thenReturn(listOf())
 
-        val viewModel = RegisterSubscriptionViewModel(repository)
+
+        val viewModel = SubscriptionViewModel(repository)
         viewModel.getFormData()
 
-        val value = viewModel.uiState.getValueForTest()
+        val value = viewModel.registerSubscriptionUiState.getValueForTest()
 
         assertTrue(value is RegisterSubscriptionUiState.FormDataFound)
     }
@@ -46,10 +49,10 @@ class RegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
     @Test
     fun `when getFormData call has error then should return FormDataError sate`() = runBlocking {
         Mockito.doThrow(NullPointerException("Error")).`when`(repository).getDevices()
-        val viewModel = RegisterSubscriptionViewModel(repository)
+        val viewModel = SubscriptionViewModel(repository)
         viewModel.getFormData()
 
-        val value = viewModel.uiState.getValueForTest()
+        val value = viewModel.registerSubscriptionUiState.getValueForTest()
 
         assertTrue(value is RegisterSubscriptionUiState.FormDataError)
     }

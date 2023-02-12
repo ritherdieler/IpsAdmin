@@ -13,7 +13,7 @@ class MyProfileViewmodel: ViewModel(),KoinComponent {
     val myProfileLiveData = MutableLiveData<MyProfileResponse>()
     init {
         viewModelScope.launch {
-            val response = repository.getUserSessions()
+            val response = repository.getUserSession()
                 myProfileLiveData.postValue(MyProfileResponse.UserSessionFound(response!!))
         }
     }

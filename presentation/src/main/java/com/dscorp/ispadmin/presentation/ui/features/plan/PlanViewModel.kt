@@ -3,9 +3,9 @@ package com.dscorp.ispadmin.presentation.ui.features.plan
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.extension.hasOnlyLetters
 import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Plan
+import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidNameOrLastName
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
@@ -34,7 +34,7 @@ class PlanViewModel : ViewModel() {
         } else {
             errorCleanFormLiveData.value = PlanErrorCleanForm.OnEtNamePlanHasNotError
         }
-        if (plan.name.hasOnlyLetters()) {
+        if (plan.name.isValidNameOrLastName()) {
         formErrorLiveData.value = PlanFormError.OnEtNameIsInvalidError()
             return false
         }

@@ -1,32 +1,28 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.edit
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dscorp.ispadmin.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
+import com.dscorp.ispadmin.databinding.FragmentEditSubscriptionBinding
+import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
 
 class EditSubscriptionFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = EditSubscriptionFragment()
-    }
-
-    private lateinit var viewModel: EditSubscriptionViewModel
+    private val args by navArgs<EditSubscriptionFragmentArgs>()
+    private val binding by lazy { FragmentEditSubscriptionBinding.inflate(layoutInflater) }
+    private val viewModel: SubscriptionViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_edit_subscription, container, false)
+    ): View {
+        viewModel.subscription = args.subscription
+
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(EditSubscriptionViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
 }

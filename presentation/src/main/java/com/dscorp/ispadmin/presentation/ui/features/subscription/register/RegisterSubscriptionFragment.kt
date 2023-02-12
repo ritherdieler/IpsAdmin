@@ -16,8 +16,10 @@ import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFormError
+import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionCleanForm.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormError.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFormError.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
@@ -39,13 +41,14 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private var selectedPlace: Place? = null
     private var selectedTechnician: Technician? = null
     private var selectedNapBox: NapBox? = null
-    private val viewModel: RegisterSubscriptionViewModel by viewModel()
+    private val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        viewModel.getFormData()
         observeResponse()
         observeFormError()
         observeCleanForm()
@@ -82,9 +85,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun observeResponse() {
-        viewModel.uiState.observe(viewLifecycleOwner) { response ->
+        viewModel.registerSubscriptionUiState.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is RegisterSubscriptionRegistered -> showSuccessDialog(response)
+                is RegisterSubscriptionSuccess -> showSuccessDialog(response)
                 is RegisterSubscriptionError -> showErrorDialog(response.error)
                 is FormDataFound -> fillFormSpinners(response)
                 is FormDataError -> showErrorDialog(response.error)
@@ -92,7 +95,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         }
     }
 
-    private fun showSuccessDialog(response: RegisterSubscriptionRegistered) {
+    private fun showSuccessDialog(response: RegisterSubscriptionSuccess) {
         showSuccessDialog("El registro numero ${response.subscription.dni} ah sido registrado correctamente")
     }
 
@@ -131,7 +134,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         }
     }
 
-    private fun setDniIsInvalidError(formError: RegisterSubscriptionFormError) {
+    private fun setDniIsInvalidError(formError: SubscriptionFormError) {
         binding.tlDni.error = formError.error
     }
 

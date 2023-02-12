@@ -3,8 +3,8 @@ package com.dscorp.ispadmin.presentation.ui.features.place
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.extension.hasOnlyLetters
 import com.example.cleanarchitecture.domain.domain.entity.Place
+import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidNameOrLastName
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
@@ -34,7 +34,7 @@ class PlaceViewModel : ViewModel() {
         } else {
             cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtNamePlaceCleanError
         }
-        if (place.name.hasOnlyLetters()) {
+        if (place.name.isValidNameOrLastName()) {
             formErrorLiveData.value = FormError.OnEtNameIsInvalidError()
             return false
         }

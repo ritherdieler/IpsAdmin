@@ -13,8 +13,8 @@ import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 interface IRepository {
     suspend fun registerUser(user: User): User
     suspend fun doLogin(login: Loging): User
-    suspend fun saveUserSession(user:User)
-    suspend fun getUserSessions():User?
+    suspend fun saveUserSession(user: User)
+    suspend fun getUserSession(): User?
     suspend fun clearUserSession()
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
@@ -23,20 +23,21 @@ interface IRepository {
     suspend fun getDevices(): List<NetworkDevice>
     suspend fun getSubscriptions(): List<SubscriptionResponse>
     suspend fun registerPlace(registerPlace: Place): Place
-    suspend fun getPlaces():List<Place>
+    suspend fun getPlaces(): List<Place>
     suspend fun registerTechnician(registerTechnician: Technician): Technician
     suspend fun registerNapBox(napBox: NapBox): NapBox
     suspend fun registerServiceOrder(serviceOrder: ServiceOrder): ServiceOrder
-    suspend fun getServicesOrder():List<ServiceOrderResponse>
-    suspend fun getTechnicians():List<Technician>
-    suspend fun getNapBoxes():List<NapBox>
-    suspend fun getFilteredPaymentHistory(request:SearchPaymentsRequest):List<Payment>
+    suspend fun getServicesOrder(): List<ServiceOrderResponse>
+    suspend fun getTechnicians(): List<Technician>
+    suspend fun getNapBoxes(): List<NapBox>
+    suspend fun getFilteredPaymentHistory(request: SearchPaymentsRequest): List<Payment>
     suspend fun findSubscription(id: Int): List<SubscriptionResponse>
     suspend fun registerPayment(payment: Payment): Payment
-    suspend fun getNetworkDeviceTypes() : List<String>
-    suspend fun getDebtors() : List<SubscriptionResponse>
+    suspend fun getNetworkDeviceTypes(): List<String>
+    suspend fun getDebtors(): List<SubscriptionResponse>
     suspend fun registerIpPool(ipPool: IpPool): IpPool
     suspend fun getIpPoolList(): List<IpPool>
-    suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit:Int): List<Payment>
-    suspend fun getCoreDevices():List<NetworkDevice>
+    suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit: Int): List<Payment>
+    suspend fun getCoreDevices(): List<NetworkDevice>
+    suspend fun editSubscription(subscription: Subscription): SubscriptionResponse
 }
