@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentServiceOrderBinding
@@ -40,10 +39,10 @@ class RegisterServiceOrderFragment() : BaseFragment() {
     }
 
     private fun observeServiceOrderResponse() {
-        viewModel.serviceOrderResponseLiveData.observe(viewLifecycleOwner) { response ->
+        viewModel.uiState.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is RegisterServiceOrderResponse.OnError -> showErrorDialog()
-                is RegisterServiceOrderResponse.ServiceOrderRegisterSuccess -> showSuccessDialog()
+                is RegisterServiceOrderUiState.ServiceOrderRegisterErrorOrder -> showErrorDialog()
+                is RegisterServiceOrderUiState.ServiceOrderRegisterSuccessOrder -> showSuccessDialog()
             }
         }
     }

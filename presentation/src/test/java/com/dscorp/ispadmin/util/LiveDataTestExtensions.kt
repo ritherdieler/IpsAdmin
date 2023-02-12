@@ -70,3 +70,14 @@ fun <T> LiveData<T>.getValueForTest(): T? {
     removeObserver(observer)
     return value
 }
+
+fun <T> LiveData<T>.mGetValueForTest(): T? {
+    var value: T? = null
+    val observer = Observer<T> {
+        value = it
+    }
+    observeForever(observer)
+    removeObserver(observer)
+    return value
+}
+

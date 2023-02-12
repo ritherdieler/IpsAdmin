@@ -1,10 +1,11 @@
 package com.dscorp.ispadmin.presentation.ui.features.registration
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityRegisterBinding
+import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants.REGISTER_USER
+import com.dscorp.ispadmin.presentation.extension.analytics.sendSignUpEvent
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
@@ -26,7 +27,7 @@ class RegisterActivity : BaseActivity() {
 
         binding.btRegister.setOnClickListener {
             register()
-
+            firebaseAnalytics.sendSignUpEvent(REGISTER_USER)
         }
 
         observe()
@@ -34,7 +35,6 @@ class RegisterActivity : BaseActivity() {
 
 
     }
-
 
 
     private fun observeRegisterResponse() {
@@ -54,8 +54,10 @@ class RegisterActivity : BaseActivity() {
                 is RegisterFormError.OnEtPassword1Error -> binding.tlPassword1.error = it.error
                 is RegisterFormError.OnEtPassword2Error -> binding.tlPassword2.error = it.error
                 is RegisterFormError.OnEtUserError -> binding.tlUser.error = it.error
-                is RegisterFormError.OnEtFirstNameIsInvalidError -> binding.tlFirstName.error = it.error
-                is RegisterFormError.OnEtLastNameIsInvalidError -> binding.tlLastName.error = it.error
+                is RegisterFormError.OnEtFirstNameIsInvalidError -> binding.tlFirstName.error =
+                    it.error
+                is RegisterFormError.OnEtLastNameIsInvalidError -> binding.tlLastName.error =
+                    it.error
             }
         }
     }
@@ -80,9 +82,10 @@ class RegisterActivity : BaseActivity() {
             lastName = lastnametext,
         )
     }
+
     private fun observeCleanError() {
         viewModel.cleanErrorFormLiveData.observe(this) { cleanError ->
-            when(cleanError){
+            when (cleanError) {
                 CleanFormErrors.OnEtFirstNameCleanError -> binding.tlFirstName.error = null
                 CleanFormErrors.OnEtLastNameCleanError -> binding.tlLastName.error = null
                 CleanFormErrors.OnEtPassword1CleanError -> binding.tlPassword1.error = null

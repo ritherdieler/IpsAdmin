@@ -274,4 +274,13 @@ class Repository(val context: Context) : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun getCoreDevices(): List<NetworkDevice> {
+        val response = restApiServices.getCoreDevices()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
 }

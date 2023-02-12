@@ -18,12 +18,13 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.KoinTest
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = KoinAppForInstrumentation::class)
-class PaymentHistoryViewModelTest : KoinTest {
+class PaymentHistoryViewModelTest : AutoCloseKoinTest() {
 
     private lateinit var mockWebServer: MockWebServer
 
@@ -43,7 +44,6 @@ class PaymentHistoryViewModelTest : KoinTest {
     fun tearDown() {
         mockWebServer.shutdown()
         IdlingRegistry.getInstance().unregister(okHttp3IdlingResource)
-        stopKoin()
     }
 
     @Test
@@ -53,7 +53,6 @@ class PaymentHistoryViewModelTest : KoinTest {
 
         // When
         viewModel.getLastPayments(1, 10)
-        Espresso.onIdle()
 
         // Then
         val value = viewModel.uiStateLiveData.getValueForTest()
@@ -67,7 +66,7 @@ class PaymentHistoryViewModelTest : KoinTest {
 
         // When
         viewModel.getLastPayments(1, 10)
-        Espresso.onIdle()
+
 
         // Then
         val value = viewModel.uiStateLiveData.getValueForTest()
@@ -84,7 +83,7 @@ class PaymentHistoryViewModelTest : KoinTest {
         )
         // When
         viewModel.getFilteredPaymentHistory(request)
-        Espresso.onIdle()
+
 
         // Then
         val value = viewModel.uiStateLiveData.getValueForTest()
@@ -99,7 +98,7 @@ class PaymentHistoryViewModelTest : KoinTest {
 
         // When
         viewModel.getFilteredPaymentHistory(request)
-        Espresso.onIdle()
+
 
         // Then
         val value = (viewModel.uiStateLiveData.getValueForTest() as PaymentHistoryUiState.OnError)

@@ -143,6 +143,9 @@
         <action
             android:id="@+id/findSubscription_to_register_serviceOrder"
             app:destination="@id/register_service_order_fragment" />
+        <action
+            android:id="@+id/action_nav_find_subscriptions_to_editSubscriptionFragment"
+            app:destination="@id/editSubscriptionFragment" />
     </fragment>
 
     <fragment
@@ -187,5 +190,14 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileFragment"
         android:label="fragment_my_profile" >
         <argument android:name="user" />
+    </fragment>
+    <fragment
+        android:id="@+id/editSubscriptionFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFragment"
+        android:label="fragment_edit_subscription"
+        tools:layout="@layout/fragment_edit_subscription" >
+        <argument
+            android:name="subscription"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
     </fragment>
 </navigation>

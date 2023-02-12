@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.serviceorder.register
+package com.dscorp.ispadmin.presentation.ui.features.serviceorder.register
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
@@ -6,9 +6,7 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderFormError.*
-import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderResponse.*
-import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderFormError
-import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderViewModel
+import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderUiState.*
 import com.dscorp.ispadmin.util.fromJson
 import com.dscorp.ispadmin.util.getValueForTest
 import com.dscorp.ispadmin.util.mockService
@@ -24,12 +22,13 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.GlobalContext.stopKoin
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.KoinTest
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = KoinAppForInstrumentation::class)
-class RegisterServiceOrderFragmentTest : KoinTest {
+class RegisterServiceOrderFragmentTest : AutoCloseKoinTest() {
 
     lateinit var mockWebServer: MockWebServer
     lateinit var viewModel: RegisterServiceOrderViewModel
@@ -47,7 +46,7 @@ class RegisterServiceOrderFragmentTest : KoinTest {
     fun tearDown() {
         mockWebServer.shutdown()
         IdlingRegistry.getInstance().unregister(okHttp3IdlingResource)
-        stopKoin()
+
     }
 
 
@@ -119,11 +118,10 @@ class RegisterServiceOrderFragmentTest : KoinTest {
         // When
         viewModel.subscription = subscription
         viewModel.registerServiceOrder(serviceOrder)
-        Espresso.onIdle()
 
         //Then
         val value =
-            viewModel.serviceOrderResponseLiveData.getValueForTest() as ServiceOrderRegisterSuccess
+            viewModel.uiState.getValueForTest() as ServiceOrderRegisterSuccessOrder
         assert(value.serviceOrder.id != null)
     }
 

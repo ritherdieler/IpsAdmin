@@ -1,0 +1,32 @@
+package com.dscorp.ispadmin.presentation.ui.features.subscription.edit
+
+import androidx.lifecycle.ViewModelProvider
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.dscorp.ispadmin.R
+
+class EditSubscriptionFragment : Fragment() {
+
+    companion object {
+        fun newInstance() = EditSubscriptionFragment()
+    }
+
+    private lateinit var viewModel: EditSubscriptionViewModel
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_edit_subscription, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(EditSubscriptionViewModel::class.java)
+        // TODO: Use the ViewModel
+    }
+
+}

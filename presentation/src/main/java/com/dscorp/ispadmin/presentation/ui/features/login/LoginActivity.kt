@@ -7,15 +7,21 @@ import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityLoginBinding
+import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
+import com.dscorp.ispadmin.presentation.extension.analytics.sendLoginEvent
+import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterActivity
 import com.example.cleanarchitecture.domain.domain.entity.Loging
+import com.example.cleanarchitecture.domain.domain.entity.User
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : BaseActivity() {
     lateinit var binding: ActivityLoginBinding
     val viewModel: LoginViewModel by viewModel()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +30,8 @@ class LoginActivity : BaseActivity() {
 
         observe()
         binding.btLogin.setOnClickListener {
+            firebaseAnalytics.sendLoginEvent(AnalyticsConstants.LOGIN)
             doLogin()
-
         }
 
         binding.tvCreateAccount.setOnClickListener {
@@ -52,8 +58,8 @@ class LoginActivity : BaseActivity() {
     private fun observeLoginFormError() {
         viewModel.loginFormErrorLiveData.observe(this) { formError ->
             when (formError) {
-                is LoginFormError.OnEtPassword -> binding.etPassword.setError(formError.error)
-                is LoginFormError.OnEtUser -> binding.etUser.setError(formError.error)
+                is LoginFormError.OnEtPassword -> binding.etPassword.error = formError.error
+                is LoginFormError.OnEtUser -> binding.etUser.error = formError.error
             }
         }
     }
@@ -62,12 +68,13 @@ class LoginActivity : BaseActivity() {
         viewModel.loginResponseLiveData.observe(this) { response ->
             when (response) {
                 is LoginResponse.OnError -> showErrorDialog(response.error.message)
-                is LoginResponse.OnLoginSucess -> navigateToMainActivity()
+                is LoginResponse.OnLoginSuccess -> navigateToMainActivity(response.user)
             }
         }
     }
 
-    private fun navigateToMainActivity() {
+    private fun navigateToMainActivity(user: User) {
+        FirebaseCrashlytics.getInstance().setUserId(user.id.toString())
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
@@ -97,11 +104,9 @@ class LoginActivity : BaseActivity() {
         viewModel.doLogin(login)
     }
 
-    fun navigateToRegister() {
+    private fun navigateToRegister() {
 
-        println("Click")
-
-        var intent = Intent(this, RegisterActivity::class.java)
+        val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
 }

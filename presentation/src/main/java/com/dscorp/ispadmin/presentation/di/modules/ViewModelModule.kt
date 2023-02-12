@@ -35,7 +35,7 @@ val viewModelModule = module {
     viewModel { PlaceViewModel() }
     viewModel { PlanViewModel() }
     viewModel { RegisterViewModel() }
-    viewModel { RegisterSubscriptionViewModel() }
+    viewModel { RegisterSubscriptionViewModel(get()) }
     viewModel { SubscriptionsListViewModel() }
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel() }
@@ -49,4 +49,5 @@ val viewModelModule = module {
     viewModel { DebtorsViewModel() }
     viewModel { IpPoolViewModel() }
     viewModel {MyProfileViewmodel()}
+
 }

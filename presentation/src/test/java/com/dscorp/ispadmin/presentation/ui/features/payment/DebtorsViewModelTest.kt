@@ -20,15 +20,15 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.KoinTest
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = KoinAppForInstrumentation::class)
-class DebtorsViewModelTest : KoinTest {
+class DebtorsViewModelTest : AutoCloseKoinTest() {
 
     private lateinit var mockWebServer: MockWebServer
-
     private lateinit var viewModel: DebtorsViewModel
     private lateinit var okHttp3IdlingResource: IdlingResource
 
@@ -38,14 +38,12 @@ class DebtorsViewModelTest : KoinTest {
         viewModel = DebtorsViewModel()
         okHttp3IdlingResource = registerIdlingResource()
         mockWebServer.start(8081)
-
     }
 
     @After
     fun tearDown() {
         IdlingRegistry.getInstance().unregister(okHttp3IdlingResource)
         mockWebServer.shutdown()
-        stopKoin()
     }
 
     @Test
@@ -55,7 +53,6 @@ class DebtorsViewModelTest : KoinTest {
 
         //when
         viewModel.fetchDebtors()
-        Espresso.onIdle()
 
         //then
         val value = viewModel.uiState.getValueForTest()
@@ -69,7 +66,7 @@ class DebtorsViewModelTest : KoinTest {
 
         //when
         viewModel.fetchDebtors()
-        Espresso.onIdle()
+
 
         //then
         val value = viewModel.uiState.getValueForTest()

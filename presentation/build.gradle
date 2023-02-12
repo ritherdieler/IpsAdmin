@@ -102,7 +102,7 @@ dependencies {
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
 
-    def koin_version = "3.3.2"
+    def koin_version = "3.3.3"
     // Koin Test features
     testImplementation "io.insert-koin:koin-test:$koin_version"
 

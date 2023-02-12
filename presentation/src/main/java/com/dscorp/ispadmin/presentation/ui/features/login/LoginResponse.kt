@@ -10,6 +10,6 @@ import com.example.cleanarchitecture.domain.domain.entity.User
  *
  **/
 sealed class LoginResponse {
-    class OnLoginSucess(val login: User) : LoginResponse()
+    class OnLoginSuccess(val user: User) : LoginResponse()
     class OnError(val error: Exception) : LoginResponse()
 }

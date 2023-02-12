@@ -8,23 +8,23 @@ package com.example.cleanarchitecture.domain.domain.entity
  *
  **/
  class Subscription(
-   var id: String? = null,
-   var code:String? = null,
-   var firstName: String,
-   var lastName: String,
-   var dni: String,
-   var password:String,
-   var address:String,
-   var phone:String,
-   var subscriptionDate:Long,
-   var isNew:Boolean? = null,
-   var serviceIsSuspended: Boolean? = null,
-   var planId:String,
-   var networkDeviceId: String,
-   var placeId:String,
-   var location: GeoLocation? = null,
-   var technicianId: String,
-   var napBoxId:String
+  var id: String? = null,
+  var code:String? = null,
+  var firstName: String,
+  var lastName: String,
+  var dni: String,
+  var password:String,
+  var address:String,
+  var phone:String,
+  var subscriptionDate:Long,
+  var isNew:Boolean? = null,
+  var serviceIsSuspended: Boolean? = null,
+  var planId:String,
+  var networkDeviceIds: List<String>,
+  var placeId:String,
+  var location: GeoLocation? = null,
+  var technicianId: String,
+  var napBoxId:String
 
 ):java.io.Serializable
 {

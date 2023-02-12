@@ -9,10 +9,12 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityMainBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : BaseActivity() {
     lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_main, null, true)

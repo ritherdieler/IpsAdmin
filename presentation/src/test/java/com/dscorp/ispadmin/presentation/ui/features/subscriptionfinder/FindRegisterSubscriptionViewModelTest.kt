@@ -20,6 +20,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
+import org.koin.test.AutoCloseKoinTest
 import org.koin.test.KoinTest
 import org.koin.test.inject
 import org.robolectric.annotation.Config
@@ -32,7 +33,7 @@ import kotlin.test.assertNotNull
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = KoinAppForInstrumentation::class)
-class FindRegisterSubscriptionViewModelTest : KoinTest {
+class FindRegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
     private val mockWebServer = MockWebServer()
 
     private lateinit var viewModel: FindSubscriptionViewModel
@@ -63,7 +64,6 @@ class FindRegisterSubscriptionViewModelTest : KoinTest {
     fun tearDown() {
         IdlingRegistry.getInstance().unregister(okHttp3IdlingResource)
         mockWebServer.shutdown()
-        stopKoin()
     }
 
     @Test
@@ -82,7 +82,6 @@ class FindRegisterSubscriptionViewModelTest : KoinTest {
         //then
         val value = viewModel.uiStateLiveData.getValueForTest() as OnSubscriptionFound
         assertNotNull(value)
-
     }
 
     @Test

@@ -38,4 +38,5 @@ interface IRepository {
     suspend fun registerIpPool(ipPool: IpPool): IpPool
     suspend fun getIpPoolList(): List<IpPool>
     suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit:Int): List<Payment>
+    suspend fun getCoreDevices():List<NetworkDevice>
 }

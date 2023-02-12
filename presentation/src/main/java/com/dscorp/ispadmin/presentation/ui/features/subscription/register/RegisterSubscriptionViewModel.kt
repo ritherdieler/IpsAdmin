@@ -4,17 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.extension.hasOnlyLetters
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionResponse.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent
 
-class RegisterSubscriptionViewModel : ViewModel() {
-
-    private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
-    val responseLiveData = MutableLiveData<RegisterSubscriptionResponse>()
+class RegisterSubscriptionViewModel(val repository: IRepository) : ViewModel() {
+    val uiState = MutableLiveData<RegisterSubscriptionUiState>()
     val formErrorLiveData = MutableLiveData<RegisterSubscriptionFormError>()
     val cleanFormLiveData = MutableLiveData<RegisterSubscriptionCleanForm>()
 
@@ -22,28 +19,31 @@ class RegisterSubscriptionViewModel : ViewModel() {
         getFormData()
     }
 
-    private fun getFormData() = viewModelScope.launch {
+    fun getFormData() = viewModelScope.launch {
         try {
             val devicesJob = async { repository.getDevices() }
             val plansJob = async { repository.getPlans() }
             val placeJob = async { repository.getPlaces() }
             val napBoxesJob = async { repository.getNapBoxes() }
             val deferredTechnicians = async { repository.getTechnicians() }
+            val coreDevicesJob = async { repository.getCoreDevices() }
+
             val devicesFromRepository = devicesJob.await()
             val plansFromRepository = plansJob.await()
             val placeFromRepository = placeJob.await()
             val technicians = deferredTechnicians.await()
             val napBoxesFromRepository = napBoxesJob.await()
+            val coreDevices = coreDevicesJob.await()
 
-            responseLiveData.postValue(
-                OnFormDataFound(
+            uiState.postValue(
+                FormDataFound(
                     plansFromRepository, devicesFromRepository, placeFromRepository,
-                    technicians, napBoxesFromRepository
+                    technicians, napBoxesFromRepository,coreDevices
                 )
             )
 
         } catch (e: Exception) {
-            responseLiveData.postValue(OnError(e))
+            uiState.postValue(FormDataError(e.message.toString()))
         }
     }
 
@@ -51,16 +51,15 @@ class RegisterSubscriptionViewModel : ViewModel() {
         try {
             if (formIsValid(subscription)) {
                 val subscriptionFromRepository = repository.doSubscription(subscription)
-                responseLiveData.postValue(
-                    OnRegisterSubscriptionRegistered(
+                uiState.postValue(
+                    RegisterSubscriptionRegistered(
                         subscriptionFromRepository
                     )
                 )
             }
 
         } catch (error: Exception) {
-            responseLiveData.postValue(OnError(error))
-
+            uiState.postValue(RegisterSubscriptionError(error.message.toString()))
         }
     }
 
@@ -75,7 +74,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtFirstNameHasNotErrors
 
         }
-        if(subscription.firstName.hasOnlyLetters()){
+        if (subscription.firstName.hasOnlyLetters()) {
             formErrorLiveData.value = RegisterSubscriptionFormError.OnEtFirstNameIsInvalidError()
             return false
         }
@@ -87,7 +86,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtLastNameHasNotErrors
         }
-        if(subscription.lastName.hasOnlyLetters()){
+        if (subscription.lastName.hasOnlyLetters()) {
             formErrorLiveData.value = RegisterSubscriptionFormError.OnEtLastNameIsInvalidError()
             return false
         }
@@ -161,7 +160,7 @@ class RegisterSubscriptionViewModel : ViewModel() {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtPlanNotErrors
         }
 
-        if (subscription.networkDeviceId.isEmpty()) {
+        if (subscription.networkDeviceIds.isEmpty()) {
             formErrorLiveData.value =
                 RegisterSubscriptionFormError.OnSpnNetworkDeviceError()
             return false
@@ -193,6 +192,10 @@ class RegisterSubscriptionViewModel : ViewModel() {
         }
         return true
     }
+
+
+
+
 }
 
 

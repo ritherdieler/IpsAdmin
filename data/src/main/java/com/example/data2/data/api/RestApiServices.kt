@@ -94,5 +94,8 @@ interface RestApiServices {
         @Query("subscriptionId") idSubscription: Int,
         @Query("limit") itemsLimit: Int
     ): Response<List<Payment>>
+
+    @GET("networkDevice/coreTypes")
+   suspend fun getCoreDevices(): Response<List<NetworkDevice>>
 }
 

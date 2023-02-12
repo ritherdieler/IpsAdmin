@@ -7,7 +7,6 @@ import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Loging
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
-import kotlin.math.log
 
 /**
  * Created by Sergio Carrillo Diestra on 20/11/2022.
@@ -26,7 +25,7 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             val response = repository.getUserSessions()
             if (response != null)
-                loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(response))
+                loginResponseLiveData.postValue(LoginResponse.OnLoginSuccess(response))
         }
     }
     fun doLogin(login: Loging) = viewModelScope.launch {
@@ -34,7 +33,7 @@ class LoginViewModel : ViewModel() {
         try {
             if (formIsValid(login)) {
                 val responseFromRepository = repository.doLogin(login)
-                loginResponseLiveData.postValue(LoginResponse.OnLoginSucess(responseFromRepository))
+                loginResponseLiveData.postValue(LoginResponse.OnLoginSuccess(responseFromRepository))
             }
         } catch (error: Exception) {
             loginResponseLiveData.postValue(LoginResponse.OnError(error))

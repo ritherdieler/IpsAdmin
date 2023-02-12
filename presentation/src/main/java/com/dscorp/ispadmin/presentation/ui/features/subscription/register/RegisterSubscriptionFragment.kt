@@ -7,17 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
+import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
+import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionCleanForm.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormError.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionResponse.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
@@ -32,7 +33,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private var selectedDate: Long = 0
     private var selectedLocation: LatLng? = null
     private var selectedPlan: Plan? = null
-    private var selectedNetworkDevice: NetworkDevice? = null
+    private var selectedNetworkDeviceOne: NetworkDevice? = null
+    private var selectedNetworkDeviceTwo: NetworkDevice? = null
+    private var selectedHostNetworkDevice: NetworkDevice? = null
     private var selectedPlace: Place? = null
     private var selectedTechnician: Technician? = null
     private var selectedNapBox: NapBox? = null
@@ -46,40 +49,14 @@ class RegisterSubscriptionFragment : BaseFragment() {
         observeResponse()
         observeFormError()
         observeCleanForm()
+
         binding.btSubscribirse.setOnClickListener {
+            firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
             registerSubscription()
         }
 
         binding.etSubscriptionDate.setOnClickListener {
-            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-
-            val dateValidatorMin = DateValidatorPointForward.from(
-                Calendar.getInstance().timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS)
-            )
-
-            val dateValidatorMax =
-                DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
-
-            val dateValidator =
-                CompositeDateValidator.allOf(listOf(dateValidatorMin, dateValidatorMax))
-
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Select date")
-                .setCalendarConstraints(
-                    CalendarConstraints.Builder()
-                        .setValidator(dateValidator)
-                        .build()
-                )
-                .build()
-
-            datePicker.addOnPositiveButtonClickListener {
-                selectedDate = it
-                val formatter = SimpleDateFormat("dd/MM/yyyy")
-                val formattedDate = formatter.format(calendar.timeInMillis)
-                binding.etSubscriptionDate.setText(formattedDate)
-            }
-
-            datePicker.show(childFragmentManager, "DatePicker")
+            showDatePicker()
         }
 
         binding.etLocationSubscription.setOnClickListener {
@@ -105,27 +82,28 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun observeResponse() {
-        viewModel.responseLiveData.observe(viewLifecycleOwner) { response ->
+        viewModel.uiState.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is OnError -> showErrorDialog()
-                is OnRegisterSubscriptionRegistered -> showSuccessDialog(response)
-                is OnFormDataFound -> fillFormSpinners(response)
+                is RegisterSubscriptionRegistered -> showSuccessDialog(response)
+                is RegisterSubscriptionError -> showErrorDialog(response.error)
+                is FormDataFound -> fillFormSpinners(response)
+                is FormDataError -> showErrorDialog(response.error)
             }
         }
     }
 
-    private fun showSuccessDialog(response: OnRegisterSubscriptionRegistered) {
+    private fun showSuccessDialog(response: RegisterSubscriptionRegistered) {
         showSuccessDialog("El registro numero ${response.subscription.dni} ah sido registrado correctamente")
     }
 
-    private fun fillFormSpinners(response: OnFormDataFound) {
+    private fun fillFormSpinners(response: FormDataFound) {
         setUpPlansSpinner(response.plans)
-        setUpNetworkDeviceSpinner(response.networkDevice)
+        setUpNetworkDeviceSpinners(response.networkDevices)
         setUpPlaceSpinner(response.places)
         setUpTechnicianSpinner(response.technicians)
-        setUpNapBoxSpinner(response.napBoxs)
+        setUpNapBoxSpinner(response.napBoxes)
+        setUpHostNetworkDeviceSpinners(response.hostNetworkDevices)
     }
-
 
     private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
@@ -167,7 +145,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is OnEtPhoneHasNotErrors -> binding.tlPhone.error = null
                 OnEtSubscriptionDateNotErrors -> binding.tlSubscriptionDate.error = null
                 OnEtPlanNotErrors -> binding.spnPlan.error = null
-                OnEtNetworkDeviceNotErrors -> binding.spnNetworkDevice.error = null
+                OnEtNetworkDeviceNotErrors -> binding.spnNetworkDeviceOne.error = null
                 OnEtNapBoxNotErrors -> binding.spnNapBox.error = null
                 OnEtPlaceNotErrors -> binding.spnPlace.error = null
                 OnEtTechnicianNotErrors -> binding.spnTechnician.error = null
@@ -202,7 +180,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun setSpnNetworkDeviceError(formError: OnSpnNetworkDeviceError) {
-        binding.spnNetworkDevice.error = formError.error
+        binding.spnNetworkDeviceOne.error = formError.error
     }
 
     private fun setSubscriptionDateError(formError: OnEtSubscriptionDateError) {
@@ -234,6 +212,11 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun registerSubscription() {
+
+        val installedDevices  = mutableListOf<String>()
+        selectedNetworkDeviceOne?.let { installedDevices.add(it.id.toString()) }
+        selectedNetworkDeviceTwo?.let { installedDevices.add(it.id.toString()) }
+
         val subscription = Subscription(
             firstName = binding.etFirstName.text.toString(),
             lastName = binding.etLastName.text.toString(),
@@ -242,7 +225,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             address = binding.etAddress.text.toString(),
             phone = binding.etPhone.text.toString(),
             planId = selectedPlan?.id ?: "",
-            networkDeviceId = selectedNetworkDevice?.id.toString(),
+            networkDeviceIds = installedDevices,
             placeId = selectedPlace?.id ?: "",
             location = GeoLocation(
                 selectedLocation?.latitude ?: 0.0,
@@ -264,15 +247,34 @@ class RegisterSubscriptionFragment : BaseFragment() {
             }
     }
 
-    private fun setUpNetworkDeviceSpinner(networkDevices: List<NetworkDevice>) {
+    private fun setUpNetworkDeviceSpinners(networkDevices: List<NetworkDevice>) {
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevices)
-        binding.etNetworkDevice.setAdapter(adapter)
-        binding.etNetworkDevice.onItemClickListener =
+
+        binding.etNetworkDeviceOne.setAdapter(adapter)
+        binding.etNetworkDeviceOne.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
-                selectedNetworkDevice = networkDevices[pos]
+                selectedNetworkDeviceOne = networkDevices[pos]
+            }
+
+        binding.etNetworkDeviceTwo.setAdapter(adapter)
+        binding.etNetworkDeviceTwo.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, pos, _ ->
+                selectedNetworkDeviceTwo = networkDevices[pos]
             }
     }
+
+    private fun setUpHostNetworkDeviceSpinners(networkDevice: List<NetworkDevice>) {
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevice)
+
+        binding.etHostDevice.setAdapter(adapter)
+        binding.etHostDevice.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, pos, _ ->
+                selectedHostNetworkDevice = networkDevice[pos]
+            }
+    }
+
 
     private fun setUpPlaceSpinner(places: List<Place>) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, places)
@@ -301,5 +303,37 @@ class RegisterSubscriptionFragment : BaseFragment() {
             AdapterView.OnItemClickListener { _, _, pos, _ ->
                 selectedNapBox = napBoxes[pos]
             }
+    }
+
+    private fun showDatePicker() {
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+        val dateValidatorMin = DateValidatorPointForward.from(
+            Calendar.getInstance().timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS)
+        )
+
+        val dateValidatorMax =
+            DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
+
+        val dateValidator =
+            CompositeDateValidator.allOf(listOf(dateValidatorMin, dateValidatorMax))
+
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select date")
+            .setCalendarConstraints(
+                CalendarConstraints.Builder()
+                    .setValidator(dateValidator)
+                    .build()
+            )
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener {
+            selectedDate = it
+            val formatter = SimpleDateFormat("dd/MM/yyyy")
+            val formattedDate = formatter.format(calendar.timeInMillis)
+            binding.etSubscriptionDate.setText(formattedDate)
+        }
+
+        datePicker.show(childFragmentManager, "DatePicker")
     }
 }

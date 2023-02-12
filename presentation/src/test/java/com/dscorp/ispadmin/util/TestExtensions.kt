@@ -23,6 +23,19 @@ fun KoinTest.mockService(mockWebServer: MockWebServer, urlToMock: String, respon
     }
 }
 
+fun KoinTest.mockServices(mockWebServer: MockWebServer, responses : Map<String, MockResponse>) {
+//responses in dispatcher
+    mockWebServer.dispatcher = object : Dispatcher() {
+        override fun dispatch(request: RecordedRequest): MockResponse {
+            return when (request.path) {
+                in responses.keys -> responses[request.path]!!
+                else -> throw Exception("No se encontro el path ${request.path}")
+            }
+        }
+    }
+
+}
+
 fun KoinTest.registerIdlingResource(): IdlingResource {
     val httpClient: OkHttpClient by inject()
 
