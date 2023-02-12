@@ -18,6 +18,7 @@ import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFormErrorUiState.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
@@ -78,8 +79,8 @@ class EditSubscriptionFragment : BaseFragment() {
     private fun observeResponse() {
         viewModel.editSubscriptionUiState.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is EditSubscriptionUiState.RegisterSubscriptionSuccess -> showSuccessDialog("Suscripción editada con éxito")
-                is EditSubscriptionUiState.RegisterSubscriptionError -> showErrorDialog(response.error)
+                is EditSubscriptionUiState.EditSubscriptionSuccess -> showSuccessDialog("Suscripción editada con éxito")
+                is EditSubscriptionUiState.EditSubscriptionError -> showErrorDialog(response.error)
                 is EditSubscriptionUiState.FormDataFound -> fillFormSpinners(response)
                 is EditSubscriptionUiState.FetchFormDataError -> showErrorDialog(response.error)
             }
@@ -96,8 +97,12 @@ class EditSubscriptionFragment : BaseFragment() {
     }
 
     private fun observeFormError() {
-        viewModel.editSubscriptionUiState.observe(viewLifecycleOwner) { formError ->
+        viewModel.editFormErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
+                is OnEtFirstNameErrorRegisterUiState -> TODO()
+                is OnEtFirstNameIsInvalidErrorRegisterUiState -> TODO()
+                is OnEtLastNameErrorRegisterUiState -> TODO()
+                is OnEtLastNameIsInvalidErrorRegisterUiState -> TODO()
                 is OnEtAddressesErrorRegisterUiState -> setEtAddressError(formError)
                 is OnEtNumberPhoneErrorRegisterUiState -> setEtNumberPhoneError(formError)
                 is OnEtPasswordErrorRegisterUiState -> setEtPasswordError(formError)
@@ -110,6 +115,7 @@ class EditSubscriptionFragment : BaseFragment() {
                 is OnPasswordIsInvalidErrorRegisterUiState -> binding.tlPassword.error =
                     formError.error
                 is HostUiStateDeviceErrorRegister -> binding.spnHostDevice.error = formError.error
+
                 //CLEAN FORM
                 is CleanEtPasswordHasNotErrors -> binding.tlPassword.error = null
                 is CleanEtAddressHasNotErrors -> binding.tlAddress.error = null
@@ -118,6 +124,8 @@ class EditSubscriptionFragment : BaseFragment() {
                 is CleanEtNetworkDeviceNotErrors -> binding.spnNetworkDeviceOne.error = null
                 is CleanEtNapBoxNotErrors -> binding.spnNapBox.error = null
                 is CleanEtPlaceNotErrors -> binding.spnPlace.error = null
+                CleanEtFirstNameHasNotErrors -> TODO()
+                CleanEtLastNameHasNotErrors -> TODO()
 
             }
         }
