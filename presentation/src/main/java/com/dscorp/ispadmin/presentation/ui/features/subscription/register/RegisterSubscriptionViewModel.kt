@@ -38,7 +38,7 @@ class RegisterSubscriptionViewModel(val repository: IRepository) : ViewModel() {
             uiState.postValue(
                 FormDataFound(
                     plansFromRepository, devicesFromRepository, placeFromRepository,
-                    technicians, napBoxesFromRepository,coreDevices
+                    technicians, napBoxesFromRepository, coreDevices
                 )
             )
 
@@ -190,10 +190,16 @@ class RegisterSubscriptionViewModel(val repository: IRepository) : ViewModel() {
         } else {
             cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtNapBoxNotErrors
         }
+
+        if (subscription.hostDeviceId == 0) {
+            formErrorLiveData.value =
+                RegisterSubscriptionFormError.HostDeviceError()
+            return false
+        } else {
+            cleanFormLiveData.value = RegisterSubscriptionCleanForm.OnEtNapBoxNotErrors
+        }
         return true
     }
-
-
 
 
 }

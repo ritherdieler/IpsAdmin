@@ -27,6 +27,7 @@ sealed class RegisterSubscriptionFormError(val error:String) {
         const val PHONE_IS_INVALID_ERROR ="Requiere 9 digitos"
         const val FIRST_NAME_IS_INVALID_ERROR ="Este nombre no es valido"
         const val LAST_NAME_IS_INVALID_ERROR ="Este nombre no es valido"
+
     }
     class OnEtFirstNameError : RegisterSubscriptionFormError(FIRST_NAME_ERROR)
     class OnEtLastNameError : RegisterSubscriptionFormError(LAST_NAME_ERROR)
@@ -46,6 +47,6 @@ sealed class RegisterSubscriptionFormError(val error:String) {
     class OnPhoneIsInvalidError : RegisterSubscriptionFormError(PHONE_IS_INVALID_ERROR)
     class OnEtFirstNameIsInvalidError : RegisterSubscriptionFormError(FIRST_NAME_IS_INVALID_ERROR)
     class OnEtLastNameIsInvalidError : RegisterSubscriptionFormError(LAST_NAME_IS_INVALID_ERROR)
-
+    class HostDeviceError : RegisterSubscriptionFormError(SPN_NETWORK_DEVICE_ERROR)
 
 }

@@ -126,6 +126,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is OnSpnTechnicianError -> binding.spnTechnician.error = formError.error
                 is OnEtFirstNameIsInvalidError -> binding.tlFirstName.error = formError.error
                 is OnEtLastNameIsInvalidError -> binding.tlLastName.error = formError.error
+                is HostDeviceError -> binding.spnHostDevice.error = formError.error
             }
         }
     }
@@ -213,9 +214,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
     private fun registerSubscription() {
 
-        val installedDevices  = mutableListOf<String>()
-        selectedNetworkDeviceOne?.let { installedDevices.add(it.id.toString()) }
-        selectedNetworkDeviceTwo?.let { installedDevices.add(it.id.toString()) }
+        val installedDevices  = mutableListOf<Int>()
+        selectedNetworkDeviceOne?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
+        selectedNetworkDeviceTwo?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
 
         val subscription = Subscription(
             firstName = binding.etFirstName.text.toString(),
@@ -233,7 +234,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
             ),
             technicianId = selectedTechnician?.id ?: "",
             napBoxId = selectedNapBox?.id ?: "",
-            subscriptionDate = selectedDate
+            subscriptionDate = selectedDate,
+            hostDeviceId = selectedHostNetworkDevice?.id ?:0,
         )
         viewModel.registerSubscription(subscription)
     }

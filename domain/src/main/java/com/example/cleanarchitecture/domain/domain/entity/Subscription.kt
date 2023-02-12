@@ -20,11 +20,12 @@ package com.example.cleanarchitecture.domain.domain.entity
   var isNew:Boolean? = null,
   var serviceIsSuspended: Boolean? = null,
   var planId:String,
-  var networkDeviceIds: List<String>,
+  var networkDeviceIds: List<Int>,
   var placeId:String,
   var location: GeoLocation? = null,
   var technicianId: String,
-  var napBoxId:String
+  var napBoxId:String,
+  var hostDeviceId:Int
 
 ):java.io.Serializable
 {
