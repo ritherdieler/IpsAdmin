@@ -40,7 +40,9 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-   private fun formIsValid(login: Loging): Boolean {
+
+
+    private fun formIsValid(login: Loging): Boolean {
 
        if (login.username.isEmpty()) {
            loginFormErrorLiveData.value=LoginFormError.OnEtUser("el usuario no puede estar vacio")
@@ -50,9 +52,6 @@ class LoginViewModel : ViewModel() {
        if (login.password.isEmpty()) {
            loginFormErrorLiveData.value = LoginFormError.OnEtPassword("la contrana no puede estar vacia")
            return false
-       }
-       if(login.checkBox==true){
-
        }
        return true
    }

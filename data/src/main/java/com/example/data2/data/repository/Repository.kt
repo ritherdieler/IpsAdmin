@@ -5,9 +5,11 @@ import android.content.SharedPreferences
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.api.RestApiServices
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
+import com.example.data2.data.di.provideHttpClient
 import com.example.data2.data.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.math.log
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -19,7 +21,7 @@ import org.koin.core.component.inject
 class Repository(val context: Context) : IRepository, KoinComponent {
 
     private val restApiServices: RestApiServices by inject()
-    private val prefs:SharedPreferences by inject()
+    private val prefs: SharedPreferences by inject()
 
     override suspend fun registerUser(user: User): User {
         val response = restApiServices.registerUser(user)
@@ -34,15 +36,16 @@ class Repository(val context: Context) : IRepository, KoinComponent {
     override suspend fun doLogin(login: Loging): User {
         val response = restApiServices.doLoging(login)
         if (response.code() == 200) {
-            saveUserSession(response.body()!!)
+            saveUserSession(response.body()!!,login.checkBox)
             return response.body()!!
         } else {
             throw Exception("Usuario o Contraseña Incorrecta")
         }
     }
 
-    override suspend fun saveUserSession(user: User) {
+    override suspend fun saveUserSession(user: User, rememberSessionCheckBoxStatus:Boolean) {
         val editor = prefs.edit()
+        editor.putBoolean(REMEMBER_CHECKBOX_STATUS,rememberSessionCheckBoxStatus )
         editor.putString(SESSION_NAME, user.name)
         editor.putString(SESSION_LAST_NAME, user.lastName)
         editor.putString(SESSION_USER_NAME, user.username)
@@ -53,16 +56,31 @@ class Repository(val context: Context) : IRepository, KoinComponent {
     }
 
     override suspend fun getUserSession(): User? {
-        val user = User(
-            id = prefs.getInt(SESSION_ID, 0),
-            name = prefs.getString(SESSION_NAME, "")!!,
-            lastName = prefs.getString(SESSION_LAST_NAME, "")!!,
-            type = prefs.getInt(SESSION_TYPE, 0),
-            username = prefs.getString(SESSION_USER_NAME, "")!!,
-            password = "",
-            verified = prefs.getBoolean(SESSION_VERIFIED, false),
-        )
-        return if (user.id != 0) user else null
+        val rememberCheckBoxStatus = prefs.getBoolean(REMEMBER_CHECKBOX_STATUS, false)
+        return if(rememberCheckBoxStatus) {
+            User(
+                id = prefs.getInt(SESSION_ID, 0),
+                name = prefs.getString(SESSION_NAME, "")!!,
+                lastName = prefs.getString(SESSION_LAST_NAME, "")!!,
+                type = prefs.getInt(SESSION_TYPE, 0),
+                username = prefs.getString(SESSION_USER_NAME, "")!!,
+                password = "",
+                verified = prefs.getBoolean(SESSION_VERIFIED, false),
+            )
+        }else{
+            null
+        }
+    }
+
+    override suspend fun saveCheckBox(login: Loging) {
+        val editor = prefs.edit()
+        editor.putBoolean("checkbox", login.checkBox)
+        editor.apply()
+    }
+
+    override suspend fun getCheckBox(login: Loging) {
+        TODO("Not yet implemented")
+
     }
 
     override suspend fun clearUserSession() {

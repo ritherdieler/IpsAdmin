@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.presentation.ui.features.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Checkable
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
@@ -29,6 +30,7 @@ class LoginActivity : BaseActivity() {
         setContentView(binding.root)
 
         observe()
+
         binding.btLogin.setOnClickListener {
             firebaseAnalytics.sendLoginEvent(AnalyticsConstants.LOGIN)
             doLogin()
@@ -54,6 +56,7 @@ class LoginActivity : BaseActivity() {
             }
         }
     }
+
 
     private fun observeLoginFormError() {
         viewModel.loginFormErrorLiveData.observe(this) { formError ->
@@ -94,7 +97,6 @@ class LoginActivity : BaseActivity() {
     }
 
     fun doLogin() {
-
         val login = Loging(
             binding.etUser.text.toString(),
             binding.etPassword.text.toString(),

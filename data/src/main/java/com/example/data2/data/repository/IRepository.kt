@@ -13,8 +13,11 @@ import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 interface IRepository {
     suspend fun registerUser(user: User): User
     suspend fun doLogin(login: Loging): User
-    suspend fun saveUserSession(user: User)
-    suspend fun getUserSession(): User?
+    suspend fun saveUserSession(user:User, rememberSessionCheckBoxStatus:Boolean)
+    suspend fun getUserSession():User?
+    suspend fun saveCheckBox(login: Loging)
+    suspend fun getCheckBox(login: Loging)
+
     suspend fun clearUserSession()
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
