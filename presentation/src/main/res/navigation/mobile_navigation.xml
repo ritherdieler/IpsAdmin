@@ -19,7 +19,7 @@
         android:id="@+id/nav_subscription"
         android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFragment"
         android:label="SubscriptionFragment"
-        tools:layout="@layout/fragment_subscription">
+        tools:layout="@layout/fragment_register_subscription">
         <action
             android:id="@+id/action_nav_subscription_to_mapDialog"
             app:destination="@id/mapDialog" />

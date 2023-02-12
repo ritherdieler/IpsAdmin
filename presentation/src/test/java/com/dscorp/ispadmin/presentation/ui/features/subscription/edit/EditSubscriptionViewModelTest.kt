@@ -4,7 +4,7 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFormError
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.util.*
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
@@ -104,9 +104,9 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
 
         // When
         viewModel.editSubscription(subscription)
-        val value = viewModel.formErrorLiveData.getValueForTest()
+        val value = viewModel.registerFormErrorLiveData.getValueForTest()
 
         // Then
-        assertTrue(value is SubscriptionFormError.OnEtFirstNameError)
+        assertTrue(value is RegisterSubscriptionFormErrorUiState.OnEtFirstNameErrorRegisterUiState)
     }
 }

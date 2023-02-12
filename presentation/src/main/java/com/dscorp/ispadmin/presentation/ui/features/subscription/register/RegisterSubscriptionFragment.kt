@@ -16,10 +16,8 @@ import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFormError
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionCleanForm.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionFormError.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
@@ -51,7 +49,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
         viewModel.getFormData()
         observeResponse()
         observeFormError()
-        observeCleanForm()
 
         binding.btSubscribirse.setOnClickListener {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
@@ -109,69 +106,62 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun observeFormError() {
-        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
+        viewModel.registerFormErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is OnEtAddressesError -> setEtAddressError(formError)
-                is OnEtDniError -> setEtDniError(formError)
-                is OnEtFirstNameError -> setEtFirstNameError(formError)
-                is OnEtLastNameError -> setEtLastNameError(formError)
-                is OnEtNumberPhoneError -> setEtNumberPhoneError(formError)
-                is OnEtPasswordError -> setEtPasswordError(formError)
-                is OnEtSubscriptionDateError -> setSubscriptionDateError(formError)
-                is OnSpnNetworkDeviceError -> setSpnNetworkDeviceError(formError)
-                is OnSpnPlanError -> setSpnPlanError(formError)
-                is OnSpnPlaceError -> setSpnPlaceError(formError)
-                is OnEtLocationError -> setEtLocationError(formError)
-                is OnSpnNapBoxError -> setSpnNapBoxError(formError)
-                is OnDniIsInvalidError -> setDniIsInvalidError(formError)
-                is OnPhoneIsInvalidError -> binding.tlPhone.error = formError.error
-                is OnPasswordIsInvalidError -> binding.tlPassword.error = formError.error
-                is OnSpnTechnicianError -> binding.spnTechnician.error = formError.error
-                is OnEtFirstNameIsInvalidError -> binding.tlFirstName.error = formError.error
-                is OnEtLastNameIsInvalidError -> binding.tlLastName.error = formError.error
-                is HostDeviceError -> binding.spnHostDevice.error = formError.error
+                is OnEtAddressesErrorRegisterUiState -> setEtAddressError(formError)
+                is OnEtDniErrorRegisterUiState -> setEtDniError(formError)
+                is OnEtFirstNameErrorRegisterUiState -> setEtFirstNameError(formError)
+                is OnEtLastNameErrorRegisterUiState -> setEtLastNameError(formError)
+                is OnEtNumberPhoneErrorRegisterUiState -> setEtNumberPhoneError(formError)
+                is OnEtPasswordErrorRegisterUiState -> setEtPasswordError(formError)
+                is OnEtRegisterSubscriptionDateErrorUiState -> setSubscriptionDateError(formError)
+                is OnSpnNetworkDeviceErrorRegisterUiState -> setSpnNetworkDeviceError(formError)
+                is OnSpnPlanErrorRegisterUiState -> setSpnPlanError(formError)
+                is OnSpnPlaceErrorRegisterUiState -> setSpnPlaceError(formError)
+                is OnEtLocationErrorRegisterUiState -> setEtLocationError(formError)
+                is OnSpnNapBoxErrorRegisterUiState -> setSpnNapBoxError(formError)
+                is OnDniIsInvalidErrorRegisterUiState -> setDniIsInvalidError(formError)
+                is OnPhoneIsInvalidErrorRegisterUiState -> binding.tlPhone.error = formError.error
+                is OnPasswordIsInvalidErrorRegisterUiState -> binding.tlPassword.error = formError.error
+                is OnSpnTechnicianErrorRegisterUiState -> binding.spnTechnician.error = formError.error
+                is OnEtFirstNameIsInvalidErrorRegisterUiState -> binding.tlFirstName.error =formError.error
+                is OnEtLastNameIsInvalidErrorRegisterUiState -> binding.tlLastName.error = formError.error
+                is HostUiStateDeviceErrorRegister -> binding.spnHostDevice.error = formError.error
+                //CLEAN FORM
+                is CleanEtDniHasNotErrors -> clearTlDniError()
+                is CleanEtFirstNameHasNotErrors -> clearTlFirstNameErrors()
+                is CleanEtLastNameHasNotErrors -> binding.tlLastName.error = null
+                is CleanEtPasswordHasNotErrors -> binding.tlPassword.error = null
+                is CleanEtAddressHasNotErrors -> binding.tlAddress.error = null
+                is CleanEtPhoneHasNotErrors -> binding.tlPhone.error = null
+                is CleanEtSubscriptionDateNotErrorsUiState -> binding.tlSubscriptionDate.error = null
+                is CleanEtPlanNotErrors -> binding.spnPlan.error = null
+                is CleanEtNetworkDeviceNotErrors -> binding.spnNetworkDeviceOne.error = null
+                is CleanEtNapBoxNotErrors -> binding.spnNapBox.error = null
+                is CleanEtPlaceNotErrors -> binding.spnPlace.error = null
+                is CleanEtTechnicianNotErrors -> binding.spnTechnician.error = null
             }
         }
     }
 
-    private fun setDniIsInvalidError(formError: SubscriptionFormError) {
+    private fun setDniIsInvalidError(formError: RegisterSubscriptionFormErrorUiState) {
         binding.tlDni.error = formError.error
     }
 
-    private fun observeCleanForm() {
-        viewModel.cleanFormLiveData.observe(viewLifecycleOwner) { cleanForm ->
-            when (cleanForm) {
-                is OnEtDniHasNotErrors -> clearTlDniError()
-                is OnEtFirstNameHasNotErrors -> clearTlFirstNameErrors()
-                is OnEtLastNameHasNotErrors -> binding.tlLastName.error = null
-                is OnEtPasswordHasNotErrors -> binding.tlPassword.error = null
-                is OnEtAddressHasNotErrors -> binding.tlAddress.error = null
-                is OnEtPhoneHasNotErrors -> binding.tlPhone.error = null
-                OnEtSubscriptionDateNotErrors -> binding.tlSubscriptionDate.error = null
-                OnEtPlanNotErrors -> binding.spnPlan.error = null
-                OnEtNetworkDeviceNotErrors -> binding.spnNetworkDeviceOne.error = null
-                OnEtNapBoxNotErrors -> binding.spnNapBox.error = null
-                OnEtPlaceNotErrors -> binding.spnPlace.error = null
-                OnEtTechnicianNotErrors -> binding.spnTechnician.error = null
-            }
-
-        }
-
-    }
 
     private fun clearTlDniError() {
         binding.tlDni.error = null
     }
 
-    private fun setSpnNapBoxError(formError: OnSpnNapBoxError) {
+    private fun setSpnNapBoxError(formError: OnSpnNapBoxErrorRegisterUiState) {
         binding.spnNapBox.error = formError.error
     }
 
-    private fun setEtLocationError(formError: OnEtLocationError) {
+    private fun setEtLocationError(formError: OnEtLocationErrorRegisterUiState) {
         binding.tlLocationSubscription.error = formError.error
     }
 
-    private fun setSpnPlaceError(formError: OnSpnPlaceError) {
+    private fun setSpnPlaceError(formError: OnSpnPlaceErrorRegisterUiState) {
         binding.spnPlace.error = formError.error
     }
 
@@ -179,45 +169,45 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.tlFirstName.error = null
     }
 
-    private fun setSpnPlanError(formError: OnSpnPlanError) {
+    private fun setSpnPlanError(formError: OnSpnPlanErrorRegisterUiState) {
         binding.spnPlan.error = formError.error
     }
 
-    private fun setSpnNetworkDeviceError(formError: OnSpnNetworkDeviceError) {
+    private fun setSpnNetworkDeviceError(formError: OnSpnNetworkDeviceErrorRegisterUiState) {
         binding.spnNetworkDeviceOne.error = formError.error
     }
 
-    private fun setSubscriptionDateError(formError: OnEtSubscriptionDateError) {
+    private fun setSubscriptionDateError(formError: OnEtRegisterSubscriptionDateErrorUiState) {
         binding.tlSubscriptionDate.error = formError.error
     }
 
-    private fun setEtPasswordError(formError: OnEtPasswordError) {
+    private fun setEtPasswordError(formError: OnEtPasswordErrorRegisterUiState) {
         binding.tlPassword.error = formError.error
     }
 
-    private fun setEtNumberPhoneError(formError: OnEtNumberPhoneError) {
+    private fun setEtNumberPhoneError(formError: OnEtNumberPhoneErrorRegisterUiState) {
         binding.tlPhone.error = formError.error
     }
 
-    private fun setEtLastNameError(formError: OnEtLastNameError) {
+    private fun setEtLastNameError(formError: OnEtLastNameErrorRegisterUiState) {
         binding.tlLastName.error = formError.error
     }
 
-    private fun setEtFirstNameError(formError: OnEtFirstNameError) {
+    private fun setEtFirstNameError(formError: OnEtFirstNameErrorRegisterUiState) {
         binding.tlFirstName.error = formError.error
     }
 
-    private fun setEtDniError(formError: OnEtDniError) {
+    private fun setEtDniError(formError: OnEtDniErrorRegisterUiState) {
         binding.tlDni.error = formError.error
     }
 
-    private fun setEtAddressError(formError: OnEtAddressesError) {
+    private fun setEtAddressError(formError: OnEtAddressesErrorRegisterUiState) {
         binding.tlAddress.error = formError.error
     }
 
     private fun registerSubscription() {
 
-        val installedDevices  = mutableListOf<Int>()
+        val installedDevices = mutableListOf<Int>()
         selectedNetworkDeviceOne?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
         selectedNetworkDeviceTwo?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
 
@@ -238,7 +228,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             technicianId = selectedTechnician?.id ?: "",
             napBoxId = selectedNapBox?.id ?: "",
             subscriptionDate = selectedDate,
-            hostDeviceId = selectedHostNetworkDevice?.id ?:0,
+            hostDeviceId = selectedHostNetworkDevice?.id ?: 0,
         )
         viewModel.registerSubscription(subscription)
     }
