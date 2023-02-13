@@ -46,8 +46,7 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
     fun `when edit subscription is called then should return EditSubscriptionSuccess state`() {
         // Given
         val subscription = Subscription(
-            id = "123",
-            code = "123",
+            id = 1,
             firstName = "sergio",
             lastName = "carrillo diestra",
             dni = "48271836",
@@ -61,7 +60,7 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
             networkDeviceIds = listOf(1, 2, 3),
             placeId = "1",
             location = GeoLocation(9999999.0,9999999.0),
-            technicianId = "123",
+            technicianId = 123,
             napBoxId = "123",
             hostDeviceId = 23
         )
@@ -81,8 +80,8 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
     {
         // Given
         val subscription = Subscription(
-            id = "",
-            code = "",
+            id = 123,
+
             firstName = "",
             lastName = "",
             dni = "",
@@ -96,7 +95,7 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
             networkDeviceIds = listOf(1, 2, 3),
             placeId = "1",
             location = GeoLocation(0.0,9999999.0),
-            technicianId = "123",
+            technicianId = 123,
             napBoxId = "123",
             hostDeviceId = 23
         )

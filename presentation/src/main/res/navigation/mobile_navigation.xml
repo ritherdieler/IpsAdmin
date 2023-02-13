@@ -199,5 +199,8 @@
         <argument
             android:name="subscription"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+        <action
+            android:id="@+id/action_editSubscriptionFragment_to_mapDialog"
+            app:destination="@id/mapDialog" />
     </fragment>
 </navigation>

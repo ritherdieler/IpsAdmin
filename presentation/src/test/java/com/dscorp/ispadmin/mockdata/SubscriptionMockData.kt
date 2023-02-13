@@ -55,7 +55,7 @@ val subscriptionListMock = listOf(
             uploadSpeed = "123"
         ),
         technician = Technician(
-            id = "1",
+            id = 1,
             firstName = "asd",
             lastName = "asd",
             dni = "123",

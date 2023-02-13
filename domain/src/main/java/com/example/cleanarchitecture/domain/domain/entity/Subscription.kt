@@ -8,8 +8,7 @@ package com.example.cleanarchitecture.domain.domain.entity
  *
  **/
  class Subscription(
-  var id: String? = null,
-  var code:String? = null,
+  var id: Int? = null,
   var firstName: String,
   var lastName: String,
   var dni: String,
@@ -23,7 +22,7 @@ package com.example.cleanarchitecture.domain.domain.entity
   var networkDeviceIds: List<Int>,
   var placeId:String,
   var location: GeoLocation? = null,
-  var technicianId: String,
+  var technicianId: Int? = null,
   var napBoxId:String,
   var hostDeviceId:Int
 

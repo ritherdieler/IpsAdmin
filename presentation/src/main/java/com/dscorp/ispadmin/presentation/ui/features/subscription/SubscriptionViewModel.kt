@@ -9,6 +9,7 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscr
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.util.Constants
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidNameOrLastName
@@ -73,7 +74,7 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
 
     fun editSubscription(subscription: Subscription) = viewModelScope.launch {
         try {
-            if (!registrationFormIsValid(subscription)) return@launch
+            if (!editFormIsValid(subscription)) return@launch
             val response = repository.editSubscription(subscription)
             editSubscriptionUiState.postValue(EditSubscriptionSuccess(response))
         } catch (e: Exception) {
@@ -93,11 +94,6 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
                 RegisterSubscriptionFormErrorUiState.CleanEtFirstNameHasNotErrors
 
         }
-        if (!subscription.firstName.isValidNameOrLastName()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtFirstNameIsInvalidErrorRegisterUiState()
-            return false
-        }
 
         if (subscription.lastName.isEmpty()) {
             registerFormErrorLiveData.value =
@@ -106,12 +102,6 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
         } else {
             registerFormErrorLiveData.value =
                 RegisterSubscriptionFormErrorUiState.CleanEtLastNameHasNotErrors
-        }
-
-        if (!subscription.lastName.isValidNameOrLastName()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtLastNameIsInvalidErrorRegisterUiState()
-            return false
         }
 
         if (subscription.dni.isEmpty()) {
@@ -201,7 +191,7 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
             registerFormErrorLiveData.value =
                 RegisterSubscriptionFormErrorUiState.CleanEtPlaceNotErrors
         }
-        if (subscription.technicianId.isEmpty()) {
+        if (subscription.technicianId == 0 || subscription.technicianId == null) {
             registerFormErrorLiveData.value =
                 RegisterSubscriptionFormErrorUiState.OnSpnTechnicianErrorRegisterUiState()
             return false
@@ -232,94 +222,104 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
 
     private fun editFormIsValid(subscription: Subscription): Boolean {
 
-        if (subscription.password.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtPasswordErrorRegisterUiState()
+        if (subscription.firstName.isEmpty()) {
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnEtFirstNameErrorRegisterUiState()
             return false
+
+        } else {
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.CleanEtFirstNameHasNotErrors
         }
 
-        if (subscription.password.length < 8) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnPasswordIsInvalidErrorRegisterUiState()
+
+        if (subscription.lastName.isEmpty() ) {
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnEtLastNameErrorRegisterUiState()
             return false
         } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtPasswordHasNotErrors
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.CleanEtLastNameHasNotErrors
         }
 
+        if (subscription.password.isEmpty() || subscription.password.length < 8) {
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnEtPasswordErrorRegisterUiState()
+            return false
+        }
+
+        if (subscription.dni.isEmpty()) {
+            editSubscriptionUiState.value = EditSubscriptionError(Constants.GENERIC_ERROR)
+            return false
+        }
+        if (subscription.technicianId == 0 || subscription.technicianId == null) {
+            editSubscriptionUiState.value = EditSubscriptionError(Constants.GENERIC_ERROR)
+            return false
+        }
         if (subscription.address.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtAddressesErrorRegisterUiState()
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnEtAddressesErrorRegisterUiState()
             return false
         } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtAddressHasNotErrors
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.CleanEtAddressHasNotErrors
         }
 
         if (subscription.location == null) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtLocationErrorRegisterUiState()
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnEtLocationErrorRegisterUiState()
             return false
         }
 
-        if (subscription.phone.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtNumberPhoneErrorRegisterUiState()
+        if (subscription.phone.isEmpty() || subscription.phone.length < 9) {
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnEtPhoneErrorRegisterUiState()
             return false
-        }
-
-        if (subscription.phone.length < 9) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnPhoneIsInvalidErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtPhoneHasNotErrors
         }
 
         if (subscription.planId.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnSpnPlanErrorRegisterUiState()
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnSpnPlanErrorRegisterUiState()
             return false
         } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtPlanNotErrors
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.CleanEtPlanNotErrors
         }
 
         if (subscription.networkDeviceIds.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnSpnNetworkDeviceErrorRegisterUiState()
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnSpnNetworkDeviceErrorRegisterUiState()
             return false
         } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtNetworkDeviceNotErrors
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.CleanEtNetworkDeviceNotErrors
         }
 
         if (subscription.placeId.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnSpnPlaceErrorRegisterUiState()
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnSpnPlanErrorRegisterUiState()
             return false
         } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtPlaceNotErrors
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.CleanEtPlaceNotErrors
         }
 
         if (subscription.napBoxId.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnSpnNapBoxErrorRegisterUiState()
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.OnSpnNapBoxErrorRegisterUiState()
             return false
         } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtNapBoxNotErrors
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.CleanEtNapBoxNotErrors
         }
 
         if (subscription.hostDeviceId == 0) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.HostUiStateDeviceErrorRegister()
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.HostDeviceError()
             return false
         } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtNapBoxNotErrors
+            editFormErrorLiveData.value =
+                EditSubscriptionFormErrorUiState.CleanEtNapBoxNotErrors
         }
         return true
     }

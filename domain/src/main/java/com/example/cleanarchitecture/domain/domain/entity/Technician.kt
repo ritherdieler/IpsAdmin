@@ -8,7 +8,7 @@ package com.example.cleanarchitecture.domain.domain.entity
  *
  **/
 data class Technician(
-    val id: String? = null,
+    val id: Int? = null,
     val firstName: String="",
     val lastName: String="",
     val dni: String="",

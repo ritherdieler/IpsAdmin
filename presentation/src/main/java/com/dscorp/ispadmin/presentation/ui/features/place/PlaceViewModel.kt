@@ -34,10 +34,6 @@ class PlaceViewModel : ViewModel() {
         } else {
             cleanErrorFormLiveData.value = CleanFormErrorsPlace.OnEtNamePlaceCleanError
         }
-        if (place.name.isValidNameOrLastName()) {
-            formErrorLiveData.value = FormError.OnEtNameIsInvalidError()
-            return false
-        }
 
         if (place.location == null) {
             formErrorLiveData.value = FormError.OnEtLocationError()

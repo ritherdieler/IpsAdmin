@@ -29,9 +29,11 @@ sealed class EditSubscriptionFormErrorUiState(val error:String? = null) {
         const val LAST_NAME_IS_INVALID_ERROR ="Este nombre no es valido"
 
     }
+    class OnEtFirstNameErrorRegisterUiState : EditSubscriptionFormErrorUiState(FIRST_NAME_ERROR)
+    class OnEtLastNameErrorRegisterUiState : EditSubscriptionFormErrorUiState(LAST_NAME_ERROR)
     class OnEtPasswordErrorRegisterUiState : EditSubscriptionFormErrorUiState(PASSWORD_ERROR)
     class OnEtAddressesErrorRegisterUiState : EditSubscriptionFormErrorUiState(ADDRESS_ERROR)
-    class OnEtNumberPhoneErrorRegisterUiState : EditSubscriptionFormErrorUiState(NUMBER_PHONE_ERROR)
+    class OnEtPhoneErrorRegisterUiState : EditSubscriptionFormErrorUiState(NUMBER_PHONE_ERROR)
     class OnSpnPlanErrorRegisterUiState : EditSubscriptionFormErrorUiState(SPN_PLAN_ERROR)
     class OnSpnNetworkDeviceErrorRegisterUiState : EditSubscriptionFormErrorUiState(SPN_NETWORK_DEVICE_ERROR)
     class OnSpnPlaceErrorRegisterUiState : EditSubscriptionFormErrorUiState(SPN_PLACE_ERROR)
@@ -39,9 +41,7 @@ sealed class EditSubscriptionFormErrorUiState(val error:String? = null) {
     class OnEtLocationErrorRegisterUiState : EditSubscriptionFormErrorUiState(LOCATION_ERROR)
     class OnPasswordIsInvalidErrorRegisterUiState : EditSubscriptionFormErrorUiState(PASSWORD_IS_INVALID_ERROR)
     class OnPhoneIsInvalidErrorRegisterUiState : EditSubscriptionFormErrorUiState(PHONE_IS_INVALID_ERROR)
-    class OnEtFirstNameIsInvalidErrorRegisterUiState : EditSubscriptionFormErrorUiState(FIRST_NAME_IS_INVALID_ERROR)
-    class OnEtLastNameIsInvalidErrorRegisterUiState : EditSubscriptionFormErrorUiState(LAST_NAME_IS_INVALID_ERROR)
-    class HostUiStateDeviceErrorRegister : EditSubscriptionFormErrorUiState(SPN_NETWORK_DEVICE_ERROR)
+    class HostDeviceError : EditSubscriptionFormErrorUiState(SPN_NETWORK_DEVICE_ERROR)
 
     object CleanEtLastNameHasNotErrors : EditSubscriptionFormErrorUiState()
     object CleanEtFirstNameHasNotErrors : EditSubscriptionFormErrorUiState()

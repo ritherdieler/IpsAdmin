@@ -35,7 +35,6 @@ class EditSubscriptionFragment : BaseFragment() {
     private var selectedNetworkDeviceTwo: NetworkDevice? = null
     private var selectedHostNetworkDevice: NetworkDevice? = null
     private var selectedPlace: Place? = null
-    private var selectedTechnician: Technician? = null
     private var selectedNapBox: NapBox? = null
     private val viewModel: SubscriptionViewModel by viewModel()
 
@@ -46,6 +45,7 @@ class EditSubscriptionFragment : BaseFragment() {
     ): View {
         viewModel.subscription = args.subscription
         viewModel.getFormData()
+        fillFormWithSubscriptionData()
         observeResponse()
         observeFormError()
 
@@ -55,12 +55,22 @@ class EditSubscriptionFragment : BaseFragment() {
         }
 
         binding.etLocationSubscription.setOnClickListener {
-            findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
+            findNavController().navigateSafe(R.id.action_editSubscriptionFragment_to_mapDialog)
         }
 
         observeMapDialogResult()
 
         return binding.root
+    }
+
+    private fun fillFormWithSubscriptionData() {
+        binding.etFirstName.setText(viewModel.subscription?.firstName)
+        binding.etLastName.setText(viewModel.subscription?.lastName)
+        binding.etAddress.setText(viewModel.subscription?.address)
+        binding.etPhone.setText(viewModel.subscription?.phone)
+        binding.etDni.setText(viewModel.subscription?.dni)
+        binding.etPassword.setText(viewModel.subscription?.password)
+        binding.etLocationSubscription.setText("${viewModel.subscription?.location?.latitude}, ${viewModel.subscription?.location?.longitude}")
     }
 
     private fun observeMapDialogResult() {
@@ -99,10 +109,10 @@ class EditSubscriptionFragment : BaseFragment() {
     private fun observeFormError() {
         viewModel.editFormErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is OnEtFirstNameIsInvalidErrorRegisterUiState -> binding.tlFirstName.error =formError.error
-                is OnEtLastNameIsInvalidErrorRegisterUiState -> binding.tlFirstName.error =formError.error
+                is OnEtFirstNameErrorRegisterUiState -> binding.tlFirstName.error = formError.error
+                is OnEtLastNameErrorRegisterUiState -> binding.tlFirstName.error = formError.error
                 is OnEtAddressesErrorRegisterUiState -> setEtAddressError(formError)
-                is OnEtNumberPhoneErrorRegisterUiState -> setEtNumberPhoneError(formError)
+                is OnEtPhoneErrorRegisterUiState -> setEtNumberPhoneError(formError)
                 is OnEtPasswordErrorRegisterUiState -> setEtPasswordError(formError)
                 is OnSpnNetworkDeviceErrorRegisterUiState -> setSpnNetworkDeviceError(formError)
                 is OnSpnPlanErrorRegisterUiState -> setSpnPlanError(formError)
@@ -112,7 +122,7 @@ class EditSubscriptionFragment : BaseFragment() {
                 is OnPhoneIsInvalidErrorRegisterUiState -> binding.tlPhone.error = formError.error
                 is OnPasswordIsInvalidErrorRegisterUiState -> binding.tlPassword.error =
                     formError.error
-                is HostUiStateDeviceErrorRegister -> binding.spnHostDevice.error = formError.error
+                is HostDeviceError -> binding.spnHostDevice.error = formError.error
 
                 //CLEAN FORM
                 is CleanEtPasswordHasNotErrors -> binding.tlPassword.error = null
@@ -122,8 +132,8 @@ class EditSubscriptionFragment : BaseFragment() {
                 is CleanEtNetworkDeviceNotErrors -> binding.spnNetworkDeviceOne.error = null
                 is CleanEtNapBoxNotErrors -> binding.spnNapBox.error = null
                 is CleanEtPlaceNotErrors -> binding.spnPlace.error = null
-                CleanEtFirstNameHasNotErrors -> binding.etFirstName.error = null
-                CleanEtLastNameHasNotErrors -> binding.etLastName.error = null
+                is CleanEtFirstNameHasNotErrors -> binding.etFirstName.error = null
+                is CleanEtLastNameHasNotErrors -> binding.etLastName.error = null
 
             }
         }
@@ -156,7 +166,7 @@ class EditSubscriptionFragment : BaseFragment() {
         binding.tlPassword.error = formError.error
     }
 
-    private fun setEtNumberPhoneError(formError: OnEtNumberPhoneErrorRegisterUiState) {
+    private fun setEtNumberPhoneError(formError: OnEtPhoneErrorRegisterUiState) {
         binding.tlPhone.error = formError.error
     }
 
@@ -171,31 +181,33 @@ class EditSubscriptionFragment : BaseFragment() {
         selectedNetworkDeviceOne?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
         selectedNetworkDeviceTwo?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
 
-        val subscription = Subscription(
+        var location: GeoLocation?
+        location = args.subscription.location
+        selectedLocation?.let {
+            location = GeoLocation(it.latitude, it.longitude)
+        }
 
+        val subscription = Subscription(
+            id = args.subscription.id ?: 0,
+            firstName = binding.etFirstName.text.toString(),
+            lastName = binding.etLastName.text.toString(),
             password = binding.etPassword.text.toString(),
             address = binding.etAddress.text.toString(),
+            dni = binding.etDni.text.toString(),
             phone = binding.etPhone.text.toString(),
             planId = selectedPlan?.id ?: "",
             networkDeviceIds = installedDevices,
             placeId = selectedPlace?.id ?: "",
-            location = GeoLocation(
-                selectedLocation?.latitude ?: 0.0,
-                selectedLocation?.longitude ?: 0.0
-            ),
-            technicianId = selectedTechnician?.id ?: "",
+            location = location,
+            technicianId = args.subscription.technician?.id,
             napBoxId = selectedNapBox?.id ?: "",
             subscriptionDate = selectedDate,
             hostDeviceId = selectedHostNetworkDevice?.id ?: 0,
-            id = null,
-            code = null,
-            firstName = "",
-            lastName = "",
-            dni = "",
-            isNew = null,
-            serviceIsSuspended = null,
-        )
-        viewModel.registerSubscription(subscription)
+            isNew = args.subscription.new,
+            serviceIsSuspended = args.subscription.serviceIsSuspended,
+
+            )
+        viewModel.editSubscription(subscription)
     }
 
     private fun setUpPlansSpinner(plans: List<Plan>) {
@@ -217,7 +229,7 @@ class EditSubscriptionFragment : BaseFragment() {
                 selectedNetworkDeviceOne = networkDevices[pos]
             }
 
-        binding.etNetworkDeviceOne.setAdapter(adapter)
+        binding.etNetworkDeviceTwo.setAdapter(adapter)
         binding.etNetworkDeviceTwo.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
                 selectedNetworkDeviceTwo = networkDevices[pos]

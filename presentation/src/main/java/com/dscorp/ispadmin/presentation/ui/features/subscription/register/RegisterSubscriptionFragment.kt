@@ -9,7 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.databinding.FragmentSubscriptionBinding
+import com.dscorp.ispadmin.databinding.FragmentRegisterSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
@@ -29,7 +29,7 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
 
 class RegisterSubscriptionFragment : BaseFragment() {
-    private val binding by lazy { FragmentSubscriptionBinding.inflate(layoutInflater) }
+    private val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
     private var selectedDate: Long = 0
     private var selectedLocation: LatLng? = null
     private var selectedPlan: Plan? = null
@@ -122,10 +122,14 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is OnSpnNapBoxErrorRegisterUiState -> setSpnNapBoxError(formError)
                 is OnDniIsInvalidErrorRegisterUiState -> setDniIsInvalidError(formError)
                 is OnPhoneIsInvalidErrorRegisterUiState -> binding.tlPhone.error = formError.error
-                is OnPasswordIsInvalidErrorRegisterUiState -> binding.tlPassword.error = formError.error
-                is OnSpnTechnicianErrorRegisterUiState -> binding.spnTechnician.error = formError.error
-                is OnEtFirstNameIsInvalidErrorRegisterUiState -> binding.tlFirstName.error =formError.error
-                is OnEtLastNameIsInvalidErrorRegisterUiState -> binding.tlLastName.error = formError.error
+                is OnPasswordIsInvalidErrorRegisterUiState -> binding.tlPassword.error =
+                    formError.error
+                is OnSpnTechnicianErrorRegisterUiState -> binding.spnTechnician.error =
+                    formError.error
+                is OnEtFirstNameIsInvalidErrorRegisterUiState -> binding.tlFirstName.error =
+                    formError.error
+                is OnEtLastNameIsInvalidErrorRegisterUiState -> binding.tlLastName.error =
+                    formError.error
                 is HostUiStateDeviceErrorRegister -> binding.spnHostDevice.error = formError.error
                 //CLEAN FORM
                 is CleanEtDniHasNotErrors -> clearTlDniError()
@@ -134,7 +138,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is CleanEtPasswordHasNotErrors -> binding.tlPassword.error = null
                 is CleanEtAddressHasNotErrors -> binding.tlAddress.error = null
                 is CleanEtPhoneHasNotErrors -> binding.tlPhone.error = null
-                is CleanEtSubscriptionDateNotErrorsUiState -> binding.tlSubscriptionDate.error = null
+                is CleanEtSubscriptionDateNotErrors -> binding.tlSubscriptionDate.error = null
                 is CleanEtPlanNotErrors -> binding.spnPlan.error = null
                 is CleanEtNetworkDeviceNotErrors -> binding.spnNetworkDeviceOne.error = null
                 is CleanEtNapBoxNotErrors -> binding.spnNapBox.error = null
@@ -225,7 +229,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 selectedLocation?.latitude ?: 0.0,
                 selectedLocation?.longitude ?: 0.0
             ),
-            technicianId = selectedTechnician?.id ?: "",
+            technicianId = selectedTechnician?.id,
             napBoxId = selectedNapBox?.id ?: "",
             subscriptionDate = selectedDate,
             hostDeviceId = selectedHostNetworkDevice?.id ?: 0,

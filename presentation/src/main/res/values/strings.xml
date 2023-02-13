@@ -44,7 +44,7 @@
     <string name="register">Registrar</string>
     <string name="confirm">Confirmar</string>
     <string name="ubicaci_n">Ubicación</string>
-    <string name="cajas_nap">Cajas Nap</string>
+    <string name="nap_box">Caja Nap</string>
     <string name="consult_payments">Consultar Pagos</string>
     <string name="debtors">Deudores</string>
     <string name="find_subscriptions">Buscar suscripciones</string>
@@ -69,5 +69,6 @@
     <string name="mi_perfil">Mi Perfil</string>
     <string name="edit_subscription">Editar suscripcion</string>
     <string name="host_device">Dispositivo host</string>
+    <string name="save_changes">Guardar cambios</string>
 
 </resources>
