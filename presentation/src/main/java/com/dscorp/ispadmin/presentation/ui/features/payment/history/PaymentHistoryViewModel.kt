@@ -21,6 +21,9 @@ class PaymentHistoryViewModel : ViewModel() {
         const val LAST_PAYMENTS_LIMIT = 10
     }
 
+    val filterOnlyPendingPayments = MutableLiveData<Boolean>()
+
+
     fun getFilteredPaymentHistory(request: SearchPaymentsRequest) = viewModelScope.launch {
         try {
             val response = repository.getFilteredPaymentHistory(request)

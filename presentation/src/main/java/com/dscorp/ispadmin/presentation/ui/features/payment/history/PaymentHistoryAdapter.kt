@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.PaymentHistoryItemBinding
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 
-class PaymentHistoryAdapter : ListAdapter<Payment, PaymentHistoryAdapter.PaymentHistoryViewHolder>(
-    PaymentHistoryDiffCallback()
-) {
+class PaymentHistoryAdapter(val listener: PaymentHistoryAdapterListener) :
+    ListAdapter<Payment, PaymentHistoryAdapter.PaymentHistoryViewHolder>(
+        PaymentHistoryDiffCallback()
+    ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PaymentHistoryViewHolder {
-        val binding = PaymentHistoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            PaymentHistoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PaymentHistoryViewHolder(binding)
     }
 
@@ -21,21 +23,29 @@ class PaymentHistoryAdapter : ListAdapter<Payment, PaymentHistoryAdapter.Payment
         holder.bind(getItem(position))
     }
 
-    inner class PaymentHistoryViewHolder(private val binding: PaymentHistoryItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PaymentHistoryViewHolder(private val binding: PaymentHistoryItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(payment: Payment) {
-            binding.tvId.text = payment.id.toString()
+            binding.payment = payment
+            binding.executePendingBindings()
+            binding.root.setOnClickListener {
+                listener.onPaymentHistoryItemClicked(payment)
+            }
         }
+
     }
+
+    class PaymentHistoryDiffCallback : DiffUtil.ItemCallback<Payment>() {
+        override fun areItemsTheSame(oldItem: Payment, newItem: Payment): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Payment, newItem: Payment): Boolean {
+            return oldItem == newItem
+        }
+
+    }
+
 }
 
-class PaymentHistoryDiffCallback : DiffUtil.ItemCallback<Payment>() {
-    override fun areItemsTheSame(oldItem: Payment, newItem: Payment): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: Payment, newItem: Payment): Boolean {
-        return oldItem == newItem
-    }
-
-}

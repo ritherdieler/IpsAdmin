@@ -10,6 +10,8 @@ import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailFragment
+import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailFragmentDirections
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
@@ -63,8 +65,13 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
             .show()
     }
 
-    override fun onSubscriptionSelected(subscription: SubscriptionResponse, view: View) {
+    override fun onSubscriptionPopupButtonSelected(subscription: SubscriptionResponse, view: View) {
         showPopupMenu(view, subscription)
+    }
+
+    override fun onCardSelected(subscription: SubscriptionResponse) {
+        val destination = FindSubscriptionFragmentDirections.findSubscriptionToSubscriptionDetail(subscription)
+        findNavController().navigate(destination)
     }
 
     private fun navigateToEditSubscription(subscription: SubscriptionResponse): Boolean {

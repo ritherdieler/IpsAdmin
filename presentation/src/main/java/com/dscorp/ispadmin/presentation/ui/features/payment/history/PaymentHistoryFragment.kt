@@ -5,7 +5,9 @@ import android.os.Parcel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
@@ -16,7 +18,7 @@ import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
+class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHistoryAdapterListener {
 
     private val args: PaymentHistoryFragmentArgs by navArgs()
     private var selectedEndDate: Long? = null
@@ -24,7 +26,7 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
 
     private val viewModel: PaymentHistoryViewModel by inject()
     val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
-    val adapter by lazy { PaymentHistoryAdapter() }
+    val adapter by lazy { PaymentHistoryAdapter(this) }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,6 +38,9 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
             PaymentHistoryViewModel.LAST_PAYMENTS_LIMIT
         )
 
+        binding.cbOnlyPending.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.filterOnlyPendingPayments.value = isChecked
+        }
         binding.rvPayments.adapter = adapter
 
         viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
@@ -143,6 +148,13 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener {
             }
         }
 
+    }
+
+    override fun onPaymentHistoryItemClicked(payment: Payment) {
+        val action = PaymentHistoryFragmentDirections.actionPaymentHistoryFragmentToPaymentDetailFragment(
+            payment
+        )
+        findNavController().navigate(action)
     }
 
 }

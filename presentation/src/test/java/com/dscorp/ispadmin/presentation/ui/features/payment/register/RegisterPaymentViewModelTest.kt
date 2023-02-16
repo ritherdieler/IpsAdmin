@@ -7,8 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
 import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentErrorUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentUiState.*
-import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentErrorUiState
-import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentViewModel
 import com.dscorp.ispadmin.util.fromJson
 import com.dscorp.ispadmin.util.getValueForTest
 import com.dscorp.ispadmin.util.mockService
@@ -67,10 +65,10 @@ class RegisterPaymentViewModelTest : KoinTest {
         val payment = Payment(
             id = 1,
             amountPaid = 110.0,
-            date = -1,
+            paymentDate = -1,
             subscriptionId = 1,
             method = "Yape",
-            discount = 10.0,
+            discountAmount = 10.0,
             paid = false
         )
         viewModel.subscription = SubscriptionResponse().apply { this.plan = plan }
@@ -91,10 +89,10 @@ class RegisterPaymentViewModelTest : KoinTest {
         val payment = Payment(
             id = 1,
             amountPaid = -1.0,
-            date = 0,
+            paymentDate = 0,
             subscriptionId = 1,
             method = "Yape",
-            discount = 1.0,
+            discountAmount = 1.0,
             paid = false
         )
 
@@ -114,10 +112,10 @@ class RegisterPaymentViewModelTest : KoinTest {
         val payment = Payment(
             id = 1,
             amountPaid = 10.0,
-            date = 0,
+            paymentDate = 0,
             subscriptionId = 1,
             method = "Yape",
-            discount = -1.0,
+            discountAmount = -1.0,
             paid = false
         )
 
@@ -137,10 +135,10 @@ class RegisterPaymentViewModelTest : KoinTest {
         val payment = Payment(
             id = 1,
             amountPaid = 10.0,
-            date = 0,
+            paymentDate = 0,
             subscriptionId = 1,
             method = "",
-            discount = 1.0,
+            discountAmount = 1.0,
             paid = false
         )
 
@@ -159,10 +157,10 @@ class RegisterPaymentViewModelTest : KoinTest {
         val payment = Payment(
             id = 0,
             amountPaid = 10.0,
-            date = 0,
+            paymentDate = 0,
             subscriptionId = -1,
             method = "Yape",
-            discount = 1.0,
+            discountAmount = 1.0,
             paid = false
         )
 
@@ -182,10 +180,10 @@ class RegisterPaymentViewModelTest : KoinTest {
         val payment = Payment(
             id = 1,
             amountPaid = 50.0,
-            date = -1,
+            paymentDate = -1,
             subscriptionId = 1,
             method = "Yape",
-            discount = 55.0,
+            discountAmount = 55.0,
             paid = false
         )
         viewModel.subscription = SubscriptionResponse().apply { this.plan = plan }

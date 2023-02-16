@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentRegisterPaymentBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
@@ -46,7 +44,7 @@ class RegisterPaymentFragment : BaseFragment() {
             viewModel.registerPayment(
                 Payment(
                     amountPaid = viewModel.subscription?.plan?.price ?: 0.0,
-                    discount = discount,
+                    discountAmount = discount,
                     discountReason = binding.etPaymentDiscountReason.text.toString(),
                     method = binding.acPaymentMethod.text.toString(),
                     subscriptionId = args.subscription.id ?: 0

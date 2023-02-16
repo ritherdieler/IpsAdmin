@@ -4,6 +4,6 @@ import android.view.View
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
 interface SelectableSubscriptionListener {
-    fun onSubscriptionSelected(subscription: SubscriptionResponse, view: View)
-
+    fun onSubscriptionPopupButtonSelected(subscription: SubscriptionResponse, view: View)
+    fun onCardSelected(subscription: SubscriptionResponse)
 }

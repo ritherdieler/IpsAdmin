@@ -102,6 +102,7 @@
                 android:id="@+id/btnMenu"
                 style="@style/Widget.App.Button.OutlinedButton.IconOnly"
                 app:icon="@drawable/ic_more_dot"
+                android:padding="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"

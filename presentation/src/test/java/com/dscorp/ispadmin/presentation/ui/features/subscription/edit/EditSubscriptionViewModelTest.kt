@@ -80,21 +80,20 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
     {
         // Given
         val subscription = Subscription(
-            id = 123,
-
+            id = 1,
             firstName = "",
-            lastName = "",
-            dni = "",
-            password = "",
+            lastName = "carrillo diestra",
+            dni = "48271836",
+            password = "111111111",
             address = "asdasd",
-            phone = "99999",
+            phone = "999999999",
             subscriptionDate = 9989898989,
             isNew = false,
             serviceIsSuspended = false,
             planId = "123",
             networkDeviceIds = listOf(1, 2, 3),
             placeId = "1",
-            location = GeoLocation(0.0,9999999.0),
+            location = GeoLocation(9999999.0,9999999.0),
             technicianId = 123,
             napBoxId = "123",
             hostDeviceId = 23
@@ -103,9 +102,9 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
 
         // When
         viewModel.editSubscription(subscription)
-        val value = viewModel.registerFormErrorLiveData.getValueForTest()
+        val value = viewModel.editFormErrorLiveData.getValueForTest()
 
         // Then
-        assertTrue(value is RegisterSubscriptionFormErrorUiState.OnEtFirstNameErrorRegisterUiState)
+        assertTrue(value is EditSubscriptionFormErrorUiState.OnEtFirstNameErrorRegisterUiState)
     }
 }

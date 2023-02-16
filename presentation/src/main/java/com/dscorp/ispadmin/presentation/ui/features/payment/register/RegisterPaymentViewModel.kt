@@ -35,7 +35,7 @@ class RegisterPaymentViewModel : ViewModel(), KoinComponent {
             registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidAmountError)
             return false
         }
-        if (payment.discount < 0) {
+        if (payment.discountAmount < 0) {
             registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidDiscountError)
             return false
         }
@@ -47,7 +47,7 @@ class RegisterPaymentViewModel : ViewModel(), KoinComponent {
             registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.GenericError)
             return false
         }
-        if(payment.discount > (subscription?.plan?.price ?: 0.0)){
+        if(payment.discountAmount > (subscription?.plan?.price ?: 0.0)){
             registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidDiscountError)
             return false
         }
