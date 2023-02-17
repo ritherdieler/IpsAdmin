@@ -2,12 +2,13 @@ package com.dscorp.ispadmin.presentation.ui.features.payment.history
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.*
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.repository.IRepository
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
@@ -21,12 +22,16 @@ class PaymentHistoryViewModel : ViewModel() {
         const val LAST_PAYMENTS_LIMIT = 10
     }
 
-    val filterOnlyPendingPayments = MutableLiveData<Boolean>()
+    private val payments = MutableLiveData<List<Payment>>()
 
+    private val pendingPayments = payments.asFlow().map { payments ->
+        payments.filter { payment -> !payment.paid }
+    }
 
     fun getFilteredPaymentHistory(request: SearchPaymentsRequest) = viewModelScope.launch {
         try {
             val response = repository.getFilteredPaymentHistory(request)
+            payments.value = response
             uiStateLiveData.postValue(OnPaymentHistoryFilteredResponse(response))
         } catch (e: Exception) {
             uiStateLiveData.postValue(OnError(e.message))
@@ -36,10 +41,19 @@ class PaymentHistoryViewModel : ViewModel() {
     fun getLastPayments(idSubscription: Int, itemsLimit: Int) = viewModelScope.launch {
         try {
             val response = repository.getRecentPaymentsHistory(idSubscription, itemsLimit)
+            payments.value = response
             uiStateLiveData.postValue(GetRecentPaymentsHistoryResponse(response))
         } catch (e: Exception) {
             uiStateLiveData.postValue(GetRecentPaymentHistoryError(e.message))
         }
     }
+
+    fun showOnlyPendingPayments() = viewModelScope.launch {
+        uiStateLiveData.postValue(OnPaymentHistoryFilteredResponse(pendingPayments.first()))
+    }
+
+    fun showAllPayments() =
+        uiStateLiveData.postValue(payments.value?.let { OnPaymentHistoryFilteredResponse(it) })
+
 
 }

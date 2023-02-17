@@ -11,6 +11,7 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.*
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.google.android.material.datepicker.*
@@ -19,40 +20,54 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHistoryAdapterListener {
-
     private val args: PaymentHistoryFragmentArgs by navArgs()
+    val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
+    private val viewModel: PaymentHistoryViewModel by inject()
+    val adapter by lazy { PaymentHistoryAdapter(this) }
+
     private var selectedEndDate: Long? = null
     private var selectedStartDate: Long? = null
-
-    private val viewModel: PaymentHistoryViewModel by inject()
-    val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
-    val adapter by lazy { PaymentHistoryAdapter(this) }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         initClickListeners()
+        binding.rvPayments.adapter = adapter
+        getPayments()
+        binding.cbOnlyPending.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) viewModel.showOnlyPendingPayments()
+            else viewModel.showAllPayments()
+        }
 
+        observeUiState()
+
+        return binding.root
+    }
+
+    override fun onClick(view: View?) {
+        when (view) {
+            binding.etStartDate -> showStartDatePickerDialog { selectedStartDate = it }
+            binding.etEndDate -> showEndDatePickerDialog { selectedEndDate = it }
+            binding.btnConsult -> findFilteredPayments()
+        }
+    }
+
+    private fun observeUiState() {
+        viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is OnError -> showErrorDialog(it.message)
+                is OnPaymentHistoryFilteredResponse -> fillPaymentHistoryFiltered(it.payments)
+                is GetRecentPaymentsHistoryResponse -> fillRecentPaymentHistory(it.payments)
+                is GetRecentPaymentHistoryError -> showErrorDialog(it.message)
+            }
+        }
+    }
+
+    private fun getPayments() {
         viewModel.getLastPayments(
             args.subscription.id!!,
             PaymentHistoryViewModel.LAST_PAYMENTS_LIMIT
         )
-
-        binding.cbOnlyPending.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.filterOnlyPendingPayments.value = isChecked
-        }
-        binding.rvPayments.adapter = adapter
-
-        viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is PaymentHistoryUiState.OnError -> showErrorDialog(it.message)
-                is PaymentHistoryUiState.OnPaymentHistoryFilteredResponse -> fillPaymentHistoryFiltered(it.payments)
-                is PaymentHistoryUiState.GetRecentPaymentsHistoryResponse -> fillRecentPaymentHistory(it.payments)
-                is PaymentHistoryUiState.GetRecentPaymentHistoryError -> showErrorDialog(it.message)
-            }
-        }
-
-        return binding.root
     }
 
     private fun initClickListeners() {
@@ -134,26 +149,20 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHist
         datePicker.show(childFragmentManager, "DatePicker")
     }
 
-    override fun onClick(view: View?) {
-
-        when (view) {
-            binding.etStartDate -> showStartDatePickerDialog { selectedStartDate = it }
-            binding.etEndDate -> showEndDatePickerDialog { selectedEndDate = it }
-            binding.btnConsult -> {
-                viewModel.getFilteredPaymentHistory(SearchPaymentsRequest().apply {
-                    startDate = selectedStartDate
-                    endDate = selectedEndDate
-                    subscriptionId = args.subscription.id
-                })
-            }
-        }
-
+    private fun findFilteredPayments() {
+        binding.cbOnlyPending.isChecked = false
+        viewModel.getFilteredPaymentHistory(SearchPaymentsRequest().apply {
+            startDate = selectedStartDate
+            endDate = selectedEndDate
+            subscriptionId = args.subscription.id
+        })
     }
 
     override fun onPaymentHistoryItemClicked(payment: Payment) {
-        val action = PaymentHistoryFragmentDirections.actionPaymentHistoryFragmentToPaymentDetailFragment(
-            payment
-        )
+        val action =
+            PaymentHistoryFragmentDirections.actionPaymentHistoryFragmentToPaymentDetailFragment(
+                payment
+            )
         findNavController().navigate(action)
     }
 
