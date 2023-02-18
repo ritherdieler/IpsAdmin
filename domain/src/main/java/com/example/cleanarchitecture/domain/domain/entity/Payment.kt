@@ -12,7 +12,6 @@ data class Payment(
     var billingDate: Long = 0,
     var method: String = "",
     var paid: Boolean = false,
-    var subscriptionId: Int = 0,
     var amountToPay: Double = 0.0,
 ):java.io.Serializable
 {

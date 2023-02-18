@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/btn_register_payment"
-        android:title="@string/register_payment" />
-    <item
         android:id="@+id/btn_show_payment_history"
         android:title="@string/show_payment_history" />
     <item

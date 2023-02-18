@@ -36,16 +36,16 @@ class Repository(val context: Context) : IRepository, KoinComponent {
     override suspend fun doLogin(login: Loging): User {
         val response = restApiServices.doLoging(login)
         if (response.code() == 200) {
-            saveUserSession(response.body()!!,login.checkBox)
+            saveUserSession(response.body()!!, login.checkBox)
             return response.body()!!
         } else {
             throw Exception("Usuario o Contraseña Incorrecta")
         }
     }
 
-    override suspend fun saveUserSession(user: User, rememberSessionCheckBoxStatus:Boolean) {
+    override suspend fun saveUserSession(user: User, rememberSessionCheckBoxStatus: Boolean) {
         val editor = prefs.edit()
-        editor.putBoolean(REMEMBER_CHECKBOX_STATUS,rememberSessionCheckBoxStatus )
+        editor.putBoolean(REMEMBER_CHECKBOX_STATUS, rememberSessionCheckBoxStatus)
         editor.putString(SESSION_NAME, user.name)
         editor.putString(SESSION_LAST_NAME, user.lastName)
         editor.putString(SESSION_USER_NAME, user.username)
@@ -57,7 +57,7 @@ class Repository(val context: Context) : IRepository, KoinComponent {
 
     override suspend fun getUserSession(): User? {
         val rememberCheckBoxStatus = prefs.getBoolean(REMEMBER_CHECKBOX_STATUS, false)
-        return if(rememberCheckBoxStatus) {
+        return if (rememberCheckBoxStatus) {
             User(
                 id = prefs.getInt(SESSION_ID, 0),
                 name = prefs.getString(SESSION_NAME, "")!!,
@@ -67,7 +67,7 @@ class Repository(val context: Context) : IRepository, KoinComponent {
                 password = "",
                 verified = prefs.getBoolean(SESSION_VERIFIED, false),
             )
-        }else{
+        } else {
             null
         }
     }
@@ -283,8 +283,11 @@ class Repository(val context: Context) : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit:Int): List<Payment> {
-        val response = restApiServices.getRecentPaymentsHistory(idSubscription,itemsLimit)
+    override suspend fun getRecentPaymentsHistory(
+        idSubscription: Int,
+        itemsLimit: Int
+    ): List<Payment> {
+        val response = restApiServices.getRecentPaymentsHistory(idSubscription, itemsLimit)
         if (response.code() == 200) {
             return response.body()!!
         } else {
@@ -310,4 +313,12 @@ class Repository(val context: Context) : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun downloadDebtorsDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadDebtorsDocument()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
 }

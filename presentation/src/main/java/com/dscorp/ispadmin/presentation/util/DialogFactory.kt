@@ -6,7 +6,7 @@ import android.content.Context
 class DialogFactory: IDialogFactory {
         override fun createSuccessDialog(context: Context,mensaje :String): AlertDialog {
             val builder = AlertDialog.Builder(context)
-            builder.setTitle("Registro Exitoso")
+            builder.setTitle("Operacion exitosa")
             builder.setMessage( mensaje)
             builder.setPositiveButton("Aceptar") { _, _ -> }
             return builder.create()
@@ -14,7 +14,7 @@ class DialogFactory: IDialogFactory {
 
         override fun createErrorDialog(context: Context, error:String): AlertDialog {
             val builder = AlertDialog.Builder(context)
-            builder.setTitle("El registro no fue procesado ")
+            builder.setTitle("Ocurrío un error")
             builder.setMessage(error)
             builder.setPositiveButton("Aceptar") { _, _ -> }
             return builder.create()

@@ -133,7 +133,6 @@
         android:label="FindSubscription"
         tools:layout="@layout/fragment_find_subscription">
 
-
         <action
             android:id="@+id/findSubscription_to_subscription_detail"
             app:destination="@id/subscriptionDetail" />
@@ -159,8 +158,8 @@
         android:label="Registrar Pago"
         tools:layout="@layout/fragment_register_payment">
         <argument
-            android:name="subscription"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+            android:name="payment"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.Payment" />
     </fragment>
 
     <fragment
@@ -186,6 +185,9 @@
         <action
             android:id="@+id/action_paymentHistoryFragment_to_paymentDetailFragment"
             app:destination="@id/paymentDetailFragment" />
+        <action
+            android:id="@+id/action_paymentHistoryFragment_to_registerPayment"
+            app:destination="@id/register_payment" />
     </fragment>
     <fragment
         android:id="@+id/nav_ip_pool"
@@ -216,8 +218,17 @@
         android:name="com.dscorp.ispadmin.PaymentDetailFragment"
         android:label="fragment_payment_detail"
         tools:layout="@layout/fragment_payment_detail" >
+
+        <action
+            android:id="@+id/action_paymentDetailFragment_to_registerPaymentFragment"
+            app:destination="@id/register_payment" />
         <argument
             android:name="payment"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.Payment" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_reports"
+        android:name="com.dscorp.ispadmin.ReportsFragment"
+        android:label="fragment_reports"
+        tools:layout="@layout/fragment_reports" />
 </navigation>

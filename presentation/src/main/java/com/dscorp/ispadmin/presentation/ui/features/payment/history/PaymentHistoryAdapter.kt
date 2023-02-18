@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.PaymentHistoryItemBinding
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 
@@ -29,9 +30,17 @@ class PaymentHistoryAdapter(val listener: PaymentHistoryAdapterListener) :
         fun bind(payment: Payment) {
             binding.payment = payment
             binding.executePendingBindings()
+            setPaymentColor(payment)
             binding.root.setOnClickListener {
                 listener.onPaymentHistoryItemClicked(payment)
             }
+        }
+
+        private fun setPaymentColor(payment: Payment) {
+            if (!payment.paid)
+                binding.tvPaymentStatus.setTextColor(binding.root.context.getColor(R.color.red))
+            else
+                binding.tvPaymentStatus.setTextColor(binding.root.context.getColor(R.color.green))
         }
 
     }

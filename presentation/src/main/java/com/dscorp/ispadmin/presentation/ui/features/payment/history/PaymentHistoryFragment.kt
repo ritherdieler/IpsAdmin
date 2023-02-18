@@ -11,6 +11,7 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragmentDirections.*
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.*
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
@@ -159,10 +160,11 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHist
     }
 
     override fun onPaymentHistoryItemClicked(payment: Payment) {
-        val action =
-            PaymentHistoryFragmentDirections.actionPaymentHistoryFragmentToPaymentDetailFragment(
-                payment
-            )
+        val action = if (!payment.paid)
+            actionPaymentHistoryFragmentToRegisterPayment(payment)
+        else
+            actionPaymentHistoryFragmentToPaymentDetailFragment(payment)
+
         findNavController().navigate(action)
     }
 

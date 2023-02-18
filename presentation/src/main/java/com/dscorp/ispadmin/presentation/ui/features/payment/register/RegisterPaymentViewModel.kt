@@ -15,8 +15,6 @@ class RegisterPaymentViewModel : ViewModel(), KoinComponent {
     val registerPaymentState = MutableLiveData<RegisterPaymentUiState>()
     val registerPaymentFormErrorState = MutableLiveData<RegisterPaymentErrorUiState>()
 
-    var subscription: SubscriptionResponse? = null
-
     val repository: IRepository by inject()
 
     fun registerPayment(payment: Payment) = viewModelScope.launch {
@@ -43,12 +41,12 @@ class RegisterPaymentViewModel : ViewModel(), KoinComponent {
             registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidMethodError)
             return false
         }
-        if (payment.subscriptionId <= 0) {
-            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.GenericError)
+        if (payment.discountAmount > (payment.amountToPay)) {
+            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidDiscountError)
             return false
         }
-        if(payment.discountAmount > (subscription?.plan?.price ?: 0.0)){
-            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidDiscountError)
+        if(payment.id == null || payment.id!! <= 0){
+            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.GenericError)
             return false
         }
         return true

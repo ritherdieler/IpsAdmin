@@ -38,8 +38,6 @@ class RegisterPaymentViewModelTest : KoinTest {
 
     private lateinit var viewModel: RegisterPaymentViewModel
 
-    private val httpClient: OkHttpClient by inject()
-
     private lateinit var okHttp3IdlingResource: IdlingResource
 
     @Before
@@ -60,21 +58,17 @@ class RegisterPaymentViewModelTest : KoinTest {
     fun `when register payment then return success`() {
         //Given
         mockRegisterPaymentService()
-
-        val plan = Plan(id = null, name = "", price = 100.0, downloadSpeed = "", uploadSpeed = "")
         val payment = Payment(
             id = 1,
             amountPaid = 110.0,
             paymentDate = -1,
-            subscriptionId = 1,
             method = "Yape",
             discountAmount = 10.0,
-            paid = false
+            paid = false,
+            amountToPay = 100.0
         )
-        viewModel.subscription = SubscriptionResponse().apply { this.plan = plan }
 
         //When
-
         viewModel.registerPayment(payment)
 
         //Then
@@ -90,7 +84,6 @@ class RegisterPaymentViewModelTest : KoinTest {
             id = 1,
             amountPaid = -1.0,
             paymentDate = 0,
-            subscriptionId = 1,
             method = "Yape",
             discountAmount = 1.0,
             paid = false
@@ -113,7 +106,6 @@ class RegisterPaymentViewModelTest : KoinTest {
             id = 1,
             amountPaid = 10.0,
             paymentDate = 0,
-            subscriptionId = 1,
             method = "Yape",
             discountAmount = -1.0,
             paid = false
@@ -136,7 +128,6 @@ class RegisterPaymentViewModelTest : KoinTest {
             id = 1,
             amountPaid = 10.0,
             paymentDate = 0,
-            subscriptionId = 1,
             method = "",
             discountAmount = 1.0,
             paid = false
@@ -158,10 +149,10 @@ class RegisterPaymentViewModelTest : KoinTest {
             id = 0,
             amountPaid = 10.0,
             paymentDate = 0,
-            subscriptionId = -1,
             method = "Yape",
             discountAmount = 1.0,
-            paid = false
+            paid = false,
+            amountToPay = 9.0
         )
 
         //when
@@ -181,12 +172,10 @@ class RegisterPaymentViewModelTest : KoinTest {
             id = 1,
             amountPaid = 50.0,
             paymentDate = -1,
-            subscriptionId = 1,
             method = "Yape",
             discountAmount = 55.0,
             paid = false
         )
-        viewModel.subscription = SubscriptionResponse().apply { this.plan = plan }
 
         //When
         viewModel.registerPayment(payment)

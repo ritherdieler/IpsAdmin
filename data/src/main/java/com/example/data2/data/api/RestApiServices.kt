@@ -101,5 +101,8 @@ interface RestApiServices {
 
    @PUT("subscription")
     suspend fun editSubscription(@Body subscription: Subscription):Response<SubscriptionResponse>
+
+    @GET("subscription/debtors-document")
+    suspend fun downloadDebtorsDocument(): Response<DownloadDocumentResponse>
 }
 

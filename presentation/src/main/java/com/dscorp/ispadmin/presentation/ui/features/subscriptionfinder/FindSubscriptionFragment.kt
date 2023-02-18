@@ -87,7 +87,6 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.btn_register_payment -> navigateToRegisterPayment(subscription)
                 R.id.btn_show_payment_history -> navigateToPaymentHistory(subscription)
                 R.id.btn_register_service_order -> navigateToRegisterServiceOrder(subscription)
                 R.id.btn_edit_subscription -> navigateToEditSubscription(subscription)
@@ -111,15 +110,6 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
     private fun navigateToPaymentHistory(subscription: SubscriptionResponse): Boolean {
         findNavController().navigate(
             FindSubscriptionFragmentDirections.findSubscriptionToPaymentHistoryFragment(
-                subscription
-            )
-        )
-        return true
-    }
-
-    private fun navigateToRegisterPayment(subscription: SubscriptionResponse): Boolean {
-        findNavController().navigate(
-            FindSubscriptionFragmentDirections.findSubscriptionToRegisterPayment(
                 subscription
             )
         )

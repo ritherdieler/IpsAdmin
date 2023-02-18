@@ -81,5 +81,8 @@
     <string name="all">Todos</string>
     <string name="not_paid">No pagados</string>
     <string name="only_pending">Solo pendientes</string>
+    <string name="go_to_pay">Ir a pagar</string>
+    <string name="reports">Reportes</string>
+    <string name="get_debtors">Obtener deudores</string>
 
 </resources>
