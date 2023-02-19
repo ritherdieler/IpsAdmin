@@ -6,10 +6,10 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
- fun MockResponse.fromJson(jsonFile: String): MockResponse =
+fun MockResponse.fromJson(jsonFile: String): MockResponse =
     setBody(readJsonFile(jsonFile))
 
-private  fun readJsonFile(jsonFilePath: String): String {
+private fun readJsonFile(jsonFilePath: String): String {
     val context = InstrumentationRegistry.getInstrumentation().context
 
     var br: BufferedReader? = null
@@ -19,7 +19,8 @@ private  fun readJsonFile(jsonFilePath: String): String {
             InputStreamReader(
                 context.assets.open(
                     jsonFilePath
-                ), StandardCharsets.UTF_8
+                ),
+                StandardCharsets.UTF_8
             )
         )
         var line: String?

@@ -1,22 +1,22 @@
 package com.dscorp.ispadmin.presentation.di.modules
 
-import com.dscorp.ispadmin.ReportsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolViewModel
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivityViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscription.debtors.DebtorsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryViewModel
 import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentViewModel
 import com.dscorp.ispadmin.presentation.ui.features.place.PlaceViewModel
 import com.dscorp.ispadmin.presentation.ui.features.plan.PlanViewModel
 import com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileViewmodel
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterViewModel
+import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.debtors.DebtorsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionlist.SubscriptionsListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianViewModel
@@ -47,11 +47,10 @@ val viewModelModule = module {
     viewModel { NapBoxesListViewModel() }
     viewModel { PaymentHistoryViewModel() }
     viewModel { FindSubscriptionViewModel() }
-    viewModel { RegisterPaymentViewModel() }
+    viewModel { RegisterPaymentViewModel(get()) }
     viewModel { DebtorsViewModel() }
     viewModel { IpPoolViewModel() }
-    viewModel {MyProfileViewmodel()}
-    viewModel{MainActivityViewModel(get())}
-    viewModel{ReportsViewModel(get())}
-
+    viewModel { MyProfileViewmodel() }
+    viewModel { MainActivityViewModel(get()) }
+    viewModel { ReportsViewModel(get()) }
 }

@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlaceBinding
@@ -33,7 +32,8 @@ class PlaceFragment() : BaseFragment() {
     val viewModel: PlaceViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_place, null, true)
@@ -42,7 +42,8 @@ class PlaceFragment() : BaseFragment() {
         observeCleanErrorForm()
 
         binding.btRegisterPlace.setOnClickListener {
-            registerPlace() }
+            registerPlace()
+        }
         binding.etLocation.setOnClickListener {
             locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -87,14 +88,13 @@ class PlaceFragment() : BaseFragment() {
     }
     private fun observeCleanErrorForm() {
         viewModel.cleanErrorFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
-            when(errorCleanForm){
+            when (errorCleanForm) {
 
                 CleanFormErrorsPlace.OnEtAbbreviationCleanError -> binding.tlAbbreviation.error = null
                 CleanFormErrorsPlace.OnEtNamePlaceCleanError -> binding.tlNamePlace.error = null
             }
         }
-
-        }
+    }
 
     private fun observePlaceResponse() {
         viewModel.placeResponseLiveData.observe(viewLifecycleOwner) { response ->
@@ -106,7 +106,7 @@ class PlaceFragment() : BaseFragment() {
     }
 
     private fun showSuccessDialog(response: PlaceResponse.OnPlaceRegister) {
-        showSuccessDialog(" ${response.place.name} Ah sido registrado con extio" )
+        showSuccessDialog(" ${response.place.name} Ah sido registrado con extio")
     }
 
     private fun onLocationPermissionResult(isGranted: Boolean) {
@@ -141,5 +141,4 @@ class PlaceFragment() : BaseFragment() {
     private fun toast(s: String) {
         Toast.makeText(requireContext(), s, Toast.LENGTH_SHORT).show()
     }
-
 }

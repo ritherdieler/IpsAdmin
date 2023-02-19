@@ -23,8 +23,8 @@ fun KoinTest.mockService(mockWebServer: MockWebServer, urlToMock: String, respon
     }
 }
 
-fun KoinTest.mockServices(mockWebServer: MockWebServer, responses : Map<String, MockResponse>) {
-//responses in dispatcher
+fun KoinTest.mockServices(mockWebServer: MockWebServer, responses: Map<String, MockResponse>) {
+// responses in dispatcher
     mockWebServer.dispatcher = object : Dispatcher() {
         override fun dispatch(request: RecordedRequest): MockResponse {
             return when (request.path) {
@@ -33,7 +33,6 @@ fun KoinTest.mockServices(mockWebServer: MockWebServer, responses : Map<String, 
             }
         }
     }
-
 }
 
 fun KoinTest.registerIdlingResource(): IdlingResource {
@@ -53,7 +52,3 @@ fun KoinTest.unregisterIdlingResource(idlingResource: IdlingResource) {
     IdlingRegistry.getInstance().unregister(idlingResource)
 }
 fun Any.toJson(): String = Gson().toJson(this)
-
-
-
-

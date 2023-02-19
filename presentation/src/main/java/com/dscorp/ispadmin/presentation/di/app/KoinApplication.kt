@@ -30,7 +30,7 @@ class KoinApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        Stetho.initializeWithDefaults(this);
+        Stetho.initializeWithDefaults(this)
         firebaseAnalytics = Firebase.analytics
 
         startKoin {
@@ -47,14 +47,11 @@ class KoinApplication : Application() {
                     single { firebaseAnalytics }
                 }
 
-
             )
-
         }
 
         getKoin().run {
             setProperty(BASE_URL, com.example.data2.BuildConfig.BASE_URL)
         }
-
     }
 }

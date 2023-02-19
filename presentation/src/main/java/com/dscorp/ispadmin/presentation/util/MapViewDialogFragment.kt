@@ -26,7 +26,7 @@ class MapViewDialogFragment : DialogFragment(), OnMapReadyCallback {
 
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
-    private  val args: MapViewDialogFragmentArgs by navArgs()
+    private val args: MapViewDialogFragmentArgs by navArgs()
 
     lateinit var binding: ViewMapBinding
 
@@ -47,15 +47,15 @@ class MapViewDialogFragment : DialogFragment(), OnMapReadyCallback {
     }
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        val location = LatLng(args.location?.latitude?:0.0,args.location?.longitude?:0.0)
-        googleMap.addMarker(MarkerOptions()
-            .position(location)
-            .title("HOLAAAAAAAAAAA "))
+        val location = LatLng(args.location?.latitude ?: 0.0, args.location?.longitude ?: 0.0)
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(location)
+                .title("HOLAAAAAAAAAAA ")
+        )
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(location))
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(13.5f))
     }
-
-
 
     override fun onResume() {
         super.onResume()

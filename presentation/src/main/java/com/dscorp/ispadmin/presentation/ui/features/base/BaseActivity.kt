@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.base
 
 import androidx.appcompat.app.AppCompatActivity
-import com.dscorp.ispadmin.presentation.extension.analytics.sendScreen
 import com.dscorp.ispadmin.presentation.extension.showCurrentSimpleName
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.android.inject

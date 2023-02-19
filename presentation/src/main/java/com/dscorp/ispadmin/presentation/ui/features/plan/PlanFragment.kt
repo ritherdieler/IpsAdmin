@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.plan
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import com.dscorp.ispadmin.databinding.FragmentPlanBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.login.LoginActivity
 import com.dscorp.ispadmin.presentation.ui.features.plan.PlanFormError.*
 import com.example.cleanarchitecture.domain.domain.entity.Plan
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -21,7 +19,8 @@ class PlanFragment : BaseFragment() {
     val viewModel: PlanViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_plan, null, true)
@@ -84,8 +83,9 @@ class PlanFragment : BaseFragment() {
     private fun observeErrorCleanForm() {
         viewModel.errorCleanFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
             when (errorCleanForm) {
-                PlanErrorCleanForm.OnEtDownloadSpeedHasNotError -> binding.tlDownloadSpeed.error =
-                    null
+                PlanErrorCleanForm.OnEtDownloadSpeedHasNotError ->
+                    binding.tlDownloadSpeed.error =
+                        null
                 PlanErrorCleanForm.OnEtNamePlanHasNotError -> binding.tlNamePlan.error = null
                 PlanErrorCleanForm.OnEtPriceHasNotError -> binding.tlPrice.error = null
                 PlanErrorCleanForm.OnEtUploadSpeedHasNotError -> binding.tlUploadSpeed.error = null
@@ -107,4 +107,3 @@ class PlanFragment : BaseFragment() {
         viewModel.registerPlan(plan)
     }
 }
-

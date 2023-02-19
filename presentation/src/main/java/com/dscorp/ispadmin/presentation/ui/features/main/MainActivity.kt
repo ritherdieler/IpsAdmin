@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.main
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -10,9 +9,6 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityMainBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -28,18 +24,17 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
         lifecycleScope.launch {
 
-        viewModel.uiState.collect {
-            when (it) {
-                UiState.Idle ->{}
-                is UiState.UserSessionsFound -> firebaseAnalytics.setUserId(it.response.id.toString())
+            viewModel.uiState.collect {
+                when (it) {
+                    UiState.Idle -> {}
+                    is UiState.UserSessionsFound -> firebaseAnalytics.setUserId(it.response.id.toString())
+                }
             }
         }
+
+        val navView: NavigationView = binding.navView
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+
+        navView.setupWithNavController(navController)
     }
-
-
-    val navView: NavigationView = binding.navView
-    val navController = findNavController(R.id.nav_host_fragment_content_main)
-
-    navView.setupWithNavController(navController)
-}
 }

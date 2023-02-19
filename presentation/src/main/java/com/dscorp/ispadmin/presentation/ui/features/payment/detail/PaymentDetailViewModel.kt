@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin
+package com.dscorp.ispadmin.presentation.ui.features.payment.detail
 
 import androidx.lifecycle.ViewModel
 

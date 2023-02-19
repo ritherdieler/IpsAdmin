@@ -7,18 +7,15 @@ package com.dscorp.ispadmin.presentation.ui.features.serviceorder.register
  * Huacho, Peru.
  *
  **/
- sealed class RegisterServiceOrderFormError(val error: String) {
+sealed class RegisterServiceOrderFormError(val error: String) {
 
     companion object {
         const val LOCATION_ERROR = "Debe seleccionar una ubicacion"
         const val ISSUE_ERROR = "Debe ingresar un problema"
         const val SUBSCRIPTION_ERROR = "Ocurrio un error, por favor contacte con soporte tecnico"
-
     }
 
     class OnEtLocationError : RegisterServiceOrderFormError(LOCATION_ERROR)
     class OnEtIssueError : RegisterServiceOrderFormError(ISSUE_ERROR)
     class OnSubscriptionError : RegisterServiceOrderFormError(SUBSCRIPTION_ERROR)
-
-
 }

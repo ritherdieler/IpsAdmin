@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -13,15 +12,12 @@ import com.dscorp.ispadmin.util.mockService
 import com.dscorp.ispadmin.util.registerIdlingResource
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.Assert.*
-
 import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.core.context.stopKoin
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.KoinTest
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
@@ -48,31 +44,29 @@ class DebtorsViewModelTest : AutoCloseKoinTest() {
 
     @Test
     fun `when fetch debtors is called then return debtors list`() {
-        //given
+        // given
         mockGetDebtorsService()
 
-        //when
+        // when
         viewModel.fetchDebtors()
 
-        //then
+        // then
         val value = viewModel.uiState.getValueForTest()
         assert(value is DebtorsUiState.GetDebtorsSuccess)
     }
 
     @Test
     fun `when fetch debtors is called then return error`() {
-        //given
+        // given
         mockGetDebtorsServiceError()
 
-        //when
+        // when
         viewModel.fetchDebtors()
 
-
-        //then
+        // then
         val value = viewModel.uiState.getValueForTest()
         assert(value is DebtorsUiState.GetDebtorsError)
     }
-
 
     private fun mockGetDebtorsServiceError() {
         mockService(
@@ -82,7 +76,6 @@ class DebtorsViewModelTest : AutoCloseKoinTest() {
         )
     }
 
-
     private fun mockGetDebtorsService() {
         mockService(
             mockWebServer,
@@ -90,5 +83,4 @@ class DebtorsViewModelTest : AutoCloseKoinTest() {
             MockResponse().setResponseCode(200).fromJson("subscription/finddebtors/debtors.json")
         )
     }
-
 }

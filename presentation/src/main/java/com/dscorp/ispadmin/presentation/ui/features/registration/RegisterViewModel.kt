@@ -86,10 +86,8 @@ class RegisterViewModel : ViewModel() {
                         registerFormRepository
                     )
                 )
-
             } catch (error: Exception) {
                 registerResponseLiveData.postValue(RegisterResponse.OnError(error))
-
             }
         }
     }

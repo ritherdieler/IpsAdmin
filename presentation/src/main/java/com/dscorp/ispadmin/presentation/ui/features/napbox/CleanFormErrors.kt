@@ -8,8 +8,7 @@ package com.dscorp.ispadmin.presentation.ui.features.napbox
  *
  **/
 sealed class CleanFormErrors() {
-    object OnEtCodeCleanError: CleanFormErrors()
+    object OnEtCodeCleanError : CleanFormErrors()
     object OnEtAddressCleanError : CleanFormErrors()
     object OnEtLocationCleanError : CleanFormErrors()
-
 }

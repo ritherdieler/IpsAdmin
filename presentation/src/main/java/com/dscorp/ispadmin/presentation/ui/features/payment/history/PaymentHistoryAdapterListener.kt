@@ -5,5 +5,4 @@ import com.example.cleanarchitecture.domain.domain.entity.Payment
 interface PaymentHistoryAdapterListener {
 
     fun onPaymentHistoryItemClicked(payment: Payment)
-
 }

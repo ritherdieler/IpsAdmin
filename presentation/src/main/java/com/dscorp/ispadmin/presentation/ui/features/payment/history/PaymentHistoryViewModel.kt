@@ -54,5 +54,4 @@ class PaymentHistoryViewModel : ViewModel() {
 
     fun showAllPayments() =
         uiStateLiveData.postValue(payments.value?.let { OnPaymentHistoryFilteredResponse(it) })
-
 }

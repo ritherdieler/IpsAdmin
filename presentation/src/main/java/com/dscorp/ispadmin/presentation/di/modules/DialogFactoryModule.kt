@@ -12,10 +12,6 @@ import org.koin.dsl.module
  *
  **/
 
-
 val dialogFactoryModule = module {
-    single<IDialogFactory> {DialogFactory() }
+    single<IDialogFactory> { DialogFactory() }
 }
-
-
-

@@ -4,15 +4,13 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.util.*
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.Assert.*
-
 import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -59,7 +57,7 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
             planId = "123",
             networkDeviceIds = listOf(1, 2, 3),
             placeId = "1",
-            location = GeoLocation(9999999.0,9999999.0),
+            location = GeoLocation(9999999.0, 9999999.0),
             technicianId = 123,
             napBoxId = "123",
             hostDeviceId = 23
@@ -72,12 +70,10 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
 
         // Then
         assertTrue(value is EditSubscriptionUiState.EditSubscriptionSuccess)
-
     }
 
     @Test
-    fun `when subscription has invalid value in his fields then return error`()
-    {
+    fun `when subscription has invalid value in his fields then return error`() {
         // Given
         val subscription = Subscription(
             id = 1,
@@ -93,12 +89,11 @@ class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
             planId = "123",
             networkDeviceIds = listOf(1, 2, 3),
             placeId = "1",
-            location = GeoLocation(9999999.0,9999999.0),
+            location = GeoLocation(9999999.0, 9999999.0),
             technicianId = 123,
             napBoxId = "123",
             hostDeviceId = 23
         )
-
 
         // When
         viewModel.editSubscription(subscription)

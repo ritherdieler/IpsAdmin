@@ -7,20 +7,20 @@ package com.dscorp.ispadmin.presentation.ui.features.technician
  * Huacho, Peru.
  *
  **/
-sealed class TechnicianFromError(val error:String) {
-    companion object{
-        const val FIRST_NAME_ERROR="Este campo no puede estar vacio"
-        const val LAST_NAME_ERROR="Este campo no puede estar vacio"
-        const val DNI_ERROR="Este campo no puede estar vacio"
-        const val Type_ERROR="Este campo no puede estar vacio"
-        const val USER_NAME_ERROR="Este campo no puede estar vacio"
-        const val PASSWORD_ERROR="Este campo no puede estar vacio"
-        const val ADDRESS_ERROR="Este campo no puede estar vacio"
-        const val PHONE_ERROR="Este campo no puede estar vacio"
-        const val BIRTHDAY_ERROR="Este campo no puede estar vacio"
-        const val FIRST_NAME_INVALID="Este nombre es invalido"
-        const val LAST_NAME_INVALID="Este apellido es invalido"
-        const val PASSWORD_INVALID="Requiere entre 8 a 20 caracteres"
+sealed class TechnicianFromError(val error: String) {
+    companion object {
+        const val FIRST_NAME_ERROR = "Este campo no puede estar vacio"
+        const val LAST_NAME_ERROR = "Este campo no puede estar vacio"
+        const val DNI_ERROR = "Este campo no puede estar vacio"
+        const val Type_ERROR = "Este campo no puede estar vacio"
+        const val USER_NAME_ERROR = "Este campo no puede estar vacio"
+        const val PASSWORD_ERROR = "Este campo no puede estar vacio"
+        const val ADDRESS_ERROR = "Este campo no puede estar vacio"
+        const val PHONE_ERROR = "Este campo no puede estar vacio"
+        const val BIRTHDAY_ERROR = "Este campo no puede estar vacio"
+        const val FIRST_NAME_INVALID = "Este nombre es invalido"
+        const val LAST_NAME_INVALID = "Este apellido es invalido"
+        const val PASSWORD_INVALID = "Requiere entre 8 a 20 caracteres"
     }
     class OnEtFirstNameError : TechnicianFromError(FIRST_NAME_ERROR)
     class OnEtLastNameError : TechnicianFromError(LAST_NAME_ERROR)
@@ -35,4 +35,3 @@ sealed class TechnicianFromError(val error:String) {
     class OnEtLastNameIsInvalidError : TechnicianFromError(LAST_NAME_INVALID)
     class OnEtPasswordIsInvalidError : TechnicianFromError(PASSWORD_INVALID)
 }
-

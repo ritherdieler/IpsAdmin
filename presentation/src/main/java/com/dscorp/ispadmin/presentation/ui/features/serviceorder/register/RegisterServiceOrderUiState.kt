@@ -9,8 +9,7 @@ import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
  * Huacho, Peru.
  *
  **/
-sealed class RegisterServiceOrderUiState{
-    class ServiceOrderRegisterSuccessOrder(val serviceOrder : ServiceOrder): RegisterServiceOrderUiState()
-    class ServiceOrderRegisterErrorOrder(val error:Exception): RegisterServiceOrderUiState()
-
+sealed class RegisterServiceOrderUiState {
+    class ServiceOrderRegisterSuccessOrder(val serviceOrder: ServiceOrder) : RegisterServiceOrderUiState()
+    class ServiceOrderRegisterErrorOrder(val error: Exception) : RegisterServiceOrderUiState()
 }

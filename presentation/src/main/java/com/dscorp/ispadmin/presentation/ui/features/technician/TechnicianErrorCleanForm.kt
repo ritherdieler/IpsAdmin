@@ -12,11 +12,10 @@ sealed class TechnicianErrorCleanForm {
     object OnEtFirstNameCleanError : TechnicianErrorCleanForm()
     object OnEtLastNameCleanError : TechnicianErrorCleanForm()
     object OnEtDniCleanError : TechnicianErrorCleanForm()
-    object OnEtTypeCleanError: TechnicianErrorCleanForm()
+    object OnEtTypeCleanError : TechnicianErrorCleanForm()
     object OnEtUserNameCleanError : TechnicianErrorCleanForm()
     object OnEtPasswordCleanError : TechnicianErrorCleanForm()
     object OnEtAddressCleanError : TechnicianErrorCleanForm()
     object OnEtPhoneCleanError : TechnicianErrorCleanForm()
     object OnEtBirthdayCleanError : TechnicianErrorCleanForm()
 }
-

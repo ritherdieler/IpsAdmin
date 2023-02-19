@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin
+package com.dscorp.ispadmin.presentation.ui.features.report
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,14 +12,11 @@ class ReportsViewModel(private val repository: IRepository) : ViewModel() {
 
     fun downloadDebtorsDocument() = viewModelScope.launch {
         try {
-           val response = repository.downloadDebtorsDocument()
+            val response = repository.downloadDebtorsDocument()
             uiStateLiveData.postValue(ReportsUiState.DebtorsDocument(response))
         } catch (e: Exception) {
             e.printStackTrace()
             uiStateLiveData.postValue(ReportsUiState.DebtorsDocumentError(e.message))
         }
-
     }
-
-
 }

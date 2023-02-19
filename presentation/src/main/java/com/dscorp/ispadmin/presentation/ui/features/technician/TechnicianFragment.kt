@@ -5,17 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 
@@ -25,7 +22,8 @@ class TechnicianFragment : BaseFragment() {
     val viewModel: TechnicianViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_technician, null, true)
@@ -61,8 +59,6 @@ class TechnicianFragment : BaseFragment() {
 
         return binding.root
     }
-
-
 
     private fun registerTechnician() {
         val technician = Technician(
@@ -113,7 +109,7 @@ class TechnicianFragment : BaseFragment() {
     }
     private fun observeErroCleanForm() {
         viewModel.technicianErrorCleanFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
-            when(errorCleanForm){
+            when (errorCleanForm) {
                 TechnicianErrorCleanForm.OnEtAddressCleanError -> binding.tlAddress.error = null
                 TechnicianErrorCleanForm.OnEtBirthdayCleanError -> binding.tlBirthday.error = null
                 TechnicianErrorCleanForm.OnEtDniCleanError -> binding.tlDni.error = null
@@ -127,9 +123,3 @@ class TechnicianFragment : BaseFragment() {
         }
     }
 }
-
-
-
-
-
-

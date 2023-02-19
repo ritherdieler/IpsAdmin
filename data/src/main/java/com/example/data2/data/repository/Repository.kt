@@ -1,15 +1,12 @@
 package com.example.data2.data.repository
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.api.RestApiServices
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
-import com.example.data2.data.di.provideHttpClient
 import com.example.data2.data.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.math.log
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -18,7 +15,7 @@ import kotlin.math.log
  * Huacho, Peru.
  *
  **/
-class Repository(val context: Context) : IRepository, KoinComponent {
+class Repository: IRepository, KoinComponent {
 
     private val restApiServices: RestApiServices by inject()
     private val prefs: SharedPreferences by inject()
@@ -55,7 +52,7 @@ class Repository(val context: Context) : IRepository, KoinComponent {
         editor.apply()
     }
 
-    override suspend fun getUserSession(): User? {
+    override fun getUserSession(): User? {
         val rememberCheckBoxStatus = prefs.getBoolean(REMEMBER_CHECKBOX_STATUS, false)
         return if (rememberCheckBoxStatus) {
             User(

@@ -8,21 +8,16 @@ sealed class IpPoolUiState(val error: String? = null) {
         const val IP_POOL_INVALID = "Esta ip no es valida"
     }
 
-
-
     class IpPoolRegister(val ipPool: IpPool) : IpPoolUiState()
     class IpPoolRegisterError(val registerError: String?) : IpPoolUiState()
 
-    class IpPoolList(val ipPools: List<IpPool>): IpPoolUiState()
+    class IpPoolList(val ipPools: List<IpPool>) : IpPoolUiState()
     class IpPoolListError(val message: String?) : IpPoolUiState()
 
-
-
-    //FORM STATES
+    // FORM STATES
     class IpPoolError : IpPoolUiState(EMPTY_POOL_ERROR)
     class IpPoolInvalidIpSegment : IpPoolUiState(IP_POOL_INVALID)
 
     object IpPoolCleanError : IpPoolUiState()
     object IpPoolCleanInvalidIpSegment : IpPoolUiState()
-
 }

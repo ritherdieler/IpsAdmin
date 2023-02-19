@@ -57,6 +57,4 @@ class IpPoolViewModel : ViewModel(), KoinComponent {
             uiState.value = IpPoolUiState.IpPoolListError(e.message)
         }
     }
-
-
 }

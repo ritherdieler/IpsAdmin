@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceFormError.*
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceResponse.*
-import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidIpv4
+import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
@@ -41,7 +41,6 @@ class NetworkDeviceViewModel() : ViewModel() {
                     networkDeviceFromRepository
                 )
             )
-
         } catch (error: Exception) {
             networkDeviceResponseLiveData.postValue(OnError(error))
         }

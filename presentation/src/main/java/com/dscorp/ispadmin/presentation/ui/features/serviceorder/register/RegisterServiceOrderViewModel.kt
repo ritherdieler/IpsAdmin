@@ -3,9 +3,9 @@ package com.dscorp.ispadmin.presentation.ui.features.serviceorder.register
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
@@ -31,22 +31,20 @@ class RegisterServiceOrderViewModel : ViewModel() {
     private fun formIsValid(serviceOrder: ServiceOrder): Boolean {
 
         if (serviceOrder.latitude == null || serviceOrder.longitude == null) {
-            formErrorLiveData.value=RegisterServiceOrderFormError.OnEtLocationError()
+            formErrorLiveData.value = RegisterServiceOrderFormError.OnEtLocationError()
             return false
         }
 
         if (serviceOrder.issue.isNullOrEmpty()) {
-            formErrorLiveData.value=RegisterServiceOrderFormError.OnEtIssueError()
+            formErrorLiveData.value = RegisterServiceOrderFormError.OnEtIssueError()
             return false
         }
 
         if (serviceOrder.subscriptionId == null) {
-            formErrorLiveData.value=RegisterServiceOrderFormError.OnSubscriptionError()
+            formErrorLiveData.value = RegisterServiceOrderFormError.OnSubscriptionError()
             return false
         }
 
         return true
     }
-
-
 }

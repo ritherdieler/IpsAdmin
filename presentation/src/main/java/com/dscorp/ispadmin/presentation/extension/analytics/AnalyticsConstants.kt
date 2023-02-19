@@ -1,7 +1,7 @@
 package com.dscorp.ispadmin.presentation.extension.analytics
 
 object AnalyticsConstants {
-    const val EDIT_SUBSCRIPTION: String  = "editar_suscripcion"
+    const val EDIT_SUBSCRIPTION: String = "editar_suscripcion"
     const val REGISTER_SUBSCRIPTION = "registrar_suscripcion"
     const val LOGIN = "login"
     const val BUTTON_CONTENT_TYPE = "button"

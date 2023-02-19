@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin
+package com.dscorp.ispadmin.presentation.ui.features.report
 
 import android.content.Intent
 import android.net.Uri
@@ -16,14 +16,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-
 class ReportsFragment : BaseFragment() {
 
     private val binding by lazy { FragmentReportsBinding.inflate(layoutInflater) }
     private val viewModel: ReportsViewModel by inject()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
@@ -51,7 +51,7 @@ class ReportsFragment : BaseFragment() {
             val intent = openWithXlsxApp(uri)
             try {
                 startActivity(intent)
-            }  catch (e: Exception) {
+            } catch (e: Exception) {
                 showErrorDialog("No se pudo abrir el archivo, el archivo se encuentra en la carpeta de descargas")
             }
         }
@@ -67,6 +67,4 @@ class ReportsFragment : BaseFragment() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         return intent
     }
-
-
 }

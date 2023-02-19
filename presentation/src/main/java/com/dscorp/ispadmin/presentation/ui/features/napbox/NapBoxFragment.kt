@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxBinding
@@ -25,7 +24,8 @@ class NapBoxFragment : BaseFragment() {
     val viewModel: NapBoxViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_nap_box, null, true)
@@ -39,13 +39,11 @@ class NapBoxFragment : BaseFragment() {
 
         binding.etLocationNapBox.setOnClickListener {
             findNavController().navigateSafe(R.id.action_nav_to_register_nap_box_to_mapDialog)
-
         }
         observeMapDialogResult()
 
         return binding.root
     }
-
 
     private fun observeMapDialogResult() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")
@@ -75,8 +73,9 @@ class NapBoxFragment : BaseFragment() {
             when (formError) {
                 is NapBoxFormError.OnEtAddressError -> binding.tlAddress.error = formError.message
                 is NapBoxFormError.OnEtCodeError -> binding.tlCode.error = formError.message
-                is NapBoxFormError.OnEtLocationError -> binding.tlLocationNapBox.error =
-                    formError.message
+                is NapBoxFormError.OnEtLocationError ->
+                    binding.tlLocationNapBox.error =
+                        formError.message
             }
         }
     }
@@ -96,7 +95,6 @@ class NapBoxFragment : BaseFragment() {
             when (response) {
                 is NapBoxResponse.OnError -> showErrorDialog()
                 is NapBoxResponse.OnNapBoxRegister -> showSuccessDialog(response)
-
             }
         }
     }

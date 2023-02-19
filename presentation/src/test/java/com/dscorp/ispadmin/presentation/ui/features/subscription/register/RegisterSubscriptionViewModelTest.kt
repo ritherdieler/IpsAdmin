@@ -36,7 +36,6 @@ class RegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
         `when`(repository.getNetworkDeviceTypes()).thenReturn(listOf())
         `when`(repository.getCoreDevices()).thenReturn(listOf())
 
-
         val viewModel = SubscriptionViewModel(repository)
         viewModel.getFormData()
 
@@ -44,7 +43,6 @@ class RegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
 
         assertTrue(value is RegisterSubscriptionUiState.FormDataFound)
     }
-
 
     @Test
     fun `when getFormData call has error then should return FormDataError sate`() = runBlocking {

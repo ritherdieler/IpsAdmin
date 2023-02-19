@@ -12,5 +12,4 @@ import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 sealed class SubscriptionsListResponse {
     class OnSubscriptionFound(val subscriptions: List<SubscriptionResponse>) : SubscriptionsListResponse()
     class OnError(val error: Exception) : SubscriptionsListResponse()
-
 }

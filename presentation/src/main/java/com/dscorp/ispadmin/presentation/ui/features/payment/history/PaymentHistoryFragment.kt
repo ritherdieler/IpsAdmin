@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
@@ -29,7 +28,8 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHist
     private var selectedEndDate: Long? = null
     private var selectedStartDate: Long? = null
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         initClickListeners()
@@ -152,20 +152,20 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHist
 
     private fun findFilteredPayments() {
         binding.cbOnlyPending.isChecked = false
-        viewModel.getFilteredPaymentHistory(SearchPaymentsRequest().apply {
-            startDate = selectedStartDate
-            endDate = selectedEndDate
-            subscriptionId = args.subscription.id
-        })
+        viewModel.getFilteredPaymentHistory(
+            SearchPaymentsRequest().apply {
+                startDate = selectedStartDate
+                endDate = selectedEndDate
+                subscriptionId = args.subscription.id
+            }
+        )
     }
 
     override fun onPaymentHistoryItemClicked(payment: Payment) {
-        val action = if (!payment.paid)
-            actionPaymentHistoryFragmentToRegisterPayment(payment)
-        else
-            actionPaymentHistoryFragmentToPaymentDetailFragment(payment)
+        val action = if (!payment.paid) toRegisterPayment(payment)
+        else actionPaymentHistoryFragmentToPaymentDetailFragment(payment)
 
         findNavController().navigate(action)
-    }
 
+    }
 }

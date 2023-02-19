@@ -12,7 +12,6 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.Regist
 import com.dscorp.ispadmin.presentation.util.Constants
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidNameOrLastName
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -53,7 +52,6 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
                     napBoxesFromRepository, coreDevices
                 )
             )
-
         } catch (e: Exception) {
             registerSubscriptionUiState.postValue(FormDataError(e.message.toString()))
         }
@@ -71,7 +69,6 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
         }
     }
 
-
     fun editSubscription(subscription: Subscription) = viewModelScope.launch {
         try {
             if (!editFormIsValid(subscription)) return@launch
@@ -88,11 +85,9 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
             registerFormErrorLiveData.value =
                 RegisterSubscriptionFormErrorUiState.OnEtFirstNameErrorRegisterUiState()
             return false
-
         } else {
             registerFormErrorLiveData.value =
                 RegisterSubscriptionFormErrorUiState.CleanEtFirstNameHasNotErrors
-
         }
 
         if (subscription.lastName.isEmpty()) {
@@ -109,7 +104,6 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
                 RegisterSubscriptionFormErrorUiState.OnEtDniErrorRegisterUiState()
             return false
         }
-
 
         if (subscription.password.isEmpty()) {
             registerFormErrorLiveData.value =
@@ -226,14 +220,12 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
             editFormErrorLiveData.value =
                 EditSubscriptionFormErrorUiState.OnEtFirstNameErrorRegisterUiState()
             return false
-
         } else {
             editFormErrorLiveData.value =
                 EditSubscriptionFormErrorUiState.CleanEtFirstNameHasNotErrors
         }
 
-
-        if (subscription.lastName.isEmpty() ) {
+        if (subscription.lastName.isEmpty()) {
             editFormErrorLiveData.value =
                 EditSubscriptionFormErrorUiState.OnEtLastNameErrorRegisterUiState()
             return false
@@ -323,11 +315,4 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
         }
         return true
     }
-
 }
-
-
-
-
-
-

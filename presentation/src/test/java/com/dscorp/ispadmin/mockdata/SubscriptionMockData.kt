@@ -62,5 +62,5 @@ val subscriptionListMock = listOf(
             phone = "123",
         ),
 
-        )
+    )
 )

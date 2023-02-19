@@ -31,8 +31,6 @@ class IpPoolAdapter(ipPoolFragment: IpPoolFragment) : ListAdapter<IpPool, IpPool
     }
 }
 
-
-
 private class IpPoolDiffCallback : DiffUtil.ItemCallback<IpPool>() {
     override fun areItemsTheSame(oldItem: IpPool, newItem: IpPool): Boolean {
         return oldItem.id == newItem.id

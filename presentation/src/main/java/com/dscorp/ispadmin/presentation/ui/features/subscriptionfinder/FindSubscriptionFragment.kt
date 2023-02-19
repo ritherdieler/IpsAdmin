@@ -5,13 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailFragment
-import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailFragmentDirections
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
@@ -27,7 +24,8 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
     private val adapter = FindSubscriptionAdapter(this)
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
@@ -115,5 +113,4 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
         )
         return true
     }
-
 }

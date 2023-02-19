@@ -14,7 +14,7 @@ interface IRepository {
     suspend fun registerUser(user: User): User
     suspend fun doLogin(login: Loging): User
     suspend fun saveUserSession(user:User, rememberSessionCheckBoxStatus:Boolean)
-    suspend fun getUserSession():User?
+     fun getUserSession():User?
     suspend fun saveCheckBox(login: Loging)
     suspend fun getCheckBox(login: Loging)
 

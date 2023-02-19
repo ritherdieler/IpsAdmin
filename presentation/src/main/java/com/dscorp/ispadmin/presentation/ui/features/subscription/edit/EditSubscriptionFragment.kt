@@ -97,7 +97,6 @@ class EditSubscriptionFragment : BaseFragment() {
         }
     }
 
-
     private fun fillFormSpinners(response: EditSubscriptionUiState.FormDataFound) {
         setUpPlansSpinner(response.plans)
         setUpNetworkDeviceSpinners(response.networkDevices)
@@ -120,11 +119,12 @@ class EditSubscriptionFragment : BaseFragment() {
                 is OnEtLocationErrorRegisterUiState -> setEtLocationError(formError)
                 is OnSpnNapBoxErrorRegisterUiState -> setSpnNapBoxError(formError)
                 is OnPhoneIsInvalidErrorRegisterUiState -> binding.tlPhone.error = formError.error
-                is OnPasswordIsInvalidErrorRegisterUiState -> binding.tlPassword.error =
-                    formError.error
+                is OnPasswordIsInvalidErrorRegisterUiState ->
+                    binding.tlPassword.error =
+                        formError.error
                 is HostDeviceError -> binding.spnHostDevice.error = formError.error
 
-                //CLEAN FORM
+                // CLEAN FORM
                 is CleanEtPasswordHasNotErrors -> binding.tlPassword.error = null
                 is CleanEtAddressHasNotErrors -> binding.tlAddress.error = null
                 is CleanEtPhoneHasNotErrors -> binding.tlPhone.error = null
@@ -134,11 +134,9 @@ class EditSubscriptionFragment : BaseFragment() {
                 is CleanEtPlaceNotErrors -> binding.spnPlace.error = null
                 is CleanEtFirstNameHasNotErrors -> binding.etFirstName.error = null
                 is CleanEtLastNameHasNotErrors -> binding.etLastName.error = null
-
             }
         }
     }
-
 
     private fun setSpnNapBoxError(formError: OnSpnNapBoxErrorRegisterUiState) {
         binding.spnNapBox.error = formError.error
@@ -152,7 +150,6 @@ class EditSubscriptionFragment : BaseFragment() {
         binding.spnPlace.error = formError.error
     }
 
-
     private fun setSpnPlanError(formError: OnSpnPlanErrorRegisterUiState) {
         binding.spnPlan.error = formError.error
     }
@@ -161,7 +158,6 @@ class EditSubscriptionFragment : BaseFragment() {
         binding.spnNetworkDeviceOne.error = formError.error
     }
 
-
     private fun setEtPasswordError(formError: OnEtPasswordErrorRegisterUiState) {
         binding.tlPassword.error = formError.error
     }
@@ -169,7 +165,6 @@ class EditSubscriptionFragment : BaseFragment() {
     private fun setEtNumberPhoneError(formError: OnEtPhoneErrorRegisterUiState) {
         binding.tlPhone.error = formError.error
     }
-
 
     private fun setEtAddressError(formError: OnEtAddressesErrorRegisterUiState) {
         binding.tlAddress.error = formError.error
@@ -206,7 +201,7 @@ class EditSubscriptionFragment : BaseFragment() {
             isNew = args.subscription.new,
             serviceIsSuspended = args.subscription.serviceIsSuspended,
 
-            )
+        )
         viewModel.editSubscription(subscription)
     }
 
@@ -247,7 +242,6 @@ class EditSubscriptionFragment : BaseFragment() {
             }
     }
 
-
     private fun setUpPlaceSpinner(places: List<Place>) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, places)
         binding.etPlace.setAdapter(adapter)
@@ -256,7 +250,6 @@ class EditSubscriptionFragment : BaseFragment() {
                 selectedPlace = places[pos]
             }
     }
-
 
     private fun setUpNapBoxSpinner(napBoxes: List<NapBox>) {
         val adapter =
@@ -267,5 +260,4 @@ class EditSubscriptionFragment : BaseFragment() {
                 selectedNapBox = napBoxes[pos]
             }
     }
-
 }

@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitecture.domain.domain.entity.Place
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidNameOrLastName
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
@@ -49,7 +48,3 @@ class PlaceViewModel : ViewModel() {
         return true
     }
 }
-
-
-
-

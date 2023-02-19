@@ -13,7 +13,5 @@ abstract class BaseFragment : Fragment() {
         super.onResume()
         showCurrentSimpleName()
         firebaseAnalytics.sendScreen(this::class.java.simpleName)
-
     }
-
 }

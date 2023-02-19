@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemSubscriptionBinding
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
-class SubscriptionAdapter(val listener: SubscriptionItemClickListener): ListAdapter<SubscriptionResponse, SubscriptionAdapter.SubscriptionAdapterViewHolder>(
+class SubscriptionAdapter(val listener: SubscriptionItemClickListener) : ListAdapter<SubscriptionResponse, SubscriptionAdapter.SubscriptionAdapterViewHolder>(
     SubscriptionDiffCallback()
 ) {
 
@@ -20,17 +20,15 @@ class SubscriptionAdapter(val listener: SubscriptionItemClickListener): ListAdap
     override fun onBindViewHolder(holder: SubscriptionAdapterViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-   inner class SubscriptionAdapterViewHolder(private val binding: ItemSubscriptionBinding) :
+    inner class SubscriptionAdapterViewHolder(private val binding: ItemSubscriptionBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(subscription: SubscriptionResponse) {
-            binding.root.setOnClickListener{listener.onItemClick(subscription)}
+            binding.root.setOnClickListener { listener.onItemClick(subscription) }
             binding.subscriptionList = subscription
             binding.executePendingBindings()
         }
     }
 }
-
-
 
 private class SubscriptionDiffCallback : DiffUtil.ItemCallback<SubscriptionResponse>() {
     override fun areItemsTheSame(oldItem: SubscriptionResponse, newItem: SubscriptionResponse): Boolean {

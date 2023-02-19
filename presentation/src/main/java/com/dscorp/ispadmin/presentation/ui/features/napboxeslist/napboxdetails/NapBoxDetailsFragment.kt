@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxDetailBinding
@@ -25,7 +24,8 @@ class NapBoxDetailsFragment : BaseFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding =

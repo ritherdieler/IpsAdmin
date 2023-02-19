@@ -19,7 +19,8 @@ class RegisterPaymentFragment : BaseFragment() {
     private val binding by lazy { FragmentRegisterPaymentBinding.inflate(layoutInflater) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         setupView()
@@ -27,8 +28,7 @@ class RegisterPaymentFragment : BaseFragment() {
     }
 
     private fun setupView() {
-        binding.tvPlan.text = "Deuda: ${args.payment.amountPaidStr()}"
-
+        binding.tvPlan.text = "Deuda: ${args.payment.amountToPayStr()}"
         val paymentMethods = resources.getStringArray(com.dscorp.ispadmin.R.array.payment_methods)
         val adapter = ArrayAdapter(requireContext(), R.layout.simple_spinner_dropdown_item, paymentMethods)
         binding.acPaymentMethod.setAdapter(adapter)
@@ -38,7 +38,8 @@ class RegisterPaymentFragment : BaseFragment() {
             else binding.etPaymentDiscount.text.toString().toDouble()
             viewModel.registerPayment(
                 Payment(
-                    amountPaid = args.payment.amountPaid,
+                    id = args.payment.id,
+                    amountPaid = args.payment.amountToPay,
                     discountAmount = discount,
                     discountReason = binding.etPaymentDiscountReason.text.toString(),
                     method = binding.acPaymentMethod.text.toString(),
@@ -84,5 +85,4 @@ class RegisterPaymentFragment : BaseFragment() {
             }
             .show()
     }
-
 }

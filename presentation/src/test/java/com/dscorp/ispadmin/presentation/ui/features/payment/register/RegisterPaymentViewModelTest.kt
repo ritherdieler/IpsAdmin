@@ -13,19 +13,19 @@ import com.dscorp.ispadmin.util.mockService
 import com.dscorp.ispadmin.util.registerIdlingResource
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.cleanarchitecture.domain.domain.entity.Plan
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
-import okhttp3.OkHttpClient
+import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.data2.data.repository.IRepository
+import com.example.data2.data.repository.Repository
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.Assert.*
-
 import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.koin.test.KoinTest
-import org.koin.test.inject
+import org.mockito.Mockito
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -35,14 +35,18 @@ import org.robolectric.annotation.LooperMode
 class RegisterPaymentViewModelTest : KoinTest {
 
     private val mockWebServer = MockWebServer()
-
     private lateinit var viewModel: RegisterPaymentViewModel
-
     private lateinit var okHttp3IdlingResource: IdlingResource
+    private lateinit var repository: IRepository
 
     @Before
     fun setUp() {
-        viewModel = RegisterPaymentViewModel()
+        repository = Mockito.spy(Repository())
+
+        val user = User(1, "Sergio", "Carrillo Diestra", 0, "dscorp", "11111111", false)
+        Mockito.`when`(repository.getUserSession()).thenReturn(user)
+
+        viewModel = RegisterPaymentViewModel(repository)
         okHttp3IdlingResource = registerIdlingResource()
         mockWebServer.start(8081)
     }
@@ -55,31 +59,32 @@ class RegisterPaymentViewModelTest : KoinTest {
     }
 
     @Test
-    fun `when register payment then return success`() {
-        //Given
-        mockRegisterPaymentService()
+    fun `when payment userId is 0 or less then return error`() {
+        // Given
+        Mockito.`when`(repository.getUserSession()).thenReturn(User(0, "", "", 0, "", "", false))
+        viewModel = RegisterPaymentViewModel(repository)
         val payment = Payment(
             id = 1,
-            amountPaid = 110.0,
-            paymentDate = -1,
+            amountToPay = 50.0,
+            amountPaid = 49.0,
+            paymentDate = 0,
             method = "Yape",
-            discountAmount = 10.0,
+            discountAmount = 1.0,
             paid = false,
-            amountToPay = 100.0
         )
 
-        //When
+        // When
         viewModel.registerPayment(payment)
 
-        //Then
-        Espresso.onIdle()
-        val value = viewModel.registerPaymentState.value as OnPaymentRegistered
-        assertNotNull(value.payment.id != null)
+        // Then
+        viewModel.registerPaymentFormErrorState.getValueForTest()
+        val value = viewModel.registerPaymentFormErrorState.value as GenericError
+        assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_GENERIC)
     }
 
     @Test
     fun ` when payment amount is less than 0 then return error`() {
-        //Given
+        // Given
         val payment = Payment(
             id = 1,
             amountPaid = -1.0,
@@ -89,19 +94,18 @@ class RegisterPaymentViewModelTest : KoinTest {
             paid = false
         )
 
-        //when
+        // When
         viewModel.registerPayment(payment)
 
-        //then
+        // Then
         viewModel.registerPaymentFormErrorState.getValueForTest()
         val value = viewModel.registerPaymentFormErrorState.value as InvalidAmountError
         assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_INVALID_AMOUNT)
-
     }
 
     @Test
     fun ` when discount is less than 0 then return error`() {
-        //Given
+        // Given
         val payment = Payment(
             id = 1,
             amountPaid = 10.0,
@@ -111,19 +115,18 @@ class RegisterPaymentViewModelTest : KoinTest {
             paid = false
         )
 
-        //when
+        // When
         viewModel.registerPayment(payment)
 
-        //then
+        // Then
         viewModel.registerPaymentFormErrorState.getValueForTest()
         val value = viewModel.registerPaymentFormErrorState.value as InvalidDiscountError
         assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_INVALID_DISCOUNT)
-
     }
 
     @Test
     fun ` when payment method is empty then return error`() {
-        //Given
+        // Given
         val payment = Payment(
             id = 1,
             amountPaid = 10.0,
@@ -133,10 +136,10 @@ class RegisterPaymentViewModelTest : KoinTest {
             paid = false
         )
 
-        //when
+        // When
         viewModel.registerPayment(payment)
 
-        //then
+        // Then
         viewModel.registerPaymentFormErrorState.getValueForTest()
         val value = viewModel.registerPaymentFormErrorState.value as InvalidMethodError
         assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_INVALID_METHOD)
@@ -144,7 +147,7 @@ class RegisterPaymentViewModelTest : KoinTest {
 
     @Test
     fun ` when payment subscription id is less or equal to 0 then return error`() {
-        //Given
+        // Given
         val payment = Payment(
             id = 0,
             amountPaid = 10.0,
@@ -155,10 +158,10 @@ class RegisterPaymentViewModelTest : KoinTest {
             amountToPay = 9.0
         )
 
-        //when
+        // When
         viewModel.registerPayment(payment)
 
-        //then
+        // Then
         viewModel.registerPaymentFormErrorState.getValueForTest()
         val value = viewModel.registerPaymentFormErrorState.value as GenericError
         assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_GENERIC)
@@ -166,7 +169,7 @@ class RegisterPaymentViewModelTest : KoinTest {
 
     @Test
     fun `when discount is greater than plan price then return error`() {
-        //Given
+        // Given
         val plan = Plan(id = null, name = "", price = 50.0, downloadSpeed = "", uploadSpeed = "")
         val payment = Payment(
             id = 1,
@@ -177,15 +180,38 @@ class RegisterPaymentViewModelTest : KoinTest {
             paid = false
         )
 
-        //When
+        // When
         viewModel.registerPayment(payment)
 
-        //Then
+        // Then
         viewModel.registerPaymentFormErrorState.getValueForTest()
         val value = viewModel.registerPaymentFormErrorState.value as InvalidDiscountError
         assertEquals(value.message, RegisterPaymentErrorUiState.ERROR_INVALID_DISCOUNT)
     }
 
+    @Test
+    fun `when register payment then return success`() {
+        // Given
+        mockRegisterPaymentService()
+        val payment = Payment(
+            id = 1,
+            amountPaid = 110.0,
+            paymentDate = -1,
+            method = "Yape",
+            discountAmount = 10.0,
+            paid = false,
+            amountToPay = 100.0,
+            userId = 1
+        )
+
+        // When
+        viewModel.registerPayment(payment)
+
+        // Then
+        Espresso.onIdle()
+        val value = viewModel.registerPaymentState.value as OnPaymentRegistered
+        assertNotNull(value.payment.id != null)
+    }
 
     private fun mockRegisterPaymentService() {
         val urlToMock = "/payment"

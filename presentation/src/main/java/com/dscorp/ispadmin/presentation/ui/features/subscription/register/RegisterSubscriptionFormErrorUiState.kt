@@ -7,27 +7,26 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
  * Huacho, Peru.
  *
  **/
-sealed class RegisterSubscriptionFormErrorUiState(val error:String? = null) {
-    companion object{
-        const val FIRST_NAME_ERROR ="Este campo no puede estar vacio"
-        const val LAST_NAME_ERROR ="Este campo no puede estar vacio"
-        const val DNI_ERROR ="Este campo no puede estar vacio"
-        const val PASSWORD_ERROR ="Este campo no puede estar vacio"
-        const val ADDRESS_ERROR ="Este campo no puede estar vacio"
-        const val NUMBER_PHONE_ERROR ="Este campo no puede estar vacio"
-        const val SUBSCRIPTION_DATE_ERROR ="Este campo no puede estar vacio"
-        const val SPN_PLAN_ERROR ="Este campo no puede estar vacio"
-        const val SPN_NETWORK_DEVICE_ERROR ="Este campo no puede estar vacio"
-        const val SPN_PLACE_ERROR ="Este campo no puede estar vacio"
-        const val SPN_TECHNICIAN_ERROR ="Este campo no puede estar vacio"
-        const val SPN_NAP_BOX_ERROR ="Este campo no puede estar vacio"
-        const val LOCATION_ERROR ="Este campo no puede estar vacio"
-        const val DNI_IS_INVALID_ERROR ="DNI requiere 8 digitos"
-        const val PASSWORD_IS_INVALID_ERROR ="Requiere entre 8 a 20 caracteres"
-        const val PHONE_IS_INVALID_ERROR ="Requiere 9 digitos"
-        const val FIRST_NAME_IS_INVALID_ERROR ="Este nombre no es valido"
-        const val LAST_NAME_IS_INVALID_ERROR ="Este nombre no es valido"
-
+sealed class RegisterSubscriptionFormErrorUiState(val error: String? = null) {
+    companion object {
+        const val FIRST_NAME_ERROR = "Este campo no puede estar vacio"
+        const val LAST_NAME_ERROR = "Este campo no puede estar vacio"
+        const val DNI_ERROR = "Este campo no puede estar vacio"
+        const val PASSWORD_ERROR = "Este campo no puede estar vacio"
+        const val ADDRESS_ERROR = "Este campo no puede estar vacio"
+        const val NUMBER_PHONE_ERROR = "Este campo no puede estar vacio"
+        const val SUBSCRIPTION_DATE_ERROR = "Este campo no puede estar vacio"
+        const val SPN_PLAN_ERROR = "Este campo no puede estar vacio"
+        const val SPN_NETWORK_DEVICE_ERROR = "Este campo no puede estar vacio"
+        const val SPN_PLACE_ERROR = "Este campo no puede estar vacio"
+        const val SPN_TECHNICIAN_ERROR = "Este campo no puede estar vacio"
+        const val SPN_NAP_BOX_ERROR = "Este campo no puede estar vacio"
+        const val LOCATION_ERROR = "Este campo no puede estar vacio"
+        const val DNI_IS_INVALID_ERROR = "DNI requiere 8 digitos"
+        const val PASSWORD_IS_INVALID_ERROR = "Requiere entre 8 a 20 caracteres"
+        const val PHONE_IS_INVALID_ERROR = "Requiere 9 digitos"
+        const val FIRST_NAME_IS_INVALID_ERROR = "Este nombre no es valido"
+        const val LAST_NAME_IS_INVALID_ERROR = "Este nombre no es valido"
     }
     class OnEtFirstNameErrorRegisterUiState : RegisterSubscriptionFormErrorUiState(FIRST_NAME_ERROR)
     class OnEtLastNameErrorRegisterUiState : RegisterSubscriptionFormErrorUiState(LAST_NAME_ERROR)
@@ -61,6 +60,4 @@ sealed class RegisterSubscriptionFormErrorUiState(val error:String? = null) {
     object CleanEtPlaceNotErrors : RegisterSubscriptionFormErrorUiState()
     object CleanEtTechnicianNotErrors : RegisterSubscriptionFormErrorUiState()
     object CleanEtNapBoxNotErrors : RegisterSubscriptionFormErrorUiState()
-
-
 }

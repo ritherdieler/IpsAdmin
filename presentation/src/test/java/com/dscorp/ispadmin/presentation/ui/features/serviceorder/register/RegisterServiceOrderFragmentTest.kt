@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.serviceorder.register
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -15,15 +14,12 @@ import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.Assert.*
-
 import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.KoinTest
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
@@ -46,9 +42,7 @@ class RegisterServiceOrderFragmentTest : AutoCloseKoinTest() {
     fun tearDown() {
         mockWebServer.shutdown()
         IdlingRegistry.getInstance().unregister(okHttp3IdlingResource)
-
     }
-
 
     @Test
     fun `when service order latitude or longitude is null then return error`() {
@@ -56,13 +50,13 @@ class RegisterServiceOrderFragmentTest : AutoCloseKoinTest() {
         val serviceOrder = ServiceOrder(
             latitude = null,
             longitude = null,
-            issue ="tiene un problema"
+            issue = "tiene un problema"
         )
 
         // When
         viewModel.registerServiceOrder(serviceOrder)
 
-        //Then
+        // Then
         val value = viewModel.formErrorLiveData.getValueForTest() as OnEtLocationError
         assertEquals(value.error, RegisterServiceOrderFormError.LOCATION_ERROR)
     }
@@ -80,7 +74,7 @@ class RegisterServiceOrderFragmentTest : AutoCloseKoinTest() {
         // When
         viewModel.registerServiceOrder(serviceOrder)
 
-        //Then
+        // Then
         val value = viewModel.formErrorLiveData.getValueForTest() as OnEtIssueError
         assertEquals(value.error, RegisterServiceOrderFormError.ISSUE_ERROR)
     }
@@ -98,7 +92,7 @@ class RegisterServiceOrderFragmentTest : AutoCloseKoinTest() {
         // When
         viewModel.registerServiceOrder(serviceOrder)
 
-        //Then
+        // Then
         val value = viewModel.formErrorLiveData.getValueForTest() as OnSubscriptionError
         assertEquals(value.error, RegisterServiceOrderFormError.SUBSCRIPTION_ERROR)
     }
@@ -119,12 +113,11 @@ class RegisterServiceOrderFragmentTest : AutoCloseKoinTest() {
         viewModel.subscription = subscription
         viewModel.registerServiceOrder(serviceOrder)
 
-        //Then
+        // Then
         val value =
             viewModel.uiState.getValueForTest() as ServiceOrderRegisterSuccessOrder
         assert(value.serviceOrder.id != null)
     }
-
 
     private fun mockRegisterServiceOrderService() {
         mockService(
@@ -133,5 +126,4 @@ class RegisterServiceOrderFragmentTest : AutoCloseKoinTest() {
             MockResponse().setResponseCode(200).fromJson("serviceorder/register/success.json")
         )
     }
-
 }

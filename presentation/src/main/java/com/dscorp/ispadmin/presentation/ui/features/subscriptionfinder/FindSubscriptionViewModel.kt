@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data2.data.repository.IRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -20,17 +19,11 @@ class FindSubscriptionViewModel : ViewModel(), KoinComponent {
         try {
             val response = repository.findSubscription(id)
             uiStateLiveData.postValue(FindSubscriptionUiState.OnSubscriptionFound(response))
-
         } catch (e: Exception) {
             e.printStackTrace()
             uiStateLiveData.postValue(FindSubscriptionUiState.OnError(e.message))
-
-        }
-        finally {
+        } finally {
             loadingUiState.postValue(false)
-
         }
     }
-
-
 }

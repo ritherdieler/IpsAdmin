@@ -42,7 +42,6 @@ class PaymentHistoryAdapter(val listener: PaymentHistoryAdapterListener) :
             else
                 binding.tvPaymentStatus.setTextColor(binding.root.context.getColor(R.color.green))
         }
-
     }
 
     class PaymentHistoryDiffCallback : DiffUtil.ItemCallback<Payment>() {
@@ -53,8 +52,5 @@ class PaymentHistoryAdapter(val listener: PaymentHistoryAdapterListener) :
         override fun areContentsTheSame(oldItem: Payment, newItem: Payment): Boolean {
             return oldItem == newItem
         }
-
     }
-
 }
-

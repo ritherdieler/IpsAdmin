@@ -3,8 +3,8 @@ package com.dscorp.ispadmin.presentation.ui.features.login
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Loging
+import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
@@ -40,19 +40,17 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-
-
     private fun formIsValid(login: Loging): Boolean {
 
-       if (login.username.isEmpty()) {
-           loginFormErrorLiveData.value=LoginFormError.OnEtUser("el usuario no puede estar vacio")
-           return false
-       }
+        if (login.username.isEmpty()) {
+            loginFormErrorLiveData.value = LoginFormError.OnEtUser("el usuario no puede estar vacio")
+            return false
+        }
 
-       if (login.password.isEmpty()) {
-           loginFormErrorLiveData.value = LoginFormError.OnEtPassword("la contrana no puede estar vacia")
-           return false
-       }
-       return true
-   }
+        if (login.password.isEmpty()) {
+            loginFormErrorLiveData.value = LoginFormError.OnEtPassword("la contrana no puede estar vacia")
+            return false
+        }
+        return true
+    }
 }

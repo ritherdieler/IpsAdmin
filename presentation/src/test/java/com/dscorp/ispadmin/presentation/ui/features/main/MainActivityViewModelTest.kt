@@ -24,7 +24,7 @@ class MainActivityViewModelTest : AutoCloseKoinTest() {
     private val repository: IRepository = Mockito.mock(IRepository::class.java)
     private lateinit var viewModel: MainActivityViewModel
 
-    //for tests flows consult https://developer.android.com/kotlin/flow/test
+    // for tests flows consult https://developer.android.com/kotlin/flow/test
     @Test
     fun `when user session exists then emit user for analytics `() = runTest {
         // Given
@@ -45,5 +45,4 @@ class MainActivityViewModelTest : AutoCloseKoinTest() {
         // Then
         assertTrue(viewModel.uiState.value is UiState.UserSessionsFound)
     }
-
 }

@@ -23,7 +23,5 @@ class DebtorsViewModel : ViewModel(), KoinComponent {
             e.printStackTrace()
             uiState.postValue(DebtorsUiState.GetDebtorsError(e.message))
         }
-
     }
-
 }

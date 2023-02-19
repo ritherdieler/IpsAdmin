@@ -13,5 +13,4 @@ sealed class CleanFormErrors() {
     object OnEtLastNameCleanError : CleanFormErrors()
     object OnEtPassword1CleanError : CleanFormErrors()
     object OnEtPassword2CleanError : CleanFormErrors()
-
 }

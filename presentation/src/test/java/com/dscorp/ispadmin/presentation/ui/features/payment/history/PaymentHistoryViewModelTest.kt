@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment.history
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,9 +16,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.core.context.stopKoin
 import org.koin.test.AutoCloseKoinTest
-import org.koin.test.KoinTest
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
@@ -67,11 +64,9 @@ class PaymentHistoryViewModelTest : AutoCloseKoinTest() {
         // When
         viewModel.getLastPayments(1, 10)
 
-
         // Then
         val value = viewModel.uiStateLiveData.getValueForTest()
         assertTrue(value is PaymentHistoryUiState.GetRecentPaymentsHistoryResponse)
-
     }
 
     @Test
@@ -83,7 +78,6 @@ class PaymentHistoryViewModelTest : AutoCloseKoinTest() {
         )
         // When
         viewModel.getFilteredPaymentHistory(request)
-
 
         // Then
         val value = viewModel.uiStateLiveData.getValueForTest()
@@ -99,7 +93,6 @@ class PaymentHistoryViewModelTest : AutoCloseKoinTest() {
         // When
         viewModel.getFilteredPaymentHistory(request)
 
-
         // Then
         val value = (viewModel.uiStateLiveData.getValueForTest() as PaymentHistoryUiState.OnError)
         assertTrue(!value.message.isNullOrEmpty())
@@ -112,14 +105,12 @@ class PaymentHistoryViewModelTest : AutoCloseKoinTest() {
         mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
     }
 
-
     private fun mockGetPaymentHistoryService() {
         val urlToMock = "/payment?subscriptionId=1&limit=10"
         val response =
             MockResponse().setResponseCode(200).fromJson("payment/history/payment_list.json")
         mockService(mockWebServer = mockWebServer, urlToMock = urlToMock, response)
     }
-
 
     private fun mockGetPaymentHistoryBetweenTwoDatesService() {
         val urlToMock = "/payment/filtered?subscriptionId=1&startDate=1&endDate=2"

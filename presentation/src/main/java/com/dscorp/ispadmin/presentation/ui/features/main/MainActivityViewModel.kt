@@ -18,6 +18,4 @@ class MainActivityViewModel(private val repository: IRepository) : ViewModel() {
         val response = repository.getUserSession()
         response?.let { uiState.emit(UiState.UserSessionsFound(response)) }
     }
-
-
 }

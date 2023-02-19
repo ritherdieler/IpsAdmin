@@ -47,16 +47,19 @@ class RegisterServiceOrderFragment() : BaseFragment() {
         }
     }
 
-    private fun showSuccessDialog() { showSuccessDialog("se ah registrado correctamente")
+    private fun showSuccessDialog() {
+        showSuccessDialog("se ah registrado correctamente")
     }
 
     private fun observeServiceFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { error ->
             when (error) {
-                is RegisterServiceOrderFormError.OnEtIssueError -> binding.tlIssue.error =
-                    error.error
-                is RegisterServiceOrderFormError.OnEtLocationError -> binding.tlLocation.error =
-                    error.error
+                is RegisterServiceOrderFormError.OnEtIssueError ->
+                    binding.tlIssue.error =
+                        error.error
+                is RegisterServiceOrderFormError.OnEtLocationError ->
+                    binding.tlLocation.error =
+                        error.error
                 is RegisterServiceOrderFormError.OnSubscriptionError -> showErrorDialog()
             }
         }

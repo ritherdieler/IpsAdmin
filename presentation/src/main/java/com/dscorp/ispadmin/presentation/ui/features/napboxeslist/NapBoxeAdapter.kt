@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemNapBoxesListBinding
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 
-class NapBoxeAdapter (val listener: OnItemClickListener): ListAdapter<NapBox, NapBoxeAdapter.NapBoxAdapterViewHolder>(
+class NapBoxeAdapter(val listener: OnItemClickListener) : ListAdapter<NapBox, NapBoxeAdapter.NapBoxAdapterViewHolder>(
     NapBoxDiffCallback()
 ) {
 
@@ -23,14 +23,12 @@ class NapBoxeAdapter (val listener: OnItemClickListener): ListAdapter<NapBox, Na
     inner class NapBoxAdapterViewHolder(private val binding: ItemNapBoxesListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(napBox: NapBox) {
-            binding.root.setOnClickListener{listener.onItemClick(napBox)}
+            binding.root.setOnClickListener { listener.onItemClick(napBox) }
             binding.napBoxList = napBox
             binding.executePendingBindings()
         }
     }
 }
-
-
 
 private class NapBoxDiffCallback : DiffUtil.ItemCallback<NapBox>() {
     override fun areItemsTheSame(oldItem: NapBox, newItem: NapBox): Boolean {

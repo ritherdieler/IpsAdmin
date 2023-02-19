@@ -80,4 +80,3 @@ fun <T> LiveData<T>.mGetValueForTest(): T? {
     removeObserver(observer)
     return value
 }
-

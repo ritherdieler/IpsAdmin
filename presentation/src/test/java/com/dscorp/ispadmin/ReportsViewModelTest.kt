@@ -2,6 +2,8 @@ package com.dscorp.ispadmin
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
+import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState
+import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.util.getValueForTest
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.data2.data.repository.IRepository
@@ -65,5 +67,4 @@ class ReportsViewModelTest : AutoCloseKoinTest() {
             // Then
             assertTrue(value is ReportsUiState.DebtorsDocumentError)
         }
-
 }

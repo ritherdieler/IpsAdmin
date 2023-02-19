@@ -14,5 +14,4 @@ sealed class ServicesOrderListResponse {
         ServicesOrderListResponse()
 
     class OnError(val error: Exception) : ServicesOrderListResponse()
-
 }

@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-
 class SubscriptionsListViewModel : ViewModel(), KoinComponent {
 
     val repository: IRepository by inject()
@@ -29,5 +28,4 @@ class SubscriptionsListViewModel : ViewModel(), KoinComponent {
             responseLiveData.postValue(OnError(error))
         }
     }
-
 }

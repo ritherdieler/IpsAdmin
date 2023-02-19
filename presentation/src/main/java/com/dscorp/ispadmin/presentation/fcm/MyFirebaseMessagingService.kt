@@ -19,7 +19,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-
         Log.d("TAG", "From: ${remoteMessage.from}")
         remoteMessage.data.isNotEmpty().let {
             Log.d("TAG", "Message data payload: " + remoteMessage.data)
@@ -66,6 +65,5 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendRegistrationToServer(token: String?) {
-
     }
 }

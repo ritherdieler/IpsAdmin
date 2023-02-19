@@ -75,7 +75,7 @@ interface RestApiServices {
     @GET("subscription/find")
     suspend fun findSubscription(@Query("id") id: Int): Response<List<SubscriptionResponse>>
 
-    @POST("payment")
+    @PUT("payment")
     suspend fun registerPayment(@Body payment: Payment): Response<Payment>
 
     @GET("networkDevice/deviceTypes")

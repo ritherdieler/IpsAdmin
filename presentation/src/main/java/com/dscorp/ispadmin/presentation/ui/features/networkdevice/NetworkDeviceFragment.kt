@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNetworkDeviceBinding
 import com.dscorp.ispadmin.presentation.extension.fillWithList
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
@@ -20,7 +18,8 @@ class NetworkDeviceFragment : BaseFragment() {
     private val viewModel: NetworkDeviceViewModel by viewModel()
     private var selectedNetworkDeviceType: String? = null
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         observeNetWorkDeviceResponse()
@@ -69,8 +68,8 @@ class NetworkDeviceFragment : BaseFragment() {
         }
     }
     private fun observeCleanNetworkDeviceErrorForm() {
-        viewModel.cleanNetworkDeviceErrorFormLiveData.observe(viewLifecycleOwner) {cleanForm ->
-            when(cleanForm){
+        viewModel.cleanNetworkDeviceErrorFormLiveData.observe(viewLifecycleOwner) { cleanForm ->
+            when (cleanForm) {
                 is CleanFormErrors.OnDeviceTypeError -> binding.spnDeviceType.error = null
                 is CleanFormErrors.OnEtAddressError -> binding.tlIpAddress.error = null
                 is CleanFormErrors.OnEtNameError -> binding.tlName.error = null

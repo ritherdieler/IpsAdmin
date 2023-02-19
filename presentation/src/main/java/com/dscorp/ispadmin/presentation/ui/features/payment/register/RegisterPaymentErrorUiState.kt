@@ -2,7 +2,6 @@ package com.dscorp.ispadmin.presentation.ui.features.payment.register
 
 sealed class RegisterPaymentErrorUiState(val message: String) {
 
-
     companion object {
         const val ERROR_INVALID_AMOUNT = "El monto debe ser mayor a 0"
         const val ERROR_INVALID_DISCOUNT = "El descuento no puede ser menor a 0 ni mayor al precio del plan"
@@ -22,6 +21,4 @@ sealed class RegisterPaymentErrorUiState(val message: String) {
     data class AmountPaidGreaterThanPlanPriceError(val netPayment: Float) : RegisterPaymentErrorUiState(
         ERROR_AMOUNT_PAID_GREATER_THAN_PLAN_PRICE
     )
-
-
 }

@@ -30,8 +30,6 @@ class TechniciansListAdapter(techniciansListFragment: TechniciansListFragment) :
     }
 }
 
-
-
 private class IpPoolDiffCallback : DiffUtil.ItemCallback<Technician>() {
     override fun areItemsTheSame(oldItem: Technician, newItem: Technician): Boolean {
         return oldItem.id == newItem.id

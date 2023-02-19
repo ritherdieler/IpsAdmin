@@ -102,8 +102,7 @@ class TechnicianViewModel : ViewModel() {
             return false
         }
         if (technician.phone.length < 9) {
-            technicianFromErrorLiveData.value = TechnicianFromError.OnEtPhoneError(
-            )
+            technicianFromErrorLiveData.value = TechnicianFromError.OnEtPhoneError()
 
             return false
         } else {
@@ -117,6 +116,5 @@ class TechnicianViewModel : ViewModel() {
             technicianErrorCleanFormLiveData.value = TechnicianErrorCleanForm.OnEtBirthdayCleanError
         }
         return true
-
     }
 }

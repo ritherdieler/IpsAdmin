@@ -20,9 +20,6 @@ sealed class EditSubscriptionUiState {
 
     class FetchFormDataError(val error: String) : EditSubscriptionUiState()
 
-
-    class EditSubscriptionSuccess(val subscription: SubscriptionResponse) :EditSubscriptionUiState()
+    class EditSubscriptionSuccess(val subscription: SubscriptionResponse) : EditSubscriptionUiState()
     class EditSubscriptionError(val error: String?) : EditSubscriptionUiState()
-
-
 }

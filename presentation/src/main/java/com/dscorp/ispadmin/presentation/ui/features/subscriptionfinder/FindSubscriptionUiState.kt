@@ -7,6 +7,4 @@ sealed interface FindSubscriptionUiState {
         FindSubscriptionUiState
 
     class OnError(val message: String?) : FindSubscriptionUiState
-
-
 }

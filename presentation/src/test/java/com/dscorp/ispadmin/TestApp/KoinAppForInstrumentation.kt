@@ -44,20 +44,15 @@ class KoinAppForInstrumentation : Application() {
                         viewModelModule,
                         repositoryModule,
                         localDataModule,
-                        )
+                    )
                 )
-
             }
         }
-
-
     }
-
 
     internal fun loadModules(module: Module, block: () -> Unit) {
         loadKoinModules(module)
         block()
         unloadKoinModules(module)
     }
-
 }

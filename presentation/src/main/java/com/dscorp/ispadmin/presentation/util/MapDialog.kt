@@ -63,10 +63,7 @@ class MapDialog : DialogFragment(), OnMapReadyCallback {
                 binding.btn.isEnabled = true
             }
         }
-
     }
-
-
 
     override fun onResume() {
         super.onResume()

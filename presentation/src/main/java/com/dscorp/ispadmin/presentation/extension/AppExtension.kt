@@ -20,14 +20,12 @@ import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.FileOutputStream
 
-
 fun NavController.navigateSafe(destinationId: Int) {
     try {
         navigate(destinationId)
     } catch (e: Exception) {
         e.printStackTrace()
     }
-
 }
 
 fun LatLng.toGeoLocation(): GeoLocation = GeoLocation(latitude, longitude)
@@ -42,35 +40,35 @@ fun MaterialAutoCompleteTextView.fillWithList(data: List<Any>, onItemSelected: (
         }
 }
 
-fun Fragment.showSuccessDialog(text:String){
-    val dialogFactory : IDialogFactory by inject ()
-    val successDialog = dialogFactory.createSuccessDialog(requireContext(),text)
+fun Fragment.showSuccessDialog(text: String) {
+    val dialogFactory: IDialogFactory by inject()
+    val successDialog = dialogFactory.createSuccessDialog(requireContext(), text)
     successDialog.show()
 }
-fun Fragment.showErrorDialog(error:String? = "Error desconocido") {
-    val dialogFactory:IDialogFactory by inject()
-    val errorDialog = dialogFactory.createErrorDialog(requireContext(),error!!)
+fun Fragment.showErrorDialog(error: String? = "Error desconocido") {
+    val dialogFactory: IDialogFactory by inject()
+    val errorDialog = dialogFactory.createErrorDialog(requireContext(), error!!)
     errorDialog.show()
 }
-fun Activity.showSuccessDialog(text:String){
-    val dialogFactory : IDialogFactory by inject ()
-    val successDialog = dialogFactory.createSuccessDialog(this,text)
+fun Activity.showSuccessDialog(text: String) {
+    val dialogFactory: IDialogFactory by inject()
+    val successDialog = dialogFactory.createSuccessDialog(this, text)
     successDialog.show()
 }
-fun Activity.showErrorDialog(error:String= "error desconocido") {
-    val dialogFactory:IDialogFactory by inject()
-    val errorDialog = dialogFactory.createErrorDialog(this,error)
+fun Activity.showErrorDialog(error: String = "error desconocido") {
+    val dialogFactory: IDialogFactory by inject()
+    val errorDialog = dialogFactory.createErrorDialog(this, error)
     errorDialog.show()
 }
 
-fun Activity.getDownloadedFileUri(document:DownloadDocumentResponse): Uri {
-        val data = Base64.decode(document.base64, Base64.DEFAULT)
-        val downloadDir: File =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val outputFile = File(downloadDir, document.getNameWithExtension())
-        val outputStream = FileOutputStream(outputFile)
-        outputStream.write(data)
-        outputStream.close()
+fun Activity.getDownloadedFileUri(document: DownloadDocumentResponse): Uri {
+    val data = Base64.decode(document.base64, Base64.DEFAULT)
+    val downloadDir: File =
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    val outputFile = File(downloadDir, document.getNameWithExtension())
+    val outputStream = FileOutputStream(outputFile)
+    outputStream.write(data)
+    outputStream.close()
 
     return FileProvider.getUriForFile(
         this,
@@ -78,6 +76,3 @@ fun Activity.getDownloadedFileUri(document:DownloadDocumentResponse): Uri {
         outputFile
     )
 }
-
-
-

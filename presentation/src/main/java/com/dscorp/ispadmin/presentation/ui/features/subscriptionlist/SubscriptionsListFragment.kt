@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
@@ -21,7 +20,8 @@ class SubscriptionsListFragment : BaseFragment(), SubscriptionItemClickListener 
     private val viewModel: SubscriptionsListViewModel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = DataBindingUtil.inflate(
@@ -40,7 +40,6 @@ class SubscriptionsListFragment : BaseFragment(), SubscriptionItemClickListener 
                 when (it) {
                     is SubscriptionsListResponse.OnError -> {}
                     is SubscriptionsListResponse.OnSubscriptionFound -> fillRecycleView(it)
-
                 }
             }
         }
@@ -60,7 +59,3 @@ class SubscriptionsListFragment : BaseFragment(), SubscriptionItemClickListener 
         findNavController().navigate(destination)
     }
 }
-
-
-
-

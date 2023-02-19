@@ -1,27 +1,27 @@
-//package com.dscorp.ispadmin.presentation.ui.features.pool
+// package com.dscorp.ispadmin.presentation.ui.features.pool
 //
-//import androidx.test.espresso.IdlingRegistry
-//import androidx.test.espresso.IdlingResource
-//import androidx.test.ext.junit.runners.AndroidJUnit4
-//import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
-//import com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolUiState
-//import com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolViewModel
-//import com.dscorp.ispadmin.util.*
-//import com.example.cleanarchitecture.domain.domain.entity.IpPool
-//import kotlinx.coroutines.test.runTest
-//import okhttp3.mockwebserver.MockResponse
-//import okhttp3.mockwebserver.MockWebServer
-//import org.junit.After
-//import org.junit.Assert.*
-//import org.junit.Before
-//import org.junit.Test
-//import org.junit.runner.RunWith
-//import org.koin.test.AutoCloseKoinTest
-//import org.robolectric.annotation.Config
+// import androidx.test.espresso.IdlingRegistry
+// import androidx.test.espresso.IdlingResource
+// import androidx.test.ext.junit.runners.AndroidJUnit4
+// import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
+// import com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolUiState
+// import com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolViewModel
+// import com.dscorp.ispadmin.util.*
+// import com.example.cleanarchitecture.domain.domain.entity.IpPool
+// import kotlinx.coroutines.test.runTest
+// import okhttp3.mockwebserver.MockResponse
+// import okhttp3.mockwebserver.MockWebServer
+// import org.junit.After
+// import org.junit.Assert.*
+// import org.junit.Before
+// import org.junit.Test
+// import org.junit.runner.RunWith
+// import org.koin.test.AutoCloseKoinTest
+// import org.robolectric.annotation.Config
 //
-//@RunWith(AndroidJUnit4::class)
-//@Config(application = KoinAppForInstrumentation::class)
-//class IpPoolViewModelTest : AutoCloseKoinTest() {
+// @RunWith(AndroidJUnit4::class)
+// @Config(application = KoinAppForInstrumentation::class)
+// class IpPoolViewModelTest : AutoCloseKoinTest() {
 //
 //    private lateinit var viewModel: IpPoolViewModel
 //    private val mockWebServer: MockWebServer = MockWebServer()
@@ -154,5 +154,5 @@
 //        )
 //    }
 //
-//}
+// }
 //

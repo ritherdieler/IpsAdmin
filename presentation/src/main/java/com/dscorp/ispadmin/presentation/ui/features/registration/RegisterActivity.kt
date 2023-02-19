@@ -15,7 +15,6 @@ class RegisterActivity : BaseActivity() {
 
     lateinit var binding: ActivityRegisterBinding
 
-
     val viewModel: RegisterViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +23,6 @@ class RegisterActivity : BaseActivity() {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_register, null, true)
         setContentView(binding.root)
 
-
         binding.btRegister.setOnClickListener {
             register()
             firebaseAnalytics.sendSignUpEvent(REGISTER_USER)
@@ -32,10 +30,7 @@ class RegisterActivity : BaseActivity() {
 
         observe()
         observeCleanError()
-
-
     }
-
 
     private fun observeRegisterResponse() {
         viewModel.registerResponseLiveData.observe(this) { it ->
@@ -54,10 +49,12 @@ class RegisterActivity : BaseActivity() {
                 is RegisterFormError.OnEtPassword1Error -> binding.tlPassword1.error = it.error
                 is RegisterFormError.OnEtPassword2Error -> binding.tlPassword2.error = it.error
                 is RegisterFormError.OnEtUserError -> binding.tlUser.error = it.error
-                is RegisterFormError.OnEtFirstNameIsInvalidError -> binding.tlFirstName.error =
-                    it.error
-                is RegisterFormError.OnEtLastNameIsInvalidError -> binding.tlLastName.error =
-                    it.error
+                is RegisterFormError.OnEtFirstNameIsInvalidError ->
+                    binding.tlFirstName.error =
+                        it.error
+                is RegisterFormError.OnEtLastNameIsInvalidError ->
+                    binding.tlLastName.error =
+                        it.error
             }
         }
     }

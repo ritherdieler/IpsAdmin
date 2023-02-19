@@ -13,13 +13,13 @@ import com.dscorp.ispadmin.presentation.ui.features.login.LoginActivity
 import com.example.cleanarchitecture.domain.domain.entity.User
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
 class MyProfileFragment : Fragment() {
     lateinit var binding: FragmentMyProfileBinding
     val viewModel: MyProfileViewmodel by viewModel()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_my_profile, null, true)
@@ -34,7 +34,6 @@ class MyProfileFragment : Fragment() {
         viewModel.logOut()
         activity?.startActivity(Intent(activity, LoginActivity::class.java))
         activity?.finish()
-
     }
 
     private fun observeResponse() {
@@ -44,13 +43,10 @@ class MyProfileFragment : Fragment() {
                 is MyProfileResponse.OnError -> {}
             }
         }
-
     }
 
     private fun showProfileData(user: User) {
         binding.user = user
         binding.executePendingBindings()
     }
-
-
 }

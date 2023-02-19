@@ -3,7 +3,7 @@ package com.example.cleanarchitecture.domain.domain.entity
 import java.text.SimpleDateFormat
 import java.util.Date
 
-data class Payment(
+ class Payment(
     var id: Int? = null,
     var amountPaid: Double = 0.0,
     val discountAmount: Double = 0.0,
@@ -13,6 +13,7 @@ data class Payment(
     var method: String = "",
     var paid: Boolean = false,
     var amountToPay: Double = 0.0,
+    var userId: Int = 0,
 ):java.io.Serializable
 {
     fun paymentDateStr(): String {

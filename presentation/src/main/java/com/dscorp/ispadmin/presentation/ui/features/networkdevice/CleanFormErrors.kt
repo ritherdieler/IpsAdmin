@@ -13,6 +13,4 @@ sealed class CleanFormErrors() {
     object OnEtUserNameError : CleanFormErrors()
     object OnEtAddressError : CleanFormErrors()
     object OnDeviceTypeError : CleanFormErrors()
-
-
 }

@@ -20,7 +20,6 @@ class FindSubscriptionAdapter(val listener: SelectableSubscriptionListener) :
 
     override fun onBindViewHolder(holder: FindSubscriptionViewHolder, position: Int) {
         holder.bind(getItem(position))
-
     }
 
     inner class FindSubscriptionViewHolder(private val binding: ItemFindSubscriptionBinding) :
@@ -28,16 +27,14 @@ class FindSubscriptionAdapter(val listener: SelectableSubscriptionListener) :
         fun bind(subscription: SubscriptionResponse) {
             binding.subscription = subscription
             binding.executePendingBindings()
-            binding.root.setOnClickListener{
+            binding.root.setOnClickListener {
                 listener.onCardSelected(subscription)
             }
             binding.btnMenu.setOnClickListener {
                 listener.onSubscriptionPopupButtonSelected(subscription, it)
             }
         }
-
     }
-
 
     private class SubscriptionDiffCallback : DiffUtil.ItemCallback<SubscriptionResponse>() {
         override fun areItemsTheSame(

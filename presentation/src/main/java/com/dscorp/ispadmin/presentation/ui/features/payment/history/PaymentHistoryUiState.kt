@@ -7,5 +7,4 @@ sealed interface PaymentHistoryUiState {
     class OnError(val message: String? = "Unknown Error") : PaymentHistoryUiState
     class GetRecentPaymentsHistoryResponse(val payments: List<Payment>) : PaymentHistoryUiState
     class GetRecentPaymentHistoryError(val message: String? = "Unknown Error") : PaymentHistoryUiState
-
 }

@@ -122,16 +122,20 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is OnSpnNapBoxErrorRegisterUiState -> setSpnNapBoxError(formError)
                 is OnDniIsInvalidErrorRegisterUiState -> setDniIsInvalidError(formError)
                 is OnPhoneIsInvalidErrorRegisterUiState -> binding.tlPhone.error = formError.error
-                is OnPasswordIsInvalidErrorRegisterUiState -> binding.tlPassword.error =
-                    formError.error
-                is OnSpnTechnicianErrorRegisterUiState -> binding.spnTechnician.error =
-                    formError.error
-                is OnEtFirstNameIsInvalidErrorRegisterUiState -> binding.tlFirstName.error =
-                    formError.error
-                is OnEtLastNameIsInvalidErrorRegisterUiState -> binding.tlLastName.error =
-                    formError.error
+                is OnPasswordIsInvalidErrorRegisterUiState ->
+                    binding.tlPassword.error =
+                        formError.error
+                is OnSpnTechnicianErrorRegisterUiState ->
+                    binding.spnTechnician.error =
+                        formError.error
+                is OnEtFirstNameIsInvalidErrorRegisterUiState ->
+                    binding.tlFirstName.error =
+                        formError.error
+                is OnEtLastNameIsInvalidErrorRegisterUiState ->
+                    binding.tlLastName.error =
+                        formError.error
                 is HostUiStateDeviceErrorRegister -> binding.spnHostDevice.error = formError.error
-                //CLEAN FORM
+                // CLEAN FORM
                 is CleanEtDniHasNotErrors -> clearTlDniError()
                 is CleanEtFirstNameHasNotErrors -> clearTlFirstNameErrors()
                 is CleanEtLastNameHasNotErrors -> binding.tlLastName.error = null
@@ -151,7 +155,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private fun setDniIsInvalidError(formError: RegisterSubscriptionFormErrorUiState) {
         binding.tlDni.error = formError.error
     }
-
 
     private fun clearTlDniError() {
         binding.tlDni.error = null
@@ -273,7 +276,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 selectedHostNetworkDevice = networkDevice[pos]
             }
     }
-
 
     private fun setUpPlaceSpinner(places: List<Place>) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, places)

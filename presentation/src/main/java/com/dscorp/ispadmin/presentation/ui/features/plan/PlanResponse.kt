@@ -9,7 +9,7 @@ import com.example.cleanarchitecture.domain.domain.entity.Plan
  * Huacho, Peru.
  *
  **/
-sealed class PlanResponse{
-    class OnPlanRegistered(val plan : Plan): PlanResponse()
-    class OnError(val error:Exception): PlanResponse()
+sealed class PlanResponse {
+    class OnPlanRegistered(val plan: Plan) : PlanResponse()
+    class OnError(val error: Exception) : PlanResponse()
 }

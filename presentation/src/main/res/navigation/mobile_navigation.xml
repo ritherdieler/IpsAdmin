@@ -185,9 +185,10 @@
         <action
             android:id="@+id/action_paymentHistoryFragment_to_paymentDetailFragment"
             app:destination="@id/paymentDetailFragment" />
-        <action
-            android:id="@+id/action_paymentHistoryFragment_to_registerPayment"
+
+        <action android:id="@+id/toRegisterPayment"
             app:destination="@id/register_payment" />
+
     </fragment>
     <fragment
         android:id="@+id/nav_ip_pool"
@@ -215,7 +216,7 @@
     </fragment>
     <fragment
         android:id="@+id/paymentDetailFragment"
-        android:name="com.dscorp.ispadmin.PaymentDetailFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.payment.detail.PaymentDetailFragment"
         android:label="fragment_payment_detail"
         tools:layout="@layout/fragment_payment_detail" >
 
@@ -228,7 +229,7 @@
     </fragment>
     <fragment
         android:id="@+id/nav_reports"
-        android:name="com.dscorp.ispadmin.ReportsFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.report.ReportsFragment"
         android:label="fragment_reports"
         tools:layout="@layout/fragment_reports" />
 </navigation>

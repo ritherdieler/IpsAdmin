@@ -2,7 +2,6 @@ package com.dscorp.ispadmin.presentation.ui.features.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Checkable
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
@@ -10,7 +9,6 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityLoginBinding
 import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendLoginEvent
-import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterActivity
@@ -22,7 +20,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class LoginActivity : BaseActivity() {
     lateinit var binding: ActivityLoginBinding
     val viewModel: LoginViewModel by viewModel()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +53,6 @@ class LoginActivity : BaseActivity() {
             }
         }
     }
-
 
     private fun observeLoginFormError() {
         viewModel.loginFormErrorLiveData.observe(this) { formError ->
