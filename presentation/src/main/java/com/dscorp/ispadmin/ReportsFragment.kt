@@ -1,27 +1,20 @@
 package com.dscorp.ispadmin
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.databinding.FragmentReportsBinding
+import com.dscorp.ispadmin.presentation.extension.getDownloadedFileUri
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import java.io.File
-import java.io.FileOutputStream
 
 
 class ReportsFragment : BaseFragment() {
@@ -54,34 +47,25 @@ class ReportsFragment : BaseFragment() {
 
     private fun downloadDocument(document: DownloadDocumentResponse) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val data = Base64.decode(document.base64, Base64.DEFAULT)
-            val downloadDir: File = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-            val outputFile = File(downloadDir, document.getNameWithExtension())
-            val outputStream = FileOutputStream(outputFile)
-            outputStream.write(data)
-            outputStream.close()
-
-            val uri = FileProvider.getUriForFile(
-                requireContext(),
-                "${BuildConfig.APPLICATION_ID}.fileprovider",
-                outputFile
-            )
-
-            val intent = Intent(Intent.ACTION_VIEW)
-            intent.setDataAndType(uri, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
+            val uri = requireActivity().getDownloadedFileUri(document)
+            val intent = openWithXlsxApp(uri)
             try {
                 startActivity(intent)
-            } catch (e: ActivityNotFoundException) {
-                // Handle the case where no activity is available to handle the intent
-                Toast.makeText(requireContext(), "No app found to open XLSX files", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                // Handle other exceptions
-                e.printStackTrace()
+            }  catch (e: Exception) {
+                showErrorDialog("No se pudo abrir el archivo, el archivo se encuentra en la carpeta de descargas")
             }
         }
+    }
+
+    private fun openWithXlsxApp(uri: Uri): Intent {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(
+            uri,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        return intent
     }
 
 
