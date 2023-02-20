@@ -28,7 +28,10 @@ class RegisterPaymentViewModel(private val repository: IRepository) : ViewModel(
     }
 
     private fun paymentIsValid(payment: Payment): Boolean {
-
+        if (payment.amountPaid < 0) {
+            registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidAmountError)
+            return false
+        }
         if (payment.discountAmount < 0) {
             registerPaymentFormErrorState.postValue(RegisterPaymentErrorUiState.InvalidDiscountError)
             return false

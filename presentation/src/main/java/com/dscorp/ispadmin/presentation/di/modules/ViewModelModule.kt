@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.di.modules
 
+import com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardViewModel
 import com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolViewModel
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivityViewModel
@@ -53,4 +54,6 @@ val viewModelModule = module {
     viewModel { MyProfileViewmodel() }
     viewModel { MainActivityViewModel(get()) }
     viewModel { ReportsViewModel(get()) }
+    viewModel { DashBoardViewModel(get()) }
+
 }

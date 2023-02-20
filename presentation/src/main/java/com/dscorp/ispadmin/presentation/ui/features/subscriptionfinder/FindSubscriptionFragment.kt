@@ -31,7 +31,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
 
         binding.findSubscriptionRecyclerView.adapter = adapter
         binding.btnFind.setOnClickListener {
-            val dni = binding.findSubscriptionEditText.text.toString().toInt()
+            val dni = binding.findSubscriptionEditText.text.toString()
             viewModel.findSubscription(dni)
         }
 

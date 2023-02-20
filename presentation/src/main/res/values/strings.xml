@@ -1,7 +1,7 @@
 <resources>
 
 
-    <string name="digit_subscription">Digite el codigo de suscripcion o el DNI</string>
+    <string name="digit_subscription">Digite el DNI</string>
     <string name="app_name">ispAdminAndroid</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     find_subscription
@@ -47,6 +47,7 @@
     <string name="nap_box">Caja Nap</string>
     <string name="consult_payments">Consultar Pagos</string>
     <string name="debtors">Deudores</string>
+    <string name="dashboard">Dashboard</string>
     <string name="find_subscriptions">Buscar suscripciones</string>
     <string name="register_payment">Registrar pago</string>
     <string name="show_payment_history">Mostrar historial de pagos</string>
@@ -84,5 +85,7 @@
     <string name="go_to_pay">Ir a pagar</string>
     <string name="reports">Reportes</string>
     <string name="get_debtors">Obtener deudores</string>
+    <string name="download_speed_in_mb">Velocidad de descarga en MB</string>
+    <string name="upload_speed_in_mb">Velocidad de subida en MB</string>
 
 </resources>

@@ -91,7 +91,8 @@ class RegisterPaymentViewModelTest : KoinTest {
             paymentDate = 0,
             method = "Yape",
             discountAmount = 1.0,
-            paid = false
+            paid = false,
+            userId = 1
         )
 
         // When

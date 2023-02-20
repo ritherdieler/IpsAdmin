@@ -162,6 +162,7 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHist
     }
 
     override fun onPaymentHistoryItemClicked(payment: Payment) {
+
         val action = if (!payment.paid) toRegisterPayment(payment)
         else actionPaymentHistoryFragmentToPaymentDetailFragment(payment)
 

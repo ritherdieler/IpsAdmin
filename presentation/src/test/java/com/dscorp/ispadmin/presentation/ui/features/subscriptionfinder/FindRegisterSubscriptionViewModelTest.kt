@@ -34,7 +34,7 @@ class FindRegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
 
     private lateinit var viewModel: FindSubscriptionViewModel
 
-    private val id = 1003
+    private val dni = "48271836"
 
     private val httpClient: OkHttpClient by inject()
 
@@ -65,13 +65,13 @@ class FindRegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
         // given
         mockService(
             mockWebServer = mockWebServer,
-            urlToMock = "/subscription/find?id=$id",
+            urlToMock = "/subscription/find?dni=$dni",
             response = MockResponse().fromJson("subscription/SubscriptionList.json")
 
         )
 
         // when
-        viewModel.findSubscription(id)
+        viewModel.findSubscription(dni)
 
         // then
         val value = viewModel.uiStateLiveData.getValueForTest() as OnSubscriptionFound
@@ -83,12 +83,12 @@ class FindRegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
         // given
         mockService(
             mockWebServer = mockWebServer,
-            urlToMock = "/subscription/find?id=$id",
+            urlToMock = "/subscription/find?dni=$dni",
             response = MockResponse().setResponseCode(500)
         )
 
         // when
-        viewModel.findSubscription(id)
+        viewModel.findSubscription(dni)
 
         // then
         val value = viewModel.uiStateLiveData.getValueForTest() as OnError

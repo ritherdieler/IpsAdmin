@@ -17,7 +17,6 @@ interface IRepository {
      fun getUserSession():User?
     suspend fun saveCheckBox(login: Loging)
     suspend fun getCheckBox(login: Loging)
-
     suspend fun clearUserSession()
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
@@ -34,7 +33,7 @@ interface IRepository {
     suspend fun getTechnicians(): List<Technician>
     suspend fun getNapBoxes(): List<NapBox>
     suspend fun getFilteredPaymentHistory(request: SearchPaymentsRequest): List<Payment>
-    suspend fun findSubscription(id: Int): List<SubscriptionResponse>
+    suspend fun findSubscription(id: String): List<SubscriptionResponse>
     suspend fun registerPayment(payment: Payment): Payment
     suspend fun getNetworkDeviceTypes(): List<String>
     suspend fun getDebtors(): List<SubscriptionResponse>
@@ -44,4 +43,5 @@ interface IRepository {
     suspend fun getCoreDevices(): List<NetworkDevice>
     suspend fun editSubscription(subscription: Subscription): SubscriptionResponse
     suspend fun downloadDebtorsDocument(): DownloadDocumentResponse
+    suspend fun getDashBoardData(): DashBoardDataResponse
 }

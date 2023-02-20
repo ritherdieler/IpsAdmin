@@ -227,7 +227,7 @@ class Repository: IRepository, KoinComponent {
         }
     }
 
-    override suspend fun findSubscription(id: Int): List<SubscriptionResponse> {
+    override suspend fun findSubscription(id: String): List<SubscriptionResponse> {
         val response = restApiServices.findSubscription(id)
         return when (response.code()) {
             200 -> response.body()!!.ifEmpty { listOf() }
@@ -312,6 +312,15 @@ class Repository: IRepository, KoinComponent {
 
     override suspend fun downloadDebtorsDocument(): DownloadDocumentResponse {
         val response = restApiServices.downloadDebtorsDocument()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun getDashBoardData(): DashBoardDataResponse {
+        val response = restApiServices.getDashBoardData()
         if (response.code() == 200) {
             return response.body()!!
         } else {

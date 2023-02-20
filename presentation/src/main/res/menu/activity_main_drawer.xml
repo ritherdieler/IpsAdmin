@@ -6,6 +6,21 @@
     <group android:checkableBehavior="single">
 
         <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/dashboard" />
+
+        <item
+            android:id="@+id/nav_find_subscriptions"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/find_subscriptions" />
+        <item
+            android:id="@+id/nav_reports"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/reports" />
+
+
+        <item
             android:id="@+id/nav_my_profile"
             android:icon="@drawable/ic_person"
             android:title="@string/mi_perfil" />
@@ -63,14 +78,6 @@
             android:id="@+id/nav_debtors"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/debtors" />
-        <item
-            android:id="@+id/nav_find_subscriptions"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/find_subscriptions" />
-        <item
-            android:id="@+id/nav_reports"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/reports" />
 
     </group>
 </menu>

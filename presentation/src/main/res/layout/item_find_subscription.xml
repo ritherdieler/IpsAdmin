@@ -14,11 +14,13 @@
         style="@style/Widget.App.Button.OutlinedButton.IconOnly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:checkable="true"
-        android:focusable="true">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        app:cardElevation="5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+           android:padding="12dp"
             android:layout_height="match_parent">
 
             <TextView
@@ -47,18 +49,6 @@
                 app:layout_constraintStart_toStartOf="@+id/tvPlanId"
                 app:layout_constraintTop_toBottomOf="@+id/tvPlanId" />
 
-            <TextView
-                android:id="@+id/tvName2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="DNI"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tvPlanId"
-                app:layout_constraintStart_toStartOf="@+id/tvPlanId"
-                app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
             <TextView
                 android:id="@+id/tvSeePlanId"
@@ -87,6 +77,19 @@
                 tools:text="renato" />
 
             <TextView
+                android:id="@+id/tvName2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="DNI"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/tvPlanId"
+                app:layout_constraintStart_toStartOf="@+id/tvPlanId"
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+            <TextView
                 android:id="@+id/tvDni"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
@@ -101,10 +104,10 @@
             <Button
                 android:id="@+id/btnMenu"
                 style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                app:icon="@drawable/ic_more_dot"
-                android:padding="15dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:icon="@drawable/ic_more_dot"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvSeeFirstName"

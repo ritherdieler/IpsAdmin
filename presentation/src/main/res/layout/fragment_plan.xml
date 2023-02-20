@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
         android:gravity="center"
-        tools:context=".presentation.ui.features.plan.PlanFragment">
+        tools:context=".presentation.ui.features.plan.RegisterPlanFragment">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlNamePlan"
@@ -53,12 +53,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:hint="Velocidad de descarga">
+            android:hint="@string/download_speed_in_mb">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDownloadSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="4"
                 android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -70,7 +71,8 @@
             android:layout_width="match_parent"
             android:layout_marginTop="20dp"
             android:layout_height="wrap_content"
-            android:hint="Velocidad de subida"
+            android:maxLength="4"
+            android:hint="@string/upload_speed_in_mb"
      >
 
             <com.google.android.material.textfield.TextInputEditText

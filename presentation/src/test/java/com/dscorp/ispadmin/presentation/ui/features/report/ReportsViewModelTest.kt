@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin
+package com.dscorp.ispadmin.presentation.ui.features.report
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation

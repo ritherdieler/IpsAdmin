@@ -73,7 +73,7 @@ interface RestApiServices {
     ): Response<List<Payment>>
 
     @GET("subscription/find")
-    suspend fun findSubscription(@Query("id") id: Int): Response<List<SubscriptionResponse>>
+    suspend fun findSubscription(@Query("dni") dni: String): Response<List<SubscriptionResponse>>
 
     @PUT("payment")
     suspend fun registerPayment(@Body payment: Payment): Response<Payment>
@@ -104,5 +104,7 @@ interface RestApiServices {
 
     @GET("subscription/debtors-document")
     suspend fun downloadDebtorsDocument(): Response<DownloadDocumentResponse>
+    @GET("dashboard")
+    suspend fun getDashBoardData(): Response<DashBoardDataResponse>
 }
 
