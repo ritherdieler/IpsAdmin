@@ -54,6 +54,6 @@ val viewModelModule = module {
     viewModel { MyProfileViewmodel() }
     viewModel { MainActivityViewModel(get()) }
     viewModel { ReportsViewModel(get()) }
-    viewModel { DashBoardViewModel(get()) }
+    viewModel { DashBoardViewModel() }
 
 }

@@ -233,7 +233,7 @@
         android:label="fragment_reports"
         tools:layout="@layout/fragment_reports" />
     <fragment
-        android:id="@+id/dashBoardFragment"
+        android:id="@+id/nav_dashboard"
         android:name="com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardFragment"
         android:label="fragment_dash_board"
         tools:layout="@layout/fragment_dash_board" />

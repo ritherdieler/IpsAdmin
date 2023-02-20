@@ -1,20 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <variable
+            name="dashboardDataResponse"
+            type="com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse" />
     </data>
 
-    <FrameLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.features.dashboard.DashBoardFragment">
+        android:orientation="vertical">
 
-        <TextView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Hello" />
+            android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:layout_margin="12dp"
+            app:cardElevation="5dp">
 
-    </FrameLayout>
+            <TextView
+                android:id="@+id/tv_gross_revenue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@{dashboardDataResponse.grossRevenueAsString()}"
+                android:textSize="20sp"
+                tools:text="Total Cases" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_margin="12dp"
+            app:cardElevation="5dp">
+
+            <TextView
+                android:id="@+id/tv_total_raised"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@{dashboardDataResponse.totalRaisedAsString()}"
+                android:textSize="20sp"
+                tools:text="Total Deaths" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_margin="12dp"
+            app:cardElevation="5dp">
+
+            <TextView
+                android:id="@+id/tv_total_discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@{dashboardDataResponse.totalDiscountAsString}"
+                android:textSize="20sp"
+                tools:text="Total Recovered" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            app:cardElevation="5dp">
+
+            <TextView
+                android:id="@+id/tv_total_to_collect"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@{dashboardDataResponse.totalToCollectAsString}"
+                android:textSize="20sp"
+                tools:text="Total Active Cases" />
+        </androidx.cardview.widget.CardView>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 </layout>
