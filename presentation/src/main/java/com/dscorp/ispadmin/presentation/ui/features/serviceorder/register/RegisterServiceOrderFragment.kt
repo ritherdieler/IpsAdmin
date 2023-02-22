@@ -29,8 +29,12 @@ class RegisterServiceOrderFragment() : BaseFragment() {
         observeServiceOrderResponse()
         observeServiceFormError()
         observeMapDialogResult()
-        binding.etLocation.setOnClickListener { navigateToMapDialog() }
-        binding.btRegisterServiceOrder.setOnClickListener { registerServiceOrder() }
+        binding.etLocation.setOnClickListener {
+            navigateToMapDialog()
+        }
+        binding.btRegisterServiceOrder.setOnClickListener {
+            registerServiceOrder()
+        }
         return binding.root
     }
 
@@ -61,6 +65,7 @@ class RegisterServiceOrderFragment() : BaseFragment() {
                     binding.tlLocation.error =
                         error.error
                 is RegisterServiceOrderFormError.OnSubscriptionError -> showErrorDialog()
+                is RegisterServiceOrderFormError.GenericError -> showErrorDialog()
             }
         }
     }
@@ -70,7 +75,8 @@ class RegisterServiceOrderFragment() : BaseFragment() {
             issue = binding.etIssue.text.toString(),
             latitude = selectedLocation?.latitude,
             longitude = selectedLocation?.longitude,
-            subscriptionId = viewModel.subscription?.id
+            subscriptionId = viewModel.subscription?.id,
+            additionalDetails = binding.etAdditionalDetails.text.toString()
         )
         viewModel.registerServiceOrder(serviceOrder)
     }

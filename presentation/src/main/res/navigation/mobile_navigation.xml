@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_plan">
+    app:startDestination="@+id/nav_dashboard">
 
     <fragment
         android:id="@+id/nav_plan"
@@ -78,11 +78,7 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListFragment"
         android:label="ServicesOrderListFragment"
         tools:layout="@layout/fragment_services_order_list" />
-    <fragment
-        android:id="@+id/nav_see_technician_list"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.technicianslist.TechniciansListFragment"
-        android:label="TechniciansListFragment"
-        tools:layout="@layout/fragment_technicians_list" />
+
     <fragment
         android:id="@+id/nav_see_nap_boxes"
         android:name="com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListFragment"
@@ -92,15 +88,7 @@
             android:id="@+id/action_nav_see_nap_boxes_to_napBoxeDetailsFragment"
             app:destination="@id/napBoxeDetailsFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/nav_see_subscriptions"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.subscriptionlist.SubscriptionsListFragment"
-        android:label="SubscriptionsListFragment"
-        tools:layout="@layout/fragment_subscriptions_list">
-        <action
-            android:id="@+id/subscriptionList_to_SubscriptionDetail"
-            app:destination="@id/subscriptionDetail" />
-    </fragment>
+
     <fragment
         android:id="@+id/napBoxeDetailsFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.napboxeslist.napboxdetails.NapBoxDetailsFragment"
@@ -169,12 +157,6 @@
         tools:layout="@layout/fragment_consult_payments" />
 
     <fragment
-        android:id="@+id/nav_debtors"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.debtors.DebtorsFragment"
-        android:label="@string/debtors"
-        tools:layout="@layout/fragment_debtors" />
-
-    <fragment
         android:id="@+id/paymentHistoryFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
         android:label="fragment_payment_history"
@@ -186,7 +168,8 @@
             android:id="@+id/action_paymentHistoryFragment_to_paymentDetailFragment"
             app:destination="@id/paymentDetailFragment" />
 
-        <action android:id="@+id/toRegisterPayment"
+        <action
+            android:id="@+id/toRegisterPayment"
             app:destination="@id/register_payment" />
 
     </fragment>
@@ -197,16 +180,16 @@
         tools:layout="@layout/fragment_ip_pool" />
     <fragment
         android:id="@+id/nav_my_profile"
-        tools:layout="@layout/fragment_my_profile"
         android:name="com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileFragment"
-        android:label="fragment_my_profile" >
+        android:label="fragment_my_profile"
+        tools:layout="@layout/fragment_my_profile">
         <argument android:name="user" />
     </fragment>
     <fragment
         android:id="@+id/editSubscriptionFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFragment"
         android:label="fragment_edit_subscription"
-        tools:layout="@layout/fragment_edit_subscription" >
+        tools:layout="@layout/fragment_edit_subscription">
         <argument
             android:name="subscription"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
@@ -218,7 +201,7 @@
         android:id="@+id/paymentDetailFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.payment.detail.PaymentDetailFragment"
         android:label="fragment_payment_detail"
-        tools:layout="@layout/fragment_payment_detail" >
+        tools:layout="@layout/fragment_payment_detail">
 
         <action
             android:id="@+id/action_paymentDetailFragment_to_registerPaymentFragment"

@@ -14,4 +14,6 @@ data class ServiceOrder(
     val longitude: Double?=null,
     val issue: String,
     val subscriptionId: Int?=null,
+    var userId:Int?=null,
+    val additionalDetails : String?=null,
 )

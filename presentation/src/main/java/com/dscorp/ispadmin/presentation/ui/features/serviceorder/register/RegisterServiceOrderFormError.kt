@@ -18,4 +18,6 @@ sealed class RegisterServiceOrderFormError(val error: String) {
     class OnEtLocationError : RegisterServiceOrderFormError(LOCATION_ERROR)
     class OnEtIssueError : RegisterServiceOrderFormError(ISSUE_ERROR)
     class OnSubscriptionError : RegisterServiceOrderFormError(SUBSCRIPTION_ERROR)
+
+    class GenericError : RegisterServiceOrderFormError(SUBSCRIPTION_ERROR)
 }

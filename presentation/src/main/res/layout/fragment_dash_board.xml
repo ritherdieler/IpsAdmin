@@ -18,7 +18,6 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_gravity="center"
             android:layout_margin="12dp"
             app:cardElevation="5dp">
 
@@ -27,11 +26,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_gravity="center"
                 android:text="@{dashboardDataResponse.grossRevenueAsString()}"
                 android:textSize="20sp"
                 tools:text="Total Cases" />
+
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_margin="12dp"
+            app:cardElevation="5dp">
+
+            <TextView
+                android:id="@+id/tv_total_to_collect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:text="@{dashboardDataResponse.totalToCollectAsString}"
+                android:textSize="20sp"
+                tools:text="Total Active Cases" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -45,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
                 android:layout_marginEnd="16dp"
                 android:text="@{dashboardDataResponse.totalRaisedAsString()}"
                 android:textSize="20sp"
@@ -63,30 +82,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
                 android:layout_marginEnd="16dp"
                 android:text="@{dashboardDataResponse.totalDiscountAsString}"
                 android:textSize="20sp"
                 tools:text="Total Recovered" />
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStartCut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            app:cardElevation="5dp">
-
-            <TextView
-                android:id="@+id/tv_total_to_collect"
-                android:layout_width="wrap_content"
-                android:layout_height="120dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@{dashboardDataResponse.totalToCollectAsString}"
-                android:textSize="20sp"
-                tools:text="Total Active Cases" />
-        </androidx.cardview.widget.CardView>
+            android:text="Iniciar corte"
+            app:cornerRadius="5dp"
+            app:iconGravity="textStart"
+            app:iconPadding="10dp"
+            app:iconSize="24dp"
+            app:strokeWidth="1dp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

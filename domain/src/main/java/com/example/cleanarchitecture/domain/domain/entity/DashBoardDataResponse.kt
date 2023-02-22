@@ -8,9 +8,9 @@ class DashBoardDataResponse(
 ) {
     fun grossRevenueAsString() = "Total bruto S/.$grossRevenue"
 
-    fun totalRaisedAsString() = " Recaudado - S/.$totalRaised"
+    fun totalRaisedAsString() = " Recaudado S/.$totalRaised"
 
-    fun totalDiscountAsString() = "Descontado - S/.$totalDiscount"
+    fun totalDiscountAsString() = "Descontado S/.$totalDiscount"
 
-    fun totalToCollectAsString() = "Por cobrar - S/.$totalToCollect"
+    fun totalToCollectAsString() = "Por cobrar S/.$totalToCollect"
 }

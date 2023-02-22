@@ -7,15 +7,15 @@ import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
-class RegisterServiceOrderViewModel : ViewModel() {
-    private val repository: IRepository by inject(IRepository::class.java)
-
+class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewModel() {
+    val user = repository.getUserSession()
     val uiState = MutableLiveData<RegisterServiceOrderUiState>()
     val formErrorLiveData = MutableLiveData<RegisterServiceOrderFormError>()
     var subscription: SubscriptionResponse? = null
     fun registerServiceOrder(serviceOrder: ServiceOrder) = viewModelScope.launch {
+        serviceOrder.userId = user?.id
+
         if (!formIsValid(serviceOrder)) return@launch
         try {
             val response = repository.registerServiceOrder(serviceOrder)
@@ -35,13 +35,17 @@ class RegisterServiceOrderViewModel : ViewModel() {
             return false
         }
 
-        if (serviceOrder.issue.isNullOrEmpty()) {
+        if (serviceOrder.issue.isEmpty()) {
             formErrorLiveData.value = RegisterServiceOrderFormError.OnEtIssueError()
             return false
         }
 
         if (serviceOrder.subscriptionId == null) {
             formErrorLiveData.value = RegisterServiceOrderFormError.OnSubscriptionError()
+            return false
+        }
+        if (serviceOrder.userId == null) {
+            formErrorLiveData.value = RegisterServiceOrderFormError.GenericError()
             return false
         }
 

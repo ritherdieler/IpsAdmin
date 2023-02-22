@@ -118,6 +118,25 @@ class RegisterServiceOrderFragmentTest : AutoCloseKoinTest() {
             viewModel.uiState.getValueForTest() as ServiceOrderRegisterSuccessOrder
         assert(value.serviceOrder.id != null)
     }
+    @Test
+    fun `when user id is null then return error`() {
+        // Given
+        val subscription = SubscriptionResponse(id = 1)
+        val serviceOrder = ServiceOrder(
+            latitude = 20.0,
+            longitude = 30.0,
+            issue = "issue",
+            subscriptionId = 1
+        )
+
+        // When
+        viewModel.subscription = subscription
+        viewModel.registerServiceOrder(serviceOrder)
+
+        // Then
+        val value = viewModel.formErrorLiveData.getValueForTest()
+        assert(value is GenericError)
+    }
 
     private fun mockRegisterServiceOrderService() {
         mockService(

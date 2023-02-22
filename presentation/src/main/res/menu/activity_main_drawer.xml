@@ -9,34 +9,29 @@
             android:id="@+id/nav_dashboard"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/dashboard" />
-
+        <item
+            android:id="@+id/nav_subscription"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/menu_subscription" />
         <item
             android:id="@+id/nav_find_subscriptions"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/find_subscriptions" />
+            android:title="@string/find_subscription" />
         <item
             android:id="@+id/nav_reports"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/reports" />
 
-
-        <item
-            android:id="@+id/nav_my_profile"
-            android:icon="@drawable/ic_person"
-            android:title="@string/mi_perfil" />
         <item
             android:id="@+id/nav_plan"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/menu_plan" />
 
         <item
             android:id="@+id/nav_device"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_device" />
-        <item
-            android:id="@+id/nav_subscription"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/menu_subscription" />
+            android:title="@string/menu_device" />
+
         <item
             android:id="@+id/nav_register_place"
             android:icon="@drawable/ic_launcher_foreground"
@@ -49,35 +44,30 @@
             android:id="@+id/nav_to_register_nap_box"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/registrar_caja_nap" />
-        <item
-            android:id="@+id/nav_see_subscriptions"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/menu_see_subscriptions" />
+
         <item
             android:id="@+id/nav_view_services_order_list"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/ver_orden_de_servicios" />
-        <item
-            android:id="@+id/nav_see_technician_list"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/ver_t_cnicos" />
+
         <item
             android:id="@+id/nav_see_nap_boxes"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="Ver Cajas Nap" />
+            android:title="@string/see_nap_boxes" />
+
         <item
-            android:id="@+id/nav_consult_payments"
+            android:id="@+id/nav_mufa"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/consult_payments" />
+            android:title="@string/Mufas" />
 
         <item
             android:id="@+id/nav_ip_pool"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/ip_pool" />
-        <item
-            android:id="@+id/nav_debtors"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/debtors" />
 
+        <item
+            android:id="@+id/nav_my_profile"
+            android:icon="@drawable/ic_person"
+            android:title="@string/mi_perfil" />
     </group>
 </menu>

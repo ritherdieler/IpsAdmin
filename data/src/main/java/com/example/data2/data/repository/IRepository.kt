@@ -16,7 +16,6 @@ interface IRepository {
     suspend fun saveUserSession(user:User, rememberSessionCheckBoxStatus:Boolean)
      fun getUserSession():User?
     suspend fun saveCheckBox(login: Loging)
-    suspend fun getCheckBox(login: Loging)
     suspend fun clearUserSession()
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
@@ -44,4 +43,5 @@ interface IRepository {
     suspend fun editSubscription(subscription: Subscription): SubscriptionResponse
     suspend fun downloadDebtorsDocument(): DownloadDocumentResponse
     suspend fun getDashBoardData(): DashBoardDataResponse
+    suspend fun startServicetCut()
 }

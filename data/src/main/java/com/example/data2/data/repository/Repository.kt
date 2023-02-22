@@ -15,7 +15,7 @@ import org.koin.core.component.inject
  * Huacho, Peru.
  *
  **/
-class Repository: IRepository, KoinComponent {
+class Repository : IRepository, KoinComponent {
 
     private val restApiServices: RestApiServices by inject()
     private val prefs: SharedPreferences by inject()
@@ -33,7 +33,9 @@ class Repository: IRepository, KoinComponent {
     override suspend fun doLogin(login: Loging): User {
         val response = restApiServices.doLoging(login)
         if (response.code() == 200) {
-            saveUserSession(response.body()!!, login.checkBox)
+            val userSession = response.body()!!
+            userSession.apply { password =login.password }
+            saveUserSession(userSession, login.checkBox)
             return response.body()!!
         } else {
             throw Exception("Usuario o Contraseña Incorrecta")
@@ -46,6 +48,7 @@ class Repository: IRepository, KoinComponent {
         editor.putString(SESSION_NAME, user.name)
         editor.putString(SESSION_LAST_NAME, user.lastName)
         editor.putString(SESSION_USER_NAME, user.username)
+        editor.putString(SESSION_PASSWORD, user.password)
         editor.putInt(SESSION_TYPE, user.type)
         editor.putInt(SESSION_ID, user.id)
         editor.putBoolean(SESSION_VERIFIED, user.verified)
@@ -61,7 +64,7 @@ class Repository: IRepository, KoinComponent {
                 lastName = prefs.getString(SESSION_LAST_NAME, "")!!,
                 type = prefs.getInt(SESSION_TYPE, 0),
                 username = prefs.getString(SESSION_USER_NAME, "")!!,
-                password = "",
+                password = prefs.getString(SESSION_PASSWORD, "")!!,
                 verified = prefs.getBoolean(SESSION_VERIFIED, false),
             )
         } else {
@@ -73,11 +76,6 @@ class Repository: IRepository, KoinComponent {
         val editor = prefs.edit()
         editor.putBoolean("checkbox", login.checkBox)
         editor.apply()
-    }
-
-    override suspend fun getCheckBox(login: Loging) {
-        TODO("Not yet implemented")
-
     }
 
     override suspend fun clearUserSession() {
@@ -324,6 +322,13 @@ class Repository: IRepository, KoinComponent {
         if (response.code() == 200) {
             return response.body()!!
         } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun startServicetCut() {
+        val response = restApiServices.startServiceCut()
+        if (response.code() != 200) {
             throw Exception("Error")
         }
     }

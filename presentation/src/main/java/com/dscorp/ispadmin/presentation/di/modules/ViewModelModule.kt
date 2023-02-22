@@ -17,11 +17,8 @@ import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscription.debtors.DebtorsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionlist.SubscriptionsListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianViewModel
-import com.dscorp.ispadmin.presentation.ui.features.technicianslist.TechniciansListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -39,17 +36,14 @@ val viewModelModule = module {
     viewModel { PlanViewModel() }
     viewModel { RegisterViewModel() }
     viewModel { SubscriptionViewModel(get()) }
-    viewModel { SubscriptionsListViewModel() }
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel() }
-    viewModel { RegisterServiceOrderViewModel() }
+    viewModel { RegisterServiceOrderViewModel(get()) }
     viewModel { ServicesOrderListViewModel() }
-    viewModel { TechniciansListViewModel() }
     viewModel { NapBoxesListViewModel() }
     viewModel { PaymentHistoryViewModel() }
     viewModel { FindSubscriptionViewModel() }
     viewModel { RegisterPaymentViewModel(get()) }
-    viewModel { DebtorsViewModel() }
     viewModel { IpPoolViewModel() }
     viewModel { MyProfileViewmodel() }
     viewModel { MainActivityViewModel(get()) }

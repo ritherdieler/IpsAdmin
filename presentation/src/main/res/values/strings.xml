@@ -19,10 +19,9 @@
     <string name="plan">Plan</string>
     <string name="network_device">Dispositivo De Red</string>
     <string name="login_Error_Tittle">Ocurrio un Error</string>
-    <string name="menu_plan">Plan</string>
-    <string name="menu_device">Equipos</string>
-    <string name="menu_subscription">Subscripcion</string>
-    <string name="menu_see_subscriptions">Ver Suscripciones</string>
+    <string name="menu_plan">Registrar Plan</string>
+    <string name="menu_device">Registrar Equipo</string>
+    <string name="menu_subscription">Registrar Subscripcion</string>
     <string name="abreviatura">Abreviatura</string>
     <string name="nombre">Nombre</string>
     <string name="lugar">Lugar</string>
@@ -30,7 +29,7 @@
     <string name="direccion">Direccion</string>
     <string name="registrar">REGISTRAR</string>
     <string name="registrar_ubicacion">Registrar Ubicacion</string>
-    <string name="registrar_tecnicos">Registrar tecnicos</string>
+    <string name="registrar_tecnicos">Registrar tecnico</string>
     <string name="registrar_caja_nap">Registrar caja nap</string>
     <string name="longitud">Longitud</string>
     <string name="crear_datos">Crear Datos</string>
@@ -48,7 +47,7 @@
     <string name="consult_payments">Consultar Pagos</string>
     <string name="debtors">Deudores</string>
     <string name="dashboard">Dashboard</string>
-    <string name="find_subscriptions">Buscar suscripciones</string>
+    <string name="find_subscription">Buscar suscripcione</string>
     <string name="register_payment">Registrar pago</string>
     <string name="show_payment_history">Mostrar historial de pagos</string>
     <string name="describe_issue">Describe el problema</string>
@@ -87,5 +86,8 @@
     <string name="get_debtors">Obtener deudores</string>
     <string name="download_speed_in_mb">Velocidad de descarga en MB</string>
     <string name="upload_speed_in_mb">Velocidad de subida en MB</string>
+    <string name="see_nap_boxes">Ver Cajas Nap</string>
+    <string name="Mufas">Mufas</string>
+    <string name="previous_treatment">Detalles adicionales</string>
 
 </resources>

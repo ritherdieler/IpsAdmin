@@ -106,5 +106,8 @@ interface RestApiServices {
     suspend fun downloadDebtorsDocument(): Response<DownloadDocumentResponse>
     @GET("dashboard")
     suspend fun getDashBoardData(): Response<DashBoardDataResponse>
+
+    @PUT("subscription/cut-service")
+    suspend fun startServiceCut(): Response<Any>
 }
 
