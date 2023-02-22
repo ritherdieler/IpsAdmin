@@ -20,6 +20,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.test.AutoCloseKoinTest
+import org.koin.test.get
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
@@ -33,7 +34,7 @@ class RegisterServiceOrderFragmentTest : AutoCloseKoinTest() {
     @Before
     fun setUp() {
         mockWebServer = MockWebServer()
-        viewModel = RegisterServiceOrderViewModel()
+        viewModel = RegisterServiceOrderViewModel(get())
         okHttp3IdlingResource = registerIdlingResource()
         mockWebServer.start(8081)
     }
