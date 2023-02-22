@@ -7,15 +7,12 @@ package com.example.cleanarchitecture.domain.domain.entity
  * Huacho, Peru.
  *
  **/
-data class User (
-
-    val id:Int,
-    val name:String,
-    val lastName:String,
-    val type:Int,
-    val username:String,
-    var password:String,
-    val verified:Boolean,
-
-
-        )
+data class User(
+    val id: Int? = null,
+    val name: String,
+    val lastName: String,
+    val type: Int,
+    val username: String,
+    var password: String,
+    val verified: Boolean,
+)

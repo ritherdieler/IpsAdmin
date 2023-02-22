@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitecture.domain.domain.entity.Plan
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidNameOrLastName
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
@@ -34,11 +33,6 @@ class PlanViewModel : ViewModel() {
         } else {
             errorCleanFormLiveData.value = PlanErrorCleanForm.OnEtNamePlanHasNotError
         }
-        if (plan.name.isValidNameOrLastName()) {
-            formErrorLiveData.value = PlanFormError.OnEtNameIsInvalidError()
-            return false
-        }
-
         if (plan.price == 0.0) {
             formErrorLiveData.value = PlanFormError.OnEtPriceError()
             return false

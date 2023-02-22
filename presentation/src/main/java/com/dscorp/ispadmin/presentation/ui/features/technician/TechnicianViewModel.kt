@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitecture.domain.domain.entity.Technician
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidNameOrLastName
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
@@ -42,17 +41,11 @@ class TechnicianViewModel : ViewModel() {
             technicianErrorCleanFormLiveData.value =
                 TechnicianErrorCleanForm.OnEtFirstNameCleanError
         }
-        if (technician.firstName.isValidNameOrLastName()) {
-            technicianFromErrorLiveData.value = TechnicianFromError.OnEtFirstNameIsInvalidError()
-        }
         if (technician.lastName.isEmpty()) {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtLastNameError()
             return false
         } else {
             technicianErrorCleanFormLiveData.value = TechnicianErrorCleanForm.OnEtLastNameCleanError
-        }
-        if (technician.lastName.isValidNameOrLastName()) {
-            technicianFromErrorLiveData.value = TechnicianFromError.OnEtLastNameIsInvalidError()
         }
         if (technician.dni.isEmpty()) {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtDniError()

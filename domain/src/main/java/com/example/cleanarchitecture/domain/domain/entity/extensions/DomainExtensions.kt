@@ -12,8 +12,3 @@ fun String.IsValidIpv4Segment( ): Boolean {
 }
 
 
-fun String.isValidNameOrLastName(): Boolean {
-    val pattern = "^[a-zA-Z\\s]+\$"
-    val stringRegex = Regex(pattern)
-    return stringRegex.matches(this)
-}

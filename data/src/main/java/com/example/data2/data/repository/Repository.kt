@@ -50,7 +50,7 @@ class Repository : IRepository, KoinComponent {
         editor.putString(SESSION_USER_NAME, user.username)
         editor.putString(SESSION_PASSWORD, user.password)
         editor.putInt(SESSION_TYPE, user.type)
-        editor.putInt(SESSION_ID, user.id)
+        user.id?.let { editor.putInt(SESSION_ID, it) }
         editor.putBoolean(SESSION_VERIFIED, user.verified)
         editor.apply()
     }
