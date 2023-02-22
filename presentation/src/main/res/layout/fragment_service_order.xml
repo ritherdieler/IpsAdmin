@@ -15,6 +15,22 @@
         tools:context=".presentation.serviceOrder.ServiceOrderFragment">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlPriority"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Nivel de prioridad">
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/acPriority"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                tools:ignore="LabelFor" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlLocation"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"

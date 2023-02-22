@@ -27,7 +27,6 @@
                 android:id="@+id/tvPlanId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="ID"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
@@ -52,10 +51,9 @@
 
             <TextView
                 android:id="@+id/tvSeePlanId"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="16dp"
                 android:text="@{subscription.id.toString()}"
                 app:layout_constraintBottom_toBottomOf="@id/tvPlanId"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -66,12 +64,11 @@
 
             <TextView
                 android:id="@+id/tvSeeFirstName"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:text="@{subscription.firstName + ' ' + subscription.lastName}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvName"
-                app:layout_constraintEnd_toEndOf="@+id/tvSeePlanId"
-                app:layout_constraintHorizontal_bias="0.375"
+                app:layout_constraintEnd_toStartOf="@+id/btnMenu"
                 app:layout_constraintStart_toStartOf="@+id/tvSeePlanId"
                 app:layout_constraintTop_toTopOf="@+id/tvName"
                 tools:text="renato" />
@@ -110,7 +107,6 @@
                 app:icon="@drawable/ic_more_dot"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSeeFirstName"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

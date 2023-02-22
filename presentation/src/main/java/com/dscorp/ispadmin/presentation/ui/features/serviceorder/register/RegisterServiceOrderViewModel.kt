@@ -48,6 +48,10 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
             formErrorLiveData.value = RegisterServiceOrderFormError.GenericError()
             return false
         }
+        if (serviceOrder.priority==0) {
+            formErrorLiveData.value = RegisterServiceOrderFormError.GenericError()
+            return false
+        }
 
         return true
     }

@@ -16,4 +16,5 @@ data class ServiceOrder(
     val subscriptionId: Int?=null,
     var userId:Int?=null,
     val additionalDetails : String?=null,
+    val priority:Int?=null
 )
