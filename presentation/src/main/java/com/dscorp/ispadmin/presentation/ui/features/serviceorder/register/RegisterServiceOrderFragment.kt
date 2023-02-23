@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -22,6 +23,7 @@ class RegisterServiceOrderFragment() : BaseFragment() {
     private val binding by lazy { FragmentServiceOrderBinding.inflate(layoutInflater) }
     private val viewModel: RegisterServiceOrderViewModel by viewModel()
     private var selectedLocation: LatLng? = null
+    private var selectedPriority:Int? =null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,11 +36,21 @@ class RegisterServiceOrderFragment() : BaseFragment() {
         binding.etLocation.setOnClickListener {
             navigateToMapDialog()
         }
-
-        probando()
+        spinnerPriority()
         binding.btRegisterServiceOrder.setOnClickListener {
             registerServiceOrder()
         }
+
+        binding.acPriority.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, view, position, id ->
+                val priority = parent.getItemAtPosition(position) as String
+                 selectedPriority = when (priority) {
+                    "Alto" -> 3
+                    "Medio" -> 2
+                    "Bajo" -> 1
+                    else -> 1
+                }
+            }
         return binding.root
     }
 
@@ -73,30 +85,26 @@ class RegisterServiceOrderFragment() : BaseFragment() {
             }
         }
     }
-    private fun probando(){
-        val paymentMethods = resources.getStringArray(com.dscorp.ispadmin.R.array.prioridad)
-        val adapter = ArrayAdapter(requireContext(), R.layout.simple_dropdown_item_1line, paymentMethods)
-        binding.acPriority.setAdapter(adapter)
-        binding.acPriority.setOnItemClickListener { _, _, position, _ ->
-            when (position) {
-                0 -> binding.acPriority.setText("3")
-                1 -> binding.acPriority.setText("2")
-                2 -> binding.acPriority.setText("1")
-            }
-        }
-    }
-    private fun registerServiceOrder() {
 
+    private fun spinnerPriority() {
+        val paymentMethods = resources.getStringArray(com.dscorp.ispadmin.R.array.prioridad)
+        val adapter =
+            ArrayAdapter(requireContext(), R.layout.simple_dropdown_item_1line, paymentMethods)
+        binding.acPriority.setAdapter(adapter)
+    }
+
+    private fun registerServiceOrder() {
         val serviceOrder = ServiceOrder(
             issue = binding.etIssue.text.toString(),
             latitude = selectedLocation?.latitude,
             longitude = selectedLocation?.longitude,
             subscriptionId = viewModel.subscription?.id,
             additionalDetails = binding.etAdditionalDetails.text.toString(),
-            priority =  binding.acPriority.text.toString().toIntOrNull() ?: 0
+            priority = selectedPriority
         )
         viewModel.registerServiceOrder(serviceOrder)
     }
+
 
     private fun observeMapDialogResult() {
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")

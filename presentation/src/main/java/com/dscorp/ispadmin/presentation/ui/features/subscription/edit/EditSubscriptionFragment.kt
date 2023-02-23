@@ -212,8 +212,8 @@ class EditSubscriptionFragment : BaseFragment() {
             AdapterView.OnItemClickListener { _, _, pos, _ ->
                 selectedPlan = plans[pos]
             }
+        binding.etPlan.setText(adapter.getItem(0).toString(), false)
     }
-
     private fun setUpNetworkDeviceSpinners(networkDevices: List<NetworkDevice>) {
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevices)
@@ -259,5 +259,6 @@ class EditSubscriptionFragment : BaseFragment() {
             AdapterView.OnItemClickListener { _, _, pos, _ ->
                 selectedNapBox = napBoxes[pos]
             }
+
     }
 }
