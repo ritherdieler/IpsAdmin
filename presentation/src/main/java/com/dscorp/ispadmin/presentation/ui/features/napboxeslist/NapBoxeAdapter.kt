@@ -26,6 +26,9 @@ class NapBoxeAdapter(val listener: OnItemClickListener) : ListAdapter<NapBox, Na
             binding.root.setOnClickListener { listener.onItemClick(napBox) }
             binding.napBoxList = napBox
             binding.executePendingBindings()
+       /*     binding.btnMenu.setOnClickListener {
+                listener.onSubscriptionPopupButtonSelected(napBox, it)
+            }*/
         }
     }
 }

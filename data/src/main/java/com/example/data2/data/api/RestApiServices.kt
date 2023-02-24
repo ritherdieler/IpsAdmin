@@ -109,5 +109,7 @@ interface RestApiServices {
 
     @PUT("subscription/cut-service")
     suspend fun startServiceCut(): Response<Any>
+    @PUT("napbox")
+    suspend fun editNapBox(@Body napBox: NapBox):Response<NapBoxResponse>
 }
 

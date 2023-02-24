@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.napbox
+package com.dscorp.ispadmin.presentation.ui.features.napbox.edit
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -7,18 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFragmentArgs
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NapBoxFragment : BaseFragment() {
+class EditNapBoxFragment : BaseFragment() {
+    private val args by navArgs<EditNapBoxFragmentArgs>()
     var selectedLocation: LatLng? = null
     lateinit var binding: FragmentNapBoxBinding
     val viewModel: NapBoxViewModel by viewModel()
@@ -28,10 +32,11 @@ class NapBoxFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_nap_box, null, true)
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_edit_nap_box, null, true)
+        viewModel.napBox = args.napBox
+
         observeNapBoxResponse()
         observeNapBoxFormError()
-        observeNapBoxCleanError()
 
         binding.btRegisterNapBox.setOnClickListener {
             registerNapBox()
@@ -69,37 +74,28 @@ class NapBoxFragment : BaseFragment() {
     }
 
     private fun observeNapBoxFormError() {
-        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
+        viewModel.editFormErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is NapBoxFormError.OnEtAddressError -> binding.tlAddress.error = formError.message
-                is NapBoxFormError.OnEtCodeError -> binding.tlCode.error = formError.message
-                is NapBoxFormError.OnEtLocationError ->
+                is EditNapBoxFormErrorUiState.OnEtAddressError -> binding.tlAddress.error = formError.error
+                is EditNapBoxFormErrorUiState.OnEtCodeError -> binding.tlCode.error = formError.error
+                is EditNapBoxFormErrorUiState.OnEtLocationError ->
                     binding.tlLocationNapBox.error =
-                        formError.message
-            }
-        }
-    }
-
-    private fun observeNapBoxCleanError() {
-        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { cleanError ->
-            when (cleanError) {
-                is NapBoxFormError.OnEtAddressError -> binding.etAddress.error = null
-                is NapBoxFormError.OnEtLocationError -> binding.etAddress.error = null
-                is NapBoxFormError.OnEtCodeError -> binding.etAddress.error = null
+                        formError.error
+                is EditNapBoxFormErrorUiState.OnEtAddressCleanError -> binding.etAddress.error = null
+                is EditNapBoxFormErrorUiState.OnEtLocationCleanError -> binding.etAddress.error = null
+                is EditNapBoxFormErrorUiState.OnEtCodeCleanError -> binding.etAddress.error = null
             }
         }
     }
 
     private fun observeNapBoxResponse() {
-        viewModel.napBoxResponseLiveData.observe(viewLifecycleOwner) { response ->
+        viewModel.editNapBoxUiState.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is NapBoxResponse.OnError -> showErrorDialog()
-                is NapBoxResponse.OnNapBoxRegister -> showSuccessDialog(response)
+                is EditNapBoxUiState.EditNapBoxError -> showErrorDialog(response.error)
+                is EditNapBoxUiState.EditNapBoxSuccess -> showSuccessDialog("Nap box editado con exito")
+                is EditNapBoxUiState.FetchFormDataError -> showErrorDialog(response.error)
             }
         }
     }
 
-    private fun showSuccessDialog(response: NapBoxResponse.OnNapBoxRegister) {
-        showSuccessDialog("La Caja Nap ${response.napBox.code} Ah Sido Registrado Correctamente.")
-    }
 }

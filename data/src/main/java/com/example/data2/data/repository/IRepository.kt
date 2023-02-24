@@ -44,4 +44,5 @@ interface IRepository {
     suspend fun downloadDebtorsDocument(): DownloadDocumentResponse
     suspend fun getDashBoardData(): DashBoardDataResponse
     suspend fun startServicetCut()
+    suspend fun editNapBox(napBox: NapBox):NapBoxResponse
 }

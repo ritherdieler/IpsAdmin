@@ -93,7 +93,6 @@
                 android:text="@{subscription.dni}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeePlanId"
-                app:layout_constraintHorizontal_bias="0.375"
                 app:layout_constraintStart_toStartOf="@+id/tvSeePlanId"
                 app:layout_constraintTop_toTopOf="@+id/tvName2"
                 tools:text="renato" />

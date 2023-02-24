@@ -332,4 +332,12 @@ class Repository : IRepository, KoinComponent {
             throw Exception("Error")
         }
     }
+
+    override suspend fun editNapBox(napBox: NapBox): NapBoxResponse {
+        val response = restApiServices.editNapBox(napBox)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }    }
 }

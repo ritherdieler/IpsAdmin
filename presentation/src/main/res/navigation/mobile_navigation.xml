@@ -40,7 +40,7 @@
         tools:layout="@layout/fragment_technician" />
     <fragment
         android:id="@+id/nav_to_register_nap_box"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.napbox.register.NapBoxFragment"
         android:label="NapBoxFragment"
         tools:layout="@layout/fragment_nap_box">
         <action
@@ -87,6 +87,9 @@
         <action
             android:id="@+id/action_nav_see_nap_boxes_to_napBoxeDetailsFragment"
             app:destination="@id/napBoxeDetailsFragment" />
+        <action
+            android:id="@+id/action_nav_see_nap_boxes_to_editNapBoxFragment"
+            app:destination="@id/editNapBoxFragment" />
     </fragment>
 
     <fragment
@@ -220,4 +223,13 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardFragment"
         android:label="fragment_dash_board"
         tools:layout="@layout/fragment_dash_board" />
+    <fragment
+        android:id="@+id/editNapBoxFragment"
+        tools:layout="@layout/fragment_edit_nap_box"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxFragment"
+        android:label="EditNapBoxFragment" >
+        <argument
+            android:name="napBox"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse" />
+    </fragment>
 </navigation>
