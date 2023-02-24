@@ -11,6 +11,9 @@ data class NapBox(
     override fun toString(): String {
         return code
     }
+    override fun equals(other: Any?): Boolean {
+        return id == (other as NapBox).id
+    }
 }
 
 

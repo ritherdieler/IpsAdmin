@@ -60,7 +60,7 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
     fun registerSubscription(subscription: Subscription) = viewModelScope.launch {
         try {
             if (!registrationFormIsValid(subscription)) return@launch
-            val subscriptionFromRepository = repository.doSubscription(subscription)
+            val subscriptionFromRepository = repository.registerSubscription(subscription)
             registerSubscriptionUiState.postValue(
                 RegisterSubscriptionSuccess(subscriptionFromRepository)
             )

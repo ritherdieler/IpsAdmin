@@ -16,6 +16,9 @@ data class Place(
     override fun toString(): String {
         return name
     }
+    override fun equals(other: Any?): Boolean {
+        return id == (other as Place).id
+    }
 }
 
 

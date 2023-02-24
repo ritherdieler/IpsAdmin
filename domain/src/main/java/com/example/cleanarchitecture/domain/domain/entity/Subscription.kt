@@ -26,6 +26,7 @@ package com.example.cleanarchitecture.domain.domain.entity
   var napBoxId:String,
   var hostDeviceId:Int
 
+
 ):java.io.Serializable
 {
   override fun toString(): String {

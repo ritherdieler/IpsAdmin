@@ -17,7 +17,12 @@ data class Plan(
 
     ):java.io.Serializable
 {
+
     override fun toString(): String {
         return name
+    }
+
+    override fun equals(other: Any?): Boolean {
+    return id == (other as Plan).id
     }
 }

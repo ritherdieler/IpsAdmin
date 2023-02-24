@@ -24,5 +24,10 @@ data class NetworkDevice(
         return super.hashCode()
     }
 
+    override fun equals(other: Any?): Boolean {
+        return id == (other as NetworkDevice).id
+
+    }
+
 }
 

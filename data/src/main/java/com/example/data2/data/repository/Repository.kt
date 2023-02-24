@@ -102,7 +102,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun doSubscription(doSubscription: Subscription): Subscription {
+    override suspend fun registerSubscription(doSubscription: Subscription): Subscription {
         val response = restApiServices.registerSubscription(doSubscription)
         if (response.code() == 200) {
             return response.body()!!
