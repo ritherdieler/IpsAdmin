@@ -30,7 +30,7 @@ interface IRepository {
     suspend fun registerServiceOrder(serviceOrder: ServiceOrder): ServiceOrder
     suspend fun getServicesOrder(): List<ServiceOrderResponse>
     suspend fun getTechnicians(): List<Technician>
-    suspend fun getNapBoxes(): List<NapBox>
+    suspend fun getNapBoxes(): List<NapBoxResponse>
     suspend fun getFilteredPaymentHistory(request: SearchPaymentsRequest): List<Payment>
     suspend fun findSubscription(id: String): List<SubscriptionResponse>
     suspend fun registerPayment(payment: Payment): Payment
@@ -45,4 +45,5 @@ interface IRepository {
     suspend fun getDashBoardData(): DashBoardDataResponse
     suspend fun startServicetCut()
     suspend fun editNapBox(napBox: NapBox):NapBoxResponse
+    suspend fun editServiceOrder(serviceOrder: ServiceOrder):ServiceOrderResponse
 }

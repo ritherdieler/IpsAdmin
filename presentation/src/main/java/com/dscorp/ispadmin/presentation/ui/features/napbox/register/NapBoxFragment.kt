@@ -63,7 +63,10 @@ class NapBoxFragment : BaseFragment() {
         val registerNapBox = NapBox(
             code = binding.etCode.text.toString(),
             address = binding.etAddress.text.toString(),
-            location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude)
+            location = GeoLocation(
+                selectedLocation?.latitude ?: 0.0,
+                selectedLocation?.longitude ?: 0.0
+            )
         )
 
         viewModel.registerNapBox(registerNapBox)
@@ -95,7 +98,9 @@ class NapBoxFragment : BaseFragment() {
         viewModel.napBoxSealedClassResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NapBoxSealedClassResponse.OnError -> showErrorDialog()
-                is NapBoxSealedClassResponse.OnNapBoxSealedClassRegister -> showSuccessDialog(response)
+                is NapBoxSealedClassResponse.OnNapBoxSealedClassRegister -> showSuccessDialog(
+                    response
+                )
             }
         }
     }

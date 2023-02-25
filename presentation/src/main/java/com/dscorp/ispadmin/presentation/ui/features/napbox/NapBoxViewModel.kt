@@ -8,12 +8,8 @@ import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxUiStat
 import com.dscorp.ispadmin.presentation.ui.features.napbox.register.CleanFormErrors
 import com.dscorp.ispadmin.presentation.ui.features.napbox.register.NapBoxFormError
 import com.dscorp.ispadmin.presentation.ui.features.napbox.register.NapBoxSealedClassResponse
-import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFormErrorUiState
-import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
@@ -29,7 +25,7 @@ class NapBoxViewModel : ViewModel() {
 
     private val cleanErrorLiveData = MutableLiveData<CleanFormErrors>()
 
-    var napBox:NapBoxResponse? = null
+    var napBoxResponse:NapBoxResponse? = null
     fun registerNapBox(registerNapBox: NapBox) = viewModelScope.launch {
         try {
             if (formIsValid(registerNapBox)) {
@@ -44,7 +40,7 @@ class NapBoxViewModel : ViewModel() {
             napBoxSealedClassResponseLiveData.postValue(NapBoxSealedClassResponse.OnError(error))
         }
     }
-    fun editSubscription(napBox: NapBox) = viewModelScope.launch {
+    fun editNapBox(napBox: NapBox) = viewModelScope.launch {
         try {
             if (!editFormIsValid(napBox)) return@launch
             val response = repository.editNapBox(napBox)

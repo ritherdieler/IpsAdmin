@@ -63,7 +63,7 @@ interface RestApiServices {
     suspend fun getTechnicians(): Response<List<Technician>>
 
     @GET("napbox")
-    suspend fun getNapBoxes(): Response<List<NapBox>>
+    suspend fun getNapBoxes(): Response<List<NapBoxResponse>>
 
     @GET("payment/filtered")
     suspend fun getFilteredPaymentHistory(
@@ -111,5 +111,7 @@ interface RestApiServices {
     suspend fun startServiceCut(): Response<Any>
     @PUT("napbox")
     suspend fun editNapBox(@Body napBox: NapBox):Response<NapBoxResponse>
+    @PUT("service-order")
+    suspend fun editServiceOrder(@Body serviceOrder:ServiceOrder):Response<ServiceOrderResponse>
 }
 

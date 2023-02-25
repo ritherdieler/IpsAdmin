@@ -7,7 +7,7 @@ data class SubscriptionResponse(
     var firstName: String? = null,
     var lastName: String? = null,
     var location: GeoLocation? = null,
-    var napBox: NapBox? = null,
+    var napBox: NapBoxResponse? = null,
     var networkDevices: List<NetworkDevice>? = null,
     var new: Boolean? = null,
     var password: String? = null,

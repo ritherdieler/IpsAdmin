@@ -34,7 +34,7 @@ class Repository : IRepository, KoinComponent {
         val response = restApiServices.doLoging(login)
         if (response.code() == 200) {
             val userSession = response.body()!!
-            userSession.apply { password =login.password }
+            userSession.apply { password = login.password }
             saveUserSession(userSession, login.checkBox)
             return response.body()!!
         } else {
@@ -203,7 +203,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getNapBoxes(): List<NapBox> {
+    override suspend fun getNapBoxes(): List<NapBoxResponse> {
         val response = restApiServices.getNapBoxes()
         if (response.code() == 200) {
             return response.body()!!
@@ -339,5 +339,15 @@ class Repository : IRepository, KoinComponent {
             return response.body()!!
         } else {
             throw Exception("Error")
-        }    }
+        }
+    }
+
+    override suspend fun editServiceOrder(serviceOrder: ServiceOrder): ServiceOrderResponse {
+        val response = restApiServices.editServiceOrder(serviceOrder)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
 }

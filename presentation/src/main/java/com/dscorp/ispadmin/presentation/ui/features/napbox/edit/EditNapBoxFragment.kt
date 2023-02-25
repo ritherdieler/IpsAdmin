@@ -9,13 +9,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.databinding.FragmentNapBoxBinding
+import com.dscorp.ispadmin.databinding.FragmentEditNapBoxBinding
+import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
+import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFragmentArgs
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.google.android.gms.maps.model.LatLng
@@ -23,8 +24,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditNapBoxFragment : BaseFragment() {
     private val args by navArgs<EditNapBoxFragmentArgs>()
-    var selectedLocation: LatLng? = null
-    lateinit var binding: FragmentNapBoxBinding
+    private var selectedLocation: LatLng? = null
+    lateinit var binding: FragmentEditNapBoxBinding
     val viewModel: NapBoxViewModel by viewModel()
 
     override fun onCreateView(
@@ -32,14 +33,16 @@ class EditNapBoxFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_edit_nap_box, null, true)
-        viewModel.napBox = args.napBox
-
+        binding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_edit_nap_box, null, true)
+        viewModel.napBoxResponse = args.napBox
+        fillFormWithSubscriptionData()
         observeNapBoxResponse()
         observeNapBoxFormError()
 
-        binding.btRegisterNapBox.setOnClickListener {
-            registerNapBox()
+        binding.btnRegisterNapBox.setOnClickListener {
+            firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.EDIT_NAP_BOX)
+            editNapBox()
         }
 
         binding.etLocationNapBox.setOnClickListener {
@@ -48,6 +51,12 @@ class EditNapBoxFragment : BaseFragment() {
         observeMapDialogResult()
 
         return binding.root
+    }
+
+    private fun fillFormWithSubscriptionData() {
+        binding.etCode.setText(viewModel.napBoxResponse?.code)
+        binding.etAddress.setText(viewModel.napBoxResponse?.address)
+        binding.etLocationNapBox.setText("${viewModel.napBoxResponse?.location?.latitude}, ${viewModel.napBoxResponse?.location?.longitude}")
     }
 
     private fun observeMapDialogResult() {
@@ -63,26 +72,35 @@ class EditNapBoxFragment : BaseFragment() {
         binding.etLocationNapBox.setText("${it.latitude}, ${it.longitude}")
     }
 
-    private fun registerNapBox() {
+    private fun editNapBox() {
+        var location: GeoLocation?
+        location = args.napBox.location
+        selectedLocation?.let {
+            location = GeoLocation(it.latitude, it.longitude)
+        }
         val registerNapBox = NapBox(
             code = binding.etCode.text.toString(),
             address = binding.etAddress.text.toString(),
-            location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude)
+            location = location
         )
 
-        viewModel.registerNapBox(registerNapBox)
+        viewModel.editNapBox(registerNapBox)
     }
 
     private fun observeNapBoxFormError() {
         viewModel.editFormErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is EditNapBoxFormErrorUiState.OnEtAddressError -> binding.tlAddress.error = formError.error
-                is EditNapBoxFormErrorUiState.OnEtCodeError -> binding.tlCode.error = formError.error
+                is EditNapBoxFormErrorUiState.OnEtAddressError -> binding.tlAddress.error =
+                    formError.error
+                is EditNapBoxFormErrorUiState.OnEtCodeError -> binding.tlCode.error =
+                    formError.error
                 is EditNapBoxFormErrorUiState.OnEtLocationError ->
                     binding.tlLocationNapBox.error =
                         formError.error
-                is EditNapBoxFormErrorUiState.OnEtAddressCleanError -> binding.etAddress.error = null
-                is EditNapBoxFormErrorUiState.OnEtLocationCleanError -> binding.etAddress.error = null
+                is EditNapBoxFormErrorUiState.OnEtAddressCleanError -> binding.etAddress.error =
+                    null
+                is EditNapBoxFormErrorUiState.OnEtLocationCleanError -> binding.etAddress.error =
+                    null
                 is EditNapBoxFormErrorUiState.OnEtCodeCleanError -> binding.etAddress.error = null
             }
         }
@@ -97,5 +115,4 @@ class EditNapBoxFragment : BaseFragment() {
             }
         }
     }
-
 }

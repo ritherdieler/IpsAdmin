@@ -39,7 +39,7 @@ class NapBoxesListFragment : BaseFragment(), OnItemClickListener {
         observe()
         return binding.root
     }
-/*    override fun onSubscriptionPopupButtonSelected(napBox: NapBoxResponse, view: View) {
+    override fun onNapBoxPopupButtonSelected(napBox: NapBoxResponse, view: View) {
         showPopupMenu(view, napBox)
     }
     private fun showPopupMenu(view: View, napBox: NapBoxResponse) {
@@ -51,17 +51,18 @@ class NapBoxesListFragment : BaseFragment(), OnItemClickListener {
                 else -> false
             }
         }
-        popupMenu.inflate(R.menu.subscription_menu)
+        popupMenu.inflate(R.menu.nap_box_menu)
         popupMenu.show()
-    }*/
-/*    private fun navigateToEditSubscription(napBox: NapBoxResponse): Boolean {
+    }
+    private fun
+            navigateToEditSubscription(napBox: NapBoxResponse): Boolean {
         findNavController().navigate(
-            NapBoxesListFragmentDirections.(
+            NapBoxesListFragmentDirections.actionNavSeeNapBoxesToEditNapBoxFragment(
                 napBox
             )
         )
         return true
-    }*/
+    }
 
     private fun observe() {
         lifecycleScope.launch {
@@ -83,11 +84,11 @@ class NapBoxesListFragment : BaseFragment(), OnItemClickListener {
             if (it.napBoxesList.isNotEmpty()) View.VISIBLE else View.GONE
     }
 
-    override fun onItemClick(napBox: NapBox) {
+    override fun onItemClick(napBox: NapBoxResponse) {
         parentFragmentManager.beginTransaction().apply {
             val destination =
                 NapBoxesListFragmentDirections.actionNavSeeNapBoxesToNapBoxeDetailsFragment(
-                    napBox
+            napBox
                 )
             findNavController().navigate(destination)
         }

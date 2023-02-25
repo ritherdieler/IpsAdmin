@@ -14,7 +14,7 @@ sealed class EditSubscriptionUiState {
         val plans: List<Plan>,
         val networkDevices: List<NetworkDevice>,
         val places: List<Place>,
-        val napBoxes: List<NapBox>,
+        val napBoxes: List<NapBoxResponse>,
         val hostNetworkDevices: List<NetworkDevice>
     ) : EditSubscriptionUiState()
 

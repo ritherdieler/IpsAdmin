@@ -35,7 +35,7 @@ class EditSubscriptionFragment : BaseFragment() {
     private var selectedNetworkDeviceTwo: NetworkDevice? = null
     private var selectedHostNetworkDevice: NetworkDevice? = null
     private var selectedPlace: Place? = null
-    private var selectedNapBox: NapBox? = null
+    private var selectedNapBox: NapBoxResponse? = null
     private val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
@@ -99,9 +99,7 @@ class EditSubscriptionFragment : BaseFragment() {
 
     private fun fillFormSpinners(response: EditSubscriptionUiState.FormDataFound) {
         setUpPlansSpinner(response.plans)
-/*
         setUpNetworkDeviceSpinners(response.networkDevices)
-*/
         setUpPlaceSpinner(response.places)
         setUpNapBoxSpinner(response.napBoxes)
         setUpHostNetworkDeviceSpinners(response.hostNetworkDevices)
@@ -222,7 +220,6 @@ class EditSubscriptionFragment : BaseFragment() {
         }
     }
 
-/*
     private fun setUpNetworkDeviceSpinners(networkDevices: List<NetworkDevice>) {
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevices)
@@ -232,7 +229,8 @@ class EditSubscriptionFragment : BaseFragment() {
             AdapterView.OnItemClickListener { _, _, pos, _ ->
                 selectedNetworkDeviceOne = networkDevices[pos]
             }
-           if (networkDevices.isNotEmpty()) {
+    }
+ /*          if (networkDevices.isNotEmpty()) {
                val currentPlanIndex=networkDevices.indexOf(viewModel.subscription?.networkDevices)
                binding.etNetworkDeviceOne.setText(viewModel.subscription?.networkDevices?.name,false)
                binding.etNetworkDeviceOne.setSelection(currentPlanIndex)
@@ -244,16 +242,14 @@ class EditSubscriptionFragment : BaseFragment() {
             AdapterView.OnItemClickListener { _, _, pos, _ ->
                 selectedNetworkDeviceTwo = networkDevices[pos]
             }
-*/
-/*        if (networkDevices.isNotEmpty()) {
+        if (networkDevices.isNotEmpty()) {
             val currentPlanIndex=networkDevices.indexOf(viewModel.subscription?.networkDevice)
             binding.etNetworkDeviceTwo.setText(viewModel.subscription?.networkDevice?.name,false)
             binding.etNetworkDeviceTwo.setSelection(currentPlanIndex)
             selectedNetworkDeviceTwo = networkDevices[currentPlanIndex]
-        }*//*
+        }
 
-    }
-*/
+    }*/
 
     private fun setUpHostNetworkDeviceSpinners(networkDevice: List<NetworkDevice>) {
         val adapter =
@@ -287,7 +283,7 @@ class EditSubscriptionFragment : BaseFragment() {
         }
     }
 
-    private fun setUpNapBoxSpinner(napBoxes: List<NapBox>) {
+    private fun setUpNapBoxSpinner(napBoxes: List<NapBoxResponse>) {
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, napBoxes)
         binding.etNapBox.setAdapter(adapter)

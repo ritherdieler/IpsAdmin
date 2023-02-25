@@ -10,17 +10,18 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxDetailBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
+import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
 
 class NapBoxDetailsFragment : BaseFragment() {
 
     private val args: NapBoxDetailsFragmentArgs by navArgs()
     lateinit var binding: FragmentNapBoxDetailBinding
-    lateinit var napbox: NapBox
+    lateinit var napbox: NapBoxResponse
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        napbox = args.napBox
+        napbox = args.napBoxResponse
     }
 
     override fun onCreateView(

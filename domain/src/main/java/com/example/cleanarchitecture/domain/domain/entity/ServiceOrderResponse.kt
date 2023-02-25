@@ -13,4 +13,12 @@ data class ServiceOrderResponse(
     val longitude: Double? = null,
     val issue: String? = null,
     val subscriptionId: Int? = null,
+    var userId:Int?=null,
+    val additionalDetails : String?=null,
+    val priority:Int?=null
 ):java.io.Serializable
+{
+    override fun equals(other: Any?): Boolean {
+        return id == (other as ServiceOrderResponse).id
+    }
+}

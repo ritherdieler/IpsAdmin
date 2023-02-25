@@ -15,7 +15,7 @@ sealed class RegisterSubscriptionUiState {
         val networkDevices: List<NetworkDevice>,
         val places: List<Place>,
         val technicians: List<Technician>,
-        val napBoxes: List<NapBox>,
+        val napBoxes: List<NapBoxResponse>,
         val hostNetworkDevices: List<NetworkDevice>
     ) : RegisterSubscriptionUiState()
 

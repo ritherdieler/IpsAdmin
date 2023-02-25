@@ -38,7 +38,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private var selectedHostNetworkDevice: NetworkDevice? = null
     private var selectedPlace: Place? = null
     private var selectedTechnician: Technician? = null
-    private var selectedNapBox: NapBox? = null
+    private var selectedNapBox: NapBoxResponse? = null
     private val viewModel: SubscriptionViewModel by viewModel()
 
     override fun onCreateView(
@@ -296,7 +296,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             }
     }
 
-    private fun setUpNapBoxSpinner(napBoxes: List<NapBox>) {
+    private fun setUpNapBoxSpinner(napBoxes: List<NapBoxResponse>) {
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, napBoxes)
         binding.etNapBox.setAdapter(adapter)

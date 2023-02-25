@@ -77,7 +77,11 @@
         android:id="@+id/nav_view_services_order_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListFragment"
         android:label="ServicesOrderListFragment"
-        tools:layout="@layout/fragment_services_order_list" />
+        tools:layout="@layout/item_services_order" >
+        <action
+            android:id="@+id/action_nav_view_services_order_list_to_editServiceOrderFragment"
+            app:destination="@id/editServiceOrderFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_see_nap_boxes"
@@ -90,6 +94,7 @@
         <action
             android:id="@+id/action_nav_see_nap_boxes_to_editNapBoxFragment"
             app:destination="@id/editNapBoxFragment" />
+
     </fragment>
 
     <fragment
@@ -97,9 +102,10 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.napboxeslist.napboxdetails.NapBoxDetailsFragment"
         android:label="NapBoxeDetailsFragment"
         tools:layout="@layout/fragment_nap_box_detail">
+
         <argument
-            android:name="NapBox"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBox" />
+            android:name="napBoxResponse"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse" />
     </fragment>
     <dialog
         android:id="@+id/mapDialog"
@@ -231,5 +237,17 @@
         <argument
             android:name="napBox"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse" />
+    </fragment>
+    <fragment
+        android:id="@+id/editServiceOrderFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.editar.EditServiceOrderFragment"
+        android:label="EditServiceOrderFragment"
+        tools:layout="@layout/fragment_edit_service_order">
+        <argument
+            android:name="serviceorder"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse" />
+        <action
+            android:id="@+id/action_editServiceOrderFragment_to_mapDialog"
+            app:destination="@id/mapDialog" />
     </fragment>
 </navigation>
