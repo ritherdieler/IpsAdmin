@@ -3,6 +3,7 @@ package com.example.data2.data.repository
 import android.content.SharedPreferences
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.api.RestApiServices
+import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.utils.*
 import org.koin.core.component.KoinComponent
@@ -34,7 +35,7 @@ class Repository : IRepository, KoinComponent {
         val response = restApiServices.doLoging(login)
         if (response.code() == 200) {
             val userSession = response.body()!!
-            userSession.apply { password =login.password }
+            userSession.apply { password = login.password }
             saveUserSession(userSession, login.checkBox)
             return response.body()!!
         } else {
@@ -121,8 +122,8 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getDevices(): List<NetworkDevice> {
-        val response = restApiServices.getDevices()
+    override suspend fun getGenericDevices(): List<NetworkDevice> {
+        val response = restApiServices.getGenericDevices()
         if (response.code() == 200) {
             return response.body()!!
         } else {
@@ -260,7 +261,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun registerIpPool(ipPool: IpPool): IpPool {
+    override suspend fun registerIpPool(ipPool: IpPoolRequest): IpPool {
         val response = restApiServices.registerIpPool(ipPool)
         if (response.code() == 200) {
             return response.body()!!
@@ -330,6 +331,33 @@ class Repository : IRepository, KoinComponent {
         val response = restApiServices.startServiceCut()
         if (response.code() != 200) {
             throw Exception("Error")
+        }
+    }
+
+    override suspend fun getHostDevices(): List<NetworkDevice> {
+        val response = restApiServices.getCoreDevices()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun getIpList(poolId: Int): List<Ip> {
+        val response = restApiServices.getIpList(poolId)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun getCpeDevices(): List<NetworkDevice> {
+        val response = restApiServices.getCpeDevices()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("No se pudieron obtener los equipos cpe")
         }
     }
 }

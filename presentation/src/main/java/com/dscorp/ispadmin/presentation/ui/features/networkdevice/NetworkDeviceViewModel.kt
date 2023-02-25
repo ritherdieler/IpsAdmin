@@ -80,7 +80,7 @@ class NetworkDeviceViewModel() : ViewModel() {
             networkDeviceFormErrorLiveData.value = OnEtIpv4AddressIsInvalidError()
             return false
         }
-        if (networkDevice.networkDeviceType.isNullOrEmpty()) {
+        if (networkDevice.networkDeviceType == null) {
             networkDeviceFormErrorLiveData.value = OnDeviceTypeError()
             return false
         } else {

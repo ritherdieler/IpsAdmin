@@ -18,6 +18,9 @@ android {
     buildTypes {
         debug {
             buildConfigField 'String', "BASE_URL", '"http://192.168.0.108:8080/api/"'
+            buildConfigField 'String', "OLT_SERVICE_BASE_URL", '"https://gigafiberperu.smartolt.com/api/"'
+            buildConfigField 'String', "OLT_SERVICE_API_KET", OLT_SERVICE_API_KEY
+
         }
         release {
             minifyEnabled false

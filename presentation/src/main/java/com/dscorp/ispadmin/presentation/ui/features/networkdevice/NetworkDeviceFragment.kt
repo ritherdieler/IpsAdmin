@@ -16,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class NetworkDeviceFragment : BaseFragment() {
     private val binding by lazy { FragmentNetworkDeviceBinding.inflate(layoutInflater) }
     private val viewModel: NetworkDeviceViewModel by viewModel()
-    private var selectedNetworkDeviceType: String? = null
+    private var selectedNetworkDeviceType: NetworkDevice.NetworkDeviceType? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,7 +50,8 @@ class NetworkDeviceFragment : BaseFragment() {
 
     private fun fillDeviceTypeSpinner(networkDeviceTypes: List<String>) {
         binding.etDeviceType.fillWithList(networkDeviceTypes) {
-            selectedNetworkDeviceType = it as String
+//            selectedNetworkDeviceType = it as String
+            selectedNetworkDeviceType = NetworkDevice.NetworkDeviceType.valueOf(it as String)
         }
     }
 

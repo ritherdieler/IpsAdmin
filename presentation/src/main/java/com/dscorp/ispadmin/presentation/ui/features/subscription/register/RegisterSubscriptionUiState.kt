@@ -19,6 +19,10 @@ sealed class RegisterSubscriptionUiState {
         val hostNetworkDevices: List<NetworkDevice>
     ) : RegisterSubscriptionUiState()
 
+    class FiberDevicesFound(val devices: List<NetworkDevice>) : RegisterSubscriptionUiState()
+
+    class WirelessDevicesFound(val devices: List<NetworkDevice>) : RegisterSubscriptionUiState()
+
     class RegisterSubscriptionSuccess(val subscription: Subscription) :
         RegisterSubscriptionUiState()
 

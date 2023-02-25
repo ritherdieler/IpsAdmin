@@ -1,7 +1,8 @@
 package com.dscorp.ispadmin.presentation.di.modules
 
 import com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardViewModel
-import com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolViewModel
+import com.dscorp.ispadmin.presentation.ui.features.ippool.register.IpPoolViewModel
+import com.dscorp.ispadmin.presentation.ui.features.ippool.seeip.IpListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivityViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
@@ -35,7 +36,7 @@ val viewModelModule = module {
     viewModel { PlaceViewModel() }
     viewModel { PlanViewModel() }
     viewModel { RegisterViewModel() }
-    viewModel { SubscriptionViewModel(get()) }
+    viewModel { SubscriptionViewModel(get(),get()) }
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel() }
     viewModel { RegisterServiceOrderViewModel(get()) }
@@ -49,5 +50,7 @@ val viewModelModule = module {
     viewModel { MainActivityViewModel(get()) }
     viewModel { ReportsViewModel(get()) }
     viewModel { DashBoardViewModel() }
+    viewModel { IpListViewModel(get()) }
+
 
 }

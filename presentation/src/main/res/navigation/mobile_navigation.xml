@@ -175,9 +175,15 @@
     </fragment>
     <fragment
         android:id="@+id/nav_ip_pool"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.ippool.register.IpPoolFragment"
         android:label="fragment_ip_pool"
-        tools:layout="@layout/fragment_ip_pool" />
+        tools:layout="@layout/fragment_ip_pool">
+        <action
+            android:id="@+id/toIpList"
+            app:destination="@+id/ipListFragment" />
+    </fragment>
+
+
     <fragment
         android:id="@+id/nav_my_profile"
         android:name="com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileFragment"
@@ -220,4 +226,13 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardFragment"
         android:label="fragment_dash_board"
         tools:layout="@layout/fragment_dash_board" />
+    <fragment
+        android:id="@+id/ipListFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.ippool.seeip.IpListFragment"
+        android:label="fragment_ip_list"
+        tools:layout="@layout/fragment_ip_list" >
+        <argument
+            android:name="ipPool"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.IpPool" />
+    </fragment>
 </navigation>

@@ -28,7 +28,7 @@ class RegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
 
     @Test
     fun `when getFormData is called then should return FormDataFound sate`() = runBlocking {
-        `when`(repository.getDevices()).thenReturn(listOf())
+        `when`(repository.getGenericDevices()).thenReturn(listOf())
         `when`(repository.getPlans()).thenReturn(listOf())
         `when`(repository.getPlaces()).thenReturn(listOf())
         `when`(repository.getNapBoxes()).thenReturn(listOf())
@@ -46,7 +46,7 @@ class RegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
 
     @Test
     fun `when getFormData call has error then should return FormDataError sate`() = runBlocking {
-        Mockito.doThrow(NullPointerException("Error")).`when`(repository).getDevices()
+        Mockito.doThrow(NullPointerException("Error")).`when`(repository).getGenericDevices()
         val viewModel = SubscriptionViewModel(repository)
         viewModel.getFormData()
 

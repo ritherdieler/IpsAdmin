@@ -1,10 +1,10 @@
-package com.dscorp.ispadmin.presentation.ui.features.ipPool.register
+package com.dscorp.ispadmin.presentation.ui.features.ippool.register
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cleanarchitecture.domain.domain.entity.IpPool
 import com.example.cleanarchitecture.domain.domain.entity.extensions.IsValidIpv4Segment
+import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -15,11 +15,7 @@ class IpPoolViewModel : ViewModel(), KoinComponent {
     val uiState: MutableLiveData<IpPoolUiState> = MutableLiveData()
     private val repository: IRepository by inject()
 
-    init {
-        getIpPoolList()
-    }
-
-    fun registerIpPool(ipPool: IpPool) = viewModelScope.launch {
+    fun registerIpPool(ipPool: IpPoolRequest) = viewModelScope.launch {
         try {
             if (!formIsValid(ipPool)) return@launch
             val response = repository.registerIpPool(ipPool)
@@ -30,15 +26,21 @@ class IpPoolViewModel : ViewModel(), KoinComponent {
         }
     }
 
-    private fun formIsValid(ipPool: IpPool): Boolean {
+    private fun formIsValid(ipPool: IpPoolRequest): Boolean {
 
-        if (ipPool.ipSegment.isEmpty()) {
+        if(ipPool.hostDeviceId == null){
+            uiState.value = IpPoolUiState.NoHostDeviceSelectedError
+            return false
+        }else{
+            uiState.value = IpPoolUiState.CleanNoHostDeviceSelectedError
+        }
+        if (ipPool.ipSegment == null || ipPool.ipSegment!!.isEmpty()) {
             uiState.value = IpPoolUiState.IpPoolError()
             return false
         } else {
             uiState.value = IpPoolUiState.IpPoolCleanError
         }
-        if (!ipPool.ipSegment.IsValidIpv4Segment()) {
+        if (!ipPool.ipSegment!!.IsValidIpv4Segment()) {
             uiState.value = IpPoolUiState.IpPoolInvalidIpSegment()
             return false
         } else {
@@ -56,5 +58,16 @@ class IpPoolViewModel : ViewModel(), KoinComponent {
             e.printStackTrace()
             uiState.value = IpPoolUiState.IpPoolListError(e.message)
         }
+    }
+
+    fun getHostDevices() = viewModelScope.launch {
+        try {
+            val response = repository.getHostDevices()
+            uiState.postValue(IpPoolUiState.HostDevicesReady(response))
+        } catch (e: Exception) {
+            uiState.postValue(IpPoolUiState.HostDevicesError(e.message))
+        }
+
+
     }
 }

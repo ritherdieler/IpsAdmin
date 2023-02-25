@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.IpPoolslist
+package com.dscorp.ispadmin.presentation.ui.features.ippool.register
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemIpPoolBinding
-import com.dscorp.ispadmin.presentation.ui.features.ipPool.register.IpPoolFragment
 import com.example.cleanarchitecture.domain.domain.entity.IpPool
 
-class IpPoolAdapter(ipPoolFragment: IpPoolFragment) : ListAdapter<IpPool, IpPoolAdapter.IpPoolAdapterViewHolder>(
-    IpPoolDiffCallback()
-) {
+class IpPoolAdapter(private val listener: IpPoolSelectionListener) :
+    ListAdapter<IpPool, IpPoolAdapter.IpPoolAdapterViewHolder>(
+        IpPoolDiffCallback()
+    ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IpPoolAdapterViewHolder {
         val binding =
@@ -22,11 +22,16 @@ class IpPoolAdapter(ipPoolFragment: IpPoolFragment) : ListAdapter<IpPool, IpPool
     override fun onBindViewHolder(holder: IpPoolAdapterViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
     inner class IpPoolAdapterViewHolder(private val binding: ItemIpPoolBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(ipPool: IpPool) {
             binding.ipPool = ipPool
             binding.executePendingBindings()
+
+            binding.btnSeeIps.setOnClickListener {
+                listener.onIpPoolSelected(ipPool)
+            }
         }
     }
 }

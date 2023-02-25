@@ -45,16 +45,19 @@ fun Fragment.showSuccessDialog(text: String) {
     val successDialog = dialogFactory.createSuccessDialog(requireContext(), text)
     successDialog.show()
 }
+
 fun Fragment.showErrorDialog(error: String? = "Error desconocido") {
     val dialogFactory: IDialogFactory by inject()
     val errorDialog = dialogFactory.createErrorDialog(requireContext(), error!!)
     errorDialog.show()
 }
+
 fun Activity.showSuccessDialog(text: String) {
     val dialogFactory: IDialogFactory by inject()
     val successDialog = dialogFactory.createSuccessDialog(this, text)
     successDialog.show()
 }
+
 fun Activity.showErrorDialog(error: String = "error desconocido") {
     val dialogFactory: IDialogFactory by inject()
     val errorDialog = dialogFactory.createErrorDialog(this, error)
@@ -75,4 +78,13 @@ fun Activity.getDownloadedFileUri(document: DownloadDocumentResponse): Uri {
         "${BuildConfig.APPLICATION_ID}.fileprovider",
         outputFile
     )
+}
+
+fun <T> MaterialAutoCompleteTextView.fill(data: List<T>, onItemSelected: (T) -> Unit) {
+    val adapter = ArrayAdapter(context, R.layout.simple_spinner_item, data)
+    setAdapter(adapter)
+    onItemClickListener =
+        AdapterView.OnItemClickListener { _, _, pos, _ ->
+            onItemSelected(data[pos])
+        }
 }

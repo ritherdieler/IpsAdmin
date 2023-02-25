@@ -1,6 +1,8 @@
-package com.dscorp.ispadmin.presentation.di.modules
+package com.example.data2.data.di
 
+import com.example.data2.data.repository.IOltRepository
 import com.example.data2.data.repository.IRepository
+import com.example.data2.data.repository.OltRepository
 import com.example.data2.data.repository.Repository
 import org.koin.dsl.module
 
@@ -14,4 +16,6 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     single<IRepository> { Repository() }
+    single<IOltRepository> { OltRepository(get()) }
+
 }

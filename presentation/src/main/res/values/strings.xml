@@ -89,5 +89,9 @@
     <string name="see_nap_boxes">Ver Cajas Nap</string>
     <string name="Mufas">Mufas</string>
     <string name="previous_treatment">Detalles adicionales</string>
+    <string name="fiber">Fibra</string>
+    <string name="wireless">Inalambrico</string>
+    <string name="instalation_type">Tipo de instalacion</string>
+    <string name="select_cpe_device">Seleccione el dispositivo CPE</string>
 
 </resources>

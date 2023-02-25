@@ -28,6 +28,7 @@ import java.util.*
 import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
 
+
 class RegisterSubscriptionFragment : BaseFragment() {
     private val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
     private var selectedDate: Long = 0
@@ -40,6 +41,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private var selectedTechnician: Technician? = null
     private var selectedNapBox: NapBox? = null
     private val viewModel: SubscriptionViewModel by viewModel()
+    private var installationType: InstallationType? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +63,28 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
         binding.etLocationSubscription.setOnClickListener {
             findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
+        }
+
+
+        binding.rgInstallationType.setOnCheckedChangeListener { _, checkedId ->
+            binding.tlNetworkDeviceOne.visibility = View.VISIBLE
+            when (checkedId) {
+                R.id.rbFiber -> {
+                    viewModel.getFiberDevices()
+                    this.installationType = InstallationType.FIBER
+                    binding.layoutWireless.visibility = View.GONE
+                    binding.layoutFiber.visibility = View.VISIBLE
+                }
+                R.id.rbWireless -> {
+                    viewModel.getWirelessDevices()
+                    this.installationType = InstallationType.WIRELESS
+                    binding.layoutWireless.visibility = View.VISIBLE
+                    binding.layoutFiber.visibility = View.GONE
+                }
+            }
+            binding.scrollView.post {
+                binding.scrollView.fullScroll(View.FOCUS_DOWN)
+            }
         }
 
         observeMapDialogResult()
@@ -88,8 +112,14 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is RegisterSubscriptionError -> showErrorDialog(response.error)
                 is FormDataFound -> fillFormSpinners(response)
                 is FormDataError -> showErrorDialog(response.error)
+                is FiberDevicesFound -> fillCpeDeviceSpinner(response.devices)
+                is WirelessDevicesFound -> fillCpeDeviceSpinner(response.devices)
             }
         }
+    }
+
+    private fun fillCpeDeviceSpinner(devices: List<NetworkDevice>) {
+        setUpCpeDeviceSpinner(devices)
     }
 
     private fun showSuccessDialog(response: RegisterSubscriptionSuccess) {
@@ -98,7 +128,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
     private fun fillFormSpinners(response: FormDataFound) {
         setUpPlansSpinner(response.plans)
-        setUpNetworkDeviceSpinners(response.networkDevices)
         setUpPlaceSpinner(response.places)
         setUpTechnicianSpinner(response.technicians)
         setUpNapBoxSpinner(response.napBoxes)
@@ -144,7 +173,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is CleanEtPhoneHasNotErrors -> binding.tlPhone.error = null
                 is CleanEtSubscriptionDateNotErrors -> binding.tlSubscriptionDate.error = null
                 is CleanEtPlanNotErrors -> binding.spnPlan.error = null
-                is CleanEtNetworkDeviceNotErrors -> binding.spnNetworkDeviceOne.error = null
+                is CleanEtNetworkDeviceNotErrors -> binding.tlNetworkDeviceOne.error = null
                 is CleanEtNapBoxNotErrors -> binding.spnNapBox.error = null
                 is CleanEtPlaceNotErrors -> binding.spnPlace.error = null
                 is CleanEtTechnicianNotErrors -> binding.spnTechnician.error = null
@@ -181,7 +210,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun setSpnNetworkDeviceError(formError: OnSpnNetworkDeviceErrorRegisterUiState) {
-        binding.spnNetworkDeviceOne.error = formError.error
+        binding.tlNetworkDeviceOne.error = formError.error
     }
 
     private fun setSubscriptionDateError(formError: OnEtRegisterSubscriptionDateErrorUiState) {
@@ -249,7 +278,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             }
     }
 
-    private fun setUpNetworkDeviceSpinners(networkDevices: List<NetworkDevice>) {
+    private fun setUpCpeDeviceSpinner(networkDevices: List<NetworkDevice>) {
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevices)
 
@@ -259,11 +288,11 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 selectedNetworkDeviceOne = networkDevices[pos]
             }
 
-        binding.etNetworkDeviceTwo.setAdapter(adapter)
-        binding.etNetworkDeviceTwo.onItemClickListener =
-            AdapterView.OnItemClickListener { _, _, pos, _ ->
-                selectedNetworkDeviceTwo = networkDevices[pos]
-            }
+//        binding.etNetworkDeviceTwo.setAdapter(adapter)
+//        binding.etNetworkDeviceTwo.onItemClickListener =
+//            AdapterView.OnItemClickListener { _, _, pos, _ ->
+//                selectedNetworkDeviceTwo = networkDevices[pos]
+//            }
     }
 
     private fun setUpHostNetworkDeviceSpinners(networkDevice: List<NetworkDevice>) {
@@ -337,4 +366,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
         datePicker.show(childFragmentManager, "DatePicker")
     }
+}
+
+enum class InstallationType {
+    FIBER,
+    WIRELESS
 }

@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.ipPool.register
+package com.dscorp.ispadmin.presentation.ui.features.ippool.register
 
 /*
 sealed class IpPoolErrorUiState(val message: String) {

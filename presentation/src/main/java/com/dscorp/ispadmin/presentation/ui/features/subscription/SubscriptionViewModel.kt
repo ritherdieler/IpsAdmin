@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState
@@ -10,13 +11,19 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.Regist
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.dscorp.ispadmin.presentation.util.Constants
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.data2.data.repository.IOltRepository
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
+class SubscriptionViewModel(
+    val repository: IRepository,
+    val oltRepository: IOltRepository
+) : ViewModel() {
     val editSubscriptionUiState = MutableLiveData<EditSubscriptionUiState>()
     val editFormErrorLiveData = MutableLiveData<EditSubscriptionFormErrorUiState>()
 
@@ -24,37 +31,72 @@ class SubscriptionViewModel(val repository: IRepository) : ViewModel() {
     val registerFormErrorLiveData = MutableLiveData<RegisterSubscriptionFormErrorUiState>()
     var subscription: SubscriptionResponse? = null
 
+    private val cpeDevices = MutableStateFlow<List<NetworkDevice>?>(null)
+
+
+    // dependent flow on cpeDevices
+
+    private val fiberCpeDevices = cpeDevices.map { cpeDevices ->
+        cpeDevices?.filter { it.networkDeviceType == NetworkDevice.NetworkDeviceType.FIBER_ROUTER }
+    }
+
+    private val wirelessCpeDevices = cpeDevices.map { cpeDevices ->
+        cpeDevices?.filter { it.networkDeviceType == NetworkDevice.NetworkDeviceType.WIRELESS_ROUTER }
+    }
+
+
+
+    init {
+        viewModelScope.launch {
+            val response = oltRepository.getUnconfirmedOnus()
+            print(response)
+        }
+    }
+
     fun getFormData() = viewModelScope.launch {
         try {
-            val devicesJob = async { repository.getDevices() }
+            val cpeDevicesJob = async { repository.getCpeDevices() }
+            val cpeDevicesList = cpeDevicesJob.await()
+            cpeDevices.value = cpeDevicesList
+
+            val genericDevicesJob = async { repository.getGenericDevices() }
             val plansJob = async { repository.getPlans() }
             val placeJob = async { repository.getPlaces() }
             val napBoxesJob = async { repository.getNapBoxes() }
             val deferredTechnicians = async { repository.getTechnicians() }
             val coreDevicesJob = async { repository.getCoreDevices() }
-            val devicesFromRepository = devicesJob.await()
-            val plansFromRepository = plansJob.await()
-            val placeFromRepository = placeJob.await()
+            val genericDevices = genericDevicesJob.await()
+            val plans = plansJob.await()
+            val places = placeJob.await()
             val technicians = deferredTechnicians.await()
-            val napBoxesFromRepository = napBoxesJob.await()
+            val napBoxes = napBoxesJob.await()
             val coreDevices = coreDevicesJob.await()
 
             registerSubscriptionUiState.postValue(
                 RegisterSubscriptionUiState.FormDataFound(
-                    plansFromRepository, devicesFromRepository, placeFromRepository,
-                    technicians, napBoxesFromRepository, coreDevices
+                    plans, genericDevices, places,
+                    technicians, napBoxes, coreDevices
                 )
             )
 
-            editSubscriptionUiState.postValue(
-                EditSubscriptionUiState.FormDataFound(
-                    plansFromRepository, devicesFromRepository, placeFromRepository,
-                    napBoxesFromRepository, coreDevices
-                )
-            )
+
         } catch (e: Exception) {
+            e.printStackTrace()
             registerSubscriptionUiState.postValue(FormDataError(e.message.toString()))
         }
+    }
+
+    fun getFiberDevices() = viewModelScope.launch {
+      fiberCpeDevices.collectLatest {
+            registerSubscriptionUiState.postValue(it?.let { FiberDevicesFound(it) })
+        }
+    }
+
+    fun getWirelessDevices() = viewModelScope.launch {
+     wirelessCpeDevices.collectLatest {
+         registerSubscriptionUiState.postValue(it?.let { WirelessDevicesFound(it) })
+
+     }
     }
 
     fun registerSubscription(subscription: Subscription) = viewModelScope.launch {

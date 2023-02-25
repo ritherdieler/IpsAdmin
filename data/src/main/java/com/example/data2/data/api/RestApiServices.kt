@@ -1,12 +1,9 @@
 package com.example.data2.data.api
 
 import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.data2.data.apirequestmodel.IpPoolRequest
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Query
+import retrofit2.http.*
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -35,8 +32,11 @@ interface RestApiServices {
     @GET("plan")
     suspend fun getPlans(): Response<List<Plan>>
 
-    @GET("networkDevice")
-    suspend fun getDevices(): Response<List<NetworkDevice>>
+    @GET("networkDevice/genericDevices")
+    suspend fun getGenericDevices(): Response<List<NetworkDevice>>
+
+    @GET("networkDevice/fiber-and-wireless-devices")
+    suspend fun getCpeDevices(): Response<List<NetworkDevice>>
 
     @GET("subscription")
     suspend fun getSubscriptions(): Response<List<SubscriptionResponse>>
@@ -85,7 +85,7 @@ interface RestApiServices {
     suspend fun getDebtors(): Response<List<SubscriptionResponse>>
 
     @POST("ip-pool")
-    suspend fun registerIpPool(@Body ipPool: IpPool): Response<IpPool>
+    suspend fun registerIpPool(@Body ipPool: IpPoolRequest): Response<IpPool>
 
     @GET("ip-pool")
     suspend fun getIpPoolList(): Response<List<IpPool>>
@@ -97,17 +97,22 @@ interface RestApiServices {
     ): Response<List<Payment>>
 
     @GET("networkDevice/coreTypes")
-   suspend fun getCoreDevices(): Response<List<NetworkDevice>>
+    suspend fun getCoreDevices(): Response<List<NetworkDevice>>
 
-   @PUT("subscription")
-    suspend fun editSubscription(@Body subscription: Subscription):Response<SubscriptionResponse>
+    @PUT("subscription")
+    suspend fun editSubscription(@Body subscription: Subscription): Response<SubscriptionResponse>
 
     @GET("subscription/debtors-document")
     suspend fun downloadDebtorsDocument(): Response<DownloadDocumentResponse>
+
     @GET("dashboard")
     suspend fun getDashBoardData(): Response<DashBoardDataResponse>
 
     @PUT("subscription/cut-service")
     suspend fun startServiceCut(): Response<Any>
+
+    @GET("get-ips")
+    fun getIpList(@Query("ipPoolId") poolId: Int): Response<List<Ip>>
+
 }
 

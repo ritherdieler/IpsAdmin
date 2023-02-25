@@ -1,6 +1,7 @@
 package com.example.cleanarchitecture.domain.domain.entity
 
 data class IpPool(
-    val id: Int=0,
-    val ipSegment: String,
-)
+    val id: Int?=null,
+    val ipSegment: String? = null,
+    val hostDeviceId:Int? = null,
+):java.io.Serializable

@@ -13,7 +13,7 @@ data class NetworkDevice(
     val password: String = "",
     val username: String = "",
     val ipAddress: String = "",
-    val networkDeviceType: String? = null,
+    val networkDeviceType: NetworkDeviceType? = null,
 
     ) : java.io.Serializable {
     override fun toString(): String {
@@ -22,6 +22,10 @@ data class NetworkDevice(
 
     override fun hashCode(): Int {
         return super.hashCode()
+    }
+
+    enum class NetworkDeviceType {
+        FIBER_ROUTER, CLOUD_CORE_ROUTER, WIRELESS_ROUTER, GENERIC
     }
 
 }
