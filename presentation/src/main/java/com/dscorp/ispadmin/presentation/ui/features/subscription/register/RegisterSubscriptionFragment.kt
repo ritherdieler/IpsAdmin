@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentRegisterSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
+import com.dscorp.ispadmin.presentation.extension.fill
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
@@ -22,6 +24,7 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.Regist
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,14 +46,27 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private val viewModel: SubscriptionViewModel by viewModel()
     private var installationType: InstallationType? = null
 
+    private val additionalDevicesAdapter by lazy {
+        ArrayAdapter<NetworkDevice>(
+            requireContext(),
+            android.R.layout.simple_spinner_item
+        )
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        binding.executePendingBindings()
+
         viewModel.getFormData()
         observeResponse()
         observeFormError()
+
+        binding.lvAditionalNetworkDevices.adapter = additionalDevicesAdapter
 
         binding.btSubscribirse.setOnClickListener {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
@@ -65,21 +81,23 @@ class RegisterSubscriptionFragment : BaseFragment() {
             findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
         }
 
-
         binding.rgInstallationType.setOnCheckedChangeListener { _, checkedId ->
+            resetCpeSpinner()
+            resetAdditionalDevicesUiState()
+            binding.tlAditonalNetworkDevices.visibility = View.VISIBLE
             binding.tlNetworkDeviceOne.visibility = View.VISIBLE
+            binding.chkAdditionalDevices.visibility = View.VISIBLE
+
             when (checkedId) {
                 R.id.rbFiber -> {
-                    viewModel.getFiberDevices()
                     this.installationType = InstallationType.FIBER
-                    binding.layoutWireless.visibility = View.GONE
-                    binding.layoutFiber.visibility = View.VISIBLE
+                    viewModel.getFiberDevices()
+                    binding.spnNapBox.visibility = View.VISIBLE
                 }
                 R.id.rbWireless -> {
-                    viewModel.getWirelessDevices()
                     this.installationType = InstallationType.WIRELESS
-                    binding.layoutWireless.visibility = View.VISIBLE
-                    binding.layoutFiber.visibility = View.GONE
+                    viewModel.getWirelessDevices()
+                    binding.spnNapBox.visibility = View.GONE
                 }
             }
             binding.scrollView.post {
@@ -87,9 +105,39 @@ class RegisterSubscriptionFragment : BaseFragment() {
             }
         }
 
+        binding.chkAdditionalDevices.setOnCheckedChangeListener { _, isChecked ->
+            resetAdditionalDevicesUiState()
+
+            if (isChecked) {
+                binding.llAdditionalDevices.visibility = View.VISIBLE
+            } else {
+                binding.llAdditionalDevices.visibility = View.GONE
+            }
+            binding.scrollView.post {
+                binding.scrollView.fullScroll(View.FOCUS_DOWN)
+            }
+        }
+
+        binding.btnAddAditionalNetworkDevices.setOnClickListener {
+            viewModel.addSelectedAdditionalNetworkDeviceToList()
+            additionalDevicesAdapter.clear()
+            additionalDevicesAdapter.addAll(viewModel.additionalNetworkDevicesList)
+        }
+
         observeMapDialogResult()
 
         return binding.root
+    }
+
+    private fun resetAdditionalDevicesUiState() {
+        viewModel.resetAdditionalDevicesValues()
+        additionalDevicesAdapter.clear()
+        binding.acAditionalNetworkDevices.setText("")
+    }
+
+    private fun resetCpeSpinner() {
+        selectedNetworkDeviceOne = null
+        binding.etNetworkDeviceOne.setText("")
     }
 
     private fun observeMapDialogResult() {
@@ -132,6 +180,15 @@ class RegisterSubscriptionFragment : BaseFragment() {
         setUpTechnicianSpinner(response.technicians)
         setUpNapBoxSpinner(response.napBoxes)
         setUpHostNetworkDeviceSpinners(response.hostNetworkDevices)
+        setupAdditionNetworkDeviceSpinner(response.networkDevices)
+    }
+
+    private fun setupAdditionNetworkDeviceSpinner(networkDevices: List<NetworkDevice>) {
+        binding.acAditionalNetworkDevices.fill(networkDevices) {
+            lifecycleScope.launch {
+                viewModel.selectedAdditionalDevice.value = it
+            }
+        }
     }
 
     private fun observeFormError() {

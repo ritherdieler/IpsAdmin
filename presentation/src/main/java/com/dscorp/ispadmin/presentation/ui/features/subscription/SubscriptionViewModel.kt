@@ -1,9 +1,8 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import android.database.Observable
+import android.view.View
+import androidx.lifecycle.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState.*
@@ -18,6 +17,7 @@ import com.example.data2.data.repository.IOltRepository
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SubscriptionViewModel(
@@ -31,6 +31,13 @@ class SubscriptionViewModel(
     val registerFormErrorLiveData = MutableLiveData<RegisterSubscriptionFormErrorUiState>()
     var subscription: SubscriptionResponse? = null
 
+    var selectedAdditionalDevice = MutableLiveData<NetworkDevice?>(null)
+
+    var additionalNetworkDevicesList = mutableSetOf<NetworkDevice>()
+
+    val addButtonVisibility =
+        Transformations.map(selectedAdditionalDevice) { if (it == null) View.GONE else View.VISIBLE }
+
     private val cpeDevices = MutableStateFlow<List<NetworkDevice>?>(null)
 
 
@@ -43,7 +50,6 @@ class SubscriptionViewModel(
     private val wirelessCpeDevices = cpeDevices.map { cpeDevices ->
         cpeDevices?.filter { it.networkDeviceType == NetworkDevice.NetworkDeviceType.WIRELESS_ROUTER }
     }
-
 
 
     init {
@@ -87,16 +93,16 @@ class SubscriptionViewModel(
     }
 
     fun getFiberDevices() = viewModelScope.launch {
-      fiberCpeDevices.collectLatest {
+        fiberCpeDevices.collectLatest {
             registerSubscriptionUiState.postValue(it?.let { FiberDevicesFound(it) })
         }
     }
 
     fun getWirelessDevices() = viewModelScope.launch {
-     wirelessCpeDevices.collectLatest {
-         registerSubscriptionUiState.postValue(it?.let { WirelessDevicesFound(it) })
+        wirelessCpeDevices.collectLatest {
+            registerSubscriptionUiState.postValue(it?.let { WirelessDevicesFound(it) })
 
-     }
+        }
     }
 
     fun registerSubscription(subscription: Subscription) = viewModelScope.launch {
@@ -356,5 +362,16 @@ class SubscriptionViewModel(
                 EditSubscriptionFormErrorUiState.CleanEtNapBoxNotErrors
         }
         return true
+    }
+
+    fun addSelectedAdditionalNetworkDeviceToList() {
+        selectedAdditionalDevice.value?.let {
+            additionalNetworkDevicesList.add(it)
+        }
+    }
+
+    fun resetAdditionalDevicesValues() {
+        selectedAdditionalDevice.value = null
+        additionalNetworkDevicesList = mutableSetOf()
     }
 }

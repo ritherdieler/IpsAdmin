@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel" />
     </data>
 
     <LinearLayout
@@ -268,8 +271,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:visibility="gone"
-                    android:hint="@string/select_cpe_device">
+                    android:hint="@string/select_cpe_device"
+                    android:visibility="gone">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etNetworkDeviceOne"
@@ -279,87 +282,80 @@
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/layoutFiber"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/spnNapBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:orientation="vertical"
+                    android:hint="@string/nap_box"
                     android:visibility="gone">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/spnNapBox"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/etNapBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/nap_box">
+                        android:inputType="none"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/etNapBox"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none"
-                            tools:ignore="LabelFor" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tlNetworkDeviceTwo"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:hint="@string/installed_device">
-
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/etNetworkDeviceTwo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none"
-                            tools:ignore="LabelFor" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/layoutWireless"
-                    android:layout_width="match_parent"
+                <CheckBox
+                    android:id="@+id/chkAdditionalDevices"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:text="@string/installing_additionals"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/llAdditionalDevices"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/installed_device">
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/spnWirelessOne"
-                            android:layout_width="match_parent"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/tlAditonalNetworkDevices"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:inputType="none"
-                            tools:ignore="LabelFor" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:layout_marginEnd="20dp"
+                            android:layout_weight="1"
+                            android:hint="@string/additionalDevices">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/acAditionalNetworkDevices"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none"
+                                tools:ignore="LabelFor" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <Button
+                            android:id="@+id/btnAddAditionalNetworkDevices"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="agregar"
+                            android:visibility="@{viewModel.addButtonVisibility}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <ListView
+                        android:id="@+id/lvAditionalNetworkDevices"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:hint="@string/installed_device">
+                        android:layout_height="200dp"
+                        android:visibility="@{viewModel.addButtonVisibility}"
+                        android:layout_marginTop="12dp" />
 
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                            android:id="@+id/spnWirelessTwo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none"
-                            tools:ignore="LabelFor" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btSubscribirse"
@@ -368,6 +364,8 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
                     android:text="Registrar" />
+
+
             </LinearLayout>
 
         </ScrollView>
