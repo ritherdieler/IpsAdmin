@@ -98,5 +98,7 @@
     <string name="installing_additionals">Se instalaran adicionales</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="invalidFirstNameField">Este campo no puede estar vacio</string>
+    <string name="names">Nombres</string>
 
 </resources>

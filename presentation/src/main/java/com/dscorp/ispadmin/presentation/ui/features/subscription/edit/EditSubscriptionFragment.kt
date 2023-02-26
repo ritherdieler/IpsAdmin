@@ -191,7 +191,7 @@ class EditSubscriptionFragment : BaseFragment() {
             dni = binding.etDni.text.toString(),
             phone = binding.etPhone.text.toString(),
             planId = selectedPlan?.id ?: "",
-            networkDeviceIds = installedDevices,
+            additionalDevices = installedDevices,
             placeId = selectedPlace?.id ?: "",
             location = location,
             technicianId = args.subscription.technician?.id,

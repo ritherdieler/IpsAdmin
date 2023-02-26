@@ -1,28 +1,27 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription
 
-import android.database.Observable
-import android.view.View
 import androidx.lifecycle.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.InstallationType
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.NameField
 import com.dscorp.ispadmin.presentation.util.Constants
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.repository.IOltRepository
 import com.example.data2.data.repository.IRepository
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SubscriptionViewModel(
-    val repository: IRepository,
-    val oltRepository: IOltRepository
+    private val repository: IRepository,
+    private val oltRepository: IOltRepository
 ) : ViewModel() {
     val editSubscriptionUiState = MutableLiveData<EditSubscriptionUiState>()
     val editFormErrorLiveData = MutableLiveData<EditSubscriptionFormErrorUiState>()
@@ -30,18 +29,26 @@ class SubscriptionViewModel(
     val registerSubscriptionUiState = MutableLiveData<RegisterSubscriptionUiState>()
     val registerFormErrorLiveData = MutableLiveData<RegisterSubscriptionFormErrorUiState>()
     var subscription: SubscriptionResponse? = null
+    var selectedDate: Long = 0
+    var selectedLocation: LatLng? = null
+    var selectedPlan: Plan? = null
+    var selectedNetworkDeviceOne: NetworkDevice? = null
+    var selectedNetworkDeviceTwo: NetworkDevice? = null
+    var selectedHostNetworkDevice: NetworkDevice? = null
+    var selectedTechnician: Technician? = null
+    var selectedPlace: Place? = null
+    var selectedNapBox: NapBox? = null
+    var installationType: InstallationType? = null
 
     var selectedAdditionalDevice = MutableLiveData<NetworkDevice?>(null)
 
     var additionalNetworkDevicesList = mutableSetOf<NetworkDevice>()
 
-    val addButtonVisibility =
-        Transformations.map(selectedAdditionalDevice) { if (it == null) View.GONE else View.VISIBLE }
+    val addButtonIsEnabled = Transformations.map(selectedAdditionalDevice) { it != null }
 
     private val cpeDevices = MutableStateFlow<List<NetworkDevice>?>(null)
 
-
-    // dependent flow on cpeDevices
+    val nameField = NameField()
 
     private val fiberCpeDevices = cpeDevices.map { cpeDevices ->
         cpeDevices?.filter { it.networkDeviceType == NetworkDevice.NetworkDeviceType.FIBER_ROUTER }
@@ -106,7 +113,26 @@ class SubscriptionViewModel(
     }
 
     fun registerSubscription(subscription: Subscription) = viewModelScope.launch {
+
         try {
+            subscription.apply {
+                planId = selectedPlan?.id ?: ""
+                placeId = selectedPlace?.id ?: ""
+                location = GeoLocation(
+                    selectedLocation?.latitude ?: 0.0,
+                    selectedLocation?.longitude ?: 0.0
+                )
+                technicianId = selectedTechnician?.id
+                napBoxId = selectedNapBox?.id ?: ""
+                subscriptionDate = selectedDate
+                hostDeviceId = selectedHostNetworkDevice?.id ?: 0
+
+                val installedDevices = mutableListOf<Int>()
+                selectedNetworkDeviceOne?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
+                selectedNetworkDeviceTwo?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
+                additionalDevices = installedDevices
+            }
+
             if (!registrationFormIsValid(subscription)) return@launch
             val subscriptionFromRepository = repository.doSubscription(subscription)
             registerSubscriptionUiState.postValue(
@@ -129,14 +155,7 @@ class SubscriptionViewModel(
 
     private fun registrationFormIsValid(subscription: Subscription): Boolean {
 
-        if (subscription.firstName.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtFirstNameErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtFirstNameHasNotErrors
-        }
+        if (!nameField.isValid) return false
 
         if (subscription.lastName.isEmpty()) {
             registerFormErrorLiveData.value =
@@ -207,7 +226,7 @@ class SubscriptionViewModel(
                 RegisterSubscriptionFormErrorUiState.CleanEtSubscriptionDateNotErrors
         }
 
-        if (subscription.planId.isEmpty()) {
+        if (subscription.planId.isNullOrEmpty()) {
             registerFormErrorLiveData.value =
                 RegisterSubscriptionFormErrorUiState.OnSpnPlanErrorRegisterUiState()
             return false
@@ -216,7 +235,7 @@ class SubscriptionViewModel(
                 RegisterSubscriptionFormErrorUiState.CleanEtPlanNotErrors
         }
 
-        if (subscription.networkDeviceIds.isEmpty()) {
+        if (subscription.additionalDevices.isNullOrEmpty()) {
             registerFormErrorLiveData.value =
                 RegisterSubscriptionFormErrorUiState.OnSpnNetworkDeviceErrorRegisterUiState()
             return false
@@ -225,7 +244,7 @@ class SubscriptionViewModel(
                 RegisterSubscriptionFormErrorUiState.CleanEtNetworkDeviceNotErrors
         }
 
-        if (subscription.placeId.isEmpty()) {
+        if (subscription.placeId.isNullOrEmpty()) {
             registerFormErrorLiveData.value =
                 RegisterSubscriptionFormErrorUiState.OnSpnPlaceErrorRegisterUiState()
             return false
@@ -242,7 +261,7 @@ class SubscriptionViewModel(
                 RegisterSubscriptionFormErrorUiState.CleanEtTechnicianNotErrors
         }
 
-        if (subscription.napBoxId.isEmpty()) {
+        if (subscription.napBoxId.isNullOrEmpty()) {
             registerFormErrorLiveData.value =
                 RegisterSubscriptionFormErrorUiState.OnSpnNapBoxErrorRegisterUiState()
             return false
@@ -317,7 +336,7 @@ class SubscriptionViewModel(
             return false
         }
 
-        if (subscription.planId.isEmpty()) {
+        if (subscription.planId.isNullOrEmpty()) {
             editFormErrorLiveData.value =
                 EditSubscriptionFormErrorUiState.OnSpnPlanErrorRegisterUiState()
             return false
@@ -326,7 +345,7 @@ class SubscriptionViewModel(
                 EditSubscriptionFormErrorUiState.CleanEtPlanNotErrors
         }
 
-        if (subscription.networkDeviceIds.isEmpty()) {
+        if (subscription.additionalDevices.isNullOrEmpty()) {
             editFormErrorLiveData.value =
                 EditSubscriptionFormErrorUiState.OnSpnNetworkDeviceErrorRegisterUiState()
             return false
@@ -335,7 +354,7 @@ class SubscriptionViewModel(
                 EditSubscriptionFormErrorUiState.CleanEtNetworkDeviceNotErrors
         }
 
-        if (subscription.placeId.isEmpty()) {
+        if (subscription.placeId.isNullOrEmpty()) {
             editFormErrorLiveData.value =
                 EditSubscriptionFormErrorUiState.OnSpnPlanErrorRegisterUiState()
             return false
@@ -344,7 +363,7 @@ class SubscriptionViewModel(
                 EditSubscriptionFormErrorUiState.CleanEtPlaceNotErrors
         }
 
-        if (subscription.napBoxId.isEmpty()) {
+        if (subscription.napBoxId.isNullOrEmpty()) {
             editFormErrorLiveData.value =
                 EditSubscriptionFormErrorUiState.OnSpnNapBoxErrorRegisterUiState()
             return false

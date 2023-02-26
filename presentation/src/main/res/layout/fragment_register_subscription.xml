@@ -8,6 +8,8 @@
         <variable
             name="viewModel"
             type="com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
     <LinearLayout
@@ -23,7 +25,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingHorizontal="20dp">
 
@@ -33,13 +35,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="Nombres"
+                    android:hint="@{viewModel.nameField.hint}"
+                    android:error="@{viewModel.nameField.errorLiveData}"
+                    tools:hint="@string/names"
                     app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:onTextChanged="@{viewModel.nameField.onTextChanged}"
+                        />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -343,8 +349,8 @@
                             android:id="@+id/btnAddAditionalNetworkDevices"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="agregar"
-                            android:visibility="@{viewModel.addButtonVisibility}" />
+                            android:enabled="@{viewModel.addButtonIsEnabled}"
+                            android:text="agregar" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -352,8 +358,8 @@
                         android:id="@+id/lvAditionalNetworkDevices"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:visibility="@{viewModel.addButtonVisibility}"
-                        android:layout_marginTop="12dp" />
+                        android:layout_marginTop="12dp"
+                        android:visibility="@{viewModel.addButtonIsEnabled ? View.VISIBLE : View.GONE}" />
 
                 </LinearLayout>
 

@@ -34,25 +34,16 @@ import kotlin.time.DurationUnit
 
 class RegisterSubscriptionFragment : BaseFragment() {
     private val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
-    private var selectedDate: Long = 0
-    private var selectedLocation: LatLng? = null
-    private var selectedPlan: Plan? = null
-    private var selectedNetworkDeviceOne: NetworkDevice? = null
-    private var selectedNetworkDeviceTwo: NetworkDevice? = null
-    private var selectedHostNetworkDevice: NetworkDevice? = null
-    private var selectedPlace: Place? = null
-    private var selectedTechnician: Technician? = null
-    private var selectedNapBox: NapBox? = null
     private val viewModel: SubscriptionViewModel by viewModel()
-    private var installationType: InstallationType? = null
-
     private val additionalDevicesAdapter by lazy {
         ArrayAdapter<NetworkDevice>(
             requireContext(),
             android.R.layout.simple_spinner_item
         )
     }
-
+    fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+        // Realiza alguna acción aquí
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,12 +81,12 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
             when (checkedId) {
                 R.id.rbFiber -> {
-                    this.installationType = InstallationType.FIBER
+                    viewModel.installationType = InstallationType.FIBER
                     viewModel.getFiberDevices()
                     binding.spnNapBox.visibility = View.VISIBLE
                 }
                 R.id.rbWireless -> {
-                    this.installationType = InstallationType.WIRELESS
+                    viewModel.installationType = InstallationType.WIRELESS
                     viewModel.getWirelessDevices()
                     binding.spnNapBox.visibility = View.GONE
                 }
@@ -136,7 +127,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun resetCpeSpinner() {
-        selectedNetworkDeviceOne = null
+        viewModel.selectedNetworkDeviceOne = null
         binding.etNetworkDeviceOne.setText("")
     }
 
@@ -149,7 +140,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun onLocationSelected(it: LatLng) {
-        this.selectedLocation = it
+        viewModel.selectedLocation = it
         binding.etLocationSubscription.setText("${it.latitude}, ${it.longitude}")
     }
 
@@ -300,9 +291,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
     private fun registerSubscription() {
 
-        val installedDevices = mutableListOf<Int>()
-        selectedNetworkDeviceOne?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
-        selectedNetworkDeviceTwo?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
+
 
         val subscription = Subscription(
             firstName = binding.etFirstName.text.toString(),
@@ -311,18 +300,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             password = binding.etPassword.text.toString(),
             address = binding.etAddress.text.toString(),
             phone = binding.etPhone.text.toString(),
-            planId = selectedPlan?.id ?: "",
-            networkDeviceIds = installedDevices,
-            placeId = selectedPlace?.id ?: "",
-            location = GeoLocation(
-                selectedLocation?.latitude ?: 0.0,
-                selectedLocation?.longitude ?: 0.0
-            ),
-            technicianId = selectedTechnician?.id,
-            napBoxId = selectedNapBox?.id ?: "",
-            subscriptionDate = selectedDate,
-            hostDeviceId = selectedHostNetworkDevice?.id ?: 0,
-        )
+            )
         viewModel.registerSubscription(subscription)
     }
 
@@ -331,7 +309,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etPlan.setAdapter(adapter)
         binding.etPlan.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
-                selectedPlan = plans[pos]
+                viewModel.selectedPlan = plans[pos]
             }
     }
 
@@ -342,14 +320,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etNetworkDeviceOne.setAdapter(adapter)
         binding.etNetworkDeviceOne.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
-                selectedNetworkDeviceOne = networkDevices[pos]
+                viewModel.selectedNetworkDeviceOne = networkDevices[pos]
             }
-
-//        binding.etNetworkDeviceTwo.setAdapter(adapter)
-//        binding.etNetworkDeviceTwo.onItemClickListener =
-//            AdapterView.OnItemClickListener { _, _, pos, _ ->
-//                selectedNetworkDeviceTwo = networkDevices[pos]
-//            }
     }
 
     private fun setUpHostNetworkDeviceSpinners(networkDevice: List<NetworkDevice>) {
@@ -359,7 +331,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etHostDevice.setAdapter(adapter)
         binding.etHostDevice.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
-                selectedHostNetworkDevice = networkDevice[pos]
+                viewModel.selectedHostNetworkDevice = networkDevice[pos]
             }
     }
 
@@ -368,7 +340,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etPlace.setAdapter(adapter)
         binding.etPlace.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
-                selectedPlace = places[pos]
+                viewModel.selectedPlace = places[pos]
             }
     }
 
@@ -378,7 +350,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etTechnician.setAdapter(adapter)
         binding.etTechnician.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
-                selectedTechnician = technicians[pos]
+                viewModel.selectedTechnician = technicians[pos]
             }
     }
 
@@ -388,7 +360,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etNapBox.setAdapter(adapter)
         binding.etNapBox.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, pos, _ ->
-                selectedNapBox = napBoxes[pos]
+                viewModel.selectedNapBox = napBoxes[pos]
             }
     }
 
@@ -415,7 +387,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             .build()
 
         datePicker.addOnPositiveButtonClickListener {
-            selectedDate = it
+            viewModel.selectedDate = it
             val formatter = SimpleDateFormat("dd/MM/yyyy")
             val formattedDate = formatter.format(calendar.timeInMillis)
             binding.etSubscriptionDate.setText(formattedDate)

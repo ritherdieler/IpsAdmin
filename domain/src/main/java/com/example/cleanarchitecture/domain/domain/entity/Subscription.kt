@@ -8,25 +8,25 @@ package com.example.cleanarchitecture.domain.domain.entity
  *
  **/
  class Subscription(
-  var id: Int? = null,
-  var firstName: String,
-  var lastName: String,
-  var dni: String,
-  var password:String,
-  var address:String,
-  var phone:String,
-  var subscriptionDate:Long,
-  var isNew:Boolean? = null,
-  var serviceIsSuspended: Boolean? = null,
-  var planId:String,
-  var networkDeviceIds: List<Int>,
-  var placeId:String,
-  var location: GeoLocation? = null,
-  var technicianId: Int? = null,
-  var napBoxId:String,
-  var hostDeviceId:Int
+    var id: Int? = null,
+    var firstName: String,
+    var lastName: String,
+    var dni: String,
+    var password:String,
+    var address:String,
+    var phone:String,
+    var subscriptionDate:Long? = null,
+    var isNew:Boolean? = null,
+    var serviceIsSuspended: Boolean? = null,
+    var planId:String?=null,
+    var additionalDevices: List<Int>?=null,
+    var placeId:String?=null,
+    var location: GeoLocation? = null,
+    var technicianId: Int? = null,
+    var napBoxId:String?=null,
+    var hostDeviceId:Int?=null,
 
-):java.io.Serializable
+    ):java.io.Serializable
 {
   override fun toString(): String {
     return firstName
