@@ -35,17 +35,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@{viewModel.nameField.hint}"
                     android:error="@{viewModel.nameField.errorLiveData}"
-                    tools:hint="@string/names"
-                    app:endIconMode="clear_text">
+                    android:hint="@{viewModel.nameField.hint}"
+                    app:endIconMode="clear_text"
+                    tools:hint="@string/name">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onTextChanged="@{viewModel.nameField.onTextChanged}"
-                        />
+                        android:onTextChanged="@{viewModel.nameField.onTextChanged}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -55,13 +54,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="Apellidos"
-                    app:endIconMode="clear_text">
+                    android:error="@{viewModel.lastNameField.errorLiveData}"
+                    android:hint="@{viewModel.lastNameField.hint}"
+                    app:endIconMode="clear_text"
+                    tools:hint="@string/lastName">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLastName"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:onTextChanged="@{viewModel.lastNameField.onTextChanged}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,17 +73,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="DNI"
+                    android:error="@{viewModel.dniField.errorLiveData}"
+                    android:hint="@{viewModel.dniField.hint}"
                     app:counterEnabled="true"
                     app:counterMaxLength="8"
-                    app:endIconMode="clear_text">
+                    app:endIconMode="clear_text"
+                    tools:hint="@string/dni">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etDni"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:maxLength="8" />
+                        android:maxLength="8"
+                        android:onTextChanged="@{viewModel.dniField.onTextChanged}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,17 +95,21 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Contraseña"
+                    android:error="@{viewModel.passwordField.errorLiveData}"
+                    android:hint="@{viewModel.passwordField.hint}"
                     app:counterEnabled="true"
                     app:counterMaxLength="20"
-                    app:endIconMode="password_toggle">
+                    app:endIconMode="password_toggle"
+                    tools:hint="@string/password">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPassword"
-                        android:maxLength="20" />
+                        android:maxLength="20"
+                        android:onTextChanged="@{viewModel.passwordField.onTextChanged}" />
+
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,13 +118,38 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Dirección"
-                    app:endIconMode="clear_text">
+                    android:error="@{viewModel.addressField.errorLiveData}"
+                    android:hint="@{viewModel.addressField.hint}"
+                    app:endIconMode="clear_text"
+                    tools:hint="@string/address">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAddress"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:onTextChanged="@{viewModel.addressField.onTextChanged}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlPhone"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.phoneField.errorLiveData}"
+                    android:hint="@{viewModel.phoneField.hint}"
+                    app:endIconMode="clear_text"
+                    tools:hint="Numero de telefono">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="9"
+                        android:onTextChanged="@{viewModel.phoneField.onTextChanged}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -125,50 +159,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:error="@{viewModel.locationField.errorLiveData}"
                     android:focusable="false"
-                    android:hint="Ubicación"
-                    app:endIconMode="clear_text">
+                    android:hint="@{viewModel.locationField.hint}"
+                    app:endIconMode="clear_text"
+                    tools:hint="@string/location">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLocationSubscription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="false" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlPhone"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="Numero de telefono"
-                    app:endIconMode="clear_text"
-
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:maxLength="9" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlSubscriptionDate"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:focusable="false"
-                    android:hint="Fecha de Suscripción"
-                    app:endIconMode="clear_text">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etSubscriptionDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false" />
@@ -181,7 +179,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/plan">
+                    android:error="@{viewModel.planField.errorLiveData}"
+                    android:hint="@{viewModel.planField.hint}"
+                    tools:hint="@string/plan">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etPlan"
@@ -199,7 +199,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/lugar">
+                    android:error="@{viewModel.placeField.errorLiveData}"
+                    android:hint="@{viewModel.placeField.hint}"
+                    tools:hint="@string/lugar">
 
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -214,9 +216,11 @@
                     android:id="@+id/spnTechnician"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
+                    android:error="@{viewModel.technicianField.errorLiveData}"
+                    android:hint="@{viewModel.technicianField.hint}"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/technician">
+                    tools:hint="@string/technician">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etTechnician"
@@ -233,7 +237,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/host_device">
+                    android:error="@{viewModel.hostDeviceField.errorLiveData}"
+                    android:hint="@{viewModel.hostDeviceField.hint}"
+                    tools:hint="@string/host_device">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etHostDevice"
@@ -241,6 +247,26 @@
                         android:layout_height="wrap_content"
                         android:inputType="none"
                         tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlSubscriptionDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:error="@{viewModel.subscriptionDateField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionDateField.hint}"
+                    android:layout_marginTop="20dp"
+                    android:focusable="false"
+                    tools:hint="Fecha de Suscripción"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSubscriptionDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false" />
+
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView

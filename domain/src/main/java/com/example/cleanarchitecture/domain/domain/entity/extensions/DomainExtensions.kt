@@ -6,6 +6,18 @@ fun String.isValidIpv4( ): Boolean {
     return ipv4Regex.matches(this)
 }
 
+fun String?.isValidDni( ): Boolean {
+    val pattern = "^[0-9]{8}\$"
+    val dniRegex = Regex(pattern)
+    return dniRegex.matches(this ?: "")
+}
+
+fun String?.isValidPhone( ): Boolean {
+    val pattern = "^[0-9]{9}\$"
+    val phoneRegex = Regex(pattern)
+    return phoneRegex.matches(this ?: "")
+}
+
 fun String.IsValidIpv4Segment( ): Boolean {
     val ipv4SegmentRegex = "^(\\d{1,3}\\.){3}\\d{1,3}/\\d{1,2}$".toRegex()
     return ipv4SegmentRegex.matches(this)

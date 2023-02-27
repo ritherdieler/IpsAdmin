@@ -2,34 +2,36 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register.formv
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import com.dscorp.ispadmin.R
 import org.koin.java.KoinJavaComponent.inject
 
-class NameField() {
+class FormField(
+    private val hintResourceId: Int,
+    private val errorResourceId: Int,
+    private val fieldValidator: FieldValidator
+) {
 
     private val applicationContext: Context by inject(Context::class.java)
 
-    var firstName: String? = null
+    var value: String? = null
 
-    val hint: String = applicationContext.getString(R.string.names)
+    val hint: String = applicationContext.getString(hintResourceId)
 
     val errorLiveData = MutableLiveData<String?>(null)
 
     var isValid: Boolean = false
-    get() {
-        errorLiveData.value = applicationContext.getString(R.string.invalidFirstNameField)
-        return field
-    }
+        get() {
+            if (!field) errorLiveData.value = applicationContext.getString(errorResourceId)
+            return field
+        }
 
-    private fun validateField(fieldValue: String?): Boolean {
-        return if (fieldValue?.trim().isNullOrEmpty()) {
-            errorLiveData.value = applicationContext.getString(R.string.invalidFirstNameField)
-            firstName = fieldValue
+     fun validateField(fieldValue: String?): Boolean {
+        return if (!fieldValidator.checkIfFieldIsValid(fieldValue)) {
+            errorLiveData.value = applicationContext.getString(errorResourceId)
             isValid = false
             false
         } else {
+            value = fieldValue
             errorLiveData.value = null
-            firstName = null
             isValid = true
             true
         }

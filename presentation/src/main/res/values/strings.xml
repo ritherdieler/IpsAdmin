@@ -98,7 +98,22 @@
     <string name="installing_additionals">Se instalaran adicionales</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="invalidFirstNameField">Este campo no puede estar vacio</string>
-    <string name="names">Nombres</string>
+    <string name="fieldMustNotBeEmpty">Este campo no puede estar vacio</string>
+    <string name="name">Nombres</string>
+    <string name="lastName">Apellidos</string>
+    <string name="dni">DNI</string>
+    <string name="invalidDNI">DNI no valido</string>
+    <string name="password">Contraseña</string>
+    <string name="address">Direción</string>
+    <string name="mustSelectLocation">Seleccione una ubicación</string>
+    <string name="phoneNumer">Número de teléfono</string>
+    <string name="invalidPhoneNumber">Número de teléfono no valido</string>
+    <string name="place">Lugar</string>
+    <string name="mustSelectPlan">Seleccione un plan</string>
+    <string name="mustSelectPlace">Seleccione un lugar</string>
+    <string name="mustSelectTechnician">Seleccione un técnico</string>
+    <string name="mustSelectHostDevice">Seleccione un dispositivo host</string>
+    <string name="subscriptionDate">Fecha de suscripción</string>
+    <string name="mustSelectSubscriptionDate">Selecione una fecha de suscripción</string>
 
 </resources>

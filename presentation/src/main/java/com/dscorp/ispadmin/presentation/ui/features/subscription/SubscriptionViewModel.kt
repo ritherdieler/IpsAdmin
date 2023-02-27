@@ -1,21 +1,31 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription
 
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState
-import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState.EditSubscriptionError
+import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionUiState.EditSubscriptionSuccess
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.InstallationType
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.NameField
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
 import com.dscorp.ispadmin.presentation.util.Constants
 import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
+import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
 import com.example.data2.data.repository.IOltRepository
 import com.example.data2.data.repository.IRepository
 import com.google.android.gms.maps.model.LatLng
+import com.google.gson.Gson
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -27,28 +37,59 @@ class SubscriptionViewModel(
     val editFormErrorLiveData = MutableLiveData<EditSubscriptionFormErrorUiState>()
 
     val registerSubscriptionUiState = MutableLiveData<RegisterSubscriptionUiState>()
-    val registerFormErrorLiveData = MutableLiveData<RegisterSubscriptionFormErrorUiState>()
     var subscription: SubscriptionResponse? = null
-    var selectedDate: Long = 0
+
+
     var selectedLocation: LatLng? = null
+        set(value) {
+            field = value
+            locationField.validateField(Gson().toJson(value))
+        }
+
     var selectedPlan: Plan? = null
+        set(value) {
+            field = value
+            planField.validateField(Gson().toJson(value))
+        }
+
+    var selectedPlace: Place? = null
+        set(value) {
+            field = value
+            placeField.validateField(Gson().toJson(field))
+        }
+
+    var selectedTechnician: Technician? = null
+        set(value) {
+            field = value
+            technicianField.validateField(Gson().toJson(field))
+        }
+
+    var selectedHostNetworkDevice: NetworkDevice? = null
+        set(value) {
+            field = value
+            hostDeviceField.validateField(Gson().toJson(field))
+        }
+
+    var selectedDate: Long = 0
+    set(value) {
+        field =value
+        subscriptionDateField.validateField(value.toString())
+    }
+
+
     var selectedNetworkDeviceOne: NetworkDevice? = null
     var selectedNetworkDeviceTwo: NetworkDevice? = null
-    var selectedHostNetworkDevice: NetworkDevice? = null
-    var selectedTechnician: Technician? = null
-    var selectedPlace: Place? = null
     var selectedNapBox: NapBox? = null
     var installationType: InstallationType? = null
 
     var selectedAdditionalDevice = MutableLiveData<NetworkDevice?>(null)
 
-    var additionalNetworkDevicesList = mutableSetOf<NetworkDevice>()
+
+    var additionalNetworkDevicesList = mutableSetOf<NetworkDevice?>()
 
     val addButtonIsEnabled = Transformations.map(selectedAdditionalDevice) { it != null }
 
     private val cpeDevices = MutableStateFlow<List<NetworkDevice>?>(null)
-
-    val nameField = NameField()
 
     private val fiberCpeDevices = cpeDevices.map { cpeDevices ->
         cpeDevices?.filter { it.networkDeviceType == NetworkDevice.NetworkDeviceType.FIBER_ROUTER }
@@ -57,6 +98,116 @@ class SubscriptionViewModel(
     private val wirelessCpeDevices = cpeDevices.map { cpeDevices ->
         cpeDevices?.filter { it.networkDeviceType == NetworkDevice.NetworkDeviceType.WIRELESS_ROUTER }
     }
+
+    val nameField = FormField(
+        hintResourceId = R.string.name,
+        errorResourceId = R.string.fieldMustNotBeEmpty,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                !fieldValue.isNullOrEmpty()
+        }
+    )
+
+    val lastNameField = FormField(
+        hintResourceId = R.string.lastName,
+        errorResourceId = R.string.fieldMustNotBeEmpty,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                !fieldValue.isNullOrEmpty()
+        }
+    )
+
+    val dniField = FormField(
+        hintResourceId = R.string.dni,
+        errorResourceId = R.string.invalidDNI,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean = fieldValue.isValidDni()
+        }
+    )
+
+    val passwordField = FormField(
+        hintResourceId = R.string.password,
+        errorResourceId = R.string.fieldMustNotBeEmpty,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                !fieldValue.isNullOrEmpty()
+        }
+    )
+
+    val addressField = FormField(
+        hintResourceId = R.string.address,
+        errorResourceId = R.string.fieldMustNotBeEmpty,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                !fieldValue.isNullOrEmpty()
+        }
+    )
+
+    val phoneField = FormField(
+        hintResourceId = R.string.phoneNumer,
+        errorResourceId = R.string.invalidPhoneNumber,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                fieldValue.isValidPhone()
+        }
+    )
+
+    val locationField = FormField(
+        hintResourceId = R.string.location,
+        errorResourceId = R.string.mustSelectLocation,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                Gson().fromJson(fieldValue, LatLng::class.java) != null
+
+        }
+    )
+
+    val planField = FormField(
+        hintResourceId = R.string.plan,
+        errorResourceId = R.string.mustSelectPlan,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                Gson().fromJson(fieldValue, Plan::class.java) != null
+
+        }
+    )
+
+    val placeField = FormField(
+        hintResourceId = R.string.place,
+        errorResourceId = R.string.mustSelectPlace,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                Gson().fromJson(fieldValue, Place::class.java) != null
+        }
+    )
+
+    val technicianField = FormField(
+        hintResourceId = R.string.technician,
+        errorResourceId = R.string.mustSelectTechnician,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                Gson().fromJson(fieldValue, Technician::class.java) != null
+
+        }
+    )
+
+    val hostDeviceField = FormField(
+        hintResourceId = R.string.host_device,
+        errorResourceId = R.string.mustSelectHostDevice,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+                Gson().fromJson(fieldValue, NetworkDevice::class.java) != null
+
+        }
+    )
+
+    val subscriptionDateField = FormField(
+        hintResourceId = R.string.subscriptionDate,
+        errorResourceId = R.string.mustSelectSubscriptionDate,
+        fieldValidator = object : FieldValidator {
+            override fun checkIfFieldIsValid(fieldValue: String?): Boolean = !fieldValue.isNullOrEmpty()
+        }
+    )
 
 
     init {
@@ -155,130 +306,24 @@ class SubscriptionViewModel(
 
     private fun registrationFormIsValid(subscription: Subscription): Boolean {
 
-        if (!nameField.isValid) return false
-
-        if (subscription.lastName.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtLastNameErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtLastNameHasNotErrors
+        for (formField in listOf(
+            nameField,
+            lastNameField,
+            dniField,
+            passwordField,
+            addressField,
+            phoneField,
+            locationField,
+            planField,
+            placeField,
+            technicianField,
+            hostDeviceField,
+            subscriptionDateField
+            )) {
+            formField.isValid
         }
 
-        if (subscription.dni.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtDniErrorRegisterUiState()
-            return false
-        }
-
-        if (subscription.password.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtPasswordErrorRegisterUiState()
-            return false
-        }
-
-        if (subscription.password.length < 8) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnPasswordIsInvalidErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtPasswordHasNotErrors
-        }
-
-        if (subscription.address.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtAddressesErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtAddressHasNotErrors
-        }
-
-        if (subscription.location == null) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtLocationErrorRegisterUiState()
-            return false
-        }
-
-        if (subscription.phone.isEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtNumberPhoneErrorRegisterUiState()
-            return false
-        }
-
-        if (subscription.phone.length < 9) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnPhoneIsInvalidErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtPhoneHasNotErrors
-        }
-
-        if (subscription.subscriptionDate == 0L) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnEtRegisterSubscriptionDateErrorUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtSubscriptionDateNotErrors
-        }
-
-        if (subscription.planId.isNullOrEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnSpnPlanErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtPlanNotErrors
-        }
-
-        if (subscription.additionalDevices.isNullOrEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnSpnNetworkDeviceErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtNetworkDeviceNotErrors
-        }
-
-        if (subscription.placeId.isNullOrEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnSpnPlaceErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtPlaceNotErrors
-        }
-        if (subscription.technicianId == 0 || subscription.technicianId == null) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnSpnTechnicianErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtTechnicianNotErrors
-        }
-
-        if (subscription.napBoxId.isNullOrEmpty()) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.OnSpnNapBoxErrorRegisterUiState()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtNapBoxNotErrors
-        }
-
-        if (subscription.hostDeviceId == 0) {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.HostUiStateDeviceErrorRegister()
-            return false
-        } else {
-            registerFormErrorLiveData.value =
-                RegisterSubscriptionFormErrorUiState.CleanEtNapBoxNotErrors
-        }
-        return true
+        return false
     }
 
     private fun editFormIsValid(subscription: Subscription): Boolean {
