@@ -35,8 +35,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.nameField.errorLiveData}"
-                    android:hint="@{viewModel.nameField.hint}"
+                    android:error="@{viewModel.firstNameField.errorLiveData}"
+                    android:hint="@{viewModel.firstNameField.hint}"
                     app:endIconMode="clear_text"
                     tools:hint="@string/name">
 
@@ -44,7 +44,7 @@
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onTextChanged="@{viewModel.nameField.onTextChanged}" />
+                         />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,7 +63,7 @@
                         android:id="@+id/etLastName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onTextChanged="@{viewModel.lastNameField.onTextChanged}" />
+                        />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,7 +86,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:maxLength="8"
-                        android:onTextChanged="@{viewModel.dniField.onTextChanged}" />
+                        />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="textPassword"
                         android:maxLength="20"
-                        android:onTextChanged="@{viewModel.passwordField.onTextChanged}" />
+                        />
 
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -127,7 +127,7 @@
                         android:id="@+id/etAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onTextChanged="@{viewModel.addressField.onTextChanged}" />
+                     />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -149,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:maxLength="9"
-                        android:onTextChanged="@{viewModel.phoneField.onTextChanged}" />
+                        />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -390,7 +390,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/btSubscribirse"
+                    android:id="@+id/btnRegisterSubscription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"

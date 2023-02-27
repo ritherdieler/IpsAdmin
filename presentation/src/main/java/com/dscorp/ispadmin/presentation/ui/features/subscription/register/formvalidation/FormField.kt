@@ -4,15 +4,19 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import org.koin.java.KoinJavaComponent.inject
 
-class FormField(
+class FormField<T>(
     private val hintResourceId: Int,
     private val errorResourceId: Int,
-    private val fieldValidator: FieldValidator
+    private val fieldValidator: FieldValidator<T>
 ) {
 
     private val applicationContext: Context by inject(Context::class.java)
 
-    var value: String? = null
+    var value: T? = null
+    set(value) {
+        field = value
+        validateField(value)
+    }
 
     val hint: String = applicationContext.getString(hintResourceId)
 
@@ -24,21 +28,18 @@ class FormField(
             return field
         }
 
-     fun validateField(fieldValue: String?): Boolean {
+    fun emitErrorIfExists() = isValid
+
+     private fun validateField(fieldValue: T?): Boolean {
         return if (!fieldValidator.checkIfFieldIsValid(fieldValue)) {
             errorLiveData.value = applicationContext.getString(errorResourceId)
             isValid = false
             false
         } else {
-            value = fieldValue
             errorLiveData.value = null
             isValid = true
             true
         }
-    }
-
-    fun onTextChanged(fieldValue: CharSequence, start: Int, before: Int, count: Int) {
-        validateField(fieldValue.toString())
     }
 
 }

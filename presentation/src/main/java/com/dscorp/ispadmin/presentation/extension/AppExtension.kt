@@ -80,7 +80,7 @@ fun Activity.getDownloadedFileUri(document: DownloadDocumentResponse): Uri {
     )
 }
 
-fun <T> MaterialAutoCompleteTextView.fill(data: List<T>, onItemSelected: (T) -> Unit) {
+fun <T> MaterialAutoCompleteTextView.populate(data: List<T>, onItemSelected: (T) -> Unit) {
     val adapter = ArrayAdapter(context, R.layout.simple_spinner_item, data)
     setAdapter(adapter)
     onItemClickListener =

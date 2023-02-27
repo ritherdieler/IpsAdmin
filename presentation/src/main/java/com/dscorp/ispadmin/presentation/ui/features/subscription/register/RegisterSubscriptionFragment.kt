@@ -5,15 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentRegisterSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
-import com.dscorp.ispadmin.presentation.extension.fill
+import com.dscorp.ispadmin.presentation.extension.populate
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
@@ -56,9 +56,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
         binding.lvAditionalNetworkDevices.adapter = additionalDevicesAdapter
 
-        binding.btSubscribirse.setOnClickListener {
+        binding.btnRegisterSubscription.setOnClickListener {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
-            registerSubscription()
+            viewModel.registerSubscription()
         }
 
         binding.etSubscriptionDate.setOnClickListener {
@@ -112,9 +112,38 @@ class RegisterSubscriptionFragment : BaseFragment() {
             additionalDevicesAdapter.addAll(viewModel.additionalNetworkDevicesList)
         }
 
+        setTextWatchersToStringFields()
+
         observeMapDialogResult()
 
         return binding.root
+    }
+
+    private fun setTextWatchersToStringFields() {
+        binding.etFirstName.doOnTextChanged { text, start, before, count ->
+            viewModel.firstNameField.value = text.toString()
+        }
+        binding.etLastName.doOnTextChanged { text, start, before, count ->
+            viewModel.lastNameField.value = text.toString()
+        }
+        binding.etDni.doOnTextChanged { text, start, before, count ->
+            viewModel.dniField.value = text.toString()
+        }
+        binding.etDni.doOnTextChanged { text, start, before, count ->
+            viewModel.dniField.value = text.toString()
+        }
+        binding.etPassword.doOnTextChanged { text, start, before, count ->
+            viewModel.passwordField.value = text.toString()
+        }
+        binding.etPassword.doOnTextChanged { text, start, before, count ->
+            viewModel.passwordField.value = text.toString()
+        }
+        binding.etAddress.doOnTextChanged { text, start, before, count ->
+            viewModel.addressField.value = text.toString()
+        }
+        binding.etPhone.doOnTextChanged { text, start, before, count ->
+            viewModel.phoneField.value = text.toString()
+        }
     }
 
     private fun resetAdditionalDevicesUiState() {
@@ -137,7 +166,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun onLocationSelected(it: LatLng) {
-        viewModel.selectedLocation = it
+        viewModel.locationField.value = it
         binding.etLocationSubscription.setText("${it.latitude}, ${it.longitude}")
     }
 
@@ -155,99 +184,36 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun fillCpeDeviceSpinner(devices: List<NetworkDevice>) {
-        setUpCpeDeviceSpinner(devices)
-    }
-
-    private fun showSuccessDialog(response: RegisterSubscriptionSuccess) {
-        showSuccessDialog("El registro numero ${response.subscription.dni} ah sido registrado correctamente")
+        binding.etNetworkDeviceOne.populate(devices) {
+            viewModel.selectedNetworkDeviceOne = it
+        }
     }
 
     private fun fillFormSpinners(response: FormDataFound) {
-        setUpPlansSpinner(response.plans)
-        setUpPlaceSpinner(response.places)
-        setUpTechnicianSpinner(response.technicians)
-        setUpNapBoxSpinner(response.napBoxes)
-        setUpHostNetworkDeviceSpinners(response.hostNetworkDevices)
-        setupAdditionNetworkDeviceSpinner(response.networkDevices)
-    }
+        binding.etPlan.populate(response.plans) {
+            viewModel.planField.value = it
+        }
+        binding.etPlace.populate(response.places) {
+            viewModel.placeField.value = it
+        }
+        binding.etTechnician.populate(response.technicians) {
+            viewModel.technicianField.value = it
+        }
+        binding.etNapBox.populate(response.napBoxes) {
+            viewModel.selectedNapBox = it
+        }
 
-    private fun setupAdditionNetworkDeviceSpinner(networkDevices: List<NetworkDevice>) {
-        binding.acAditionalNetworkDevices.fill(networkDevices) {
+        binding.etHostDevice.populate(response.hostNetworkDevices) {
+            viewModel.hostDeviceField.value = it
+        }
+
+        binding.acAditionalNetworkDevices.populate(response.networkDevices) {
             lifecycleScope.launch {
                 viewModel.selectedAdditionalDevice.value = it
             }
         }
     }
 
-    private fun registerSubscription() {
-
-        val subscription = Subscription(
-            firstName = binding.etFirstName.text.toString(),
-            lastName = binding.etLastName.text.toString(),
-            dni = binding.etDni.text.toString(),
-            password = binding.etPassword.text.toString(),
-            address = binding.etAddress.text.toString(),
-            phone = binding.etPhone.text.toString(),
-        )
-        viewModel.registerSubscription(subscription)
-    }
-
-    private fun setUpPlansSpinner(plans: List<Plan>) {
-        binding.etPlan.fill(plans) {
-            viewModel.selectedPlan = it
-        }
-    }
-
-    private fun setUpCpeDeviceSpinner(networkDevices: List<NetworkDevice>) {
-        val adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevices)
-
-        binding.etNetworkDeviceOne.setAdapter(adapter)
-        binding.etNetworkDeviceOne.onItemClickListener =
-            AdapterView.OnItemClickListener { _, _, pos, _ ->
-                viewModel.selectedNetworkDeviceOne = networkDevices[pos]
-            }
-    }
-
-    private fun setUpHostNetworkDeviceSpinners(networkDevice: List<NetworkDevice>) {
-        val adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevice)
-
-        binding.etHostDevice.setAdapter(adapter)
-        binding.etHostDevice.onItemClickListener =
-            AdapterView.OnItemClickListener { _, _, pos, _ ->
-                viewModel.selectedHostNetworkDevice = networkDevice[pos]
-            }
-    }
-
-    private fun setUpPlaceSpinner(places: List<Place>) {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, places)
-        binding.etPlace.setAdapter(adapter)
-        binding.etPlace.onItemClickListener =
-            AdapterView.OnItemClickListener { _, _, pos, _ ->
-                viewModel.selectedPlace = places[pos]
-            }
-    }
-
-    private fun setUpTechnicianSpinner(technicians: List<Technician>) {
-        val adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, technicians)
-        binding.etTechnician.setAdapter(adapter)
-        binding.etTechnician.onItemClickListener =
-            AdapterView.OnItemClickListener { _, _, pos, _ ->
-                viewModel.selectedTechnician = technicians[pos]
-            }
-    }
-
-    private fun setUpNapBoxSpinner(napBoxes: List<NapBox>) {
-        val adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, napBoxes)
-        binding.etNapBox.setAdapter(adapter)
-        binding.etNapBox.onItemClickListener =
-            AdapterView.OnItemClickListener { _, _, pos, _ ->
-                viewModel.selectedNapBox = napBoxes[pos]
-            }
-    }
 
     private fun showDatePicker() {
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
@@ -272,13 +238,17 @@ class RegisterSubscriptionFragment : BaseFragment() {
             .build()
 
         datePicker.addOnPositiveButtonClickListener {
-            viewModel.selectedDate = it
+            viewModel.subscriptionDateField.value = it
             val formatter = SimpleDateFormat("dd/MM/yyyy")
             val formattedDate = formatter.format(calendar.timeInMillis)
             binding.etSubscriptionDate.setText(formattedDate)
         }
 
         datePicker.show(childFragmentManager, "DatePicker")
+    }
+
+    private fun showSuccessDialog(response: RegisterSubscriptionSuccess) {
+        showSuccessDialog("El registro numero ${response.subscription.dni} ah sido registrado correctamente")
     }
 }
 

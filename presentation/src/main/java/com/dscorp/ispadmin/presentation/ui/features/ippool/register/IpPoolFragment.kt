@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.databinding.FragmentIpPoolBinding
-import com.dscorp.ispadmin.presentation.extension.fill
+import com.dscorp.ispadmin.presentation.extension.populate
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
@@ -66,7 +66,7 @@ class IpPoolFragment : BaseFragment(), IpPoolSelectionListener {
     }
 
     private fun fillHostDevicesSpinner(hostDevices: List<NetworkDevice>) {
-        binding.spnHostDevice.fill(hostDevices) {
+        binding.spnHostDevice.populate(hostDevices) {
             selectedHostDevice = it
         }
     }
