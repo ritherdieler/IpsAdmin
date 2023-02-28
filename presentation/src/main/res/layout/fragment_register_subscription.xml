@@ -160,8 +160,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.locationField.errorLiveData}"
-                    android:focusable="false"
                     android:hint="@{viewModel.locationField.hint}"
+                    android:focusable="false"
                     app:endIconMode="clear_text"
                     tools:hint="@string/location">
 
@@ -298,16 +298,18 @@
                 </RadioGroup>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlNetworkDeviceOne"
+                    android:id="@+id/tlCpeNetworkDevice"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/select_cpe_device"
+                    android:error="@{viewModel.cpeDeviceField.errorLiveData}"
+                    android:hint="@{viewModel.cpeDeviceField.hint}"
+                    tools:hint="@string/select_cpe_device"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/etNetworkDeviceOne"
+                        android:id="@+id/etCpeNetworkDevice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
@@ -320,7 +322,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/nap_box"
+                    tools:hint="@string/nap_box"
+                    android:error="@{viewModel.napBoxField.errorLiveData}"
+                    android:hint="@{viewModel.napBoxField.hint}"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -358,10 +362,12 @@
                             android:id="@+id/tlAditonalNetworkDevices"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                             android:layout_width="0dp"
+                            android:error="@{viewModel.additionalDevicesField.errorLiveData}"
+                            android:hint="@{viewModel.additionalDevicesField.hint}"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:layout_weight="1"
-                            android:hint="@string/additionalDevices">
+                            tools:hint="@string/additionalDevices">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                 android:id="@+id/acAditionalNetworkDevices"

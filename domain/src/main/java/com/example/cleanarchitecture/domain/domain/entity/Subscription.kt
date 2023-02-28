@@ -19,12 +19,13 @@ class Subscription(
     var isNew: Boolean? = null,
     var serviceIsSuspended: Boolean? = null,
     var planId: String? = null,
-    var additionalDevices: List<Int>? = null,
+    var additionalDeviceIds: List<Int> = emptyList(),
     var placeId: String? = null,
     var location: GeoLocation? = null,
     var technicianId: Int? = null,
     var napBoxId: String? = null,
     var hostDeviceId: Int? = null,
+    var cpeDeviceId:Int? = null
 
     ) : java.io.Serializable {
     override fun toString(): String {

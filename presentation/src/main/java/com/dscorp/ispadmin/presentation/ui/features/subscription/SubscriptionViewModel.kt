@@ -29,16 +29,13 @@ class SubscriptionViewModel(
     val registerSubscriptionUiState = MutableLiveData<RegisterSubscriptionUiState>()
     var subscription: SubscriptionResponse? = null
 
-    var selectedNetworkDeviceOne: NetworkDevice? = null
-    var selectedNetworkDeviceTwo: NetworkDevice? = null
-    var selectedNapBox: NapBox? = null
     var installationType: InstallationType? = null
 
     var selectedAdditionalDevice = MutableLiveData<NetworkDevice?>(null)
 
-    var additionalNetworkDevicesList = mutableSetOf<NetworkDevice?>()
-
     val addButtonIsEnabled = Transformations.map(selectedAdditionalDevice) { it != null }
+
+    var additionalNetworkDevicesList = mutableSetOf<NetworkDevice>()
 
     private val cpeDevices = MutableStateFlow<List<NetworkDevice>?>(null)
 
@@ -155,6 +152,30 @@ class SubscriptionViewModel(
         }
     )
 
+    val cpeDeviceField = FormField(
+        hintResourceId = R.string.select_cpe_device,
+        errorResourceId = R.string.mustSelectCpeDevice,
+        fieldValidator = object : FieldValidator<NetworkDevice> {
+            override fun checkIfFieldIsValid(fieldValue: NetworkDevice?): Boolean = fieldValue != null
+        }
+    )
+
+    val napBoxField = FormField(
+        hintResourceId = R.string.selec_nap_box,
+        errorResourceId = R.string.mustSelectNapBox,
+        fieldValidator = object : FieldValidator<NapBox> {
+            override fun checkIfFieldIsValid(fieldValue: NapBox?): Boolean = fieldValue != null
+        }
+    )
+
+    val additionalDevicesField = FormField(
+        hintResourceId = R.string.additionalDevices,
+        errorResourceId = R.string.youCanSelectAdditionalNetworkDevices,
+        fieldValidator = object : FieldValidator<List<NetworkDevice>> {
+            override fun checkIfFieldIsValid(fieldValue: List<NetworkDevice>?): Boolean = fieldValue != null
+        }
+    )
+
     init {
         viewModelScope.launch {
             val response = oltRepository.getUnconfirmedOnus()
@@ -221,9 +242,7 @@ class SubscriptionViewModel(
     }
 
     private fun createSubscription(): Subscription {
-        val installedDevices = mutableListOf<Int>()
-        selectedNetworkDeviceOne?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
-        selectedNetworkDeviceTwo?.let { it.id?.let { it1 -> installedDevices.add(it1) } }
+
         return Subscription(
             firstName = firstNameField.value,
             lastName = lastNameField.value,
@@ -233,34 +252,55 @@ class SubscriptionViewModel(
             phone = phoneField.value,
             subscriptionDate = subscriptionDateField.value,
             planId = planField.value?.id,
-            additionalDevices = installedDevices,
+            additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
             placeId = placeField.value?.id,
             technicianId = technicianField.value?.id,
-            napBoxId = selectedNapBox?.id,
+            napBoxId = napBoxField.value?.id,
             hostDeviceId = hostDeviceField.value?.id,
             location = GeoLocation(
                 locationField.value?.latitude ?: 0.0,
                 locationField.value?.longitude ?: 0.0
             ),
+            cpeDeviceId = cpeDeviceField.value?.id
         )
     }
 
     private fun formIsValid(): Boolean {
 
-        val fields = listOf(
-            firstNameField,
-            lastNameField,
-            dniField,
-            passwordField,
-            addressField,
-            phoneField,
-            locationField,
-            planField,
-            placeField,
-            technicianField,
-            hostDeviceField,
-            subscriptionDateField
-        )
+        val fields = when(installationType) {
+            InstallationType.FIBER -> listOf(
+                firstNameField,
+                lastNameField,
+                dniField,
+                passwordField,
+                addressField,
+                phoneField,
+                locationField,
+                planField,
+                placeField,
+                technicianField,
+                hostDeviceField,
+                subscriptionDateField,
+                cpeDeviceField,
+                napBoxField,
+            )
+            InstallationType.WIRELESS -> listOf(
+                firstNameField,
+                lastNameField,
+                dniField,
+                passwordField,
+                addressField,
+                phoneField,
+                locationField,
+                planField,
+                placeField,
+                technicianField,
+                hostDeviceField,
+                subscriptionDateField,
+                cpeDeviceField,
+            )
+            null -> emptyList()
+        }
 
         fields.forEach {
             it.emitErrorIfExists()

@@ -53,7 +53,11 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
         viewModel.getFormData()
         observeResponse()
+        observeMapDialogResult()
 
+        setTextWatchersToStringFields()
+        setInstallationTypeRadioGroupListener()
+        binding.rgInstallationType.check(R.id.rbFiber)
         binding.lvAditionalNetworkDevices.adapter = additionalDevicesAdapter
 
         binding.btnRegisterSubscription.setOnClickListener {
@@ -69,11 +73,33 @@ class RegisterSubscriptionFragment : BaseFragment() {
             findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
         }
 
+        binding.chkAdditionalDevices.setOnCheckedChangeListener { _, isChecked ->
+            resetAdditionalDevicesUiState()
+            if (isChecked) {
+                binding.llAdditionalDevices.visibility = View.VISIBLE
+            } else {
+                binding.llAdditionalDevices.visibility = View.GONE
+            }
+            moveScrollViewToBottom()
+        }
+
+        binding.btnAddAditionalNetworkDevices.setOnClickListener {
+            viewModel.addSelectedAdditionalNetworkDeviceToList()
+            additionalDevicesAdapter.clear()
+            additionalDevicesAdapter.addAll(viewModel.additionalNetworkDevicesList)
+        }
+
+        return binding.root
+    }
+
+    private fun setInstallationTypeRadioGroupListener() {
         binding.rgInstallationType.setOnCheckedChangeListener { _, checkedId ->
             resetCpeSpinner()
+            resetNapBoxSpinner()
+
             resetAdditionalDevicesUiState()
             binding.tlAditonalNetworkDevices.visibility = View.VISIBLE
-            binding.tlNetworkDeviceOne.visibility = View.VISIBLE
+            binding.tlCpeNetworkDevice.visibility = View.VISIBLE
             binding.chkAdditionalDevices.visibility = View.VISIBLE
 
             when (checkedId) {
@@ -88,35 +114,19 @@ class RegisterSubscriptionFragment : BaseFragment() {
                     binding.spnNapBox.visibility = View.GONE
                 }
             }
-            binding.scrollView.post {
-                binding.scrollView.fullScroll(View.FOCUS_DOWN)
-            }
+            moveScrollViewToBottom()
         }
+    }
 
-        binding.chkAdditionalDevices.setOnCheckedChangeListener { _, isChecked ->
-            resetAdditionalDevicesUiState()
+    private fun resetNapBoxSpinner() {
+        viewModel.napBoxField.value = null
+        binding.etNapBox.setText("")
+    }
 
-            if (isChecked) {
-                binding.llAdditionalDevices.visibility = View.VISIBLE
-            } else {
-                binding.llAdditionalDevices.visibility = View.GONE
-            }
-            binding.scrollView.post {
-                binding.scrollView.fullScroll(View.FOCUS_DOWN)
-            }
+    private fun moveScrollViewToBottom() {
+        binding.scrollView.post {
+            binding.scrollView.fullScroll(View.FOCUS_DOWN)
         }
-
-        binding.btnAddAditionalNetworkDevices.setOnClickListener {
-            viewModel.addSelectedAdditionalNetworkDeviceToList()
-            additionalDevicesAdapter.clear()
-            additionalDevicesAdapter.addAll(viewModel.additionalNetworkDevicesList)
-        }
-
-        setTextWatchersToStringFields()
-
-        observeMapDialogResult()
-
-        return binding.root
     }
 
     private fun setTextWatchersToStringFields() {
@@ -153,8 +163,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun resetCpeSpinner() {
-        viewModel.selectedNetworkDeviceOne = null
-        binding.etNetworkDeviceOne.setText("")
+        viewModel.cpeDeviceField.value = null
+        binding.etCpeNetworkDevice.setText("")
     }
 
     private fun observeMapDialogResult() {
@@ -184,8 +194,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun fillCpeDeviceSpinner(devices: List<NetworkDevice>) {
-        binding.etNetworkDeviceOne.populate(devices) {
-            viewModel.selectedNetworkDeviceOne = it
+        binding.etCpeNetworkDevice.populate(devices) {
+            viewModel.cpeDeviceField.value = it
         }
     }
 
@@ -200,13 +210,12 @@ class RegisterSubscriptionFragment : BaseFragment() {
             viewModel.technicianField.value = it
         }
         binding.etNapBox.populate(response.napBoxes) {
-            viewModel.selectedNapBox = it
+            viewModel.napBoxField.value = it
         }
 
         binding.etHostDevice.populate(response.hostNetworkDevices) {
             viewModel.hostDeviceField.value = it
         }
-
         binding.acAditionalNetworkDevices.populate(response.networkDevices) {
             lifecycleScope.launch {
                 viewModel.selectedAdditionalDevice.value = it

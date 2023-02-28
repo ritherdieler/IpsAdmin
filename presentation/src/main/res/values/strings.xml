@@ -115,5 +115,9 @@
     <string name="mustSelectHostDevice">Seleccione un dispositivo host</string>
     <string name="subscriptionDate">Fecha de suscripción</string>
     <string name="mustSelectSubscriptionDate">Selecione una fecha de suscripción</string>
+    <string name="mustSelectCpeDevice">Seleccione el dispoisitivo a instalar</string>
+    <string name="selec_nap_box">Seleccione una caja nap</string>
+    <string name="mustSelectNapBox">Seleccione una caja nap</string>
+    <string name="youCanSelectAdditionalNetworkDevices">(Opcional) Puede seleccionar dispositivos adicionales</string>
 
 </resources>
