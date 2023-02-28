@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.napbox
+package com.dscorp.ispadmin.presentation.ui.features.napbox.register
 
 /**
  * Created by Sergio Carrillo Diestra on 20/12/2022.

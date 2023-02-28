@@ -119,5 +119,6 @@
     <string name="selec_nap_box">Seleccione una caja nap</string>
     <string name="mustSelectNapBox">Seleccione una caja nap</string>
     <string name="youCanSelectAdditionalNetworkDevices">(Opcional) Puede seleccionar dispositivos adicionales</string>
+    <string name="metododepago">Metodo de pago</string>
 
 </resources>

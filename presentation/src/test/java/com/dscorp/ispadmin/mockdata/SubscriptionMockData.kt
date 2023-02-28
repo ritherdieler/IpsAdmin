@@ -33,7 +33,7 @@ val subscriptionListMock = listOf(
             ),
             address = "asdasd"
         ),
-        networkDevice = NetworkDevice(
+        networkDevices = NetworkDevice(
             id = 1,
             name = "asdad",
             password = "1313",

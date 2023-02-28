@@ -8,10 +8,13 @@ import com.dscorp.ispadmin.presentation.ui.features.main.MainActivityViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceViewModel
+import com.dscorp.ispadmin.presentation.ui.features.networkdevice.networkdevicelist.NetworkDeviceListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryViewModel
 import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentViewModel
 import com.dscorp.ispadmin.presentation.ui.features.place.PlaceViewModel
+import com.dscorp.ispadmin.presentation.ui.features.place.placelist.PlaceListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.plan.PlanViewModel
+import com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileViewmodel
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
@@ -20,6 +23,7 @@ import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.Regist
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianViewModel
+import com.dscorp.ispadmin.presentation.ui.features.technician.technicianlist.TechnicianListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -53,4 +57,8 @@ val viewModelModule = module {
     viewModel { IpListViewModel(get()) }
 
 
+    viewModel { PlanListViewModel() }
+    viewModel { NetworkDeviceListViewModel() }
+    viewModel { PlaceListViewModel() }
+    viewModel { TechnicianListViewModel() }
 }

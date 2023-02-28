@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:gravity="center"
+        tools:context=".presentation.place.NapBoxFragment">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlCode"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/codigo"
+            android:layout_marginTop="20dp"
+            tools:layout_editor_absoluteX="35dp"
+            tools:layout_editor_absoluteY="232dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlAddress"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="@string/direccion"
+            tools:layout_editor_absoluteX="35dp"
+            tools:layout_editor_absoluteY="306dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlLocationNapBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:focusable="false"
+            android:hint="@string/ubicaci_n"
+
+            tools:layout_editor_absoluteX="35dp"
+            tools:layout_editor_absoluteY="379dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etLocationNapBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnRegisterNapBox"
+            android:layout_width="372dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/save_changes"
+            tools:layout_editor_absoluteX="35dp"
+            tools:layout_editor_absoluteY="472dp" />
+
+    </LinearLayout>
+</layout>

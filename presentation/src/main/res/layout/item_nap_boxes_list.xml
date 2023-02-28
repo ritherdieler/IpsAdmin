@@ -6,7 +6,7 @@
     <data>
 <variable
     name="napBoxList"
-    type="com.example.cleanarchitecture.domain.domain.entity.NapBox" />
+    type="com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -25,8 +25,8 @@
 
             <TextView
                 android:id="@+id/tvIdNapbox"
-                android:layout_width="156dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
@@ -40,8 +40,8 @@
 
             <TextView
                 android:id="@+id/tvCodeNapBox"
-                android:layout_width="156dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="Codigo"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
@@ -52,37 +52,26 @@
 
             <TextView
                 android:id="@+id/tvDateNapBox"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:text="Dirección"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                app:layout_constraintBottom_toTopOf="@id/tvNapBoxesprueba3"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/tvCodeNapBox"
                 app:layout_constraintStart_toStartOf="@+id/tvCodeNapBox"
                 app:layout_constraintTop_toBottomOf="@id/tvCodeNapBox" />
-            <TextView
-                android:id="@+id/tvNapBoxesprueba3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                tools:text="Lugar"
-                app:layout_constraintTop_toBottomOf="@+id/tvDateNapBox"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tvDateNapBox"
-                app:layout_constraintStart_toStartOf="@+id/tvDateNapBox"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"/>
 
 
             <TextView
                 android:id="@+id/tvSeeNapBoxId"
                 android:layout_width="159dp"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@{napBoxList.id}"
                 android:layout_marginBottom="16dp"
+                android:text="@{napBoxList.id}"
                 app:layout_constraintBottom_toBottomOf="@id/tvIdNapbox"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvIdNapbox"
@@ -92,13 +81,11 @@
 
             <TextView
                 android:id="@+id/tvSeeCode"
-                android:layout_width="159dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:text="@{napBoxList.code}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvCodeNapBox"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeeNapBoxId"
-                app:layout_constraintHorizontal_bias="0.375"
                 app:layout_constraintStart_toStartOf="@+id/tvSeeNapBoxId"
                 app:layout_constraintTop_toTopOf="@+id/tvCodeNapBox"
                 app:layout_constraintVertical_bias="0.0"
@@ -106,28 +93,25 @@
 
             <TextView
                 android:id="@+id/tv_see_address"
-                android:layout_width="159dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="10dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="@{napBoxList.address}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvDateNapBox"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeeCode"
                 app:layout_constraintStart_toStartOf="@+id/tvSeeCode"
                 app:layout_constraintTop_toTopOf="@+id/tvDateNapBox"
                 tools:text="direccion" />
-
-            <TextView
-                android:id="@+id/tvPrueba3NapBoxes"
-                android:layout_width="159dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tvNapBoxesprueba3"
-                app:layout_constraintEnd_toEndOf="@+id/tv_see_address"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@id/tv_see_address"
-                app:layout_constraintTop_toTopOf="@+id/tvNapBoxesprueba3"
-                app:layout_constraintVertical_bias="1.0"
-                tools:text="vacalola" />
+            <Button
+                android:id="@+id/btnMenu"
+                style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                app:icon="@drawable/ic_more_dot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

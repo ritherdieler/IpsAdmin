@@ -112,16 +112,16 @@ class SubscriptionViewModel(
     val planField = FormField(
         hintResourceId = R.string.plan,
         errorResourceId = R.string.mustSelectPlan,
-        fieldValidator = object : FieldValidator<Plan?> {
-            override fun checkIfFieldIsValid(fieldValue: Plan?): Boolean = fieldValue != null
+        fieldValidator = object : FieldValidator<PlanResponse?> {
+            override fun checkIfFieldIsValid(fieldValue: PlanResponse?): Boolean = fieldValue != null
         }
     )
 
     val placeField = FormField(
         hintResourceId = R.string.place,
         errorResourceId = R.string.mustSelectPlace,
-        fieldValidator = object : FieldValidator<Place> {
-            override fun checkIfFieldIsValid(fieldValue: Place?): Boolean =
+        fieldValidator = object : FieldValidator<PlaceResponse> {
+            override fun checkIfFieldIsValid(fieldValue: PlaceResponse?): Boolean =
                 fieldValue != null
         }
     )
@@ -163,8 +163,8 @@ class SubscriptionViewModel(
     val napBoxField = FormField(
         hintResourceId = R.string.selec_nap_box,
         errorResourceId = R.string.mustSelectNapBox,
-        fieldValidator = object : FieldValidator<NapBox> {
-            override fun checkIfFieldIsValid(fieldValue: NapBox?): Boolean = fieldValue != null
+        fieldValidator = object : FieldValidator<NapBoxResponse> {
+            override fun checkIfFieldIsValid(fieldValue: NapBoxResponse?): Boolean = fieldValue != null
         }
     )
 
@@ -232,7 +232,7 @@ class SubscriptionViewModel(
         try {
             if (!formIsValid()) return@launch
             val subscription = createSubscription()
-            val subscriptionFromRepository = repository.doSubscription(subscription)
+            val subscriptionFromRepository = repository.registerSubscription(subscription)
             registerSubscriptionUiState.postValue(
                 RegisterSubscriptionSuccess(subscriptionFromRepository)
             )

@@ -73,11 +73,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
     }
 
     private fun navigateToEditSubscription(subscription: SubscriptionResponse): Boolean {
-        findNavController().navigate(
-            FindSubscriptionFragmentDirections.actionNavFindSubscriptionsToEditSubscriptionFragment(
-                subscription
-            )
-        )
+
         return true
     }
 

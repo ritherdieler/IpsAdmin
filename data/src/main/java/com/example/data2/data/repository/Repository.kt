@@ -103,7 +103,12 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun doSubscription(doSubscription: Subscription): Subscription {
+    override suspend fun getDevices(): List<NetworkDeviceResponse> {
+        TODO("Not yet implemented")
+    }
+
+
+    override suspend fun registerSubscription(doSubscription: Subscription): Subscription {
         val response = restApiServices.registerSubscription(doSubscription)
         if (response.code() == 200) {
             return response.body()!!
@@ -113,7 +118,7 @@ class Repository : IRepository, KoinComponent {
 
     }
 
-    override suspend fun getPlans(): List<Plan> {
+    override suspend fun getPlans(): List<PlanResponse> {
         val response = restApiServices.getPlans()
         if (response.code() == 200) {
             return response.body()!!
@@ -121,6 +126,7 @@ class Repository : IRepository, KoinComponent {
             throw Exception("error en la respuesta")
         }
     }
+
 
     override suspend fun getGenericDevices(): List<NetworkDevice> {
         val response = restApiServices.getGenericDevices()
@@ -149,7 +155,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getPlaces(): List<Place> {
+    override suspend fun getPlaces(): List<PlaceResponse> {
         val response = restApiServices.getPlaces()
         if (response.code() == 200) {
             return response.body()!!
@@ -204,7 +210,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getNapBoxes(): List<NapBox> {
+    override suspend fun getNapBoxes(): List<NapBoxResponse> {
         val response = restApiServices.getNapBoxes()
         if (response.code() == 200) {
             return response.body()!!
@@ -358,6 +364,24 @@ class Repository : IRepository, KoinComponent {
             return response.body()!!
         } else {
             throw Exception("No se pudieron obtener los equipos cpe")
+        }
+    }
+
+    override suspend fun editNapBox(napBox: NapBox): NapBoxResponse {
+        val response = restApiServices.editNapBox(napBox)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun editServiceOrder(serviceOrder: ServiceOrder): ServiceOrderResponse {
+        val response = restApiServices.editServiceOrder(serviceOrder)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
         }
     }
 }

@@ -15,7 +15,6 @@ sealed class RegisterServiceOrderFormError(val error: String) {
         const val SUBSCRIPTION_ERROR = "Ocurrio un error, por favor contacte con soporte tecnico"
     }
 
-    class OnEtLocationError : RegisterServiceOrderFormError(LOCATION_ERROR)
     class OnEtIssueError : RegisterServiceOrderFormError(ISSUE_ERROR)
     class OnSubscriptionError : RegisterServiceOrderFormError(SUBSCRIPTION_ERROR)
 

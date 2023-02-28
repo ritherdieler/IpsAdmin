@@ -223,7 +223,6 @@
                     android:id="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{subscription.networkDevice.name}"
                     app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
                     app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnPlan"
                     app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnPlan"

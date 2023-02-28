@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.napbox
+package com.dscorp.ispadmin.presentation.ui.features.napbox.register
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -13,6 +13,7 @@ import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.google.android.gms.maps.model.LatLng
@@ -62,7 +63,10 @@ class NapBoxFragment : BaseFragment() {
         val registerNapBox = NapBox(
             code = binding.etCode.text.toString(),
             address = binding.etAddress.text.toString(),
-            location = GeoLocation(selectedLocation!!.latitude, selectedLocation!!.longitude)
+            location = GeoLocation(
+                selectedLocation?.latitude ?: 0.0,
+                selectedLocation?.longitude ?: 0.0
+            )
         )
 
         viewModel.registerNapBox(registerNapBox)
@@ -91,15 +95,17 @@ class NapBoxFragment : BaseFragment() {
     }
 
     private fun observeNapBoxResponse() {
-        viewModel.napBoxResponseLiveData.observe(viewLifecycleOwner) { response ->
+        viewModel.napBoxSealedClassResponseLiveData.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is NapBoxResponse.OnError -> showErrorDialog()
-                is NapBoxResponse.OnNapBoxRegister -> showSuccessDialog(response)
+                is NapBoxSealedClassResponse.OnError -> showErrorDialog()
+                is NapBoxSealedClassResponse.OnNapBoxSealedClassRegister -> showSuccessDialog(
+                    response
+                )
             }
         }
     }
 
-    private fun showSuccessDialog(response: NapBoxResponse.OnNapBoxRegister) {
+    private fun showSuccessDialog(response: NapBoxSealedClassResponse.OnNapBoxSealedClassRegister) {
         showSuccessDialog("La Caja Nap ${response.napBox.code} Ah Sido Registrado Correctamente.")
     }
 }

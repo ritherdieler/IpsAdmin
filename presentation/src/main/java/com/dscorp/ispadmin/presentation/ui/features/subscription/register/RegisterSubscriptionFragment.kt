@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -57,7 +58,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
         setTextWatchersToStringFields()
         setInstallationTypeRadioGroupListener()
-        binding.rgInstallationType.check(R.id.rbFiber)
         binding.lvAditionalNetworkDevices.adapter = additionalDevicesAdapter
 
         binding.btnRegisterSubscription.setOnClickListener {

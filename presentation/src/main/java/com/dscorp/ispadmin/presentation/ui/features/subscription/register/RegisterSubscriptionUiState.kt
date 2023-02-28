@@ -11,11 +11,11 @@ import com.example.cleanarchitecture.domain.domain.entity.*
  **/
 sealed class RegisterSubscriptionUiState {
     class FormDataFound(
-        val plans: List<Plan>,
+        val plans: List<PlanResponse>,
         val networkDevices: List<NetworkDevice>,
-        val places: List<Place>,
+        val places: List<PlaceResponse>,
         val technicians: List<Technician>,
-        val napBoxes: List<NapBox>,
+        val napBoxes: List<NapBoxResponse>,
         val hostNetworkDevices: List<NetworkDevice>
     ) : RegisterSubscriptionUiState()
 

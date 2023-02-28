@@ -30,13 +30,15 @@ interface RestApiServices {
     suspend fun registerSubscription(@Body subscription: Subscription): Response<Subscription>
 
     @GET("plan")
-    suspend fun getPlans(): Response<List<Plan>>
+    suspend fun getPlans(): Response<List<PlanResponse>>
 
     @GET("networkDevice/genericDevices")
     suspend fun getGenericDevices(): Response<List<NetworkDevice>>
 
     @GET("networkDevice/fiber-and-wireless-devices")
     suspend fun getCpeDevices(): Response<List<NetworkDevice>>
+    @GET("networkDevice")
+    suspend fun getDevices(): Response<List<NetworkDeviceResponse>>
 
     @GET("subscription")
     suspend fun getSubscriptions(): Response<List<SubscriptionResponse>>
@@ -45,7 +47,7 @@ interface RestApiServices {
     suspend fun registerPlace(@Body place: Place): Response<Place>
 
     @GET("place")
-    suspend fun getPlaces(): Response<List<Place>>
+    suspend fun getPlaces(): Response<List<PlaceResponse>>
 
     @POST("technician")
     suspend fun registerTechnician(@Body technician: Technician): Response<Technician>
@@ -63,7 +65,7 @@ interface RestApiServices {
     suspend fun getTechnicians(): Response<List<Technician>>
 
     @GET("napbox")
-    suspend fun getNapBoxes(): Response<List<NapBox>>
+    suspend fun getNapBoxes(): Response<List<NapBoxResponse>>
 
     @GET("payment/filtered")
     suspend fun getFilteredPaymentHistory(
@@ -114,5 +116,9 @@ interface RestApiServices {
     @GET("get-ips")
     fun getIpList(@Query("ipPoolId") poolId: Int): Response<List<Ip>>
 
+    @PUT("napbox")
+    suspend fun editNapBox(@Body napBox: NapBox):Response<NapBoxResponse>
+    @PUT("service-order")
+    suspend fun editServiceOrder(@Body serviceOrder:ServiceOrder):Response<ServiceOrderResponse>
 }
 

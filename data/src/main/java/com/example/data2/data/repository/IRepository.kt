@@ -20,18 +20,22 @@ interface IRepository {
     suspend fun clearUserSession()
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
-    suspend fun doSubscription(doSubscription: Subscription): Subscription
-    suspend fun getPlans(): List<Plan>
+
     suspend fun getGenericDevices(): List<NetworkDevice>
+
+    suspend fun registerSubscription(doSubscription: Subscription): Subscription
+    suspend fun getPlans(): List<PlanResponse>
+    suspend fun getDevices(): List<NetworkDeviceResponse>
+
     suspend fun getSubscriptions(): List<SubscriptionResponse>
     suspend fun registerPlace(registerPlace: Place): Place
-    suspend fun getPlaces(): List<Place>
+    suspend fun getPlaces(): List<PlaceResponse>
     suspend fun registerTechnician(registerTechnician: Technician): Technician
     suspend fun registerNapBox(napBox: NapBox): NapBox
     suspend fun registerServiceOrder(serviceOrder: ServiceOrder): ServiceOrder
     suspend fun getServicesOrder(): List<ServiceOrderResponse>
     suspend fun getTechnicians(): List<Technician>
-    suspend fun getNapBoxes(): List<NapBox>
+    suspend fun getNapBoxes(): List<NapBoxResponse>
     suspend fun getFilteredPaymentHistory(request: SearchPaymentsRequest): List<Payment>
     suspend fun findSubscription(id: String): List<SubscriptionResponse>
     suspend fun registerPayment(payment: Payment): Payment
@@ -48,4 +52,6 @@ interface IRepository {
     suspend fun getHostDevices(): List<NetworkDevice>
     suspend fun getIpList(poolId: Int): List<Ip>
     suspend fun getCpeDevices(): List<NetworkDevice>
+    suspend fun editNapBox(napBox: NapBox):NapBoxResponse
+    suspend fun editServiceOrder(serviceOrder: ServiceOrder):ServiceOrderResponse
 }

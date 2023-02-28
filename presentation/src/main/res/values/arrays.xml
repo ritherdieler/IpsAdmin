@@ -6,4 +6,10 @@
         <item>Transferencia</item>
         <item>Efectivo</item>
     </string-array>
+
+    <string-array name="prioridad">
+        <item>Alto</item>
+        <item>Medio</item>
+        <item>Bajo</item>
+    </string-array>
 </resources>
