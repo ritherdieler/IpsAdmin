@@ -1,27 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:gravity="center"
         tools:context=".presentation.place.NapBoxFragment">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/spnMufa"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:error="@{viewModel.mufaField.errorLiveData}"
+            android:hint="@{viewModel.mufaField.hint}"
+            tools:hint="@string/Mufas">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/acMufa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                tools:ignore="LabelFor" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlCode"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/codigo"
             android:layout_marginTop="20dp"
+            android:error="@{viewModel.codeField.errorLiveData}"
+            android:hint="@{viewModel.codeField.hint}"
+            tools:hint="@string/codigo"
             tools:layout_editor_absoluteX="35dp"
             tools:layout_editor_absoluteY="232dp">
 
@@ -38,7 +60,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:hint="@string/direccion"
+            tools:hint="@string/direccion"
+            android:error="@{viewModel.addressField.errorLiveData}"
+            android:hint="@{viewModel.addressField.hint}"
             tools:layout_editor_absoluteX="35dp"
             tools:layout_editor_absoluteY="306dp">
 
@@ -56,8 +80,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:focusable="false"
-            android:hint="@string/ubicaci_n"
-
+            tools:hint="@string/ubicaci_n"
+            android:error="@{viewModel.locationField.errorLiveData}"
+            android:hint="@{viewModel.locationField.hint}"
             tools:layout_editor_absoluteX="35dp"
             tools:layout_editor_absoluteY="379dp">
 

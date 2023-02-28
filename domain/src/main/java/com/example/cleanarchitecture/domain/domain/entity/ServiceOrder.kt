@@ -8,11 +8,11 @@ package com.example.cleanarchitecture.domain.domain.entity
  *
  **/
 data class ServiceOrder(
-
     val id: Int?=null,
     val issue: String,
     val subscriptionId: Int?=null,
     var userId:Int?=null,
     val additionalDetails : String?=null,
-    val priority:Int?=null
+    val priority:Int?=null,
+    val createdByUserId: Int?=null
 )

@@ -52,6 +52,8 @@ interface IRepository {
     suspend fun getHostDevices(): List<NetworkDevice>
     suspend fun getIpList(poolId: Int): List<Ip>
     suspend fun getCpeDevices(): List<NetworkDevice>
-    suspend fun editNapBox(napBox: NapBox):NapBoxResponse
-    suspend fun editServiceOrder(serviceOrder: ServiceOrder):ServiceOrderResponse
+    suspend fun editNapBox(napBox: NapBox): NapBoxResponse
+    suspend fun editServiceOrder(serviceOrder: ServiceOrder): ServiceOrderResponse
+    suspend fun getMufas(): List<Mufa>
+
 }

@@ -5,12 +5,13 @@ data class NapBox(
     val code: String = "",
     val address: String = "",
     var location: GeoLocation? = null,
+    var mufaId: Int? = null
 
-    ) : java.io.Serializable
-{
+) : java.io.Serializable {
     override fun toString(): String {
         return code
     }
+
     override fun equals(other: Any?): Boolean {
         return id == (other as NapBox).id
     }

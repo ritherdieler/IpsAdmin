@@ -51,7 +51,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.name,
         errorResourceId = R.string.fieldMustNotBeEmpty,
         fieldValidator = object : FieldValidator<String> {
-            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+            override fun validate(fieldValue: String?): Boolean =
                 !fieldValue.isNullOrEmpty()
         }
     )
@@ -60,7 +60,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.lastName,
         errorResourceId = R.string.fieldMustNotBeEmpty,
         fieldValidator = object : FieldValidator<String> {
-            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+            override fun validate(fieldValue: String?): Boolean =
                 !fieldValue.isNullOrEmpty()
         }
     )
@@ -69,7 +69,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.dni,
         errorResourceId = R.string.invalidDNI,
         fieldValidator = object : FieldValidator<String> {
-            override fun checkIfFieldIsValid(fieldValue: String?): Boolean = fieldValue.isValidDni()
+            override fun validate(fieldValue: String?): Boolean = fieldValue.isValidDni()
         }
     )
 
@@ -77,7 +77,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.password,
         errorResourceId = R.string.fieldMustNotBeEmpty,
         fieldValidator = object : FieldValidator<String> {
-            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+            override fun validate(fieldValue: String?): Boolean =
                 !fieldValue.isNullOrEmpty()
         }
     )
@@ -86,7 +86,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.address,
         errorResourceId = R.string.fieldMustNotBeEmpty,
         fieldValidator = object : FieldValidator<String> {
-            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+            override fun validate(fieldValue: String?): Boolean =
                 !fieldValue.isNullOrEmpty()
         }
     )
@@ -95,7 +95,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.phoneNumer,
         errorResourceId = R.string.invalidPhoneNumber,
         fieldValidator = object : FieldValidator<String?> {
-            override fun checkIfFieldIsValid(fieldValue: String?): Boolean =
+            override fun validate(fieldValue: String?): Boolean =
                 fieldValue.isValidPhone()
         }
     )
@@ -104,7 +104,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.location,
         errorResourceId = R.string.mustSelectLocation,
         fieldValidator = object : FieldValidator<LatLng?> {
-            override fun checkIfFieldIsValid(fieldValue: LatLng?): Boolean =
+            override fun validate(fieldValue: LatLng?): Boolean =
                 fieldValue != null
         }
     )
@@ -113,7 +113,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.plan,
         errorResourceId = R.string.mustSelectPlan,
         fieldValidator = object : FieldValidator<PlanResponse?> {
-            override fun checkIfFieldIsValid(fieldValue: PlanResponse?): Boolean = fieldValue != null
+            override fun validate(fieldValue: PlanResponse?): Boolean = fieldValue != null
         }
     )
 
@@ -121,7 +121,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.place,
         errorResourceId = R.string.mustSelectPlace,
         fieldValidator = object : FieldValidator<PlaceResponse> {
-            override fun checkIfFieldIsValid(fieldValue: PlaceResponse?): Boolean =
+            override fun validate(fieldValue: PlaceResponse?): Boolean =
                 fieldValue != null
         }
     )
@@ -130,7 +130,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.technician,
         errorResourceId = R.string.mustSelectTechnician,
         fieldValidator = object : FieldValidator<Technician> {
-            override fun checkIfFieldIsValid(fieldValue: Technician?): Boolean =
+            override fun validate(fieldValue: Technician?): Boolean =
                 fieldValue != null
         }
     )
@@ -139,7 +139,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.host_device,
         errorResourceId = R.string.mustSelectHostDevice,
         fieldValidator = object : FieldValidator<NetworkDevice> {
-            override fun checkIfFieldIsValid(fieldValue: NetworkDevice?): Boolean =
+            override fun validate(fieldValue: NetworkDevice?): Boolean =
                 fieldValue != null
         }
     )
@@ -148,7 +148,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.subscriptionDate,
         errorResourceId = R.string.mustSelectSubscriptionDate,
         fieldValidator = object : FieldValidator<Long> {
-            override fun checkIfFieldIsValid(fieldValue: Long?): Boolean = fieldValue != null
+            override fun validate(fieldValue: Long?): Boolean = fieldValue != null
         }
     )
 
@@ -156,7 +156,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.select_cpe_device,
         errorResourceId = R.string.mustSelectCpeDevice,
         fieldValidator = object : FieldValidator<NetworkDevice> {
-            override fun checkIfFieldIsValid(fieldValue: NetworkDevice?): Boolean = fieldValue != null
+            override fun validate(fieldValue: NetworkDevice?): Boolean = fieldValue != null
         }
     )
 
@@ -164,7 +164,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.selec_nap_box,
         errorResourceId = R.string.mustSelectNapBox,
         fieldValidator = object : FieldValidator<NapBoxResponse> {
-            override fun checkIfFieldIsValid(fieldValue: NapBoxResponse?): Boolean = fieldValue != null
+            override fun validate(fieldValue: NapBoxResponse?): Boolean = fieldValue != null
         }
     )
 
@@ -172,7 +172,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.additionalDevices,
         errorResourceId = R.string.youCanSelectAdditionalNetworkDevices,
         fieldValidator = object : FieldValidator<List<NetworkDevice>> {
-            override fun checkIfFieldIsValid(fieldValue: List<NetworkDevice>?): Boolean = fieldValue != null
+            override fun validate(fieldValue: List<NetworkDevice>?): Boolean = fieldValue != null
         }
     )
 
