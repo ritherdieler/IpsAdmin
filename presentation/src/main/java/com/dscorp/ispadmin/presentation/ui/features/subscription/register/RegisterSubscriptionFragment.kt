@@ -32,11 +32,11 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
     private var selectedDate: Long = 0
     private var selectedLocation: LatLng? = null
-    private var selectedPlan: Plan? = null
-    private var selectedNetworkDeviceOne: NetworkDevice? = null
-    private var selectedNetworkDeviceTwo: NetworkDevice? = null
+    private var selectedPlan: PlanResponse? = null
+    private var selectedNetworkDeviceOne: NetworkDeviceResponse? = null
+    private var selectedNetworkDeviceTwo: NetworkDeviceResponse? = null
     private var selectedHostNetworkDevice: NetworkDevice? = null
-    private var selectedPlace: Place? = null
+    private var selectedPlace: PlaceResponse? = null
     private var selectedTechnician: Technician? = null
     private var selectedNapBox: NapBoxResponse? = null
     private val viewModel: SubscriptionViewModel by viewModel()
@@ -240,7 +240,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         viewModel.registerSubscription(subscription)
     }
 
-    private fun setUpPlansSpinner(plans: List<Plan>) {
+    private fun setUpPlansSpinner(plans: List<PlanResponse>) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, plans)
         binding.etPlan.setAdapter(adapter)
         binding.etPlan.onItemClickListener =
@@ -249,7 +249,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             }
     }
 
-    private fun setUpNetworkDeviceSpinners(networkDevices: List<NetworkDevice>) {
+    private fun setUpNetworkDeviceSpinners(networkDevices: List<NetworkDeviceResponse>) {
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, networkDevices)
 
@@ -277,7 +277,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             }
     }
 
-    private fun setUpPlaceSpinner(places: List<Place>) {
+    private fun setUpPlaceSpinner(places: List<PlaceResponse>) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, places)
         binding.etPlace.setAdapter(adapter)
         binding.etPlace.onItemClickListener =

@@ -24,7 +24,7 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
     val uiState = MutableLiveData<RegisterServiceOrderUiState>()
     val formErrorLiveData = MutableLiveData<RegisterServiceOrderFormError>()
     var subscription: SubscriptionResponse? = null
-    var serviceOrder: ServiceOrderResponse?=null
+    var serviceOrder: ServiceOrderResponse? = null
     fun registerServiceOrder(serviceOrder: ServiceOrder) = viewModelScope.launch {
         serviceOrder.userId = user?.id
 
@@ -39,6 +39,7 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
             uiState.postValue(RegisterServiceOrderUiState.ServiceOrderRegisterErrorOrder(error))
         }
     }
+
     fun editServiceOrder(serviceOrder: ServiceOrder) = viewModelScope.launch {
         try {
             if (!editFormIsValid(serviceOrder)) return@launch
@@ -55,11 +56,6 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
 
     private fun formIsValid(serviceOrder: ServiceOrder): Boolean {
 
-        if (serviceOrder.latitude == null || serviceOrder.longitude == null) {
-            formErrorLiveData.value = RegisterServiceOrderFormError.OnEtLocationError()
-            return false
-        }
-
         if (serviceOrder.issue.isEmpty()) {
             formErrorLiveData.value = RegisterServiceOrderFormError.OnEtIssueError()
             return false
@@ -73,19 +69,15 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
             formErrorLiveData.value = RegisterServiceOrderFormError.GenericError()
             return false
         }
-        if (serviceOrder.priority==0) {
+        if (serviceOrder.priority == 0) {
             formErrorLiveData.value = RegisterServiceOrderFormError.GenericError()
             return false
         }
 
         return true
     }
-    private fun editFormIsValid(serviceOrder: ServiceOrder): Boolean {
 
-        if (serviceOrder.latitude == null || serviceOrder.longitude == null) {
-            editFormErrorLiveData.value = EditServiceOrderFormErrorUiState.OnEtLocationError()
-            return false
-        }
+    private fun editFormIsValid(serviceOrder: ServiceOrder): Boolean {
 
         if (serviceOrder.issue.isEmpty()) {
             editFormErrorLiveData.value = EditServiceOrderFormErrorUiState.OnEtIssueError()
@@ -100,7 +92,7 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
             editFormErrorLiveData.value = EditServiceOrderFormErrorUiState.GenericError()
             return false
         }
-        if (serviceOrder.priority==0) {
+        if (serviceOrder.priority == 0) {
             editFormErrorLiveData.value = EditServiceOrderFormErrorUiState.GenericError()
             return false
         }

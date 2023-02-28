@@ -112,7 +112,7 @@ class Repository : IRepository, KoinComponent {
 
     }
 
-    override suspend fun getPlans(): List<Plan> {
+    override suspend fun getPlans(): List<PlanResponse> {
         val response = restApiServices.getPlans()
         if (response.code() == 200) {
             return response.body()!!
@@ -121,7 +121,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getDevices(): List<NetworkDevice> {
+    override suspend fun getDevices(): List<NetworkDeviceResponse> {
         val response = restApiServices.getDevices()
         if (response.code() == 200) {
             return response.body()!!
@@ -148,7 +148,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun getPlaces(): List<Place> {
+    override suspend fun getPlaces(): List<PlaceResponse> {
         val response = restApiServices.getPlaces()
         if (response.code() == 200) {
             return response.body()!!

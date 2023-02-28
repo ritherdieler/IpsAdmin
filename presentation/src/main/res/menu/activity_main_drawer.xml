@@ -54,6 +54,22 @@
             android:id="@+id/nav_see_nap_boxes"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/see_nap_boxes" />
+        <item
+            android:id="@+id/nav_see_plan_list"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Vér lista de planes"/>
+        <item
+            android:id="@+id/see_network_device_list"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Ver Lista de Dispositivos"/>
+        <item
+            android:id="@+id/nav_see_place_list"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Ver Lista de Lugares"/>
+        <item
+            android:id="@+id/see_technician_list"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Ver Lista de tecnicos"/>
 
         <item
             android:id="@+id/nav_mufa"

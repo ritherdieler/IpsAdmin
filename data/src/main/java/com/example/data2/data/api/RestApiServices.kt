@@ -33,10 +33,10 @@ interface RestApiServices {
     suspend fun registerSubscription(@Body subscription: Subscription): Response<Subscription>
 
     @GET("plan")
-    suspend fun getPlans(): Response<List<Plan>>
+    suspend fun getPlans(): Response<List<PlanResponse>>
 
     @GET("networkDevice")
-    suspend fun getDevices(): Response<List<NetworkDevice>>
+    suspend fun getDevices(): Response<List<NetworkDeviceResponse>>
 
     @GET("subscription")
     suspend fun getSubscriptions(): Response<List<SubscriptionResponse>>
@@ -45,7 +45,7 @@ interface RestApiServices {
     suspend fun registerPlace(@Body place: Place): Response<Place>
 
     @GET("place")
-    suspend fun getPlaces(): Response<List<Place>>
+    suspend fun getPlaces(): Response<List<PlaceResponse>>
 
     @POST("technician")
     suspend fun registerTechnician(@Body technician: Technician): Response<Technician>

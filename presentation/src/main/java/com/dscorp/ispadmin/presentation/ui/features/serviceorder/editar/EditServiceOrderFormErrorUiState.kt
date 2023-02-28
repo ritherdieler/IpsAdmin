@@ -11,12 +11,10 @@ import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.Regist
  **/
 sealed class EditServiceOrderFormErrorUiState(val error: String? = null) {
     companion object {
-        const val LOCATION_ERROR = "Debe seleccionar una ubicacion"
         const val ISSUE_ERROR = "Debe ingresar un problema"
         const val SUBSCRIPTION_ERROR = "Ocurrio un error, por favor contacte con soporte tecnico"
     }
 
-    class OnEtLocationError : EditServiceOrderFormErrorUiState(LOCATION_ERROR)
     class OnEtIssueError : EditServiceOrderFormErrorUiState(ISSUE_ERROR)
     class OnSubscriptionError : EditServiceOrderFormErrorUiState(SUBSCRIPTION_ERROR)
 

@@ -69,9 +69,13 @@ class ServicesOrderListFragment : BaseFragment(), OnItemServiceOrderClickListene
         popupMenu.show()
     }
 
-    override fun onServiceOrderPopupButtonSelected(serviceOrderResponse: ServiceOrderResponse, view: View) {
+    override fun onServiceOrderPopupButtonSelected(
+        serviceOrderResponse: ServiceOrderResponse,
+        view: View
+    ) {
         showPopupMenu(view, serviceOrderResponse)
     }
+
     private fun navigateToEditSubscription(serviceOrder: ServiceOrderResponse): Boolean {
         findNavController().navigate(
             ServicesOrderListFragmentDirections.actionNavViewServicesOrderListToEditServiceOrderFragment(

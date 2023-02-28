@@ -25,8 +25,7 @@ class EditServiceOrderFragment() : BaseFragment() {
     private val navArgs by navArgs<EditServiceOrderFragmentArgs>()
     private val binding by lazy { FragmentEditServiceOrderBinding.inflate(layoutInflater) }
     private val viewModel: RegisterServiceOrderViewModel by viewModel()
-    private var selectedLocation: LatLng? = null
-    private var selectedPriority:Int? =null
+    private var selectedPriority: Int? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,11 +35,7 @@ class EditServiceOrderFragment() : BaseFragment() {
         fillFormWithSubscriptionData()
         observeServiceOrderResponse()
         observeServiceFormError()
-        observeMapDialogResult()
         viewModel.serviceOrder!!.priority
-        binding.etLocation.setOnClickListener {
-            navigateToMapDialog()
-        }
         spinnerPriority()
         binding.btRegisterServiceOrder.setOnClickListener {
             editServiceOrder()
@@ -53,7 +48,6 @@ class EditServiceOrderFragment() : BaseFragment() {
     private fun fillFormWithSubscriptionData() {
         binding.etIssue.setText(viewModel.serviceOrder?.issue)
         binding.etAdditionalDetails.setText(viewModel.serviceOrder?.additionalDetails)
-        binding.etLocation.setText("${viewModel.serviceOrder?.latitude},${viewModel.serviceOrder?.longitude}")
 
     }
 
@@ -81,9 +75,6 @@ class EditServiceOrderFragment() : BaseFragment() {
                 is EditServiceOrderFormErrorUiState.OnEtIssueError ->
                     binding.tlIssue.error =
                         error.error
-                is EditServiceOrderFormErrorUiState.OnEtLocationError ->
-                    binding.tlLocation.error =
-                        error.error
                 is EditServiceOrderFormErrorUiState.OnSubscriptionError -> showErrorDialog()
                 is EditServiceOrderFormErrorUiState.GenericError -> showErrorDialog()
             }
@@ -110,22 +101,10 @@ class EditServiceOrderFragment() : BaseFragment() {
     private fun editServiceOrder() {
         val serviceOrder = ServiceOrder(
             issue = binding.etIssue.text.toString(),
-            latitude = selectedLocation?.latitude,
-            longitude = selectedLocation?.longitude,
             subscriptionId = viewModel.subscription?.id,
             additionalDetails = binding.etAdditionalDetails.text.toString(),
             priority = selectedPriority
         )
         viewModel.editServiceOrder(serviceOrder)
-    }
-
-    private fun observeMapDialogResult() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>("location")
-            ?.observe(viewLifecycleOwner) { onLocationSelected(it) }
-    }
-
-    private fun onLocationSelected(location: LatLng?) {
-        binding.etLocation.setText(location?.toStringLocation() ?: "")
-        this.selectedLocation = location
     }
 }

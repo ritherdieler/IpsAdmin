@@ -12,8 +12,8 @@ data class SubscriptionResponse(
     var new: Boolean? = null,
     var password: String? = null,
     var phone: String? = null,
-    var place: Place? = null,
-    var plan: Plan? = null,
+    var place: PlaceResponse? = null,
+    var plan: PlanResponse? = null,
     var serviceIsSuspended: Boolean? = null,
     var technician: Technician? = null,
     var hostDevice:NetworkDevice?=null

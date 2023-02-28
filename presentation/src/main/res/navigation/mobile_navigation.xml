@@ -73,6 +73,7 @@
             android:id="@+id/action_subscriptionDetail_to_mapView"
             app:destination="@id/mapView3" />
     </fragment>
+
     <fragment
         android:id="@+id/nav_view_services_order_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListFragment"
@@ -250,4 +251,23 @@
             android:id="@+id/action_editServiceOrderFragment_to_mapDialog"
             app:destination="@id/mapDialog" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_see_plan_list"
+        tools:layout="@layout/item_plan_list"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListFragment"
+        android:label="PlanListFragment" />
+    <fragment
+        android:id="@+id/see_network_device_list"
+        tools:layout="@layout/item_network_device_list"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.networkdevice.networkdevicelist.NetworkDeviceListFragment"
+        android:label="NetworkDeviceListFragment" />
+    <fragment
+        android:id="@+id/nav_see_place_list"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.place.placelist.PlaceListFragment"
+        android:label="PlaceListFragment" />
+    <fragment
+        android:id="@+id/see_technician_list"
+        tools:layout="@layout/item_technician_list"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.technician.technicianlist.TechnicianListFragment"
+        android:label="TechnicianListFragment" />
 </navigation>

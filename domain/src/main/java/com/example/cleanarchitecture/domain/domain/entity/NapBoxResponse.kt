@@ -6,3 +6,8 @@ data class NapBoxResponse(
     var address: String? = null,
     var location: GeoLocation? = null,
 ):java.io.Serializable
+{
+    override fun toString(): String {
+        return code!!
+    }
+}

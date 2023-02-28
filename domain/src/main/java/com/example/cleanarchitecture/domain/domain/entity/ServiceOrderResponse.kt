@@ -9,8 +9,6 @@ package com.example.cleanarchitecture.domain.domain.entity
  **/
 data class ServiceOrderResponse(
     val id: Int? = null,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
     val issue: String? = null,
     val subscriptionId: Int? = null,
     var userId:Int?=null,
