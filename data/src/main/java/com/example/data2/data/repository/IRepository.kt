@@ -20,13 +20,10 @@ interface IRepository {
     suspend fun clearUserSession()
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
-
     suspend fun getGenericDevices(): List<NetworkDevice>
-
     suspend fun registerSubscription(doSubscription: Subscription): Subscription
     suspend fun getPlans(): List<PlanResponse>
     suspend fun getDevices(): List<NetworkDeviceResponse>
-
     suspend fun getSubscriptions(): List<SubscriptionResponse>
     suspend fun registerPlace(registerPlace: Place): Place
     suspend fun getPlaces(): List<PlaceResponse>

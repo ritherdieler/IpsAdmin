@@ -57,8 +57,8 @@ class LoginActivity : BaseActivity() {
     private fun observeLoginFormError() {
         viewModel.loginFormErrorLiveData.observe(this) { formError ->
             when (formError) {
-                is LoginFormError.OnEtPassword -> binding.etPassword.error = formError.error
-                is LoginFormError.OnEtUser -> binding.etUser.error = formError.error
+                is LoginFormError.OnEtPassword -> binding.tlPassword.error = formError.error
+                is LoginFormError.OnEtUser -> binding.tlUser.error = formError.error
             }
         }
     }
