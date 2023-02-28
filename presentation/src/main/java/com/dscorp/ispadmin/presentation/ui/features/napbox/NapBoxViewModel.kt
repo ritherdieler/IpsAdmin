@@ -3,43 +3,79 @@ package com.dscorp.ispadmin.presentation.ui.features.napbox
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxUiState
 import com.dscorp.ispadmin.presentation.ui.features.napbox.register.CleanFormErrors
 import com.dscorp.ispadmin.presentation.ui.features.napbox.register.NapBoxFormError
-import com.dscorp.ispadmin.presentation.ui.features.napbox.register.NapBoxSealedClassResponse
+import com.dscorp.ispadmin.presentation.ui.features.napbox.register.RegisterNapBoxUiState
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
+import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
+import com.example.cleanarchitecture.domain.domain.entity.Mufa
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 
-class NapBoxViewModel : ViewModel() {
-    private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
+class NapBoxViewModel(val repository :IRepository) : ViewModel() {
 
-     val editNapBoxUiState = MutableLiveData<EditNapBoxUiState>()
-     val editFormErrorLiveData = MutableLiveData<EditNapBoxFormErrorUiState>()
+    val editNapBoxUiState = MutableLiveData<EditNapBoxUiState>()
+    val editFormErrorLiveData = MutableLiveData<EditNapBoxFormErrorUiState>()
 
-    val napBoxSealedClassResponseLiveData = MutableLiveData<NapBoxSealedClassResponse>()
-    val formErrorLiveData = MutableLiveData<NapBoxFormError>()
+    val uiState = MutableLiveData<RegisterNapBoxUiState>()
 
-    private val cleanErrorLiveData = MutableLiveData<CleanFormErrors>()
+    var napBoxResponse: NapBoxResponse? = null
 
-    var napBoxResponse:NapBoxResponse? = null
-    fun registerNapBox(registerNapBox: NapBox) = viewModelScope.launch {
+    val mufaField = FormField(
+        hintResourceId = R.string.selectAMufa,
+        errorResourceId = R.string.mustSelectMufa,
+        fieldValidator = object : FieldValidator<Mufa?> {
+            override fun validate(fieldValue: Mufa?) = fieldValue != null
+        }
+    )
+
+    val codeField = FormField(
+        hintResourceId = R.string.enterACode,
+        errorResourceId = R.string.mustDigitACode,
+        fieldValidator = object : FieldValidator<String> {
+            override fun validate(fieldValue: String?) = !fieldValue.isNullOrEmpty()
+        }
+    )
+
+    val addressField = FormField(
+        hintResourceId = R.string.enterAddress,
+        errorResourceId = R.string.mustDigitAddress,
+        fieldValidator = object : FieldValidator<String?> {
+            override fun validate(fieldValue: String?) = !fieldValue.isNullOrEmpty()
+        }
+    )
+
+    val locationField = FormField(
+        hintResourceId = R.string.selectALocation,
+        errorResourceId = R.string.mustSelectLocation,
+        fieldValidator = object : FieldValidator<GeoLocation?> {
+            override fun validate(fieldValue: GeoLocation?) = fieldValue != null
+        }
+    )
+
+    fun registerNapBox() = viewModelScope.launch {
         try {
-            if (formIsValid(registerNapBox)) {
-                val registerNapBoxFromRepository = repository.registerNapBox(registerNapBox)
-                napBoxSealedClassResponseLiveData.postValue(
-                    NapBoxSealedClassResponse.OnNapBoxSealedClassRegister(
-                        registerNapBoxFromRepository
-                    )
-                )
-            }
+            if (!formIsValid()) return@launch
+            val registerNapBox = NapBox(
+                code = codeField.value!!,
+                address = addressField.value!!,
+                location = locationField.value!!,
+                mufaId = mufaField.value!!.id
+            )
+            val response = repository.registerNapBox(registerNapBox)
+            uiState.postValue(RegisterNapBoxUiState.OnRegisterNapBoxSealedClassRegister(response))
         } catch (error: Exception) {
-            napBoxSealedClassResponseLiveData.postValue(NapBoxSealedClassResponse.OnError(error))
+            uiState.postValue(RegisterNapBoxUiState.OnError(error))
         }
     }
+
     fun editNapBox(napBox: NapBox) = viewModelScope.launch {
         try {
             if (!editFormIsValid(napBox)) return@launch
@@ -54,28 +90,15 @@ class NapBoxViewModel : ViewModel() {
         }
     }
 
-    private fun formIsValid(napBox: NapBox): Boolean {
+    private fun formIsValid(): Boolean {
 
-        if (napBox.code.isEmpty()) {
-            formErrorLiveData.value = NapBoxFormError.OnEtCodeError()
-            return false
-        } else {
-            cleanErrorLiveData.value = CleanFormErrors.OnEtCodeCleanError
+        val fields = listOf(mufaField, codeField, addressField, locationField)
+        for (field in fields) {
+            field.isValid
         }
-        if (napBox.address.isEmpty()) {
-            formErrorLiveData.value = NapBoxFormError.OnEtAddressError()
-            return false
-        } else {
-            cleanErrorLiveData.value = CleanFormErrors.OnEtAddressCleanError
-        }
-        if (napBox.location == null) {
-            formErrorLiveData.value = NapBoxFormError.OnEtLocationError()
-            return false
-        } else {
-            cleanErrorLiveData.value = CleanFormErrors.OnEtLocationCleanError
-        }
-        return true
+        return fields.all { it.isValid }
     }
+
     private fun editFormIsValid(napBox: NapBox): Boolean {
 
         if (napBox.code.isEmpty()) {
@@ -97,7 +120,16 @@ class NapBoxViewModel : ViewModel() {
             editFormErrorLiveData.value = EditNapBoxFormErrorUiState.OnEtLocationCleanError
         }
 
-
         return true
+    }
+
+    fun getMufas() = viewModelScope.launch {
+        try {
+            val response = repository.getMufas()
+            uiState.postValue(RegisterNapBoxUiState.MufasReady(response))
+        } catch (e: Exception) {
+            uiState.postValue(RegisterNapBoxUiState.OnError(e))
+            e.printStackTrace()
+        }
     }
 }

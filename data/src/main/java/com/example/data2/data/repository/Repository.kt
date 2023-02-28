@@ -385,4 +385,13 @@ class Repository : IRepository, KoinComponent {
             throw Exception("Error")
         }
     }
+
+    override suspend fun getMufas(): List<Mufa> {
+        val response = restApiServices.getMufas()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("No se pudieron recuperar las mufas")
+        }
+    }
 }

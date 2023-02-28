@@ -18,7 +18,7 @@ import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class RegisterServiceOrderFragment() : BaseFragment() {
+class RegisterServiceOrderFragment : BaseFragment() {
     private val navArgs by navArgs<RegisterServiceOrderFragmentArgs>()
     private val binding by lazy { FragmentServiceOrderBinding.inflate(layoutInflater) }
     private val viewModel: RegisterServiceOrderViewModel by viewModel()
@@ -87,7 +87,8 @@ class RegisterServiceOrderFragment() : BaseFragment() {
             issue = binding.etIssue.text.toString(),
             subscriptionId = viewModel.subscription?.id,
             additionalDetails = binding.etAdditionalDetails.text.toString(),
-            priority = selectedPriority
+            priority = selectedPriority,
+            createdByUserId = viewModel.user?.id,
         )
         viewModel.registerServiceOrder(serviceOrder)
     }

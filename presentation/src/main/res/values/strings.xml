@@ -120,5 +120,12 @@
     <string name="mustSelectNapBox">Seleccione una caja nap</string>
     <string name="youCanSelectAdditionalNetworkDevices">(Opcional) Puede seleccionar dispositivos adicionales</string>
     <string name="metododepago">Metodo de pago</string>
+    <string name="selectAMufa">Seleccione una mufa</string>
+    <string name="mustSelectMufa">Debe seleccionar una mufa</string>
+    <string name="enterACode">Digite un código</string>
+    <string name="mustDigitACode">Debe digitar un coódigo</string>
+    <string name="enterAddress">Digite una dirección</string>
+    <string name="mustDigitAddress">Debe digitar una dirección</string>
+    <string name="selectALocation">Seleccione una ubicación</string>
 
 </resources>

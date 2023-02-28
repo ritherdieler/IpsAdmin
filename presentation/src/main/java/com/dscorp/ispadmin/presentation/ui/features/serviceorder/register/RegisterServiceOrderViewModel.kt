@@ -96,7 +96,10 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
             editFormErrorLiveData.value = EditServiceOrderFormErrorUiState.GenericError()
             return false
         }
-
+        if (serviceOrder.createdByUserId == null) {
+            editFormErrorLiveData.value = EditServiceOrderFormErrorUiState.GenericError()
+            return false
+        }
 
         return true
     }

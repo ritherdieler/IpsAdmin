@@ -5,37 +5,42 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
+import com.dscorp.ispadmin.presentation.extension.populate
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
+import com.example.cleanarchitecture.domain.domain.entity.Mufa
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NapBoxFragment : BaseFragment() {
-    var selectedLocation: LatLng? = null
-    lateinit var binding: FragmentNapBoxBinding
+    val binding by lazy { FragmentNapBoxBinding.inflate(layoutInflater) }
     val viewModel: NapBoxViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_nap_box, null, true)
-        observeNapBoxResponse()
-        observeNapBoxFormError()
-        observeNapBoxCleanError()
+    ): View {
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        binding.executePendingBindings()
 
+        addTextChangeListeners()
+        observeNapBoxResponse()
+
+        viewModel.getMufas()
         binding.btRegisterNapBox.setOnClickListener {
-            registerNapBox()
+            viewModel.registerNapBox()
         }
 
         binding.etLocationNapBox.setOnClickListener {
@@ -44,6 +49,16 @@ class NapBoxFragment : BaseFragment() {
         observeMapDialogResult()
 
         return binding.root
+    }
+
+    private fun addTextChangeListeners() {
+        binding.etCode.doOnTextChanged { text, start, before, count ->
+            viewModel.codeField.value = text.toString()
+        }
+
+        binding.etAddress.doOnTextChanged { text, start, before, count ->
+            viewModel.addressField.value = text.toString()
+        }
     }
 
     private fun observeMapDialogResult() {
@@ -55,57 +70,29 @@ class NapBoxFragment : BaseFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun onLocationSelected(it: LatLng) {
-        this.selectedLocation = it
+       viewModel.locationField.value= GeoLocation(it.latitude,it.longitude)
         binding.etLocationNapBox.setText("${it.latitude}, ${it.longitude}")
     }
 
-    private fun registerNapBox() {
-        val registerNapBox = NapBox(
-            code = binding.etCode.text.toString(),
-            address = binding.etAddress.text.toString(),
-            location = GeoLocation(
-                selectedLocation?.latitude ?: 0.0,
-                selectedLocation?.longitude ?: 0.0
-            )
-        )
-
-        viewModel.registerNapBox(registerNapBox)
-    }
-
-    private fun observeNapBoxFormError() {
-        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
-            when (formError) {
-                is NapBoxFormError.OnEtAddressError -> binding.tlAddress.error = formError.message
-                is NapBoxFormError.OnEtCodeError -> binding.tlCode.error = formError.message
-                is NapBoxFormError.OnEtLocationError ->
-                    binding.tlLocationNapBox.error =
-                        formError.message
-            }
-        }
-    }
-
-    private fun observeNapBoxCleanError() {
-        viewModel.formErrorLiveData.observe(viewLifecycleOwner) { cleanError ->
-            when (cleanError) {
-                is NapBoxFormError.OnEtAddressError -> binding.etAddress.error = null
-                is NapBoxFormError.OnEtLocationError -> binding.etAddress.error = null
-                is NapBoxFormError.OnEtCodeError -> binding.etAddress.error = null
-            }
-        }
-    }
-
     private fun observeNapBoxResponse() {
-        viewModel.napBoxSealedClassResponseLiveData.observe(viewLifecycleOwner) { response ->
+        viewModel.uiState.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is NapBoxSealedClassResponse.OnError -> showErrorDialog()
-                is NapBoxSealedClassResponse.OnNapBoxSealedClassRegister -> showSuccessDialog(
+                is RegisterNapBoxUiState.OnError -> showErrorDialog()
+                is RegisterNapBoxUiState.OnRegisterNapBoxSealedClassRegister -> showSuccessDialog(
                     response
                 )
+                is RegisterNapBoxUiState.MufasReady -> fillNapSpinner(response.mufas)
             }
         }
     }
 
-    private fun showSuccessDialog(response: NapBoxSealedClassResponse.OnNapBoxSealedClassRegister) {
+    private fun fillNapSpinner(mufas: List<Mufa>) {
+        binding.acMufa.populate(mufas) {
+            viewModel.mufaField.value = it
+        }
+    }
+
+    private fun showSuccessDialog(response: RegisterNapBoxUiState.OnRegisterNapBoxSealedClassRegister) {
         showSuccessDialog("La Caja Nap ${response.napBox.code} Ah Sido Registrado Correctamente.")
     }
 }

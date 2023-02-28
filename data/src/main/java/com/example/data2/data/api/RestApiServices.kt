@@ -37,6 +37,7 @@ interface RestApiServices {
 
     @GET("networkDevice/fiber-and-wireless-devices")
     suspend fun getCpeDevices(): Response<List<NetworkDevice>>
+
     @GET("networkDevice")
     suspend fun getDevices(): Response<List<NetworkDeviceResponse>>
 
@@ -114,11 +115,16 @@ interface RestApiServices {
     suspend fun startServiceCut(): Response<Any>
 
     @GET("get-ips")
-    fun getIpList(@Query("ipPoolId") poolId: Int): Response<List<Ip>>
+    suspend fun getIpList(@Query("ipPoolId") poolId: Int): Response<List<Ip>>
 
     @PUT("napbox")
-    suspend fun editNapBox(@Body napBox: NapBox):Response<NapBoxResponse>
+    suspend fun editNapBox(@Body napBox: NapBox): Response<NapBoxResponse>
+
     @PUT("service-order")
-    suspend fun editServiceOrder(@Body serviceOrder:ServiceOrder):Response<ServiceOrderResponse>
+    suspend fun editServiceOrder(@Body serviceOrder: ServiceOrder): Response<ServiceOrderResponse>
+
+    @GET("mufa")
+    suspend fun getMufas(): Response<List<Mufa>>
+
 }
 
