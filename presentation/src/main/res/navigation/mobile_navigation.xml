@@ -274,5 +274,11 @@
     <dialog
         android:id="@+id/nav_mufa"
         android:name="MufaMapFragment"
+        tools:layout="@layout/fragment_mufas_map"
         android:label="Mufas" />
+    <dialog
+        android:id="@+id/mufaDialogFragment"
+        tools:layout="@layout/fragment_mufa_dialog"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.mufas.MufaDialogFragment"
+        android:label="MufaDialogFragment" />
 </navigation>

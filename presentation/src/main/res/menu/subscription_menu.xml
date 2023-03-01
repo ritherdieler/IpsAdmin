@@ -6,7 +6,7 @@
     <item
         android:id="@+id/btn_register_service_order"
         android:title="@string/register_service_order" />
-    <item
+<!--    <item
         android:id="@+id/btn_edit_subscription"
-        android:title="@string/edit_subscription" />
+        android:title="@string/edit_subscription" />-->
 </menu>

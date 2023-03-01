@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="mufa"
+            type="com.example.cleanarchitecture.domain.domain.entity.Mufa" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/ProbandoItemView"
+        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvIdMufa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="16dp"
+                android:text="ID:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toTopOf="@+id/tvReferenceMufa"
+                app:layout_constraintEnd_toStartOf="@+id/tvMufaId"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/tvReferenceMufa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Referencia:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toTopOf="@+id/imageView4"
+                app:layout_constraintStart_toStartOf="@+id/tvIdMufa"
+                app:layout_constraintTop_toBottomOf="@+id/tvIdMufa" />
+
+
+            <TextView
+                android:id="@+id/tvMufaId"
+                android:layout_width="159dp"
+                android:layout_height="wrap_content"
+                android:text="@{}"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="@id/tvIdMufa"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvIdMufa"
+                app:layout_constraintTop_toTopOf="@+id/tvIdMufa"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Id" />
+
+            <TextView
+                android:id="@+id/tvSeeReference"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{}"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvReferenceMufa"
+                app:layout_constraintEnd_toEndOf="@+id/tvMufaId"
+                app:layout_constraintStart_toStartOf="@+id/tvMufaId"
+                app:layout_constraintTop_toTopOf="@+id/tvReferenceMufa"
+                app:layout_constraintVertical_bias="0.0"
+                tools:text="codigo" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="325dp"
+                android:layout_height="125dp"
+                android:layout_marginTop="70dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/baseline_image_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivButtonClose"
+                android:layout_width="32dp"
+                android:layout_height="34dp"
+                android:background="#997E7A7A"
+                android:shadowColor="@color/black"
+                android:src="@drawable/baseline_close_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

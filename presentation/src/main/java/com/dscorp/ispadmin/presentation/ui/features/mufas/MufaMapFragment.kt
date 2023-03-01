@@ -6,16 +6,15 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentMufasMapBinding
+import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaDialogFragment
 import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaUiState
 import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaViewmodel
-import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListResponse
 import com.example.cleanarchitecture.domain.domain.entity.Mufa
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -27,6 +26,8 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
     private lateinit var googleMap: GoogleMap
     private lateinit var selectedLatLng: LatLng
     lateinit var binding: FragmentMufasMapBinding
+    private val mufaDialogFragment = MufaDialogFragment()
+
 
     override fun getTheme(): Int = R.style.Theme_IspAdminAndroid
 
@@ -70,6 +71,10 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
         googleMap.addMarker(
             MarkerOptions().position(santaRosa).title("La Villa - Irrigacion Santa Rosa")
         )
+        googleMap.setOnMarkerClickListener { marker ->
+            mufaDialogFragment.show(parentFragmentManager, "Titulo Del Mapa")
+            true
+        }
 
         googleMap.setOnCameraMoveListener {
             selectedLatLng = googleMap.cameraPosition.target
