@@ -271,4 +271,8 @@
             android:name="ipPool"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.IpPool" />
     </fragment>
+    <dialog
+        android:id="@+id/nav_mufa"
+        android:name="MufaMapFragment"
+        android:label="Mufas" />
 </navigation>

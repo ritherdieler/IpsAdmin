@@ -2,8 +2,8 @@ package com.example.cleanarchitecture.domain.domain.entity
 
 data class Mufa(
     var id: Int? = null,
-    var latitude: Float? = null,
-    var longitude: Float? = null,
+    var latitude: Double? = null,
+    var longitude: Double? = null,
     var reference: String? = null,
     var threads: Int? = null
 ) : java.io.Serializable{

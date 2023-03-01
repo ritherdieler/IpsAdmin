@@ -14,18 +14,6 @@
         tools:context=".presentation.ui.features.login.LoginActivity">
 
 
-        <TextView
-            android:id="@+id/tv"
-            style="@style/TextAppearance.MaterialComponents.Headline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="BIENVENIDO"
-            android:textColor="#284E08"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlUser"
             android:layout_width="match_parent"
