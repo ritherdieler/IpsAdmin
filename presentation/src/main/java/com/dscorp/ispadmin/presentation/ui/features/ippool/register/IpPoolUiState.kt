@@ -6,7 +6,7 @@ import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 sealed class IpPoolUiState(val error: String? = null) {
     companion object {
         const val EMPTY_POOL_ERROR = "Este campo no puede estar vacio"
-        const val IP_POOL_INVALID = "Esta ip no es valida"
+        const val IP_POOL_INVALID = "Este Segmento no es valido"
         const val HOST_DEVICE_NOT_SELECTED = "Debes seleccionar un dispositivo"
     }
 

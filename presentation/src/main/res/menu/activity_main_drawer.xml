@@ -22,54 +22,54 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/reports" />
 
-        <item
-            android:id="@+id/nav_plan"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/menu_plan" />
+<!--        <item-->
+<!--            android:id="@+id/nav_plan"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="@string/menu_plan" />-->
 
-        <item
-            android:id="@+id/nav_device"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/menu_device" />
+<!--        <item-->
+<!--            android:id="@+id/nav_device"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="@string/menu_device" />-->
 
-        <item
-            android:id="@+id/nav_register_place"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/registrar_ubicacion" />
-        <item
-            android:id="@+id/nav_to_register_technician"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/registrar_tecnicos" />
-        <item
-            android:id="@+id/nav_to_register_nap_box"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/registrar_caja_nap" />
+<!--        <item-->
+<!--            android:id="@+id/nav_register_place"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="@string/registrar_ubicacion" />-->
+<!--        <item-->
+<!--            android:id="@+id/nav_to_register_technician"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="@string/registrar_tecnicos" />-->
+<!--        <item-->
+<!--            android:id="@+id/nav_to_register_nap_box"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="@string/registrar_caja_nap" />-->
 
         <item
             android:id="@+id/nav_view_services_order_list"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/ver_orden_de_servicios" />
 
-        <item
-            android:id="@+id/nav_see_nap_boxes"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/see_nap_boxes" />
-        <item
-            android:id="@+id/nav_see_plan_list"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Vér lista de planes"/>
-        <item
-            android:id="@+id/see_network_device_list"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Ver Lista de Dispositivos"/>
-        <item
-            android:id="@+id/nav_see_place_list"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Ver Lista de Lugares"/>
-        <item
-            android:id="@+id/see_technician_list"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Ver Lista de tecnicos"/>
+<!--        <item-->
+<!--            android:id="@+id/nav_see_nap_boxes"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="@string/see_nap_boxes" />-->
+<!--        <item-->
+<!--            android:id="@+id/nav_see_plan_list"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="Vér lista de planes"/>-->
+<!--        <item-->
+<!--            android:id="@+id/see_network_device_list"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="Ver Lista de Dispositivos"/>-->
+<!--        <item-->
+<!--            android:id="@+id/nav_see_place_list"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="Ver Lista de Lugares"/>-->
+<!--        <item-->
+<!--            android:id="@+id/see_technician_list"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="Ver Lista de tecnicos"/>-->
 
         <item
             android:id="@+id/nav_mufa"

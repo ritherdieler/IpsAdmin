@@ -17,16 +17,14 @@ import com.example.data2.data.repository.IOltRepository
 import com.example.data2.data.repository.IRepository
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class SubscriptionViewModel(
     private val repository: IRepository,
     private val oltRepository: IOltRepository
 ) : ViewModel() {
-    val registerSubscriptionUiState = MutableLiveData<RegisterSubscriptionUiState>()
+    val registerSubscriptionUiState = MutableSharedFlow<RegisterSubscriptionUiState>()
     var subscription: SubscriptionResponse? = null
 
     var installationType: InstallationType? = null
@@ -202,7 +200,7 @@ class SubscriptionViewModel(
             val napBoxes = napBoxesJob.await()
             val coreDevices = coreDevicesJob.await()
 
-            registerSubscriptionUiState.postValue(
+            registerSubscriptionUiState.emit(
                 FormDataFound(
                     plans, genericDevices, places,
                     technicians, napBoxes, coreDevices
@@ -211,19 +209,19 @@ class SubscriptionViewModel(
 
         } catch (e: Exception) {
             e.printStackTrace()
-            registerSubscriptionUiState.postValue(FormDataError(e.message.toString()))
+            registerSubscriptionUiState.emit(FormDataError(e.message.toString()))
         }
     }
 
     fun getFiberDevices() = viewModelScope.launch {
         fiberCpeDevices.collectLatest {
-            registerSubscriptionUiState.postValue(it?.let { FiberDevicesFound(it) })
+            registerSubscriptionUiState.emit( FiberDevicesFound(it!!))
         }
     }
 
     fun getWirelessDevices() = viewModelScope.launch {
         wirelessCpeDevices.collectLatest {
-            registerSubscriptionUiState.postValue(it?.let { WirelessDevicesFound(it) })
+            registerSubscriptionUiState.emit(WirelessDevicesFound(it!!))
 
         }
     }
@@ -233,11 +231,11 @@ class SubscriptionViewModel(
             if (!formIsValid()) return@launch
             val subscription = createSubscription()
             val subscriptionFromRepository = repository.registerSubscription(subscription)
-            registerSubscriptionUiState.postValue(
+            registerSubscriptionUiState.emit(
                 RegisterSubscriptionSuccess(subscriptionFromRepository)
             )
         } catch (error: Exception) {
-            registerSubscriptionUiState.postValue(RegisterSubscriptionError(error.message.toString()))
+            registerSubscriptionUiState.emit(RegisterSubscriptionError(error.message.toString()))
         }
     }
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -53,7 +52,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.executePendingBindings()
 
         viewModel.getFormData()
-        observeResponse()
+        observeState()
         observeMapDialogResult()
 
         setTextWatchersToStringFields()
@@ -180,8 +179,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etLocationSubscription.setText("${it.latitude}, ${it.longitude}")
     }
 
-    private fun observeResponse() {
-        viewModel.registerSubscriptionUiState.observe(viewLifecycleOwner) { response ->
+    private fun observeState() = lifecycleScope.launch {
+        viewModel.registerSubscriptionUiState.collect { response ->
             when (response) {
                 is RegisterSubscriptionSuccess -> showSuccessDialog(response)
                 is RegisterSubscriptionError -> showErrorDialog(response.error)
