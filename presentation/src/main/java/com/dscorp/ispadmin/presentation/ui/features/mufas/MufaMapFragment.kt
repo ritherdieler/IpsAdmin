@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentMufasMapBinding
 import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaDialogFragment
@@ -21,14 +22,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
 
+    private var mufas: List<Mufa> = emptyList()
     val viewmodel: MufaViewmodel by viewModel()
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
     private lateinit var selectedLatLng: LatLng
     lateinit var binding: FragmentMufasMapBinding
     private val mufaDialogFragment = MufaDialogFragment()
-
-
     override fun getTheme(): Int = R.style.Theme_IspAdminAndroid
 
     override fun onCreateView(
@@ -44,22 +44,26 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
         return binding.root
     }
 
-
     private fun observe() {
         lifecycleScope.launch {
             viewmodel.mufaUiStateLiveData.observe(viewLifecycleOwner) {
                 when (it) {
                     is MufaUiState.OnError -> {}
-                    is MufaUiState.OnMufasListFound -> showLatLng(it.mufasList)
+                    is MufaUiState.OnMufasListFound -> showMufasAsMakers(it.mufasList)
                 }
             }
         }
     }
 
-    private fun showLatLng(mufas: List<Mufa>) {
+    private fun showMufasAsMakers(mufas: List<Mufa>) {
+        this.mufas = mufas
         for (mufa in mufas) {
             val latLng = LatLng((mufa.latitude ?: 0.0), (mufa.longitude ?: 0.0))
-            googleMap.addMarker(MarkerOptions().position(latLng).title(mufa.reference))
+            val marker =
+                googleMap.addMarker(MarkerOptions().position(latLng).title(mufa.reference))?.apply {
+                    tag = mufa.id
+                }
+
         }
     }
 
@@ -72,14 +76,21 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
             MarkerOptions().position(santaRosa).title("La Villa - Irrigacion Santa Rosa")
         )
         googleMap.setOnMarkerClickListener { marker ->
-            mufaDialogFragment.show(parentFragmentManager, "Titulo Del Mapa")
+
+            val markerTag = marker.tag
+            val selectedMufa = this.mufas.find {  it.id == markerTag }
+
+            val action = MufaMapFragmentDirections.actionNavMufaToMufaDialogFragment(selectedMufa!!)
+            findNavController().navigate(action)
             true
         }
+
 
         googleMap.setOnCameraMoveListener {
             selectedLatLng = googleMap.cameraPosition.target
         }
     }
+
 
     override fun onResume() {
         super.onResume()

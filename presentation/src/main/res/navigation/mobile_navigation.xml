@@ -275,10 +275,18 @@
         android:id="@+id/nav_mufa"
         android:name="MufaMapFragment"
         tools:layout="@layout/fragment_mufas_map"
-        android:label="Mufas" />
+        android:label="Mufas" >
+        <action
+            android:id="@+id/action_nav_mufa_to_mufaDialogFragment"
+            app:destination="@id/mufaDialogFragment" />
+    </dialog>
     <dialog
         android:id="@+id/mufaDialogFragment"
         tools:layout="@layout/fragment_mufa_dialog"
         android:name="com.dscorp.ispadmin.presentation.ui.features.mufas.MufaDialogFragment"
-        android:label="MufaDialogFragment" />
+        android:label="MufaDialogFragment" >
+        <argument
+            android:name="mufas"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.Mufa" />
+    </dialog>
 </navigation>
