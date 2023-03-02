@@ -141,12 +141,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etDni.doOnTextChanged { text, start, before, count ->
             viewModel.dniField.value = text.toString()
         }
-        binding.etPassword.doOnTextChanged { text, start, before, count ->
-            viewModel.passwordField.value = text.toString()
-        }
-        binding.etPassword.doOnTextChanged { text, start, before, count ->
-            viewModel.passwordField.value = text.toString()
-        }
         binding.etAddress.doOnTextChanged { text, start, before, count ->
             viewModel.addressField.value = text.toString()
         }

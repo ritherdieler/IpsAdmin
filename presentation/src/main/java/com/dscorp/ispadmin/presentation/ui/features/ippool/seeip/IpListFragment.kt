@@ -4,10 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.viewModels
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentIpListBinding
@@ -45,24 +55,38 @@ class IpListFragment : BaseFragment() {
     }
 
     private fun fillIpRecyclerView(ips: List<Ip>) {
-
-        binding.composeView.apply {
-            // Dispose of the Composition when the view's LifecycleOwner
-            // is destroyed
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                // In Compose world
-                MaterialTheme {
-                    Text("Hello Compose!")
-                }
-            }
+        binding.composeView.setContent {
+            composableIpList(ips)
         }
+
 
     }
 
     private fun getIpList() {
         args.ipPool.id?.let { viewModel.getIpList(it) }
 
+    }
+
+
+}
+
+@Composable
+fun composableIpList(ips: List<Ip>) {
+
+
+    LazyColumn {
+
+        items(ips.size) { index ->
+            Text(
+                text = ips[index].ip,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min)
+                    .background(Color.Blue),
+                textAlign = TextAlign.Center,
+
+            )
+        }
     }
 
 

@@ -83,7 +83,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
             when (it.itemId) {
                 R.id.btn_show_payment_history -> navigateToPaymentHistory(subscription)
                 R.id.btn_register_service_order -> navigateToRegisterServiceOrder(subscription)
-                R.id.btn_edit_subscription -> navigateToEditSubscription(subscription)
+//                R.id.btn_edit_subscription -> navigateToEditSubscription(subscription)
 
                 else -> false
             }

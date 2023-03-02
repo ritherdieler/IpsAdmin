@@ -12,7 +12,6 @@ class Subscription(
     var firstName: String? = null,
     var lastName: String? = null,
     var dni: String? = null,
-    var password: String? = null,
     var address: String? = null,
     var phone: String? = null,
     var subscriptionDate: Long? = null,

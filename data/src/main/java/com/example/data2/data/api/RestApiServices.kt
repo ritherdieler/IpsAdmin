@@ -114,7 +114,7 @@ interface RestApiServices {
     @PUT("subscription/cut-service")
     suspend fun startServiceCut(): Response<Any>
 
-    @GET("get-ips")
+    @GET("ip-pool/get-ips")
     suspend fun getIpList(@Query("ipPoolId") poolId: Int): Response<List<Ip>>
 
     @PUT("napbox")

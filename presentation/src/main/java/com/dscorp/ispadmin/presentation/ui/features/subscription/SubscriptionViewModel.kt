@@ -71,15 +71,6 @@ class SubscriptionViewModel(
         }
     )
 
-    val passwordField = FormField(
-        hintResourceId = R.string.password,
-        errorResourceId = R.string.fieldMustNotBeEmpty,
-        fieldValidator = object : FieldValidator<String> {
-            override fun validate(fieldValue: String?): Boolean =
-                !fieldValue.isNullOrEmpty()
-        }
-    )
-
     val addressField = FormField(
         hintResourceId = R.string.address,
         errorResourceId = R.string.fieldMustNotBeEmpty,
@@ -245,7 +236,6 @@ class SubscriptionViewModel(
             firstName = firstNameField.value,
             lastName = lastNameField.value,
             dni = dniField.value,
-            password = passwordField.value,
             address = addressField.value,
             phone = phoneField.value,
             subscriptionDate = subscriptionDateField.value,
@@ -270,7 +260,6 @@ class SubscriptionViewModel(
                 firstNameField,
                 lastNameField,
                 dniField,
-                passwordField,
                 addressField,
                 phoneField,
                 locationField,
@@ -286,7 +275,6 @@ class SubscriptionViewModel(
                 firstNameField,
                 lastNameField,
                 dniField,
-                passwordField,
                 addressField,
                 phoneField,
                 locationField,
