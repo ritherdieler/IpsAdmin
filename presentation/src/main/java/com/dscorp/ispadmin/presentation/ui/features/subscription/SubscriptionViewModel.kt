@@ -267,7 +267,7 @@ class SubscriptionViewModel(
 
     private fun formIsValid(): Boolean {
 
-        val fields = when(installationType) {
+        val fields = when (installationType) {
             InstallationType.FIBER -> listOf(
                 firstNameField,
                 lastNameField,
