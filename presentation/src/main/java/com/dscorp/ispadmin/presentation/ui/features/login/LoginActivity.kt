@@ -1,10 +1,8 @@
 package com.dscorp.ispadmin.presentation.ui.features.login
 
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
@@ -22,7 +20,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class LoginActivity : BaseActivity() {
     lateinit var binding: ActivityLoginBinding
     val viewModel: LoginViewModel by viewModel()
-    private lateinit var loadingDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,20 +55,14 @@ class LoginActivity : BaseActivity() {
 
                 is LoginResponse.OnLoginSuccess ->  navigateToMainActivity(response.user)
 
-                is LoginResponse.DialogProgressState ->showProgressDialog(response.dialogProgress)
+                is LoginResponse.ShowProgressBarState ->showProgressBar(response.dialogProgress)
             }
         }
     }
 
-    private fun showProgressDialog(dialogProgress: Boolean) {
-        if (dialogProgress) {
-            loadingDialog = ProgressDialog(this)
-            loadingDialog.setMessage("HOLAAAAAAA")
-            loadingDialog.setCancelable(false)
-            loadingDialog.show()
-        } else {
-            loadingDialog.dismiss()
-        }
+    private fun showProgressBar(progressBar: Boolean) {
+        binding.pbLoading.visibility = if (progressBar) ProgressBar.VISIBLE else ProgressBar.GONE
+
     }
 
     private fun navigateToMainActivity(user: User) {

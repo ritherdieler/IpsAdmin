@@ -41,7 +41,7 @@ val viewModelModule = module {
     viewModel { PlaceViewModel() }
     viewModel { PlanViewModel() }
     viewModel { RegisterViewModel() }
-    viewModel { SubscriptionViewModel(get(),get()) }
+    viewModel { SubscriptionViewModel(get(), get()) }
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel(get()) }
     viewModel { RegisterServiceOrderViewModel(get()) }
