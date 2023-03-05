@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.cleanarchitecture.domain.domain.entity.Onu
 
 /**
  * Created by Sergio Carrillo Diestra on 13/12/2022.
@@ -16,7 +17,8 @@ sealed class RegisterSubscriptionUiState {
         val places: List<PlaceResponse>,
         val technicians: List<Technician>,
         val napBoxes: List<NapBoxResponse>,
-        val hostNetworkDevices: List<NetworkDevice>
+        val hostNetworkDevices: List<NetworkDevice>,
+        val unconfirmedOnus: List<Onu>
     ) : RegisterSubscriptionUiState()
 
     class FiberDevicesFound(val devices: List<NetworkDevice>) : RegisterSubscriptionUiState()

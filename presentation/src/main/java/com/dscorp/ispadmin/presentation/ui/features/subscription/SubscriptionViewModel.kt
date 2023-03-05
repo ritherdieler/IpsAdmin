@@ -5,7 +5,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.InstallationType
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
@@ -13,8 +12,8 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formva
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
-import com.example.data2.data.repository.IOltRepository
 import com.example.data2.data.repository.IRepository
+import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
 
 class SubscriptionViewModel(
     private val repository: IRepository,
-    private val oltRepository: IOltRepository
 ) : ViewModel() {
     val registerSubscriptionUiState = MutableSharedFlow<RegisterSubscriptionUiState>()
     var subscription: SubscriptionResponse? = null
@@ -157,6 +155,15 @@ class SubscriptionViewModel(
         }
     )
 
+    val onuField = FormField(
+        hintResourceId = R.string.select_onu,
+        errorResourceId = R.string.mustSelectOnu,
+        fieldValidator = object : FieldValidator<Onu> {
+            override fun validate(fieldValue: Onu?): Boolean = fieldValue != null
+        }
+    )
+
+
     val additionalDevicesField = FormField(
         hintResourceId = R.string.additionalDevices,
         errorResourceId = R.string.youCanSelectAdditionalNetworkDevices,
@@ -165,12 +172,6 @@ class SubscriptionViewModel(
         }
     )
 
-    init {
-        viewModelScope.launch {
-            val response = oltRepository.getUnconfirmedOnus()
-            print(response)
-        }
-    }
 
     fun getFormData() = viewModelScope.launch {
         try {
@@ -184,17 +185,19 @@ class SubscriptionViewModel(
             val napBoxesJob = async { repository.getNapBoxes() }
             val deferredTechnicians = async { repository.getTechnicians() }
             val coreDevicesJob = async { repository.getCoreDevices() }
+            val unconfirmedOnusJob = async { repository.getUnconfirmedOnus() }
+
             val genericDevices = genericDevicesJob.await()
             val plans = plansJob.await()
             val places = placeJob.await()
             val technicians = deferredTechnicians.await()
             val napBoxes = napBoxesJob.await()
             val coreDevices = coreDevicesJob.await()
-
+            val unconfirmedOnus = unconfirmedOnusJob.await()
             registerSubscriptionUiState.emit(
                 FormDataFound(
                     plans, genericDevices, places,
-                    technicians, napBoxes, coreDevices
+                    technicians, napBoxes, coreDevices, unconfirmedOnus
                 )
             )
 
@@ -206,7 +209,9 @@ class SubscriptionViewModel(
 
     fun getFiberDevices() = viewModelScope.launch {
         fiberCpeDevices.collectLatest {
-            registerSubscriptionUiState.emit( FiberDevicesFound(it!!))
+            it?.let {
+                registerSubscriptionUiState.emit(FiberDevicesFound(it))
+            }
         }
     }
 
@@ -232,30 +237,61 @@ class SubscriptionViewModel(
 
     private fun createSubscription(): Subscription {
 
-        return Subscription(
-            firstName = firstNameField.value,
-            lastName = lastNameField.value,
-            dni = dniField.value,
-            address = addressField.value,
-            phone = phoneField.value,
-            subscriptionDate = subscriptionDateField.value,
-            planId = planField.value?.id,
-            additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
-            placeId = placeField.value?.id,
-            technicianId = technicianField.value?.id,
-            napBoxId = napBoxField.value?.id,
-            hostDeviceId = hostDeviceField.value?.id,
-            location = GeoLocation(
-                locationField.value?.latitude ?: 0.0,
-                locationField.value?.longitude ?: 0.0
-            ),
-            cpeDeviceId = cpeDeviceField.value?.id
-        )
+       return when (installationType) {
+            InstallationType.FIBER -> {
+                 Subscription(
+                    firstName = firstNameField.value,
+                    lastName = lastNameField.value,
+                    dni = dniField.value,
+                    address = addressField.value,
+                    phone = phoneField.value,
+                    subscriptionDate = subscriptionDateField.value,
+                    planId = planField.value?.id,
+                    additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
+                    placeId = placeField.value?.id,
+                    technicianId = technicianField.value?.id,
+                    napBoxId = napBoxField.value?.id,
+                    hostDeviceId = hostDeviceField.value?.id,
+                    location = GeoLocation(
+                        locationField.value?.latitude ?: 0.0,
+                        locationField.value?.longitude ?: 0.0
+                    ),
+                    cpeDeviceId = cpeDeviceField.value?.id,
+                    onu = onuField.value,
+                    installationType = installationType
+                )
+            }
+            InstallationType.WIRELESS -> {
+                Subscription(
+                    firstName = firstNameField.value,
+                    lastName = lastNameField.value,
+                    dni = dniField.value,
+                    address = addressField.value,
+                    phone = phoneField.value,
+                    subscriptionDate = subscriptionDateField.value,
+                    planId = planField.value?.id,
+                    additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
+                    placeId = placeField.value?.id,
+                    technicianId = technicianField.value?.id,
+                    napBoxId = null,
+                    hostDeviceId = hostDeviceField.value?.id,
+                    location = GeoLocation(
+                        locationField.value?.latitude ?: 0.0,
+                        locationField.value?.longitude ?: 0.0
+                    ),
+                    cpeDeviceId = cpeDeviceField.value?.id,
+                    onu = null,
+                    installationType = installationType
+                )
+            }
+            null -> throw Exception("Invalid Installation Type")
+        }
+
     }
 
     private fun formIsValid(): Boolean {
 
-        val fields = when(installationType) {
+        val fields = when (installationType) {
             InstallationType.FIBER -> listOf(
                 firstNameField,
                 lastNameField,
@@ -270,6 +306,7 @@ class SubscriptionViewModel(
                 subscriptionDateField,
                 cpeDeviceField,
                 napBoxField,
+                onuField
             )
             InstallationType.WIRELESS -> listOf(
                 firstNameField,
@@ -292,7 +329,7 @@ class SubscriptionViewModel(
             it.emitErrorIfExists()
         }
 
-        return fields.all { it.isValid }
+        return fields.all { it.isValid } && installationType != null
     }
 
     fun addSelectedAdditionalNetworkDeviceToList() {

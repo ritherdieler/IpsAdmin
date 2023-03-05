@@ -5,6 +5,7 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.api.RestApiServices
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
+import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.example.data2.data.utils.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -393,5 +394,11 @@ class Repository : IRepository, KoinComponent {
         } else {
             throw Exception("No se pudieron recuperar las mufas")
         }
+    }
+
+    override suspend fun getUnconfirmedOnus(): List<Onu> {
+        val response = restApiServices.getUnconfirmedOnus()
+        return if (response.code() == 200) response.body()!!
+        else throw Exception("Error generico")
     }
 }

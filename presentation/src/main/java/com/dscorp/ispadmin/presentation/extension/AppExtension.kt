@@ -11,6 +11,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import com.dscorp.ispadmin.BuildConfig
+import com.dscorp.ispadmin.CrossDialogFragment
 import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
@@ -87,4 +88,9 @@ fun <T> MaterialAutoCompleteTextView.populate(data: List<T>, onItemSelected: (T)
         AdapterView.OnItemClickListener { _, _, pos, _ ->
             onItemSelected(data[pos])
         }
+}
+
+
+fun Fragment.showCrossDialog(text: String?=null, positiveButtonClickListener: (() -> Unit)? = null) {
+    CrossDialogFragment(text, positiveButtonClickListener).show(childFragmentManager,CrossDialogFragment::class.simpleName)
 }

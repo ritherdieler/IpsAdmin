@@ -1,4 +1,4 @@
-package com.example.data2.data.response
+package com.example.cleanarchitecture.domain.domain.entity
 
 data class Onu(
     val board: String,
@@ -9,4 +9,6 @@ data class Onu(
     val pon_type: String,
     val port: String,
     val sn: String
-)
+){
+    override fun toString() = sn
+}

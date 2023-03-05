@@ -2,6 +2,7 @@ package com.example.data2.data.api
 
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
+import com.example.cleanarchitecture.domain.domain.entity.Onu
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -126,5 +127,7 @@ interface RestApiServices {
     @GET("mufa")
     suspend fun getMufas(): Response<List<Mufa>>
 
+    @GET("onu/unconfigured_onus")
+    suspend fun getUnconfirmedOnus():Response<List<Onu>>
 }
 

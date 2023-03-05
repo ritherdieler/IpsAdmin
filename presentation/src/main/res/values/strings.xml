@@ -127,5 +127,8 @@
     <string name="enterAddress">Digite una dirección</string>
     <string name="mustDigitAddress">Debe digitar una dirección</string>
     <string name="selectALocation">Seleccione una ubicación</string>
+    <string name="select_onu">Seleccione una onu</string>
+    <string name="mustSelectOnu">Seleccione una onu</string>
+    <string name="subscription_register_success">El cliente fue registrado con exito\n<b>Ip: %s</b></string>
 
 </resources>

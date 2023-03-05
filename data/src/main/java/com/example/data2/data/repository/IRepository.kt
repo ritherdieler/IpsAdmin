@@ -3,6 +3,7 @@ package com.example.data2.data.repository
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
+import com.example.cleanarchitecture.domain.domain.entity.Onu
 
 /**
  * Created by Sergio Carrillo Diestra on 25/12/2022.
@@ -52,5 +53,7 @@ interface IRepository {
     suspend fun editNapBox(napBox: NapBox): NapBoxResponse
     suspend fun editServiceOrder(serviceOrder: ServiceOrder): ServiceOrderResponse
     suspend fun getMufas(): List<Mufa>
+    suspend fun getUnconfirmedOnus(): List<Onu>
+
 
 }

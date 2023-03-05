@@ -24,11 +24,14 @@ class Subscription(
     var technicianId: Int? = null,
     var napBoxId: String? = null,
     var hostDeviceId: Int? = null,
-    var cpeDeviceId:Int? = null
+    var cpeDeviceId: Int? = null,
+    var onu: Onu? = null,
+    var ip: String? = null,
+    var installationType : InstallationType? = null
 
-    ) : java.io.Serializable {
+) : java.io.Serializable {
     override fun toString(): String {
-        return firstName?:""
+        return firstName ?: ""
     }
 
     override fun equals(other: Any?): Boolean {

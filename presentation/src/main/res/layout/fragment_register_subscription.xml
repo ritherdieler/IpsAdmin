@@ -283,6 +283,7 @@
                     android:error="@{viewModel.cpeDeviceField.errorLiveData}"
                     android:hint="@{viewModel.cpeDeviceField.hint}"
                     tools:hint="@string/select_cpe_device"
+                    tools:visibility="visible"
                     android:visibility="gone">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -294,11 +295,33 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlOnu"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.onuField.errorLiveData}"
+                    android:hint="@{viewModel.onuField.hint}"
+                    tools:hint="@string/select_onu"
+                    tools:visibility="visible"
+                   >
+
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        android:id="@+id/acOnu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnNapBox"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    tools:visibility="visible"
                     tools:hint="@string/nap_box"
                     android:error="@{viewModel.napBoxField.errorLiveData}"
                     android:hint="@{viewModel.napBoxField.hint}"
@@ -327,6 +350,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_weight="1"
                     android:orientation="vertical"
+                    tools:visibility="visible"
                     android:visibility="gone">
 
                     <androidx.appcompat.widget.LinearLayoutCompat

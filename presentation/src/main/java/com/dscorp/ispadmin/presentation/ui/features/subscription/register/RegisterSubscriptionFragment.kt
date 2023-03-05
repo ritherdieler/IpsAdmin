@@ -11,12 +11,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentRegisterSubscriptionBinding
+import com.dscorp.ispadmin.presentation.extension.*
 import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
-import com.dscorp.ispadmin.presentation.extension.populate
-import com.dscorp.ispadmin.presentation.extension.navigateSafe
-import com.dscorp.ispadmin.presentation.extension.showErrorDialog
-import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState.*
@@ -50,7 +47,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
-
         viewModel.getFormData()
         observeState()
         observeMapDialogResult()
@@ -58,7 +54,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         setTextWatchersToStringFields()
         setInstallationTypeRadioGroupListener()
         binding.lvAditionalNetworkDevices.adapter = additionalDevicesAdapter
-
+        binding.rgInstallationType.check(R.id.rbFiber)
         binding.btnRegisterSubscription.setOnClickListener {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
             viewModel.registerSubscription()
@@ -88,6 +84,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             additionalDevicesAdapter.addAll(viewModel.additionalNetworkDevicesList)
         }
 
+
         return binding.root
     }
 
@@ -106,11 +103,13 @@ class RegisterSubscriptionFragment : BaseFragment() {
                     viewModel.installationType = InstallationType.FIBER
                     viewModel.getFiberDevices()
                     binding.spnNapBox.visibility = View.VISIBLE
+                    binding.tlOnu.visibility = View.VISIBLE
                 }
                 R.id.rbWireless -> {
                     viewModel.installationType = InstallationType.WIRELESS
                     viewModel.getWirelessDevices()
                     binding.spnNapBox.visibility = View.GONE
+                    binding.tlOnu.visibility = View.GONE
                 }
             }
             moveScrollViewToBottom()
@@ -176,7 +175,12 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private fun observeState() = lifecycleScope.launch {
         viewModel.registerSubscriptionUiState.collect { response ->
             when (response) {
-                is RegisterSubscriptionSuccess -> showSuccessDialog(response)
+                is RegisterSubscriptionSuccess -> showCrossDialog(
+                    getString(
+                        R.string.subscription_register_success,
+                        response.subscription.ip.toString()
+                    )
+                )
                 is RegisterSubscriptionError -> showErrorDialog(response.error)
                 is FormDataFound -> fillFormSpinners(response)
                 is FormDataError -> showErrorDialog(response.error)
@@ -205,13 +209,17 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etNapBox.populate(response.napBoxes) {
             viewModel.napBoxField.value = it
         }
-
         binding.etHostDevice.populate(response.hostNetworkDevices) {
             viewModel.hostDeviceField.value = it
         }
         binding.acAditionalNetworkDevices.populate(response.networkDevices) {
             lifecycleScope.launch {
                 viewModel.selectedAdditionalDevice.value = it
+            }
+        }
+        binding.acOnu.populate(response.unconfirmedOnus) {
+            lifecycleScope.launch {
+                viewModel.onuField.value = it
             }
         }
     }
@@ -254,7 +262,3 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 }
 
-enum class InstallationType {
-    FIBER,
-    WIRELESS
-}
