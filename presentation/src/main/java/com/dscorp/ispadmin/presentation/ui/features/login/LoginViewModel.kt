@@ -5,18 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cleanarchitecture.domain.domain.entity.Loging
 import com.example.data2.data.repository.IRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-/**
- * Created by Sergio Carrillo Diestra on 20/11/2022.
- * scarrillo.peruapps@gmail.com
- * Peru Apps
- * Huacho, Peru.
- *
- **/
 class LoginViewModel : ViewModel() {
-
     private val repository: IRepository by inject(IRepository::class.java)
     val loginResponseLiveData = MutableLiveData<LoginResponse>()
     val loginFormErrorLiveData = MutableLiveData<LoginFormError>()
@@ -28,27 +21,35 @@ class LoginViewModel : ViewModel() {
                 loginResponseLiveData.postValue(LoginResponse.OnLoginSuccess(response))
         }
     }
-    fun doLogin(login: Loging) = viewModelScope.launch {
 
+    fun doLogin(login: Loging) = viewModelScope.launch {
         try {
-            if (formIsValid(login)) {
-                val responseFromRepository = repository.doLogin(login)
-                loginResponseLiveData.postValue(LoginResponse.OnLoginSuccess(responseFromRepository))
-            }
+            if (!formIsValid(login)) return@launch
+            loginResponseLiveData.value = LoginResponse.ShowProgressBarState(true)
+
+            val responseFromRepository = repository.doLogin(login)
+            delay(2000)
+            loginResponseLiveData.value = LoginResponse.OnLoginSuccess(responseFromRepository)
+            loginResponseLiveData.value = LoginResponse.ShowProgressBarState(false)
+
         } catch (error: Exception) {
-            loginResponseLiveData.postValue(LoginResponse.OnError(error))
+            loginResponseLiveData.value = LoginResponse.ShowProgressBarState(true)
+            delay(1000)
+            loginResponseLiveData.value = LoginResponse.OnError(error)
+            loginResponseLiveData.value = LoginResponse.ShowProgressBarState(false)
+
         }
     }
 
     private fun formIsValid(login: Loging): Boolean {
-
         if (login.username.isEmpty()) {
-            loginFormErrorLiveData.value = LoginFormError.OnEtUser("el usuario no puede estar vacio")
+            loginFormErrorLiveData.value =
+                LoginFormError.OnEtUser("El usuario no puede estar vacío")
             return false
         }
-
         if (login.password.isEmpty()) {
-            loginFormErrorLiveData.value = LoginFormError.OnEtPassword("la contrana no puede estar vacia")
+            loginFormErrorLiveData.value =
+                LoginFormError.OnEtPassword("La contraseña no puede estar vacía")
             return false
         }
         return true

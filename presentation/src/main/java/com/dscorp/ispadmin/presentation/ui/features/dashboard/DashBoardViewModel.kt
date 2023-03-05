@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data2.data.repository.IRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -20,7 +21,6 @@ class DashBoardViewModel : ViewModel(), KoinComponent {
         } catch (e: Exception) {
             uiState.postValue(DashBoardDataUiState.DashBoardDataError(e.message ?: ""))
         }
-
     }
 
     fun startServiceCut(password: String) = viewModelScope.launch {
@@ -35,5 +35,4 @@ class DashBoardViewModel : ViewModel(), KoinComponent {
             uiState.postValue(DashBoardDataUiState.CutServiceError(e.message ?: ""))
         }
     }
-
 }

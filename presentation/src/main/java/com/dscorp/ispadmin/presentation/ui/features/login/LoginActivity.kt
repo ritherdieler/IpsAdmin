@@ -2,7 +2,7 @@ package com.dscorp.ispadmin.presentation.ui.features.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
@@ -25,7 +25,6 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_login, null, true)
         setContentView(binding.root)
-
         observe()
 
         binding.btLogin.setOnClickListener {
@@ -37,20 +36,6 @@ class LoginActivity : BaseActivity() {
             navigateToRegister()
         }
         binding.cbCheckBox.setOnClickListener {
-
-            if (binding.cbCheckBox.isChecked) {
-                val context = this
-                val text = "Se ah marcado el check"
-                val duration = Toast.LENGTH_SHORT
-                val toast = Toast.makeText(context, text, duration)
-                toast.show()
-            } else {
-                val context = this
-                val text = "SE QUITO EL CHEEEECK!!!"
-                val duration = Toast.LENGTH_SHORT
-                val toast = Toast.makeText(context, text, duration)
-                toast.show()
-            }
         }
     }
 
@@ -67,9 +52,17 @@ class LoginActivity : BaseActivity() {
         viewModel.loginResponseLiveData.observe(this) { response ->
             when (response) {
                 is LoginResponse.OnError -> showErrorDialog(response.error.message)
-                is LoginResponse.OnLoginSuccess -> navigateToMainActivity(response.user)
+
+                is LoginResponse.OnLoginSuccess ->  navigateToMainActivity(response.user)
+
+                is LoginResponse.ShowProgressBarState ->showProgressBar(response.dialogProgress)
             }
         }
+    }
+
+    private fun showProgressBar(progressBar: Boolean) {
+        binding.pbLoading.visibility = if (progressBar) ProgressBar.VISIBLE else ProgressBar.GONE
+
     }
 
     private fun navigateToMainActivity(user: User) {
