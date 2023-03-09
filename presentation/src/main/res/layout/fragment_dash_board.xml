@@ -29,7 +29,8 @@
                 app:constraint_referenced_ids="cardView,
                 cardView2,
                 cardView3,
-                cardView4" />
+                cardView4,
+                btnStartCut" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/shimmers"
@@ -39,7 +40,8 @@
                 app:constraint_referenced_ids="shimmer_tv_total_to_collect,
                 shimmer_tv_total_raised,
                 shimmer_tv_total_discount,
-                shimmer_tv_gross_revenue" />
+                shimmer_tv_gross_revenue,
+                shimmer_btn_start_cut" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
@@ -94,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_marginHorizontal="30dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:elevation="1dp"
                 app:layout_constraintBottom_toTopOf="@+id/shimmer_tv_total_raised"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -113,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_marginHorizontal="30dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="20dp"
                 android:elevation="1dp"
                 app:layout_constraintBottom_toTopOf="@+id/shimmer_tv_total_discount"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -132,9 +134,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_marginHorizontal="30dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                app:layout_constraintBottom_toTopOf="@+id/btnStartCut"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toTopOf="@+id/shimmer_btn_start_cut"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/shimmer_tv_total_raised">
@@ -145,6 +146,33 @@
                     android:background="@drawable/bg_shimmer_dashboard_card" />
 
             </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_btn_start_cut"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginBottom="32dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toBottomOf="@+id/shimmer_tv_total_discount"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                >
+                <Button
+                    android:id="@+id/btnShimer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="#939393"
+                    android:elevation="20dp"
+                    android:textColor="@color/white"
+                    android:textSize="14dp"
+                    app:cornerRadius="20dp"
+                    app:iconPadding="10dp"
+                    app:iconSize="24dp"
+                    />
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
