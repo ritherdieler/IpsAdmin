@@ -11,306 +11,149 @@
     </data>
 
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.ui.features.subscriptiondetail.SubscriptionDetailFragment">
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-
-        <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/fullName"
+                app:endIconMode="clear_text">
 
-
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailFirstName"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
-                    android:text="Nombres:"
+                    android:text="@{subscription.fullName}" />
 
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailLastName"
-                    app:layout_constraintStart_toStartOf="parent"
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/dni"
+                app:endIconMode="clear_text">
 
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailFirstName"
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="32dp"
-                    android:text="@{subscription.firstName}"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailFirstName"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailFirstName"
-                    tools:text="Nombres Aqui" />
+                    android:text="@{subscription.dni}" />
 
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailLastName"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/address"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Apellidos:"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailDni"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailFirstName"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailFirstName" />
+                    android:text="@{subscription.address}" />
 
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailLastName"
-                    android:layout_width="0dp"
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/location"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{subscription.lastName}"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailLastName"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailFirstName"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailFirstName"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailLastName"
-                    tools:text="Apellidos aqui" />
+                    android:text="@{subscription.location.toString()}" />
 
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailDni"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/phoneNumer"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="DNI:"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailAddresses"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailLastName"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailLastName" />
+                    android:text="@{subscription.phone}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/plan"
+                app:endIconMode="clear_text">
 
-
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailDni"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@{subscription.dni}"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailDni"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailLastName"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailLastName"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailDni"
-                    tools:text="Dni Aqui" />
-
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailAddresses"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Dirección:"
-                    app:layout_constraintBottom_toTopOf="@id/tvSubscriptionDetailLocation"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailDni"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailDni" />
-
-
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailAddresses"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@{subscription.address}"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailAddresses"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailDni"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailDni"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailAddresses"
-                    tools:text="Direccion Aqui" />
-
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailLocation"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Ubicacion:"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailPhone"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailAddresses"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailAddresses" />
-
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailPhone"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Número de telefono:"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailDate"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailLocation"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailLocation" />
-
-
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailPhone"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@{subscription.phone}"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailPhone"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailAddresses"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailAddresses"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailPhone"
-                    tools:text="Numero de telefono Aqui" />
-
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailDate"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Fecha de subscripcion:"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailSpnPlan"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailPhone"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailPhone" />
-
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailDate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailDate"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailPhone"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailPhone"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailDate"
-                    tools:text="Fecha de subscripcion " />
-
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailSpnPlan"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Plan:"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailDate"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailDate" />
-
-
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailSpnPlan"
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{subscription.plan.name}"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnPlan"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailDate"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailDate"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnPlan"
-                    tools:text="spinner plan  Aqui" />
 
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailSpnNetworkDevice"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Dispositivo de red:"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailSpnPlace"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailSpnPlan"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailSpnPlan" />
+                    />
 
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnPlan"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnPlan"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
-                    tools:text="spn Dispositivo de red Aqui" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailSpnPlace"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Lugar:"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailSpnTechnician"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailSpnNetworkDevice"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailSpnNetworkDevice" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/place"
+                app:endIconMode="clear_text">
 
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailSpnPlace"
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{subscription.place.name}"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnPlace"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnNetworkDevice"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnPlace"
-                    tools:text="spn Lugar Aqui" />
+                    />
 
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailSpnTechnician"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/technician"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="Técnico:"
-                    app:layout_constraintBottom_toTopOf="@+id/tvSubscriptionDetailNapBox"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailSpnPlace"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailSpnPlace" />
+                    android:text="@{subscription.technician.firstName}" />
 
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailSpnTechnician"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@{subscription.technician.firstName}"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailSpnTechnician"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnPlace"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnPlace"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailSpnTechnician"
-                    tools:text="spn Tecnicos Aqui" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/tvSubscriptionDetailNapBox"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:text="Caja nap:"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/tvSubscriptionDetailSpnTechnician"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSubscriptionDetailSpnTechnician" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <TextView
-                    android:id="@+id/tvSeeSubscriptionDetailSpnNapBox"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@{subscription.napBox.address}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailSpnTechnician"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailSpnTechnician"
-                    app:layout_constraintTop_toBottomOf="@+id/tvSeeSubscriptionDetailSpnTechnician"
-                    tools:text="Caja nap Aqui" />
+    </ScrollView>
 
-                <ImageView
-                    android:id="@+id/ivMap"
-                    android:layout_width="48dp"
-                    android:layout_height="43dp"
-                    android:layout_marginEnd="32dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvSubscriptionDetailLocation"
-                    app:layout_constraintEnd_toEndOf="@+id/tvSeeSubscriptionDetailAddresses"
-                    app:layout_constraintStart_toStartOf="@+id/tvSeeSubscriptionDetailAddresses"
-                    app:layout_constraintTop_toTopOf="@+id/tvSubscriptionDetailLocation"
-                    app:srcCompat="@drawable/mapa" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </ScrollView>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

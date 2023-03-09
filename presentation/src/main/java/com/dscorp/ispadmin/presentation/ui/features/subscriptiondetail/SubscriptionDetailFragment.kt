@@ -35,13 +35,13 @@ class SubscriptionDetailFragment : BaseFragment() {
         binding.subscription = subscription
         binding.executePendingBindings()
 
-        binding.ivMap.setOnClickListener {
-            findNavController().navigate(
-                SubscriptionDetailFragmentDirections.actionSubscriptionDetailToMapView(
-                    subscription.location
-                )
-            )
-        }
+//        binding.ivMap.setOnClickListener {
+//            findNavController().navigate(
+//                SubscriptionDetailFragmentDirections.actionSubscriptionDetailToMapView(
+//                    subscription.location
+//                )
+//            )
+//        }
 
         return binding.root
     }

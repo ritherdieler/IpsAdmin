@@ -17,4 +17,6 @@ data class SubscriptionResponse(
     var serviceIsSuspended: Boolean? = null,
     var technician: Technician? = null,
     var hostDevice:NetworkDevice?=null
-) : java.io.Serializable
+) : java.io.Serializable{
+    fun getFullName() = "$firstName $lastName"
+}
