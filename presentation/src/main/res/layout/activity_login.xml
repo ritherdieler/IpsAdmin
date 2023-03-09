@@ -10,7 +10,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#27B1EA81"
         tools:context=".presentation.ui.features.login.LoginActivity">
 
 
@@ -23,6 +22,12 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
             android:hint="Escriba su usuario"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxBackgroundColor="#2DD0BCFF"
+            android:textColorHint="#6750A4"
+            app:boxCornerRadiusBottomStart="20dp"
             app:layout_constraintBottom_toTopOf="@+id/tlPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -32,7 +37,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUser"
-                android:background="@drawable/verde_opaco"
+                android:text="DragonForce"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
@@ -47,6 +52,12 @@
             android:layout_marginTop="20dp"
             android:hint="Escriba su Contrasena"
             app:endIconMode="password_toggle"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            android:textColorHint="#6750A4"
+            app:boxBackgroundColor="#2DD0BCFF"
             app:layout_constraintBottom_toTopOf="@+id/cbCheckBox"
             app:layout_constraintEnd_toEndOf="@+id/tlUser"
             app:layout_constraintStart_toStartOf="@+id/tlUser"
@@ -56,34 +67,41 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/verde_opaco"
+                android:text="contrasena"
                 android:inputType="textPassword"
-                android:textColor="@color/white"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/btLogin"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Iniciar Sesion"
             android:layout_marginTop="10dp"
+            android:backgroundTint="#6750a4"
             android:gravity="center"
-            android:background="@drawable/borde_login"
+            android:text="Iniciar Sesion"
+            android:textColor="@color/white"
+            android:textSize="14dp"
+            app:cornerRadius="20dp"
             app:layout_constraintBottom_toTopOf="@+id/tvCreateAccount"
             app:layout_constraintEnd_toEndOf="@+id/tlPassword"
             app:layout_constraintStart_toStartOf="@+id/tlPassword"
             app:layout_constraintTop_toBottomOf="@+id/cbCheckBox" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/tvCreateAccount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:gravity="center"
-            android:background="@drawable/borde_login"
             android:text="Crear Cuenta"
+            app:cornerRadius="20dp"
+            android:backgroundTint="#6750a4"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/btLogin"
             app:layout_constraintStart_toStartOf="@+id/btLogin"
@@ -94,6 +112,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Guardar Usuario"
+            app:buttonTint="#6750a4"
             app:layout_constraintBottom_toTopOf="@id/btLogin"
             app:layout_constraintStart_toStartOf="@+id/tlPassword"
             app:layout_constraintTop_toBottomOf="@id/tlPassword" />

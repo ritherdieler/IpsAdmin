@@ -3,12 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+
     <group android:checkableBehavior="single">
 
         <item
+
             android:id="@+id/nav_dashboard"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/dashboard" />
+            android:title="@string/dashboard"
+            />
         <item
             android:id="@+id/nav_subscription"
             android:icon="@drawable/ic_launcher_foreground"
@@ -74,6 +77,7 @@
         <item
             android:id="@+id/nav_mufa"
             android:icon="@drawable/ic_launcher_foreground"
+
             android:title="@string/Mufas" />
 
         <item

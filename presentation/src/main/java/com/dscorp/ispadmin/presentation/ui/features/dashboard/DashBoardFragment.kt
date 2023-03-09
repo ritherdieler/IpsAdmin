@@ -16,7 +16,6 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DashBoardFragment : BaseFragment() {
-    private lateinit var loadingDialog:ProgressDialog
     val binding by lazy { FragmentDashBoardBinding.inflate(layoutInflater) }
     private val viewModel: DashBoardViewModel by viewModels()
 
@@ -24,11 +23,6 @@ class DashBoardFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        loadingDialog = ProgressDialog(requireContext())
-        loadingDialog.setMessage("Cargando saul")
-        loadingDialog.setCancelable(false)
-        loadingDialog.show()
-
         viewModel.getDashBoardData()
 
         binding.btnStartCut.setOnClickListener {
@@ -64,22 +58,16 @@ class DashBoardFragment : BaseFragment() {
         viewModel.uiState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is DashBoardDataUiState.DashBoardData -> {binding.dashboardDataResponse = state.response
-                    loadingDialog.dismiss()
                 }
                 is DashBoardDataUiState.DashBoardDataError -> { showErrorDialog(state.message)
-                    loadingDialog.dismiss()
                 }
-
                 is DashBoardDataUiState.CutServiceError -> { showErrorDialog(state.error)
-                    loadingDialog.dismiss()
                 }
                 is DashBoardDataUiState.CutServiceSuccess -> {
                     showSuccessDialog("Se ha iniciado el corte correctamente")
-                    loadingDialog.dismiss()
                 }
             }
         }
-
         return binding.root
     }
 }

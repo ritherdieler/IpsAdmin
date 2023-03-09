@@ -28,13 +28,11 @@ class LoginViewModel : ViewModel() {
             loginResponseLiveData.value = LoginResponse.ShowProgressBarState(true)
 
             val responseFromRepository = repository.doLogin(login)
-            delay(2000)
             loginResponseLiveData.value = LoginResponse.OnLoginSuccess(responseFromRepository)
             loginResponseLiveData.value = LoginResponse.ShowProgressBarState(false)
 
         } catch (error: Exception) {
             loginResponseLiveData.value = LoginResponse.ShowProgressBarState(true)
-            delay(1000)
             loginResponseLiveData.value = LoginResponse.OnError(error)
             loginResponseLiveData.value = LoginResponse.ShowProgressBarState(false)
 
