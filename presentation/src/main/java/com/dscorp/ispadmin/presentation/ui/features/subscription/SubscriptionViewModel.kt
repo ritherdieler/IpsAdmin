@@ -24,17 +24,13 @@ import kotlinx.coroutines.launch
 class SubscriptionViewModel(
     private val repository: IRepository,
 ) : ViewModel() {
+
     val registerSubscriptionUiState = MutableSharedFlow<RegisterSubscriptionUiState>()
     var subscription: SubscriptionResponse? = null
-
     var installationType: InstallationType? = null
-
     var selectedAdditionalDevice = MutableLiveData<NetworkDevice?>(null)
-
     val addButtonIsEnabled = Transformations.map(selectedAdditionalDevice) { it != null }
-
     var additionalNetworkDevicesList = mutableSetOf<NetworkDevice>()
-
     private val cpeDevices = MutableStateFlow<List<NetworkDevice>?>(null)
 
     private val fiberCpeDevices = cpeDevices.map { cpeDevices ->
@@ -224,7 +220,6 @@ class SubscriptionViewModel(
     fun getWirelessDevices() = viewModelScope.launch {
         wirelessCpeDevices.collectLatest {
             registerSubscriptionUiState.emit(WirelessDevicesFound(it!!))
-
         }
     }
 
