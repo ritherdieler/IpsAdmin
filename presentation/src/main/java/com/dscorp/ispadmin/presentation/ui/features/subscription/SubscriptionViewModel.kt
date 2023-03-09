@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardDataUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
@@ -16,6 +17,7 @@ import com.example.data2.data.repository.IRepository
 import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -174,6 +176,7 @@ class SubscriptionViewModel(
 
 
     fun getFormData() = viewModelScope.launch {
+        registerSubscriptionUiState.emit(LoadingData(true))
         try {
             val cpeDevicesJob = async { repository.getCpeDevices() }
             val cpeDevicesList = cpeDevicesJob.await()
@@ -204,6 +207,9 @@ class SubscriptionViewModel(
         } catch (e: Exception) {
             e.printStackTrace()
             registerSubscriptionUiState.emit(FormDataError(e.message.toString()))
+        }
+        finally {
+            registerSubscriptionUiState.emit(LoadingData(false))
         }
     }
 

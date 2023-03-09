@@ -15,6 +15,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".presentation.ui.features.subscription.register.RegisterSubscriptionFragment">
 
         <ScrollView
@@ -24,9 +25,11 @@
             android:fillViewport="true">
 
             <LinearLayout
+                android:id="@+id/viewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 android:paddingHorizontal="20dp">
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -39,12 +42,10 @@
                     android:hint="@{viewModel.firstNameField.hint}"
                     app:endIconMode="clear_text"
                     tools:hint="@string/name">
-
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                         />
+                        android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,8 +63,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLastName"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
+                        android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -86,8 +86,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:maxLength="8"
-                        />
+                        android:maxLength="8" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -104,11 +103,9 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAddress"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                     />
+                        android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlPhone"
@@ -126,8 +123,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:maxLength="9"
-                        />
+                        android:maxLength="9" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -138,8 +134,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.locationField.errorLiveData}"
-                    android:hint="@{viewModel.locationField.hint}"
                     android:focusable="false"
+                    android:hint="@{viewModel.locationField.hint}"
                     app:endIconMode="clear_text"
                     tools:hint="@string/location">
 
@@ -170,7 +166,6 @@
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnPlace"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
@@ -180,7 +175,6 @@
                     android:error="@{viewModel.placeField.errorLiveData}"
                     android:hint="@{viewModel.placeField.hint}"
                     tools:hint="@string/lugar">
-
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etPlace"
@@ -194,10 +188,10 @@
                     android:id="@+id/spnTechnician"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
-                    android:error="@{viewModel.technicianField.errorLiveData}"
-                    android:hint="@{viewModel.technicianField.hint}"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:error="@{viewModel.technicianField.errorLiveData}"
+                    android:hint="@{viewModel.technicianField.hint}"
                     tools:hint="@string/technician">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -207,7 +201,6 @@
                         android:inputType="none"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnHostDevice"
@@ -232,12 +225,12 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:error="@{viewModel.subscriptionDateField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionDateField.hint}"
                     android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionDateField.errorLiveData}"
                     android:focusable="false"
-                    tools:hint="Fecha de Suscripción"
-                    app:endIconMode="clear_text">
+                    android:hint="@{viewModel.subscriptionDateField.hint}"
+                    app:endIconMode="clear_text"
+                    tools:hint="Fecha de Suscripción">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etSubscriptionDate"
@@ -248,6 +241,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
+                    android:id="@+id/tvInstallationType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
@@ -283,9 +277,9 @@
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.cpeDeviceField.errorLiveData}"
                     android:hint="@{viewModel.cpeDeviceField.hint}"
+                    android:visibility="gone"
                     tools:hint="@string/select_cpe_device"
-                    tools:visibility="visible"
-                    android:visibility="gone">
+                    tools:visibility="visible">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etCpeNetworkDevice"
@@ -304,8 +298,7 @@
                     android:error="@{viewModel.onuField.errorLiveData}"
                     android:hint="@{viewModel.onuField.hint}"
                     tools:hint="@string/select_onu"
-                    tools:visibility="visible"
-                   >
+                    tools:visibility="visible">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/acOnu"
@@ -315,18 +308,17 @@
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnNapBox"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    tools:visibility="visible"
-                    tools:hint="@string/nap_box"
                     android:error="@{viewModel.napBoxField.errorLiveData}"
                     android:hint="@{viewModel.napBoxField.hint}"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:hint="@string/nap_box"
+                    tools:visibility="visible">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etNapBox"
@@ -351,10 +343,11 @@
                     android:layout_marginTop="20dp"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    tools:visibility="visible"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/LinearLayoutAdd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -364,11 +357,11 @@
                             android:id="@+id/tlAditonalNetworkDevices"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                             android:layout_width="0dp"
-                            android:error="@{viewModel.additionalDevicesField.errorLiveData}"
-                            android:hint="@{viewModel.additionalDevicesField.hint}"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:layout_weight="1"
+                            android:error="@{viewModel.additionalDevicesField.errorLiveData}"
+                            android:hint="@{viewModel.additionalDevicesField.hint}"
                             tools:hint="@string/additionalDevices">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -402,14 +395,133 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
                     android:text="Registrar" />
 
-
             </LinearLayout>
-
         </ScrollView>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/viewLoading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="20dp"
+            android:visibility="visible">
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smFirstName2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:cornerRadius="20dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smLastName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smDni"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smAddress"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smPhone"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smLocation"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smSpnPlan"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smSpnPlace"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smSpnTechnician"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smSpnHostDevice"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smTlSubscriptionDate"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smTvInstallationType"
+                android:layout_width="120dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="30dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smRbFiber"
+                android:layout_width="200dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smTlCpeNetworkDevice"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smTlOnu"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smSpnNapbox"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:background="#939393" />
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smCheckBox"
+                android:layout_width="200dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="30dp"/>
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/smBtnRegisterSubscripcion"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="#939393" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        </ScrollView>
     </LinearLayout>
 </layout>

@@ -2,10 +2,13 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -27,7 +30,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
-
 
 class RegisterSubscriptionFragment : BaseFragment() {
     private val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
@@ -83,7 +85,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
             additionalDevicesAdapter.clear()
             additionalDevicesAdapter.addAll(viewModel.additionalNetworkDevicesList)
         }
-
 
         return binding.root
     }
@@ -186,6 +187,10 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is FormDataError -> showErrorDialog(response.error)
                 is FiberDevicesFound -> fillCpeDeviceSpinner(response.devices)
                 is WirelessDevicesFound -> fillCpeDeviceSpinner(response.devices)
+                is LoadingData -> {
+                    binding.viewLoading.visibility = if (response.loading) View.VISIBLE else View.GONE
+                    binding.viewContainer.visibility = if (response.loading) View.GONE else View.VISIBLE
+                }
             }
         }
     }

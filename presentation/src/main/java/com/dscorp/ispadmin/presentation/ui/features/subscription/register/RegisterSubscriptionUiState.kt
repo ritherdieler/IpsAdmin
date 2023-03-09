@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
+import com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardDataUiState
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.cleanarchitecture.domain.domain.entity.Onu
 
@@ -30,4 +31,6 @@ sealed class RegisterSubscriptionUiState {
 
     class RegisterSubscriptionError(val error: String) : RegisterSubscriptionUiState()
     class FormDataError(val error: String) : RegisterSubscriptionUiState()
+
+    class LoadingData(val loading: Boolean) : RegisterSubscriptionUiState()
 }
