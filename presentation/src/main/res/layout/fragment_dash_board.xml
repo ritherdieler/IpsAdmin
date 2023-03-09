@@ -9,19 +9,23 @@
             name="dashboardDataResponse"
             type="com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse" />
     </data>
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#0F6750A4"
         android:orientation="vertical">
+
+
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="100dp"
             android:layout_marginHorizontal="30dp"
-            android:layout_marginTop="80dp"
             android:layout_marginBottom="12dp"
+            android:layout_marginTop="50dp"
             android:backgroundTint="#E8DEF8"
             app:cardCornerRadius="20dp"
             app:cardElevation="5dp">
@@ -42,7 +46,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="100dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
@@ -64,7 +68,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="100dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
@@ -86,7 +90,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="100dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="12dp"
             android:backgroundTint="#E8DEF8"
@@ -110,17 +114,19 @@
             android:id="@+id/btnStartCut"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginHorizontal="30dp"
+            android:layout_marginHorizontal="120dp"
             android:layout_marginTop="40dp"
             android:backgroundTint="#6750A4"
             android:text="Iniciar corte"
             android:textColor="@color/white"
             android:textSize="14dp"
-            app:cornerRadius="20dp"
+            app:cornerRadius="15dp"
             android:elevation="20dp"
+            android:layout_marginBottom="30dp"
             app:iconPadding="10dp"
             app:iconSize="24dp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
 
 </layout>
