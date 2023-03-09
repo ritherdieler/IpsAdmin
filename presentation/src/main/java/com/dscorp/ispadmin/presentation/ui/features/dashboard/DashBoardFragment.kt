@@ -57,14 +57,18 @@ class DashBoardFragment : BaseFragment() {
 
         viewModel.uiState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is DashBoardDataUiState.DashBoardData -> {binding.dashboardDataResponse = state.response
+                is DashBoardDataUiState.DashBoardData -> {
+                    binding.dashboardDataResponse = state.response
                 }
-                is DashBoardDataUiState.DashBoardDataError -> { showErrorDialog(state.message)
-                }
-                is DashBoardDataUiState.CutServiceError -> { showErrorDialog(state.error)
-                }
-                is DashBoardDataUiState.CutServiceSuccess -> {
-                    showSuccessDialog("Se ha iniciado el corte correctamente")
+                is DashBoardDataUiState.DashBoardDataError -> showErrorDialog(state.message)
+
+                is DashBoardDataUiState.CutServiceError -> showErrorDialog(state.error)
+
+                is DashBoardDataUiState.CutServiceSuccess -> showSuccessDialog("Se ha iniciado el corte correctamente")
+
+                is DashBoardDataUiState.LoadingData -> {
+                    binding.shimmers.visibility = if (state.loading) View.VISIBLE else View.GONE
+                    binding.cards.visibility = if (state.loading) View.GONE else View.VISIBLE
                 }
             }
         }

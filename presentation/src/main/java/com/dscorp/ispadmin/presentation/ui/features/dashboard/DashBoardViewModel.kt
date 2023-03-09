@@ -14,17 +14,20 @@ class DashBoardViewModel : ViewModel(), KoinComponent {
     val uiState = MutableLiveData<DashBoardDataUiState>()
     private val userSession = repository.getUserSession()
     fun getDashBoardData() = viewModelScope.launch {
-
+        uiState.value = DashBoardDataUiState.LoadingData(true)
         try {
             val response = repository.getDashBoardData()
-            uiState.postValue(DashBoardDataUiState.DashBoardData(response))
+            delay(2000)
+            uiState.value = DashBoardDataUiState.DashBoardData(response)
         } catch (e: Exception) {
-            uiState.postValue(DashBoardDataUiState.DashBoardDataError(e.message ?: ""))
+            uiState.value = DashBoardDataUiState.DashBoardDataError(e.message ?: "")
+        } finally {
+            uiState.value = DashBoardDataUiState.LoadingData(false)
         }
     }
 
     fun startServiceCut(password: String) = viewModelScope.launch {
-        if(password != (userSession?.password ?: "")){
+        if (password != (userSession?.password ?: "")) {
             uiState.postValue(DashBoardDataUiState.CutServiceError("Contraseña incorrecta"))
             return@launch
         }
