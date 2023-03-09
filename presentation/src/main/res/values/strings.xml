@@ -21,7 +21,7 @@
     <string name="login_Error_Tittle">Ocurrio un Error</string>
     <string name="menu_plan">Registrar Plan</string>
     <string name="menu_device">Registrar Equipo</string>
-    <string name="menu_subscription">Registrar Subscripcion</string>
+    <string name="menu_subscription">Registrar Subscripción</string>
     <string name="abreviatura">Abreviatura</string>
     <string name="nombre">Nombre</string>
     <string name="lugar">Lugar</string>
@@ -47,7 +47,7 @@
     <string name="consult_payments">Consultar Pagos</string>
     <string name="debtors">Deudores</string>
     <string name="dashboard">Dashboard</string>
-    <string name="find_subscription">Buscar suscripcione</string>
+    <string name="find_subscription">Buscar Suscripciones</string>
     <string name="register_payment">Registrar pago</string>
     <string name="show_payment_history">Mostrar historial de pagos</string>
     <string name="describe_issue">Describe el problema</string>

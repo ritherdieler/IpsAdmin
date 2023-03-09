@@ -25,7 +25,7 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/reports" />
 
-        <item
+<!--        <item
             android:id="@+id/nav_plan"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/menu_plan" />
@@ -78,7 +78,7 @@
             android:id="@+id/nav_mufa"
             android:icon="@drawable/ic_launcher_foreground"
 
-            android:title="@string/Mufas" />
+            android:title="@string/Mufas" />-->
 
         <item
             android:id="@+id/nav_ip_pool"
