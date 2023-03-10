@@ -33,4 +33,5 @@ sealed class RegisterSubscriptionUiState {
     class FormDataError(val error: String) : RegisterSubscriptionUiState()
 
     class LoadingData(val loading: Boolean) : RegisterSubscriptionUiState()
+    class LoadingLogin(val loading: Boolean) : RegisterSubscriptionUiState()
 }

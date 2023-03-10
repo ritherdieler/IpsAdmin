@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
@@ -190,6 +191,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is LoadingData -> {
                     binding.viewLoading.visibility = if (response.loading) View.VISIBLE else View.GONE
                     binding.viewContainer.visibility = if (response.loading) View.GONE else View.VISIBLE
+                }
+                is LoadingLogin -> {
+                    binding.btnRegisterSubscription.isEnabled = !response.loading
                 }
             }
         }

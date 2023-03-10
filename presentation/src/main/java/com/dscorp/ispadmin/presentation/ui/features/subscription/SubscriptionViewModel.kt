@@ -224,6 +224,8 @@ class SubscriptionViewModel(
     }
 
     fun registerSubscription() = viewModelScope.launch {
+        registerSubscriptionUiState.emit(LoadingLogin(true))
+
         try {
             if (!formIsValid()) return@launch
             val subscription = createSubscription()
@@ -231,9 +233,14 @@ class SubscriptionViewModel(
             registerSubscriptionUiState.emit(
                 RegisterSubscriptionSuccess(subscriptionFromRepository)
             )
+            registerSubscriptionUiState.emit(LoadingLogin(true))
         } catch (error: Exception) {
             registerSubscriptionUiState.emit(RegisterSubscriptionError(error.message.toString()))
+            registerSubscriptionUiState.emit(LoadingLogin(false))
         }
+    /*    finally {
+            registerSubscriptionUiState.emit(LoadingLogin(false))
+        }*/
     }
 
     private fun createSubscription(): Subscription {
