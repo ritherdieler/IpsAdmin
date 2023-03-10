@@ -55,6 +55,10 @@ class RegisterActivity : BaseActivity() {
                 is RegisterFormError.OnEtLastNameIsInvalidError ->
                     binding.tlLastName.error =
                         it.error
+                is RegisterFormError.OnDifferentPasswords -> {
+                    binding.tlPassword1.error = it.error
+                    binding.tlPassword2.error = it.error
+                }
             }
         }
     }

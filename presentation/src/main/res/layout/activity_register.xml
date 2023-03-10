@@ -26,6 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:endIconMode="clear_text"
+            app:endIconTint="#6750A4"
             app:layout_constraintVertical_chainStyle="packed">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -43,6 +44,7 @@
             android:layout_marginTop="20dp"
             android:hint="Ingrese su Nombre"
             app:endIconMode="clear_text"
+            app:endIconTint="#6750A4"
             app:layout_constraintBottom_toTopOf="@+id/tlLastName"
             app:layout_constraintEnd_toEndOf="@+id/tlUser"
             app:layout_constraintStart_toStartOf="@+id/tlUser"
@@ -63,6 +65,7 @@
             android:layout_marginTop="20dp"
             android:hint="Ingrese su Apellido"
             app:endIconMode="clear_text"
+            app:endIconTint="#6750A4"
             app:layout_constraintBottom_toTopOf="@+id/tlPassword1"
             app:layout_constraintEnd_toEndOf="@+id/tlFirstName"
             app:layout_constraintStart_toStartOf="@+id/tlFirstName"
@@ -82,6 +85,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Ingrese su Contrasena"
+            app:endIconMode="password_toggle"
+            app:endIconTint="#6750A4"
             app:layout_constraintBottom_toTopOf="@+id/tlPassword2"
             app:layout_constraintEnd_toEndOf="@+id/tlLastName"
             app:layout_constraintStart_toStartOf="@+id/tlLastName"
@@ -101,6 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Ingrese su Contrasena"
+            app:endIconMode="password_toggle"
+            app:endIconTint="#6750A4"
             app:layout_constraintBottom_toTopOf="@+id/btRegister"
             app:layout_constraintEnd_toEndOf="@+id/tlPassword1"
             app:layout_constraintStart_toStartOf="@+id/tlPassword1"

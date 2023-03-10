@@ -15,6 +15,7 @@ sealed class IpPoolUiState(val error: String? = null) {
 
     class IpPoolList(val ipPools: List<IpPool>) : IpPoolUiState()
     class IpPoolListError(val message: String?) : IpPoolUiState()
+    class LoadingData(val loading: Boolean) : IpPoolUiState()
 
     // FORM STATES
     class IpPoolError : IpPoolUiState(EMPTY_POOL_ERROR)

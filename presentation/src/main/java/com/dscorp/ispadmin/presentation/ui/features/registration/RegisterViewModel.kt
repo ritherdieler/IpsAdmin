@@ -63,8 +63,8 @@ class RegisterViewModel : ViewModel() {
         }
 
         if (password1 != password2) {
-            registerFormErrorLiveData.value = RegisterFormError.OnEtPassword1Error()
-            registerFormErrorLiveData.value = RegisterFormError.OnEtPassword2Error()
+            registerFormErrorLiveData.value = RegisterFormError.OnDifferentPasswords()
+            registerFormErrorLiveData.value = RegisterFormError.OnDifferentPasswords()
             return
         } else {
             cleanErrorFormLiveData.value = CleanFormErrors.OnEtPassword1CleanError

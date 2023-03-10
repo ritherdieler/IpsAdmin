@@ -3,9 +3,12 @@ package com.dscorp.ispadmin.presentation.ui.features.ippool.register
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardDataUiState
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.example.cleanarchitecture.domain.domain.entity.extensions.IsValidIpv4Segment
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.repository.IRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -51,12 +54,17 @@ class IpPoolViewModel : ViewModel(), KoinComponent {
     }
 
     fun getIpPoolList() = viewModelScope.launch {
+        uiState.value=IpPoolUiState.LoadingData(true)
         try {
             val response = repository.getIpPoolList()
+            delay(500)
             uiState.value = IpPoolUiState.IpPoolList(response)
         } catch (e: Exception) {
             e.printStackTrace()
             uiState.value = IpPoolUiState.IpPoolListError(e.message)
+        }
+        finally {
+            uiState.value = IpPoolUiState.LoadingData(false)
         }
     }
 

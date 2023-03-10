@@ -17,7 +17,7 @@ class DashBoardViewModel : ViewModel(), KoinComponent {
         uiState.value = DashBoardDataUiState.LoadingData(true)
         try {
             val response = repository.getDashBoardData()
-            delay(2000)
+            delay(500)
             uiState.value = DashBoardDataUiState.DashBoardData(response)
         } catch (e: Exception) {
             uiState.value = DashBoardDataUiState.DashBoardDataError(e.message ?: "")

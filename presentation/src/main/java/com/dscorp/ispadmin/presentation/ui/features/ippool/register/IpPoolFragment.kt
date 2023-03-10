@@ -61,6 +61,10 @@ class IpPoolFragment : BaseFragment(), IpPoolSelectionListener {
                 is IpPoolUiState.HostDevicesReady -> fillHostDevicesSpinner(response.hostDevices)
                 IpPoolUiState.CleanNoHostDeviceSelectedError -> binding.spnHostDevice.error = null
                 IpPoolUiState.NoHostDeviceSelectedError -> showErrorDialog(response.error)
+                is IpPoolUiState.LoadingData -> {
+                    binding.viewShimmerIpPool.visibility = if (response.loading) View.VISIBLE else View.GONE
+                    binding.viewContainterIpPoool.visibility = if (response.loading) View.GONE else View.VISIBLE
+                }
             }
         }
     }
