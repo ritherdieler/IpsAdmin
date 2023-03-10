@@ -30,6 +30,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone"
+                tools:visibility="visible"
                 android:paddingHorizontal="20dp">
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -41,6 +42,7 @@
                     android:error="@{viewModel.firstNameField.errorLiveData}"
                     android:hint="@{viewModel.firstNameField.hint}"
                     app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
                     tools:hint="@string/name">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
@@ -58,6 +60,7 @@
                     android:error="@{viewModel.lastNameField.errorLiveData}"
                     android:hint="@{viewModel.lastNameField.hint}"
                     app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
                     tools:hint="@string/lastName">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -79,6 +82,7 @@
                     app:counterMaxLength="8"
                     app:counterTextColor="@color/color_primary"
                     app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
                     tools:hint="@string/dni">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -98,6 +102,7 @@
                     android:error="@{viewModel.addressField.errorLiveData}"
                     android:hint="@{viewModel.addressField.hint}"
                     app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
                     tools:hint="@string/address">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -116,6 +121,7 @@
                     android:error="@{viewModel.phoneField.errorLiveData}"
                     android:hint="@{viewModel.phoneField.hint}"
                     app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
                     tools:hint="Numero de telefono">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -137,6 +143,7 @@
                     android:focusable="false"
                     android:hint="@{viewModel.locationField.hint}"
                     app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
                     tools:hint="@string/location">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -230,6 +237,7 @@
                     android:focusable="false"
                     android:hint="@{viewModel.subscriptionDateField.hint}"
                     app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
                     tools:hint="Fecha de Suscripción">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -432,10 +440,17 @@
                 android:layout_marginTop="20dp"
                 android:background="#939393" />
             <com.facebook.shimmer.ShimmerFrameLayout
+                android:layout_width="30dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="300dp"
+                android:background="#939393"/>
+            <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/smAddress"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:background="#939393" />
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/smPhone"

@@ -51,10 +51,9 @@ class MapViewDialogFragment : DialogFragment(), OnMapReadyCallback {
         googleMap.addMarker(
             MarkerOptions()
                 .position(location)
-                .title("HOLAAAAAAAAAAA ")
+                .title("Ubicación ")
         )
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(location))
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(13.5f))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,16f))
     }
 
     override fun onResume() {

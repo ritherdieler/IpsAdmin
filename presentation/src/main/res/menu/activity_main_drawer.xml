@@ -77,7 +77,6 @@
         <item
             android:id="@+id/nav_mufa"
             android:icon="@drawable/ic_launcher_foreground"
-
             android:title="@string/Mufas" />-->
 
         <item

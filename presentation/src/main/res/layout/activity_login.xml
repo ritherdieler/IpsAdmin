@@ -52,6 +52,7 @@
             android:layout_marginTop="20dp"
             android:hint="Escriba su Contrasena"
             app:endIconMode="password_toggle"
+            app:endIconTint="#6750A4"
             app:boxCornerRadiusTopStart="20dp"
             app:boxCornerRadiusBottomEnd="20dp"
             app:boxCornerRadiusTopEnd="20dp"

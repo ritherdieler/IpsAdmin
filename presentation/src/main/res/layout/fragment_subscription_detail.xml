@@ -28,15 +28,20 @@
             android:orientation="vertical"
             android:padding="20dp">
 
+
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:hint="@string/fullName"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etNameSubscriptionDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{subscription.fullName}" />
@@ -44,14 +49,18 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:hint="@string/dni"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etDniSubscriptionDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{subscription.dni}" />
@@ -59,14 +68,18 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:hint="@string/address"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etAddressSubscriptionDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{subscription.address}" />
@@ -78,25 +91,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:focusable="false"
                 android:hint="@string/location"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{subscription.location.toString()}" />
+                    android:text="click aqui para abrir el mapa" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:hint="@string/phoneNumer"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etPhoneSubscriptionDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{subscription.phone}" />
@@ -105,14 +126,18 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
+
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:hint="@string/plan"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etPlanSubscriptionDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{subscription.plan.name}"
@@ -122,30 +147,37 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:hint="@string/place"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etPlaceSubscriptionDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{subscription.place.name}"
-                    />
+                    android:text="@{subscription.place.name}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:hint="@string/technician"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etTechnicianSubscriptionDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{subscription.technician.firstName}" />

@@ -78,7 +78,7 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
         googleMap.setOnMarkerClickListener { marker ->
 
             val markerTag = marker.tag
-            val selectedMufa = this.mufas.find {  it.id == markerTag }
+            val selectedMufa = this.mufas.find { it.id == markerTag }
 
             val action = MufaMapFragmentDirections.actionNavMufaToMufaDialogFragment(selectedMufa!!)
             findNavController().navigate(action)
