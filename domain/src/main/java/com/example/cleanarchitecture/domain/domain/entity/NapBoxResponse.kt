@@ -8,6 +8,6 @@ data class NapBoxResponse(
 ):java.io.Serializable
 {
     override fun toString(): String {
-        return code!!
+        return "$code - $address"
     }
 }

@@ -29,9 +29,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:paddingHorizontal="20dp"
                 android:visibility="gone"
                 tools:visibility="visible"
-                android:paddingHorizontal="20dp">
+                >
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlFirstName"
@@ -44,6 +45,7 @@
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
                     tools:hint="@string/name">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
@@ -80,7 +82,7 @@
                     android:hint="@{viewModel.dniField.hint}"
                     app:counterEnabled="true"
                     app:counterMaxLength="8"
-                    app:counterTextColor="@color/color_primary"
+                    app:counterTextColor="@color/purple_base_app"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
                     tools:hint="@string/dni">
@@ -402,8 +404,8 @@
                     android:id="@+id/btnRegisterSubscription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="true"
                     android:layout_marginTop="20dp"
+                    android:enabled="true"
                     android:text="Registrar" />
 
             </LinearLayout>
@@ -413,131 +415,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/viewLoading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginHorizontal="20dp"
-            android:visibility="visible">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/viewLoading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+                <include layout="@layout/shimmer_register_subscription"/>
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smFirstName2"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                app:cornerRadius="20dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smLastName"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smDni"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:layout_width="30dp"
-                android:layout_height="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="300dp"
-                android:background="#939393"/>
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smAddress"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smPhone"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smLocation"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smSpnPlan"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smSpnPlace"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smSpnTechnician"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smSpnHostDevice"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smTlSubscriptionDate"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smTvInstallationType"
-                android:layout_width="120dp"
-                android:layout_height="15dp"
-                android:layout_marginTop="30dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smRbFiber"
-                android:layout_width="200dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smTlCpeNetworkDevice"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smTlOnu"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smSpnNapbox"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="#939393" />
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smCheckBox"
-                android:layout_width="200dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="30dp"/>
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/smBtnRegisterSubscripcion"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:background="#939393" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </ScrollView>
     </LinearLayout>
 </layout>

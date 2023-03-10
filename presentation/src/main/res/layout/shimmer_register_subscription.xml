@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="20dp"
+    >
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smFirstName2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading"
+        app:cornerRadius="20dp" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smLastName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smDni"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="30dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smAddress"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smPhone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smLocation"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smSpnPlan"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smSpnPlace"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smSpnTechnician"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smSpnHostDevice"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smTlSubscriptionDate"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smTvInstallationType"
+        android:layout_width="120dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smRbFiber"
+        android:layout_width="200dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smTlCpeNetworkDevice"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smTlOnu"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smSpnNapbox"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smCheckBox"
+        android:layout_width="200dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="30dp" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/smBtnRegisterSubscripcion"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/shimmer_color_loading" />
+
+</LinearLayout>

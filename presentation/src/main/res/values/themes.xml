@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.IspAdminAndroid" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#6750A4</item>
+        <item name="colorPrimary">@color/purple_base_app</item>
         <item name="colorPrimaryVariant">#381E72</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->

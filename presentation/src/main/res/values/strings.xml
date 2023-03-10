@@ -131,5 +131,10 @@
     <string name="select_onu">Seleccione una onu</string>
     <string name="mustSelectOnu">Seleccione una onu</string>
     <string name="subscription_register_success">El cliente fue registrado con exito\n<b>Ip: %s</b></string>
+    <string name="iniciar_sesion">Iniciar Sesion</string>
+    <string name="crear_cuenta">Crear Cuenta</string>
+    <string name="guardar_usuario">Guardar Usuario</string>
+    <string name="escriba_su_contrasena">Escriba su Contrasena</string>
+    <string name="escriba_su_usuario">Escriba su usuario</string>
 
 </resources>

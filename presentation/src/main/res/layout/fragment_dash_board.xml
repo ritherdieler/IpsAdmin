@@ -2,9 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
     <data>
-
         <variable
             name="dashboardDataResponse"
             type="com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse" />
@@ -20,12 +18,12 @@
             android:layout_height="wrap_content"
             android:background="#0F6750A4">
 
-
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/cards"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                tools:visibility="visible"
                 app:constraint_referenced_ids="cardView,
                 cardView2,
                 cardView3,
@@ -49,7 +47,7 @@
                 android:layout_height="120dp"
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="32dp"
-                android:backgroundTint="#E8DEF8"
+                android:backgroundTint="@color/purple_claro_fondo"
                 android:elevation="20dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="5dp"
@@ -173,14 +171,13 @@
                     />
             </com.facebook.shimmer.ShimmerFrameLayout>
 
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView2"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="#E8DEF8"
+                android:backgroundTint="@color/purple_claro_fondo"
                 android:elevation="20dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="5dp"
@@ -207,7 +204,7 @@
                 android:layout_height="120dp"
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="#E8DEF8"
+                android:backgroundTint="@color/purple_claro_fondo"
                 android:elevation="20dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="5dp"
@@ -228,7 +225,6 @@
                     tools:text="Total Deaths" />
             </androidx.cardview.widget.CardView>
 
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView4"
                 android:layout_width="match_parent"
@@ -236,7 +232,7 @@
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
-                android:backgroundTint="#E8DEF8"
+                android:backgroundTint="@color/purple_claro_fondo"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/btnStartCut"
@@ -263,7 +259,7 @@
                 android:layout_height="50dp"
                 android:layout_marginHorizontal="30dp"
                 android:layout_marginBottom="32dp"
-                android:backgroundTint="#6750A4"
+                android:backgroundTint="@color/purple_base_app"
                 android:elevation="20dp"
                 android:text="Iniciar corte"
                 android:textColor="@color/white"

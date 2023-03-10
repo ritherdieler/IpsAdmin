@@ -238,11 +238,10 @@ class RegisterSubscriptionFragment : BaseFragment() {
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
         val dateValidatorMin = DateValidatorPointForward.from(
-            Calendar.getInstance().timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS)
+            calendar.timeInMillis - 15.days.toLong(DurationUnit.MILLISECONDS)
         )
 
-        val dateValidatorMax =
-            DateValidatorPointBackward.before(Calendar.getInstance().timeInMillis)
+        val dateValidatorMax = DateValidatorPointBackward.before(calendar.timeInMillis)
 
         val dateValidator =
             CompositeDateValidator.allOf(listOf(dateValidatorMin, dateValidatorMax))
@@ -259,11 +258,13 @@ class RegisterSubscriptionFragment : BaseFragment() {
         datePicker.addOnPositiveButtonClickListener {
             viewModel.subscriptionDateField.value = it
             val formatter = SimpleDateFormat("dd/MM/yyyy")
-            val formattedDate = formatter.format(calendar.timeInMillis)
+            formatter.timeZone = TimeZone.getTimeZone("UTC")
+            val formattedDate = formatter.format(it)
             binding.etSubscriptionDate.setText(formattedDate)
         }
 
         datePicker.show(childFragmentManager, "DatePicker")
+
     }
 
     private fun showSuccessDialog(response: RegisterSubscriptionSuccess) {

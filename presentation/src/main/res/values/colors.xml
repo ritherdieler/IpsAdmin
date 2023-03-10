@@ -80,8 +80,9 @@
     <color name="md_theme_dark_surfaceTint">#45DFAA</color>
     <color name="md_theme_dark_outlineVariant">#404944</color>
     <color name="md_theme_dark_scrim">#000000</color>
-    <color name="color_primary">#6750A4</color>
-
+    <color name="purple_base_app">#6750A4</color>
+    <color name="purple_claro_fondo">#E8DEF8</color>
+    <color name="shimmer_color_loading">#939393</color>
 
 
 </resources>

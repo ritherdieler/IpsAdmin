@@ -13,59 +13,57 @@
         tools:context=".presentation.ui.features.registration.RegisterActivity">
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/tlUser"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
             android:hint="Ingrese su Usuario"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/purple_base_app"
             app:layout_constraintBottom_toTopOf="@+id/tlFirstName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:endIconMode="clear_text"
-            app:endIconTint="#6750A4"
             app:layout_constraintVertical_chainStyle="packed">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUser"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/tlFirstName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Ingrese su Nombre"
             app:endIconMode="clear_text"
-            app:endIconTint="#6750A4"
+            app:endIconTint="@color/purple_base_app"
             app:layout_constraintBottom_toTopOf="@+id/tlLastName"
             app:layout_constraintEnd_toEndOf="@+id/tlUser"
             app:layout_constraintStart_toStartOf="@+id/tlUser"
             app:layout_constraintTop_toBottomOf="@+id/tlUser">
-
-            s<com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/tlLastName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Ingrese su Apellido"
             app:endIconMode="clear_text"
-            app:endIconTint="#6750A4"
+            app:endIconTint="@color/purple_base_app"
             app:layout_constraintBottom_toTopOf="@+id/tlPassword1"
             app:layout_constraintEnd_toEndOf="@+id/tlFirstName"
             app:layout_constraintStart_toStartOf="@+id/tlFirstName"
@@ -75,18 +73,17 @@
                 android:id="@+id/etLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/tlPassword1"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Ingrese su Contrasena"
             app:endIconMode="password_toggle"
-            app:endIconTint="#6750A4"
+            app:endIconTint="@color/purple_base_app"
             app:layout_constraintBottom_toTopOf="@+id/tlPassword2"
             app:layout_constraintEnd_toEndOf="@+id/tlLastName"
             app:layout_constraintStart_toStartOf="@+id/tlLastName"
@@ -95,19 +92,20 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:id="@+id/tlPassword2"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Ingrese su Contrasena"
             app:endIconMode="password_toggle"
-            app:endIconTint="#6750A4"
+            app:endIconTint="@color/purple_base_app"
             app:layout_constraintBottom_toTopOf="@+id/btRegister"
             app:layout_constraintEnd_toEndOf="@+id/tlPassword1"
             app:layout_constraintStart_toStartOf="@+id/tlPassword1"
@@ -116,8 +114,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -131,6 +129,5 @@
             app:layout_constraintEnd_toEndOf="@+id/tlPassword2"
             app:layout_constraintStart_toStartOf="@+id/tlPassword2"
             app:layout_constraintTop_toBottomOf="@+id/tlPassword2" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
