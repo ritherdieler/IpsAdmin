@@ -108,7 +108,11 @@
     <string name="address">Direción</string>
     <string name="mustSelectLocation">Seleccione una ubicación</string>
     <string name="phoneNumer">Número de teléfono</string>
+    <string name="price">Precio</string>
+    <string name="coupon">Cupón</string>
     <string name="invalidPhoneNumber">Número de teléfono no valido</string>
+    <string name="invalidPrice">Precio no valido</string>
+    <string name="invalidCoupon">Cupón no valido</string>
     <string name="place">Lugar</string>
     <string name="mustSelectPlan">Seleccione un plan</string>
     <string name="mustSelectPlace">Seleccione un lugar</string>

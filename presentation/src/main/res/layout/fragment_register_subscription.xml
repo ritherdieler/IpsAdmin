@@ -31,6 +31,7 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="20dp"
                 android:visibility="gone"
+                tools:visibility="visible"
                 >
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -131,6 +132,46 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:maxLength="9" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlCupon"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.couponField.errorLiveData}"
+                    android:hint="@{viewModel.couponField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
+                    tools:hint="Cupon">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCupon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                         />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlPriceSubscription"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.priceField.errorLiveData}"
+                    android:hint="@{viewModel.priceField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
+                    tools:hint="Precio">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPriceSubscription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -410,10 +451,6 @@
             </LinearLayout>
         </ScrollView>
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/viewLoading"
                 android:layout_width="match_parent"
@@ -423,6 +460,5 @@
                 <include layout="@layout/shimmer_register_subscription"/>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </ScrollView>
     </LinearLayout>
 </layout>

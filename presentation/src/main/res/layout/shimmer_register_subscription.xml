@@ -45,7 +45,16 @@
         android:background="@color/shimmer_color_loading" />
 
     <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/smPhone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/shimmer_color_loading" />
+    <com.facebook.shimmer.ShimmerFrameLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="20dp"

@@ -27,7 +27,9 @@ class Subscription(
     var cpeDeviceId: Int? = null,
     var onu: Onu? = null,
     var ip: String? = null,
-    var installationType : InstallationType? = null
+    var installationType : InstallationType? = null,
+    var price:Double?=null,
+    var coupon:String?=null
 
 ) : java.io.Serializable {
     override fun toString(): String {

@@ -148,6 +148,12 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etPhone.doOnTextChanged { text, start, before, count ->
             viewModel.phoneField.value = text.toString()
         }
+        binding.etPriceSubscription.doOnTextChanged { text, start, before, count ->
+            viewModel.priceField.value = if (text.isNullOrEmpty()) null else text.toString().toDouble()
+        }
+        binding.etCupon.doOnTextChanged { text, start, before, count ->
+            viewModel.couponField.value = text.toString()
+        }
     }
 
     private fun resetAdditionalDevicesUiState() {
@@ -189,8 +195,10 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is FiberDevicesFound -> fillCpeDeviceSpinner(response.devices)
                 is WirelessDevicesFound -> fillCpeDeviceSpinner(response.devices)
                 is LoadingData -> {
-                    binding.viewLoading.visibility = if (response.loading) View.VISIBLE else View.GONE
-                    binding.viewContainer.visibility = if (response.loading) View.GONE else View.VISIBLE
+                    binding.viewLoading.visibility =
+                        if (response.loading) View.VISIBLE else View.GONE
+                    binding.viewContainer.visibility =
+                        if (response.loading) View.GONE else View.VISIBLE
                 }
                 is LoadingLogin -> {
                     binding.btnRegisterSubscription.isEnabled = !response.loading

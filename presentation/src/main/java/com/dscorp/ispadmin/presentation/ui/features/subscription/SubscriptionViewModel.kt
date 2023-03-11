@@ -84,6 +84,22 @@ class SubscriptionViewModel(
                 fieldValue.isValidPhone()
         }
     )
+    val couponField = FormField(
+        hintResourceId = R.string.coupon,
+        errorResourceId = R.string.invalidCoupon,
+        fieldValidator = object : FieldValidator<String?> {
+            override fun validate(fieldValue: String?): Boolean =
+                !fieldValue.isNullOrEmpty()
+        }
+    )
+    val priceField = FormField(
+        hintResourceId = R.string.price,
+        errorResourceId = R.string.invalidPrice,
+        fieldValidator = object : FieldValidator<Double?> {
+            override fun validate(fieldValue: Double?): Boolean =
+                (fieldValue != null) && (fieldValue > 0)
+        }
+    )
 
     val locationField = FormField(
         hintResourceId = R.string.location,
@@ -203,8 +219,7 @@ class SubscriptionViewModel(
         } catch (e: Exception) {
             e.printStackTrace()
             registerSubscriptionUiState.emit(FormDataError(e.message.toString()))
-        }
-        finally {
+        } finally {
             registerSubscriptionUiState.emit(LoadingData(false))
         }
     }
@@ -242,9 +257,9 @@ class SubscriptionViewModel(
 
     private fun createSubscription(): Subscription {
 
-       return when (installationType) {
+        return when (installationType) {
             InstallationType.FIBER -> {
-                 Subscription(
+                Subscription(
                     firstName = firstNameField.value,
                     lastName = lastNameField.value,
                     dni = dniField.value,
@@ -263,7 +278,10 @@ class SubscriptionViewModel(
                     ),
                     cpeDeviceId = cpeDeviceField.value?.id,
                     onu = onuField.value,
-                    installationType = installationType
+                    installationType = installationType,
+                    price = priceField.value,
+                    coupon = couponField.value
+
                 )
             }
             InstallationType.WIRELESS -> {
@@ -286,7 +304,9 @@ class SubscriptionViewModel(
                     ),
                     cpeDeviceId = cpeDeviceField.value?.id,
                     onu = null,
-                    installationType = installationType
+                    installationType = installationType,
+                    price = priceField.value,
+                    coupon = couponField.value
                 )
             }
             null -> throw Exception("Invalid Installation Type")
@@ -303,6 +323,8 @@ class SubscriptionViewModel(
                 dniField,
                 addressField,
                 phoneField,
+                priceField,
+                couponField,
                 locationField,
                 planField,
                 placeField,
@@ -319,6 +341,8 @@ class SubscriptionViewModel(
                 dniField,
                 addressField,
                 phoneField,
+                priceField,
+                couponField,
                 locationField,
                 planField,
                 placeField,
