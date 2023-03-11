@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_tv_gross_revenue"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="32dp"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/shimmer_tv_total_to_collect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_shimmer_dashboard_card" />
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_tv_total_to_collect"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="20dp"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/shimmer_tv_total_raised"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer_tv_gross_revenue">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_shimmer_dashboard_card" />
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_tv_total_raised"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="20dp"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/shimmer_tv_total_discount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer_tv_total_to_collect">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_shimmer_dashboard_card" />
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_tv_total_discount"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/shimmer_btn_start_cut"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer_tv_total_raised">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_shimmer_dashboard_card" />
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_btn_start_cut"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginHorizontal="35dp"
+        android:layout_marginBottom="32dp"
+        android:background="#939393"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer_tv_total_discount" >
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

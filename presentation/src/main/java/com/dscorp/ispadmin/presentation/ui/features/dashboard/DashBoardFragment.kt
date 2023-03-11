@@ -67,8 +67,8 @@ class DashBoardFragment : BaseFragment() {
                 is DashBoardDataUiState.CutServiceSuccess -> showSuccessDialog("Se ha iniciado el corte correctamente")
 
                 is DashBoardDataUiState.LoadingData -> {
-                    binding.shimmers.visibility = if (state.loading) View.VISIBLE else View.GONE
-                    binding.cards.visibility = if (state.loading) View.GONE else View.VISIBLE
+                    binding.shimmerDashBoard.visibility = if (state.loading) View.VISIBLE else View.GONE
+                    binding.viewContainer.visibility = if (state.loading) View.GONE else View.VISIBLE
                 }
             }
         }
