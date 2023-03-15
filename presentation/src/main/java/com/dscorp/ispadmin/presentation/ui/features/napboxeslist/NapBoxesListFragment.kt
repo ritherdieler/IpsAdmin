@@ -29,19 +29,17 @@ class NapBoxesListFragment : BaseFragment(), OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding =
-            DataBindingUtil.inflate(
-                layoutInflater,
-                R.layout.fragment_nap_boxes_list,
-                null,
+        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_nap_boxes_list, null,
                 true
             )
         observe()
         return binding.root
     }
+
     override fun onNapBoxPopupButtonSelected(napBox: NapBoxResponse, view: View) {
         showPopupMenu(view, napBox)
     }
+
     private fun showPopupMenu(view: View, napBox: NapBoxResponse) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.setOnMenuItemClickListener {
@@ -54,6 +52,7 @@ class NapBoxesListFragment : BaseFragment(), OnItemClickListener {
         popupMenu.inflate(R.menu.nap_box_menu)
         popupMenu.show()
     }
+
     private fun
             navigateToEditSubscription(napBox: NapBoxResponse): Boolean {
         findNavController().navigate(
@@ -88,7 +87,7 @@ class NapBoxesListFragment : BaseFragment(), OnItemClickListener {
         parentFragmentManager.beginTransaction().apply {
             val destination =
                 NapBoxesListFragmentDirections.actionNavSeeNapBoxesToNapBoxeDetailsFragment(
-            napBox
+                    napBox
                 )
             findNavController().navigate(destination)
         }

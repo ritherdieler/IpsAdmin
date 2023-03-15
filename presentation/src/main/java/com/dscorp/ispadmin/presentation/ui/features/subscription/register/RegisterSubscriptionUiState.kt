@@ -22,6 +22,9 @@ sealed class RegisterSubscriptionUiState {
         val unconfirmedOnus: List<Onu>
     ) : RegisterSubscriptionUiState()
 
+    class OnOnuDataFound(val onus:List<Onu>) : RegisterSubscriptionUiState()
+    class OnuDataError(val error:String) : RegisterSubscriptionUiState()
+
     class FiberDevicesFound(val devices: List<NetworkDevice>) : RegisterSubscriptionUiState()
 
     class WirelessDevicesFound(val devices: List<NetworkDevice>) : RegisterSubscriptionUiState()

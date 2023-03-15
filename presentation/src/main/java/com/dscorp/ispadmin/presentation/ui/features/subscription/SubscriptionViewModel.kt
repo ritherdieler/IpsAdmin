@@ -223,6 +223,17 @@ class SubscriptionViewModel(
             registerSubscriptionUiState.emit(LoadingData(false))
         }
     }
+    fun getOnuData() = viewModelScope.launch {
+        try {
+            val unconfirmedOnusJob = async { repository.getUnconfirmedOnus() }
+            val unconfirmedOnus = unconfirmedOnusJob.await()
+            registerSubscriptionUiState.emit(OnOnuDataFound(unconfirmedOnus))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            registerSubscriptionUiState.emit(OnuDataError(e.message.toString()))
+        }
+    }
+
 
     fun getFiberDevices() = viewModelScope.launch {
         fiberCpeDevices.collectLatest {

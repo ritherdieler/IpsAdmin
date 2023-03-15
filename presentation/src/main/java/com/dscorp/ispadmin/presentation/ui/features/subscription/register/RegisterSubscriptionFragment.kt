@@ -51,6 +51,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.lifecycleOwner = this
         binding.executePendingBindings()
         viewModel.getFormData()
+        binding.ivRefresh.setOnClickListener {
+            viewModel.getOnuData()
+        }
         observeState()
         observeMapDialogResult()
 
@@ -149,7 +152,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
             viewModel.phoneField.value = text.toString()
         }
         binding.etPriceSubscription.doOnTextChanged { text, start, before, count ->
-            viewModel.priceField.value = if (text.isNullOrEmpty()) null else text.toString().toDouble()
+            viewModel.priceField.value =
+                if (text.isNullOrEmpty()) null else text.toString().toDouble()
         }
         binding.etCupon.doOnTextChanged { text, start, before, count ->
             viewModel.couponField.value = text.toString()
@@ -194,17 +198,25 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is FormDataError -> showErrorDialog(response.error)
                 is FiberDevicesFound -> fillCpeDeviceSpinner(response.devices)
                 is WirelessDevicesFound -> fillCpeDeviceSpinner(response.devices)
-                is LoadingData -> {
-                    binding.viewLoading.visibility =
-                        if (response.loading) View.VISIBLE else View.GONE
-                    binding.viewContainer.visibility =
-                        if (response.loading) View.GONE else View.VISIBLE
+                is LoadingData -> showLoadingStatus(response)
+                is LoadingLogin -> binding.btnRegisterSubscription.isEnabled = !response.loading
+                is OnOnuDataFound ->{
+                    binding.acOnu.populate(response.onus) {
+                            viewModel.onuField.value = it
+                    }
                 }
-                is LoadingLogin -> {
-                    binding.btnRegisterSubscription.isEnabled = !response.loading
-                }
+                is OnuDataError -> showErrorDialog(response.error)
             }
         }
+    }
+
+
+
+    private fun showLoadingStatus(response: LoadingData) {
+        binding.viewLoading.visibility =
+            if (response.loading) View.VISIBLE else View.GONE
+        binding.viewContainer.visibility =
+            if (response.loading) View.GONE else View.VISIBLE
     }
 
     private fun fillCpeDeviceSpinner(devices: List<NetworkDevice>) {
