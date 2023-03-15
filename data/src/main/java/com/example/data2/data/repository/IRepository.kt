@@ -4,6 +4,7 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.cleanarchitecture.domain.domain.entity.Onu
+import kotlinx.coroutines.Job
 
 /**
  * Created by Sergio Carrillo Diestra on 25/12/2022.
@@ -21,7 +22,7 @@ interface IRepository {
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
     suspend fun getGenericDevices(): List<NetworkDevice>
-    suspend fun registerSubscription(doSubscription: Subscription): Subscription
+    suspend fun registerSubscription(subscription: Subscription): Subscription
     suspend fun getPlans(): List<PlanResponse>
     suspend fun getDevices(): List<NetworkDeviceResponse>
     suspend fun getSubscriptions(): List<SubscriptionResponse>

@@ -8,7 +8,7 @@ package com.example.cleanarchitecture.domain.domain.entity
  *
  **/
 class Subscription(
-    var id: Int? = null,
+    var subscriptionId: Int? = null,
     var firstName: String? = null,
     var lastName: String? = null,
     var dni: String? = null,
@@ -38,7 +38,7 @@ class Subscription(
 
     override fun equals(other: Any?): Boolean {
         return if (other is Subscription) {
-            other.id == id
+            other.subscriptionId == subscriptionId
         } else {
             false
         }

@@ -5,36 +5,48 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".presentation.ui.features.subscription.register.RegisterSubscriptionFragment">
 
         <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:fillViewport="true">
 
             <LinearLayout
+                android:id="@+id/viewContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="20dp">
+                android:gravity="center">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlFirstName"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:hint="Nombres"
-                    app:endIconMode="clear_text">
+                    app:endIconMode="clear_text"
+                    android:focusable="false"
+                    app:endIconTint="#6750A4"
+                    tools:hint="@string/name">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
+                        android:focusable="false"
                         android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -44,106 +56,42 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:hint="Apellidos"
-                    app:endIconMode="clear_text">
+                    android:focusable="false"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
+                    tools:hint="@string/lastName">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLastName"
                         android:layout_width="match_parent"
+                        android:focusable="false"
                         android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlDni"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:hint="DNI"
                     app:counterEnabled="true"
+                    android:focusable="false"
                     app:counterMaxLength="8"
-                    app:endIconMode="clear_text">
+                    app:counterTextColor="@color/purple_base_app"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
+                    tools:hint="@string/dni">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etDni"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:focusable="false"
                         android:inputType="number"
                         android:maxLength="8" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlPassword"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Contraseña"
-                    app:counterEnabled="true"
-                    app:counterMaxLength="20"
-                    app:endIconMode="password_toggle">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPassword"
-                        android:maxLength="20" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlAddress"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Dirección"
-                    app:endIconMode="clear_text">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlLocationSubscription"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:focusable="false"
-                    android:hint="Ubicación"
-                    app:endIconMode="clear_text">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etLocationSubscription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="false" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlPhone"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="Numero de telefono"
-                    app:endIconMode="clear_text"
-
-                    >
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:maxLength="9" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -152,8 +100,10 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/plan">
+                    android:layout_marginHorizontal="20dp"
+                    android:error="@{viewModel.planField.errorLiveData}"
+                    android:hint="@{viewModel.planField.hint}"
+                    tools:hint="@string/plan">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etPlan"
@@ -164,100 +114,19 @@
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/spnNetworkDeviceOne"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/installed_device">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/etNetworkDeviceOne"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        tools:ignore="LabelFor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/spnNetworkDeviceTwo"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/installed_device">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/etNetworkDeviceTwo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        tools:ignore="LabelFor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/spnPlace"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/lugar">
-
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/etPlace"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        tools:ignore="LabelFor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/spnNapBox"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/nap_box">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/etNapBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        tools:ignore="LabelFor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/spnHostDevice"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/installed_device">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/etHostDevice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        tools:ignore="LabelFor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
                 <Button
-                    android:id="@+id/btnRegisterSubscription"
+                    android:id="@+id/btnEditSubscription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:text="@string/save_changes" />
+                    android:enabled="true"
+                    android:text="Editar" />
+
+
+
             </LinearLayout>
-
         </ScrollView>
-
 
     </LinearLayout>
 </layout>
