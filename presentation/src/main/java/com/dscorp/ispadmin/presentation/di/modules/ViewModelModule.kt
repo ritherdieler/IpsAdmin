@@ -22,6 +22,7 @@ import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.technicianlist.TechnicianListViewModel
@@ -63,4 +64,6 @@ val viewModelModule = module {
     viewModel { PlaceListViewModel() }
     viewModel { TechnicianListViewModel() }
     viewModel { MufaViewmodel() }
+    viewModel { EditSubscriptionViewModel(get()) }
+
 }

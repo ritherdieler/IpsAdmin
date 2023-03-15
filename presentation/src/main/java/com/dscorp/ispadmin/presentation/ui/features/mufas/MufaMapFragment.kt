@@ -1,7 +1,10 @@
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.launch
@@ -59,22 +63,34 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
         this.mufas = mufas
         for (mufa in mufas) {
             val latLng = LatLng((mufa.latitude ?: 0.0), (mufa.longitude ?: 0.0))
-            val marker =
-                googleMap.addMarker(MarkerOptions().position(latLng).title(mufa.reference))?.apply {
-                    tag = mufa.id
-                }
-
+            val markerOptions = MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(R.drawable.ic_person)))
+                .title(mufa.reference)
+            val marker = googleMap.addMarker(markerOptions)?.apply {
+                tag = mufa.id
+            }
         }
     }
+
+    private fun getBitmapFromVectorDrawable(drawableId: Int): Bitmap {
+        val drawable = context?.let { ContextCompat.getDrawable(it, drawableId) }
+        drawable?.let {
+            val bitmap = Bitmap.createBitmap(it.intrinsicWidth, it.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            it.setBounds(0, 0, canvas.width, canvas.height)
+            it.draw(canvas)
+            return bitmap
+        }
+        throw IllegalArgumentException("Invalid drawable passed.")
+    }
+
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         val santaRosa = LatLng(-11.234996, -77.380347)
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(santaRosa))
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.5f))
-        googleMap.addMarker(
-            MarkerOptions().position(santaRosa).title("La Villa - Irrigacion Santa Rosa")
-        )
         googleMap.setOnMarkerClickListener { marker ->
 
             val markerTag = marker.tag

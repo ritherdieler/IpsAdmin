@@ -18,7 +18,7 @@ import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = KoinAppForInstrumentation::class)
-class RegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
+class RegisterEditSubscriptionViewModelTest : AutoCloseKoinTest() {
     private lateinit var repository: IRepository
 
     @Before
