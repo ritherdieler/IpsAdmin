@@ -139,25 +139,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlCupon"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="20dp"
-                    android:error="@{viewModel.couponField.errorLiveData}"
-                    android:hint="@{viewModel.couponField.hint}"
-                    app:endIconMode="clear_text"
-                    app:endIconTint="#6750A4"
-                    tools:hint="Cupon">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etCupon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlPriceSubscription"
@@ -301,26 +282,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlPriceSubscription"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:error="@{viewModel.priceField.errorLiveData}"
-                    android:hint="@{viewModel.priceField.hint}"
-                    app:endIconMode="clear_text"
-                    app:endIconTint="#6750A4"
-                    tools:hint="Precio">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPriceSubscription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
                 <TextView
                     android:id="@+id/tvInstallationType"
                     android:layout_width="wrap_content"
@@ -426,8 +387,8 @@
                         android:layout_width="46dp"
                         android:layout_height="46dp"
                         android:layout_marginTop="16dp"
-                        android:scaleType="centerCrop"
                         android:backgroundTint="@color/white"
+                        android:scaleType="centerCrop"
                         app:srcCompat="@drawable/baseline_refresh_24" />
 
                 </LinearLayout>
@@ -436,8 +397,8 @@
                     android:id="@+id/chkAdditionalDevices"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="20dp"
                     android:text="@string/installing_additionals"
                     android:visibility="gone" />
 
@@ -500,6 +461,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:layout_marginHorizontal="20dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -544,19 +506,12 @@
                     android:text="Registrar" />
 
 
-
             </LinearLayout>
         </ScrollView>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/viewLoading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible"
-            tools:visibility="gone">
 
-            <include layout="@layout/shimmer_register_subscription" />
+        <include layout="@layout/shimmer_register_subscription" />
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/viewLoading"
             android:layout_width="match_parent"

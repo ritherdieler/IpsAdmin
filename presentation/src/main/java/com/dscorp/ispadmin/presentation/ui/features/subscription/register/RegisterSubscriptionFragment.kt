@@ -195,31 +195,20 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is FormDataError -> showErrorDialog(response.error)
                 is FiberDevicesFound -> fillCpeDeviceSpinner(response.devices)
                 is WirelessDevicesFound -> fillCpeDeviceSpinner(response.devices)
-                is LoadingData -> {
-                    binding.viewLoading.visibility =
-                        if (response.loading) View.VISIBLE else View.GONE
-                    binding.viewContainer.visibility =
-                        if (response.loading) View.GONE else View.VISIBLE
-                }
-                is LoadingLogin -> {
-                    binding.btnRegisterSubscription.isEnabled = !response.loading
-                }
                 is CouponIsValid -> showCouponActivationResponse(response.isValid)
                 is GenericError -> showErrorDialog(response.error)
-            }
-        }
                 is LoadingData -> showLoadingStatus(response)
                 is LoadingLogin -> binding.btnRegisterSubscription.isEnabled = !response.loading
                 is OnOnuDataFound ->{
                     binding.acOnu.populate(response.onus) {
-                            viewModel.onuField.value = it
+                        viewModel.onuField.value = it
                     }
                 }
                 is OnuDataError -> showErrorDialog(response.error)
             }
         }
-    }
 
+    }
 
 
     private fun showLoadingStatus(response: LoadingData) {
@@ -230,7 +219,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun showCouponActivationResponse(couponIsValid: Boolean) {
-        if (couponIsValid) Toast.makeText(requireContext(), "Cupon valido", Toast.LENGTH_SHORT).show()
+        if (couponIsValid) Toast.makeText(requireContext(), "Cupon valido", Toast.LENGTH_SHORT)
+            .show()
         else Toast.makeText(requireContext(), "Cupon no valido", Toast.LENGTH_SHORT).show()
     }
 
