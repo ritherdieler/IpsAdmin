@@ -83,7 +83,7 @@
                 android:id="@+id/tvSeeCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{placeList.abbreviation}"
+                android:text="@{placeList.name}"
                 app:layout_constraintBottom_toBottomOf="@+id/tvCodeNapBox"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeeNapBoxId"
                 app:layout_constraintStart_toStartOf="@+id/tvSeeNapBoxId"

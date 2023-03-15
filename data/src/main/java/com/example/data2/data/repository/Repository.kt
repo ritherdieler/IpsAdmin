@@ -44,9 +44,14 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun saveUserSession(user: User, rememberSessionCheckBoxStatus: Boolean) {
+    override suspend fun saveUserSession(user: User, rememberSessionCheckBoxStatus: Boolean?) {
         val editor = prefs.edit()
-        editor.putBoolean(REMEMBER_CHECKBOX_STATUS, rememberSessionCheckBoxStatus)
+        rememberSessionCheckBoxStatus?.let {
+            editor.putBoolean(
+                REMEMBER_CHECKBOX_STATUS,
+                rememberSessionCheckBoxStatus
+            )
+        }
         editor.putString(SESSION_NAME, user.name)
         editor.putString(SESSION_LAST_NAME, user.lastName)
         editor.putString(SESSION_USER_NAME, user.username)
@@ -73,12 +78,6 @@ class Repository : IRepository, KoinComponent {
             null
         }
 
-    }
-
-    override suspend fun saveCheckBox(login: Loging) {
-        val editor = prefs.edit()
-        editor.putBoolean("checkbox", login.checkBox)
-        editor.apply()
     }
 
     override suspend fun clearUserSession() {
@@ -400,5 +399,17 @@ class Repository : IRepository, KoinComponent {
         val response = restApiServices.getUnconfirmedOnus()
         return if (response.code() == 200) response.body()!!
         else throw Exception("Error generico")
+    }
+
+    override suspend fun applyCoupon(code: String): Coupon? {
+
+        val response = restApiServices.applyCoupon(code)
+
+        return when (response.code()) {
+            200 -> response.body()
+            404 -> null
+            else -> throw Exception("Ocurrio un error en la activacion del cupon")
+        }
+
     }
 }

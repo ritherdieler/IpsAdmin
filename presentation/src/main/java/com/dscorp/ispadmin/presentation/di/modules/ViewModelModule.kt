@@ -16,7 +16,7 @@ import com.dscorp.ispadmin.presentation.ui.features.place.PlaceViewModel
 import com.dscorp.ispadmin.presentation.ui.features.place.placelist.PlaceListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.plan.PlanViewModel
 import com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListViewModel
-import com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileViewmodel
+import com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileViewModel
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListViewModel
@@ -51,7 +51,7 @@ val viewModelModule = module {
     viewModel { FindSubscriptionViewModel() }
     viewModel { RegisterPaymentViewModel(get()) }
     viewModel { IpPoolViewModel() }
-    viewModel { MyProfileViewmodel() }
+    viewModel { MyProfileViewModel() }
     viewModel { MainActivityViewModel(get()) }
     viewModel { ReportsViewModel(get()) }
     viewModel { DashBoardViewModel() }

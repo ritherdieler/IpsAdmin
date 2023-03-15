@@ -129,5 +129,8 @@ interface RestApiServices {
 
     @GET("onu/unconfigured_onus")
     suspend fun getUnconfirmedOnus():Response<List<Onu>>
+
+    @GET("subscription/apply-coupon/{code}")
+    suspend fun applyCoupon(@Path("code") code:String): Response<Coupon?>
 }
 

@@ -5,7 +5,6 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardDataUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
@@ -14,11 +13,12 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
 import com.example.data2.data.repository.IRepository
-import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SubscriptionViewModel(
@@ -86,8 +86,8 @@ class SubscriptionViewModel(
     )
     val couponField = FormField(
         hintResourceId = R.string.coupon,
-        errorResourceId = R.string.invalidCoupon,
-        fieldValidator = object : FieldValidator<String?> {
+        errorResourceId = R.string.fieldMustNotBeEmpty,
+        fieldValidator = object : FieldValidator<String> {
             override fun validate(fieldValue: String?): Boolean =
                 !fieldValue.isNullOrEmpty()
         }
@@ -238,6 +238,17 @@ class SubscriptionViewModel(
         }
     }
 
+    fun activateCoupon() = viewModelScope.launch {
+        try {
+            val response = repository.applyCoupon(couponField.value!!)
+            if (response != null) registerSubscriptionUiState.emit(CouponIsValid(true))
+            else registerSubscriptionUiState.emit(CouponIsValid(false))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            registerSubscriptionUiState.emit(GenericError(e.message))
+        }
+    }
+
     fun registerSubscription() = viewModelScope.launch {
 
         try {
@@ -343,6 +354,7 @@ class SubscriptionViewModel(
                 phoneField,
                 priceField,
                 couponField,
+                couponField,
                 locationField,
                 planField,
                 placeField,
@@ -358,7 +370,7 @@ class SubscriptionViewModel(
             it.emitErrorIfExists()
         }
 
-        return fields.all { it.isValid } && installationType != null
+        return fields.all { it.isValid == true } && installationType != null
     }
 
     fun addSelectedAdditionalNetworkDeviceToList() {

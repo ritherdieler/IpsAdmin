@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,21 +18,22 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlUser"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="32dp"
-            android:hint="@string/escriba_su_usuario"
-            app:boxCornerRadiusTopStart="20dp"
-            app:boxCornerRadiusBottomEnd="20dp"
-            app:boxCornerRadiusTopEnd="20dp"
-            app:boxBackgroundColor="#2DD0BCFF"
+            android:error="@{viewModel.username.errorLiveData}"
+            android:hint="@{ viewModel.username.hint}"
             android:textColorHint="@color/purple_base_app"
+            app:boxBackgroundColor="#2DD0BCFF"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
             app:endIconMode="password_toggle"
             app:endIconTint="@color/purple_base_app"
-            app:boxCornerRadiusBottomStart="20dp"
             app:layout_constraintBottom_toTopOf="@+id/tlPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -39,28 +43,28 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUser"
-                android:text="DragonForce"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                />
+                android:onTextChanged="@{(text, start, before, count) -> viewModel.onUsernameTextChanged(text)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tlPassword"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_marginTop="20dp"
-            android:hint="@string/escriba_su_contrasena"
-            app:endIconMode="password_toggle"
-            app:endIconTint="@color/purple_base_app"
-            app:boxCornerRadiusTopStart="20dp"
-            app:boxCornerRadiusBottomEnd="20dp"
-            app:boxCornerRadiusTopEnd="20dp"
-            app:boxCornerRadiusBottomStart="20dp"
+            android:error="@{viewModel.password.errorLiveData}"
+            android:hint="@{ viewModel.password.hint}"
             android:textColorHint="@color/purple_base_app"
             app:boxBackgroundColor="#2DD0BCFF"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/purple_base_app"
             app:layout_constraintBottom_toTopOf="@+id/cbCheckBox"
             app:layout_constraintEnd_toEndOf="@+id/tlUser"
             app:layout_constraintStart_toStartOf="@+id/tlUser"
@@ -70,9 +74,8 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="contrasena"
                 android:inputType="textPassword"
-                />
+                android:onTextChanged="@{(text, start, before, count) -> viewModel.onPasswordTextChanged(text)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,6 +87,7 @@
             android:layout_marginTop="10dp"
             android:backgroundTint="@color/purple_base_app"
             android:gravity="center"
+            android:onClick="@{() -> viewModel.doLogin()}"
             android:text="@string/iniciar_sesion"
             android:textColor="@color/white"
             android:textSize="14sp"
@@ -95,16 +99,16 @@
 
         <Button
             android:id="@+id/tvCreateAccount"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:backgroundTint="@color/purple_base_app"
             android:gravity="center"
             android:text="@string/crear_cuenta"
-            app:cornerRadius="20dp"
-            android:backgroundTint="@color/purple_base_app"
             android:textColor="@color/white"
             android:textSize="15sp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            app:cornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/btLogin"
             app:layout_constraintStart_toStartOf="@+id/btLogin"
@@ -112,23 +116,25 @@
 
         <CheckBox
             android:id="@+id/cbCheckBox"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/guardar_usuario"
+            android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.onCheckedChanged(isChecked)}"
+            android:text="@string/saveSession"
             app:buttonTint="@color/purple_base_app"
             app:layout_constraintBottom_toTopOf="@id/btLogin"
             app:layout_constraintStart_toStartOf="@+id/tlPassword"
             app:layout_constraintTop_toBottomOf="@id/tlPassword" />
+
         <ProgressBar
             android:id="@+id/pbLoading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

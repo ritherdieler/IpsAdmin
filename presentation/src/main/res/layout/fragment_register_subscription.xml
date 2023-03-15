@@ -31,8 +31,7 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="20dp"
                 android:visibility="gone"
-                tools:visibility="visible"
-                >
+                tools:visibility="visible">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlFirstName"
@@ -134,46 +133,7 @@
                         android:maxLength="9" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlCupon"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:error="@{viewModel.couponField.errorLiveData}"
-                    android:hint="@{viewModel.couponField.hint}"
-                    app:endIconMode="clear_text"
-                    app:endIconTint="#6750A4"
-                    tools:hint="Cupon">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etCupon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                         />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlPriceSubscription"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:error="@{viewModel.priceField.errorLiveData}"
-                    android:hint="@{viewModel.priceField.hint}"
-                    app:endIconMode="clear_text"
-                    app:endIconTint="#6750A4"
-                    tools:hint="Precio">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPriceSubscription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
-                        />
-
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlLocationSubscription"
@@ -287,6 +247,26 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:focusable="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlPriceSubscription"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.priceField.errorLiveData}"
+                    android:hint="@{viewModel.priceField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
+                    tools:hint="Precio">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPriceSubscription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -440,25 +420,64 @@
 
                 </LinearLayout>
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tlCupon"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:error="@{viewModel.couponField.errorLiveData}"
+                        android:hint="@{viewModel.couponField.hint}"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="#6750A4"
+                        tools:hint="Cupon">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etCupon"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnActivateCoupon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:enabled="@{viewModel.couponField.isValidObservable}"
+                        android:onClick="@{() -> viewModel.activateCoupon()}"
+                        android:text="@string/activate" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <Button
                     android:id="@+id/btnRegisterSubscription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
                     android:enabled="true"
                     android:text="Registrar" />
 
             </LinearLayout>
         </ScrollView>
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/viewLoading"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="visible">
-                <include layout="@layout/shimmer_register_subscription"/>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/viewLoading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            <include layout="@layout/shimmer_register_subscription" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </LinearLayout>
 </layout>

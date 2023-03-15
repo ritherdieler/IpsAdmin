@@ -12,6 +12,8 @@ import com.example.cleanarchitecture.domain.domain.entity.Onu
  *
  **/
 sealed class RegisterSubscriptionUiState {
+    class GenericError(val error:String?) : RegisterSubscriptionUiState()
+
     class FormDataFound(
         val plans: List<PlanResponse>,
         val networkDevices: List<NetworkDevice>,
@@ -34,4 +36,5 @@ sealed class RegisterSubscriptionUiState {
 
     class LoadingData(val loading: Boolean) : RegisterSubscriptionUiState()
     class LoadingLogin(val loading: Boolean) : RegisterSubscriptionUiState()
+    class CouponIsValid(val isValid: Boolean) : RegisterSubscriptionUiState()
 }

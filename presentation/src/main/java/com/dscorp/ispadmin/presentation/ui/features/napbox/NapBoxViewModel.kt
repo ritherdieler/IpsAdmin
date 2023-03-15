@@ -96,7 +96,7 @@ class NapBoxViewModel(val repository :IRepository) : ViewModel() {
         for (field in fields) {
             field.isValid
         }
-        return fields.all { it.isValid }
+        return fields.all { it.isValid == true }
     }
 
     private fun editFormIsValid(napBox: NapBox): Boolean {

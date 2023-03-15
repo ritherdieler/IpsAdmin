@@ -112,7 +112,6 @@
     <string name="coupon">Cupón</string>
     <string name="invalidPhoneNumber">Número de teléfono no valido</string>
     <string name="invalidPrice">Precio no valido</string>
-    <string name="invalidCoupon">Cupón no valido</string>
     <string name="place">Lugar</string>
     <string name="mustSelectPlan">Seleccione un plan</string>
     <string name="mustSelectPlace">Seleccione un lugar</string>
@@ -137,8 +136,12 @@
     <string name="subscription_register_success">El cliente fue registrado con exito\n<b>Ip: %s</b></string>
     <string name="iniciar_sesion">Iniciar Sesion</string>
     <string name="crear_cuenta">Crear Cuenta</string>
-    <string name="guardar_usuario">Guardar Usuario</string>
     <string name="escriba_su_contrasena">Escriba su Contrasena</string>
     <string name="escriba_su_usuario">Escriba su usuario</string>
+    <string name="activate">Activar</string>
+    <string name="mustDigiUsername">Debes digitar tu nombre de usuario</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="mustDigitPassword">Debe digitar su contraseña</string>
+    <string name="saveSession">Mantener sesión iniciada</string>
 
 </resources>

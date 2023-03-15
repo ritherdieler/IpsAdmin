@@ -8,13 +8,15 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.java.KoinJavaComponent
 
-class MyProfileViewmodel : ViewModel(), KoinComponent {
+class MyProfileViewModel : ViewModel(), KoinComponent {
     private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
     val myProfileLiveData = MutableLiveData<MyProfileResponse>()
     init {
         viewModelScope.launch {
             val response = repository.getUserSession()
-            myProfileLiveData.postValue(MyProfileResponse.UserSessionFound(response!!))
+            response?.let {
+                myProfileLiveData.postValue(MyProfileResponse.UserSessionFound(it))
+            }
         }
     }
     fun logOut() {

@@ -2,14 +2,11 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
-import androidx.core.view.isVisible
+import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -149,7 +146,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
             viewModel.phoneField.value = text.toString()
         }
         binding.etPriceSubscription.doOnTextChanged { text, start, before, count ->
-            viewModel.priceField.value = if (text.isNullOrEmpty()) null else text.toString().toDouble()
+            viewModel.priceField.value =
+                if (text.isNullOrEmpty()) null else text.toString().toDouble()
         }
         binding.etCupon.doOnTextChanged { text, start, before, count ->
             viewModel.couponField.value = text.toString()
@@ -203,8 +201,16 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is LoadingLogin -> {
                     binding.btnRegisterSubscription.isEnabled = !response.loading
                 }
+                is CouponIsValid -> showCouponActivationResponse(response.isValid)
+                is GenericError -> showErrorDialog(response.error)
             }
         }
+    }
+
+    private fun showCouponActivationResponse(couponIsValid: Boolean) {
+        if (couponIsValid) Toast.makeText(requireContext(), "Cupon valido", Toast.LENGTH_SHORT)
+            .show()
+        else Toast.makeText(requireContext(), "Cupon no valido", Toast.LENGTH_SHORT).show()
     }
 
     private fun fillCpeDeviceSpinner(devices: List<NetworkDevice>) {
@@ -265,9 +271,12 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
         datePicker.addOnPositiveButtonClickListener {
             viewModel.subscriptionDateField.value = it
-            val formatter = SimpleDateFormat("dd/MM/yyyy")
-            formatter.timeZone = TimeZone.getTimeZone("UTC")
-            val formattedDate = formatter.format(it)
+
+            //Long date to local zone
+            val date = Date(it)
+            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.)
+            val formattedDate = formatter.format(date)
+
             binding.etSubscriptionDate.setText(formattedDate)
         }
 

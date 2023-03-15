@@ -15,7 +15,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyProfileFragment : Fragment() {
     lateinit var binding: FragmentMyProfileBinding
-    val viewModel: MyProfileViewmodel by viewModel()
+    val viewModel: MyProfileViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

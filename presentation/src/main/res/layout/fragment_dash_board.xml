@@ -2,162 +2,163 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="dashboardDataResponse"
             type="com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse" />
     </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/viewContainer"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            tools:visibility="visible"
-            >
+            android:fillViewport="true">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/viewContainer"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginHorizontal="30dp"
-                android:layout_marginTop="32dp"
-                android:backgroundTint="@color/purple_claro_fondo"
-                android:elevation="20dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/cardView2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
 
-                <TextView
-                    android:id="@+id/tv_gross_revenue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{dashboardDataResponse.grossRevenueAsString()}"
-                    android:textSize="20sp"
-                    tools:text="Total Cases" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="32dp"
+                    android:backgroundTint="@color/purple_claro_fondo"
+                    android:elevation="20dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp"
+                    app:layout_constraintBottom_toTopOf="@+id/cardView2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/tv_gross_revenue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@{dashboardDataResponse.grossRevenueAsString()}"
+                        android:textSize="20sp"
+                        tools:text="Total Cases" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView2"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginHorizontal="30dp"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="@color/purple_claro_fondo"
-                android:elevation="20dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/cardView3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView">
+                </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/tv_total_to_collect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{dashboardDataResponse.totalToCollectAsString}"
-                    android:textSize="20sp"
-                    tools:text="Total Active Cases" />
-            </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="24dp"
+                    android:backgroundTint="@color/purple_claro_fondo"
+                    android:elevation="20dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp"
+                    app:layout_constraintBottom_toTopOf="@+id/cardView3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView3"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginHorizontal="30dp"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="@color/purple_claro_fondo"
-                android:elevation="20dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/cardView4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView2">
+                    <TextView
+                        android:id="@+id/tv_total_to_collect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@{dashboardDataResponse.totalToCollectAsString}"
+                        android:textSize="20sp"
+                        tools:text="Total Active Cases" />
+                </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/tv_total_raised"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{dashboardDataResponse.totalRaisedAsString()}"
-                    android:textSize="20sp"
-                    tools:text="Total Deaths" />
-            </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="24dp"
+                    android:backgroundTint="@color/purple_claro_fondo"
+                    android:elevation="20dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp"
+                    app:layout_constraintBottom_toTopOf="@+id/cardView4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView4"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginHorizontal="30dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
-                android:backgroundTint="@color/purple_claro_fondo"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/btnStartCut"
-                app:layout_constraintEnd_toEndOf="@+id/cardView3"
-                app:layout_constraintStart_toStartOf="@+id/cardView3"
-                app:layout_constraintTop_toBottomOf="@+id/cardView3">
+                    <TextView
+                        android:id="@+id/tv_total_raised"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@{dashboardDataResponse.totalRaisedAsString()}"
+                        android:textSize="20sp"
+                        tools:text="Total Deaths" />
+                </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/tv_total_discount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="@{dashboardDataResponse.totalDiscountAsString}"
-                    android:textSize="20sp"
-                    tools:text="Total Recovered" />
-            </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView4"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:backgroundTint="@color/purple_claro_fondo"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp"
+                    app:layout_constraintBottom_toTopOf="@+id/btnStartCut"
+                    app:layout_constraintEnd_toEndOf="@+id/cardView3"
+                    app:layout_constraintStart_toStartOf="@+id/cardView3"
+                    app:layout_constraintTop_toBottomOf="@+id/cardView3">
+
+                    <TextView
+                        android:id="@+id/tv_total_discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@{dashboardDataResponse.totalDiscountAsString}"
+                        android:textSize="20sp"
+                        tools:text="Total Recovered" />
+                </androidx.cardview.widget.CardView>
 
 
-            <Button
-                android:id="@+id/btnStartCut"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginHorizontal="30dp"
-                android:layout_marginBottom="32dp"
-                android:backgroundTint="@color/purple_base_app"
-                android:elevation="20dp"
-                android:text="Iniciar corte"
-                android:textColor="@color/white"
-                android:textSize="14dp"
-                app:cornerRadius="20dp"
-                app:iconPadding="10dp"
-                app:iconSize="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                <Button
+                    android:id="@+id/btnStartCut"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginBottom="32dp"
+                    android:backgroundTint="@color/purple_base_app"
+                    android:elevation="20dp"
+                    android:text="Iniciar corte"
+                    android:textColor="@color/white"
+                    android:textSize="14dp"
+                    app:cornerRadius="20dp"
+                    app:iconPadding="10dp"
+                    app:iconSize="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
+        </ScrollView>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/shimmerDashBoard"
@@ -167,7 +168,7 @@
             android:visibility="visible"
             tools:visibility="gone">
 
-            <include layout="@layout/shimmer_dash_board"/>
+            <include layout="@layout/shimmer_dash_board" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </LinearLayout>

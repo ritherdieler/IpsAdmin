@@ -73,11 +73,11 @@
             android:id="@+id/see_technician_list"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="Ver Lista de tecnicos"/>
-
+-->
         <item
             android:id="@+id/nav_mufa"
             android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/Mufas" />-->
+            android:title="@string/Mufas" />
 
         <item
             android:id="@+id/nav_ip_pool"

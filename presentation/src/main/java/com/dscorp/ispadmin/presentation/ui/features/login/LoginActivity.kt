@@ -18,23 +18,23 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : BaseActivity() {
-    lateinit var binding: ActivityLoginBinding
+    val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     val viewModel: LoginViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_login, null, true)
         setContentView(binding.root)
-        observe()
 
-        binding.btLogin.setOnClickListener {
-            firebaseAnalytics.sendLoginEvent(AnalyticsConstants.LOGIN)
-            doLogin()
-        }
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        binding.executePendingBindings()
+
+        observe()
 
         binding.tvCreateAccount.setOnClickListener {
             navigateToRegister()
         }
+
         binding.cbCheckBox.setOnClickListener {
         }
     }
@@ -53,9 +53,9 @@ class LoginActivity : BaseActivity() {
             when (response) {
                 is LoginResponse.OnError -> showErrorDialog(response.error.message)
 
-                is LoginResponse.OnLoginSuccess ->  navigateToMainActivity(response.user)
+                is LoginResponse.OnLoginSuccess -> navigateToMainActivity(response.user)
 
-                is LoginResponse.ShowProgressBarState ->showProgressBar(response.dialogProgress)
+                is LoginResponse.ShowProgressBarState -> showProgressBar(response.dialogProgress)
             }
         }
     }
@@ -80,23 +80,11 @@ class LoginActivity : BaseActivity() {
     }
 
     fun observe() {
-
         observeLoginResponse()
         observeLoginFormError()
     }
 
-    fun doLogin() {
-        val login = Loging(
-            binding.etUser.text.toString(),
-            binding.etPassword.text.toString(),
-            binding.cbCheckBox.isChecked
-        )
-
-        viewModel.doLogin(login)
-    }
-
     private fun navigateToRegister() {
-
         val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
