@@ -48,6 +48,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.lifecycleOwner = this
         binding.executePendingBindings()
         viewModel.getFormData()
+        binding.ivRefresh.setOnClickListener {
+            viewModel.getOnuData()
+        }
         observeState()
         observeMapDialogResult()
 
@@ -205,6 +208,25 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is GenericError -> showErrorDialog(response.error)
             }
         }
+                is LoadingData -> showLoadingStatus(response)
+                is LoadingLogin -> binding.btnRegisterSubscription.isEnabled = !response.loading
+                is OnOnuDataFound ->{
+                    binding.acOnu.populate(response.onus) {
+                            viewModel.onuField.value = it
+                    }
+                }
+                is OnuDataError -> showErrorDialog(response.error)
+            }
+        }
+    }
+
+
+
+    private fun showLoadingStatus(response: LoadingData) {
+        binding.viewLoading.visibility =
+            if (response.loading) View.VISIBLE else View.GONE
+        binding.viewContainer.visibility =
+            if (response.loading) View.GONE else View.VISIBLE
     }
 
     private fun showCouponActivationResponse(couponIsValid: Boolean) {

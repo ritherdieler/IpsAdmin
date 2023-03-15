@@ -29,7 +29,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="20dp"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -38,6 +37,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.firstNameField.errorLiveData}"
                     android:hint="@{viewModel.firstNameField.hint}"
@@ -57,6 +57,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.lastNameField.errorLiveData}"
                     android:hint="@{viewModel.lastNameField.hint}"
@@ -76,6 +77,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.dniField.errorLiveData}"
                     android:hint="@{viewModel.dniField.hint}"
@@ -100,6 +102,8 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+
                     android:error="@{viewModel.addressField.errorLiveData}"
                     android:hint="@{viewModel.addressField.hint}"
                     app:endIconMode="clear_text"
@@ -118,6 +122,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.phoneField.errorLiveData}"
                     android:hint="@{viewModel.phoneField.hint}"
@@ -134,12 +139,53 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlCupon"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.couponField.errorLiveData}"
+                    android:hint="@{viewModel.couponField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
+                    tools:hint="Cupon">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCupon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlPriceSubscription"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.priceField.errorLiveData}"
+                    android:hint="@{viewModel.priceField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
+                    tools:hint="Precio">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPriceSubscription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlLocationSubscription"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.locationField.errorLiveData}"
                     android:focusable="false"
@@ -161,6 +207,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.planField.errorLiveData}"
                     android:hint="@{viewModel.planField.hint}"
@@ -180,6 +227,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.placeField.errorLiveData}"
                     android:hint="@{viewModel.placeField.hint}"
@@ -198,6 +246,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.technicianField.errorLiveData}"
                     android:hint="@{viewModel.technicianField.hint}"
@@ -216,6 +265,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.hostDeviceField.errorLiveData}"
                     android:hint="@{viewModel.hostDeviceField.hint}"
@@ -234,6 +284,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.subscriptionDateField.errorLiveData}"
                     android:focusable="false"
@@ -274,6 +325,7 @@
                     android:id="@+id/tvInstallationType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="24dp"
                     android:text="@string/instalation_type" />
 
@@ -281,6 +333,7 @@
                     android:id="@+id/rgInstallationType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:orientation="horizontal">
 
                     <RadioButton
@@ -304,6 +357,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.cpeDeviceField.errorLiveData}"
                     android:hint="@{viewModel.cpeDeviceField.hint}"
@@ -320,29 +374,11 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlOnu"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:error="@{viewModel.onuField.errorLiveData}"
-                    android:hint="@{viewModel.onuField.hint}"
-                    tools:hint="@string/select_onu"
-                    tools:visibility="visible">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/acOnu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        tools:ignore="LabelFor" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnNapBox"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.napBoxField.errorLiveData}"
                     android:hint="@{viewModel.napBoxField.hint}"
@@ -358,11 +394,50 @@
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:orientation="horizontal">
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tlOnu"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:layout_marginTop="20dp"
+                        android:error="@{viewModel.onuField.errorLiveData}"
+                        android:hint="@{viewModel.onuField.hint}"
+                        tools:hint="@string/select_onu"
+                        tools:visibility="visible">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/acOnu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            tools:ignore="LabelFor" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:id="@+id/ivRefresh"
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:layout_marginTop="16dp"
+                        android:scaleType="centerCrop"
+                        android:backgroundTint="@color/white"
+                        app:srcCompat="@drawable/baseline_refresh_24" />
+
+                </LinearLayout>
+
                 <CheckBox
                     android:id="@+id/chkAdditionalDevices"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:layout_marginHorizontal="20dp"
                     android:text="@string/installing_additionals"
                     android:visibility="gone" />
 
@@ -370,6 +445,7 @@
                     android:id="@+id/llAdditionalDevices"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_weight="1"
                     android:orientation="vertical"
@@ -461,14 +537,26 @@
                     android:id="@+id/btnRegisterSubscription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
                     android:enabled="true"
                     android:text="Registrar" />
 
+
+
             </LinearLayout>
         </ScrollView>
 
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/viewLoading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible"
+            tools:visibility="gone">
+
+            <include layout="@layout/shimmer_register_subscription" />
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/viewLoading"
             android:layout_width="match_parent"
