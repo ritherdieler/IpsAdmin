@@ -9,6 +9,7 @@ import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
+import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -49,7 +50,6 @@ class EditSubscriptionViewModel(
     }
 
     fun editarSubscription() = viewModelScope.launch {
-
         try {
             if (!formIsValid()) return@launch
             val subscription = createSubscription()
@@ -62,11 +62,11 @@ class EditSubscriptionViewModel(
         }
     }
 
-    private fun createSubscription(): Subscription {
+    private fun createSubscription(): UpdateSubscriptionPlanBody {
         if (!formIsValid()) throw Exception("Form is not valid")
 
-        return Subscription(
-            subscriptionId= subscription?.id,
+        return UpdateSubscriptionPlanBody(
+            subscriptionId= subscription?.id!!,
             planId = planField.value?.id!!,
         )
     }

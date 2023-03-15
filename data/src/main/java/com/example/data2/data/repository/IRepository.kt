@@ -4,6 +4,7 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import kotlinx.coroutines.Job
 
 /**
@@ -43,7 +44,7 @@ interface IRepository {
     suspend fun getIpPoolList(): List<IpPool>
     suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit: Int): List<Payment>
     suspend fun getCoreDevices(): List<NetworkDevice>
-    suspend fun editSubscription(subscription: Subscription): SubscriptionResponse
+    suspend fun editSubscription(subscription: UpdateSubscriptionPlanBody): SubscriptionResponse
     suspend fun downloadDebtorsDocument(): DownloadDocumentResponse
     suspend fun getDashBoardData(): DashBoardDataResponse
     suspend fun startServicetCut()

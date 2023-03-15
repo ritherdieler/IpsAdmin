@@ -208,8 +208,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun showCouponActivationResponse(couponIsValid: Boolean) {
-        if (couponIsValid) Toast.makeText(requireContext(), "Cupon valido", Toast.LENGTH_SHORT)
-            .show()
+        if (couponIsValid) Toast.makeText(requireContext(), "Cupon valido", Toast.LENGTH_SHORT).show()
         else Toast.makeText(requireContext(), "Cupon no valido", Toast.LENGTH_SHORT).show()
     }
 
@@ -271,12 +270,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
         datePicker.addOnPositiveButtonClickListener {
             viewModel.subscriptionDateField.value = it
-
-            //Long date to local zone
-            val date = Date(it)
-            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.)
-            val formattedDate = formatter.format(date)
-
+            val formatter = SimpleDateFormat("dd/MM/yyyy")
+            formatter.timeZone = TimeZone.getTimeZone("UTC")
+            val formattedDate = formatter.format(it)
             binding.etSubscriptionDate.setText(formattedDate)
         }
 

@@ -3,6 +3,7 @@ package com.example.data2.data.api
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -103,8 +104,8 @@ interface RestApiServices {
     @GET("networkDevice/coreTypes")
     suspend fun getCoreDevices(): Response<List<NetworkDevice>>
 
-    @PUT("subscription")
-    suspend fun editSubscription(@Body subscription: Subscription): Response<SubscriptionResponse>
+    @PUT("subscription/update-plan")
+    suspend fun editSubscription(@Body subscription: UpdateSubscriptionPlanBody): Response<SubscriptionResponse>
 
     @GET("subscription/debtors-document")
     suspend fun downloadDebtorsDocument(): Response<DownloadDocumentResponse>
