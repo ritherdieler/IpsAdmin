@@ -106,12 +106,14 @@ class RegisterSubscriptionFragment : BaseFragment() {
                     viewModel.getFiberDevices()
                     binding.spnNapBox.visibility = View.VISIBLE
                     binding.tlOnu.visibility = View.VISIBLE
+                    binding.ivRefresh.visibility= View.VISIBLE
                 }
                 R.id.rbWireless -> {
                     viewModel.installationType = InstallationType.WIRELESS
                     viewModel.getWirelessDevices()
                     binding.spnNapBox.visibility = View.GONE
                     binding.tlOnu.visibility = View.GONE
+                    binding.ivRefresh.visibility= View.GONE
                 }
             }
             moveScrollViewToBottom()
