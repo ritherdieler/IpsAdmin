@@ -46,7 +46,7 @@ class ReportsFragment : BaseFragment() {
     }
 
     private fun downloadDocument(document: DownloadDocumentResponse) {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             val uri = requireActivity().getDownloadedFileUri(document)
             val intent = openWithXlsxApp(uri)
             try {

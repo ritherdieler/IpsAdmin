@@ -35,7 +35,7 @@ class RegisterActivity : BaseActivity() {
     private fun observeRegisterResponse() {
         viewModel.registerResponseLiveData.observe(this) { it ->
             when (it) {
-                is RegisterResponse.OnError -> showErrorDialog()
+                is RegisterResponse.OnError -> showErrorDialog(it.error.message?:"")
                 is RegisterResponse.OnRegister -> showSuccessDialog(it.register.name)
             }
         }

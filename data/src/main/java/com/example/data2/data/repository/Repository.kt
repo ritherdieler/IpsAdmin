@@ -23,25 +23,31 @@ class Repository : IRepository, KoinComponent {
     private val restApiServices: RestApiServices by inject()
     private val prefs: SharedPreferences by inject()
 
+
     override suspend fun registerUser(user: User): User {
         val response = restApiServices.registerUser(user)
-        if (response.code() == 200) {
-
-            return response.body()!!
-        } else {
-            throw Exception("error en la respuesta")
+        return when (response.code()) {
+            HttpCodes.OK -> response.body()!!
+            HttpCodes.CONFLICT -> throw Exception("El usuario ya existe, por favor use otro")
+            else -> throw Exception("Ocurrió un error inesperado, contacte con soporte técnico")
         }
+
+
     }
 
     override suspend fun doLogin(login: Loging): User {
         val response = restApiServices.doLoging(login)
-        if (response.code() == 200) {
-            val userSession = response.body()!!
-            userSession.apply { password = login.password }
-            saveUserSession(userSession, login.checkBox)
-            return response.body()!!
-        } else {
-            throw Exception("Usuario o Contraseña Incorrecta")
+
+        return when (response.code()) {
+            200 -> {
+                val userSession = response.body()!!
+                userSession.apply { password = login.password }
+                saveUserSession(userSession, login.checkBox)
+                response.body()!!
+            }
+            404 -> throw Exception("Usuario o Contraseña Incorrecta")
+
+            else -> throw Exception("Ocurrió un error inesperado, contacte con soporte técnico")
         }
     }
 

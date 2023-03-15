@@ -186,12 +186,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private fun observeState() = lifecycleScope.launch {
         viewModel.registerSubscriptionUiState.collect { response ->
             when (response) {
-                is RegisterSubscriptionSuccess -> showCrossDialog(
-                    getString(
-                        R.string.subscription_register_success,
-                        response.subscription.ip.toString()
-                    )
-                )
+                is RegisterSubscriptionSuccess -> showConfirmationDialog(response)
                 is RegisterSubscriptionError -> showErrorDialog(response.error)
                 is FormDataFound -> fillFormSpinners(response)
                 is FormDataError -> showErrorDialog(response.error)
@@ -201,7 +196,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is GenericError -> showErrorDialog(response.error)
                 is LoadingData -> showLoadingStatus(response)
                 is LoadingLogin -> binding.btnRegisterSubscription.isEnabled = !response.loading
-                is OnOnuDataFound ->{
+                is OnOnuDataFound -> {
                     binding.acOnu.populate(response.onus) {
                         viewModel.onuField.value = it
                     }
@@ -210,6 +205,17 @@ class RegisterSubscriptionFragment : BaseFragment() {
             }
         }
 
+    }
+
+    private fun showConfirmationDialog(response: RegisterSubscriptionSuccess) {
+        showCrossDialog(
+            getString(R.string.subscription_register_success, response.subscription.ip.toString())
+        ) {
+            val action = RegisterSubscriptionFragmentDirections.saveSubscriptionToDashboard()
+            findNavController().navigate(action)
+            //navigate pop
+            findNavController().popBackStack(R.id.nav_subscription, true)
+        }
     }
 
 
@@ -297,5 +303,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private fun showSuccessDialog(response: RegisterSubscriptionSuccess) {
         showSuccessDialog("El registro numero ${response.subscription.dni} ah sido registrado correctamente")
     }
+
 }
 

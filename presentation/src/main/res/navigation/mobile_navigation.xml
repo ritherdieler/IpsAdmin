@@ -23,6 +23,10 @@
         <action
             android:id="@+id/action_nav_subscription_to_mapDialog"
             app:destination="@id/mapDialog" />
+
+        <action
+            android:id="@+id/save_subscription_to_dashboard"
+            app:destination="@+id/nav_dashboard" />
     </fragment>
     <fragment
         android:id="@+id/nav_register_place"
@@ -78,7 +82,7 @@
         android:id="@+id/nav_view_services_order_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListFragment"
         android:label="ServicesOrderListFragment"
-        tools:layout="@layout/item_services_order" >
+        tools:layout="@layout/item_services_order">
         <action
             android:id="@+id/action_nav_view_services_order_list_to_editServiceOrderFragment"
             app:destination="@id/editServiceOrderFragment" />
@@ -227,9 +231,9 @@
         tools:layout="@layout/fragment_dash_board" />
     <fragment
         android:id="@+id/editNapBoxFragment"
-        tools:layout="@layout/fragment_edit_nap_box"
         android:name="com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxFragment"
-        android:label="EditNapBoxFragment" >
+        android:label="EditNapBoxFragment"
+        tools:layout="@layout/fragment_edit_nap_box">
         <argument
             android:name="napBox"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse" />
@@ -248,28 +252,28 @@
     </fragment>
     <fragment
         android:id="@+id/nav_see_plan_list"
-        tools:layout="@layout/item_plan_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListFragment"
-        android:label="PlanListFragment" />
+        android:label="PlanListFragment"
+        tools:layout="@layout/item_plan_list" />
     <fragment
         android:id="@+id/see_network_device_list"
-        tools:layout="@layout/item_network_device_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.networkdevice.networkdevicelist.NetworkDeviceListFragment"
-        android:label="NetworkDeviceListFragment" />
+        android:label="NetworkDeviceListFragment"
+        tools:layout="@layout/item_network_device_list" />
     <fragment
         android:id="@+id/nav_see_place_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.place.placelist.PlaceListFragment"
         android:label="PlaceListFragment" />
     <fragment
         android:id="@+id/see_technician_list"
-        tools:layout="@layout/item_technician_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.technician.technicianlist.TechnicianListFragment"
-        android:label="TechnicianListFragment" />
+        android:label="TechnicianListFragment"
+        tools:layout="@layout/item_technician_list" />
     <fragment
         android:id="@+id/ipListFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.ippool.seeip.IpListFragment"
         android:label="fragment_ip_list"
-        tools:layout="@layout/fragment_ip_list" >
+        tools:layout="@layout/fragment_ip_list">
         <argument
             android:name="ipPool"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.IpPool" />
@@ -277,26 +281,26 @@
     <dialog
         android:id="@+id/nav_mufa"
         android:name="MufaMapFragment"
-        tools:layout="@layout/fragment_mufas_map"
-        android:label="Mufas" >
+        android:label="Mufas"
+        tools:layout="@layout/fragment_mufas_map">
         <action
             android:id="@+id/action_nav_mufa_to_mufaDialogFragment"
             app:destination="@id/mufaDialogFragment" />
     </dialog>
     <dialog
         android:id="@+id/mufaDialogFragment"
-        tools:layout="@layout/fragment_mufa_dialog"
         android:name="com.dscorp.ispadmin.presentation.ui.features.mufas.MufaDialogFragment"
-        android:label="MufaDialogFragment" >
+        android:label="MufaDialogFragment"
+        tools:layout="@layout/fragment_mufa_dialog">
         <argument
             android:name="mufas"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.Mufa" />
     </dialog>
     <fragment
         android:id="@+id/editSubscriptionFragment"
-        tools:layout="@layout/fragment_edit_subscription"
         android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFragment"
-        android:label="EditSubscriptionFragment" >
+        android:label="EditSubscriptionFragment"
+        tools:layout="@layout/fragment_edit_subscription">
         <argument
             android:name="subscription"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
