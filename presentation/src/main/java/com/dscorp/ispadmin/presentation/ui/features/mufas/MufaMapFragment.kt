@@ -65,7 +65,7 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
             val latLng = LatLng((mufa.latitude ?: 0.0), (mufa.longitude ?: 0.0))
             val markerOptions = MarkerOptions()
                 .position(latLng)
-                .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(R.drawable.ic_person)))
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(R.drawable.ic_mufa)))
                 .title(mufa.reference)
             val marker = googleMap.addMarker(markerOptions)?.apply {
                 tag = mufa.id
