@@ -7,6 +7,7 @@ import android.os.Environment
 import android.util.Base64
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
@@ -93,4 +94,8 @@ fun <T> MaterialAutoCompleteTextView.populate(data: List<T>, onItemSelected: (T)
 
 fun Fragment.showCrossDialog(text: String?=null, positiveButtonClickListener: (() -> Unit)? = null) {
     CrossDialogFragment(text, positiveButtonClickListener).show(childFragmentManager,CrossDialogFragment::class.simpleName)
+}
+
+fun AppCompatActivity.showCrossDialog(text: String?=null, positiveButtonClickListener: (() -> Unit)? = null) {
+    CrossDialogFragment(text, positiveButtonClickListener).show(supportFragmentManager,CrossDialogFragment::class.simpleName)
 }

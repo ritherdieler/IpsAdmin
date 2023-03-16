@@ -10,7 +10,6 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityMainBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
 import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -38,15 +37,23 @@ class MainActivity : BaseActivity() {
 
         navView.setupWithNavController(navController)
     }
+
     override fun onBackPressed() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("¿Quieres salir de la aplicación?")
-        builder.setMessage("Presiona el botón Aceptar para salir o Cancelar para quedarte en la pantalla actual.")
-        builder.setPositiveButton("Aceptar") { _, _ ->
-            finishAffinity()
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        if (navController.currentDestination != null && navController.currentDestination!!.id == R.id.nav_dashboard) {
+            // Si estamos en el destino principal, mostrar el diálogo aquí
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Salir")
+            builder.setMessage("¿Estás seguro que quieres salir?")
+            builder.setPositiveButton("Sí") { _, _ ->
+                finish()
+            }
+            builder.setNegativeButton("No", null)
+            val dialog = builder.create()
+            dialog.show()
+        } else {
+            // Si no estamos en el destino principal, continuar con el comportamiento predeterminado
+            super.onBackPressed()
         }
-        builder.setNegativeButton("Cancelar", null)
-        val dialog = builder.create()
-        dialog.show()
     }
 }

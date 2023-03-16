@@ -4,7 +4,9 @@ data class NapBox(
     val id: String? = null,
     val code: String = "",
     val address: String = "",
-    var location: GeoLocation? = null,
+    var latitude: Float? = null,
+    var longitude: Float? = null,
+    var threads: Int? = null,
     var mufaId: Int? = null
 
 ) : java.io.Serializable {
