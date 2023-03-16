@@ -15,6 +15,7 @@ import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhon
 import com.example.data2.data.repository.IRepository
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -225,12 +226,15 @@ class SubscriptionViewModel(
     }
     fun getOnuData() = viewModelScope.launch {
         try {
-            val unconfirmedOnusJob = async { repository.getUnconfirmedOnus() }
-            val unconfirmedOnus = unconfirmedOnusJob.await()
+            registerSubscriptionUiState.emit(RefreshingOnus(true))
+            delay(1000)
+            val unconfirmedOnus = repository.getUnconfirmedOnus()
             registerSubscriptionUiState.emit(OnOnuDataFound(unconfirmedOnus))
         } catch (e: Exception) {
             e.printStackTrace()
             registerSubscriptionUiState.emit(OnuDataError(e.message.toString()))
+        } finally {
+            registerSubscriptionUiState.emit(RefreshingOnus(false))
         }
     }
 

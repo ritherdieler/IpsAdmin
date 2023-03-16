@@ -31,22 +31,19 @@ class Repository : IRepository, KoinComponent {
             HttpCodes.CONFLICT -> throw Exception("El usuario ya existe, por favor use otro")
             else -> throw Exception("Ocurrió un error inesperado, contacte con soporte técnico")
         }
-
-
     }
 
     override suspend fun doLogin(login: Loging): User {
         val response = restApiServices.doLoging(login)
 
         return when (response.code()) {
-            200 -> {
+            HttpCodes.OK -> {
                 val userSession = response.body()!!
                 userSession.apply { password = login.password }
                 saveUserSession(userSession, login.checkBox)
                 response.body()!!
             }
-            404 -> throw Exception("Usuario o Contraseña Incorrecta")
-
+            HttpCodes.NOT_FOUND -> throw Exception("Usuario o Contraseña Incorrecta")
             else -> throw Exception("Ocurrió un error inesperado, contacte con soporte técnico")
         }
     }
@@ -118,12 +115,12 @@ class Repository : IRepository, KoinComponent {
 
     override suspend fun registerSubscription(subscription: Subscription): Subscription {
         val response = restApiServices.registerSubscription(subscription)
-        if (response.code() == 200) {
-            return response.body()!!
-        } else {
-            throw Exception("error en la respuesta")
-        }
 
+        return when (response.code()) {
+            HttpCodes.OK -> response.body()!!
+            HttpCodes.CONFLICT -> throw Exception("Este usuario ya se encuentra registrado")
+            else -> throw Exception("Ocurrion un error inesperado, contacte con soporte técnico")
+        }
     }
 
     override suspend fun getPlans(): List<PlanResponse> {

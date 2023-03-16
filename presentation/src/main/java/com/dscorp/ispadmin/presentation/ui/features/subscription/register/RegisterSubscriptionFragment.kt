@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
@@ -28,6 +30,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
+
 
 class RegisterSubscriptionFragment : BaseFragment() {
     private val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
@@ -106,14 +109,14 @@ class RegisterSubscriptionFragment : BaseFragment() {
                     viewModel.getFiberDevices()
                     binding.spnNapBox.visibility = View.VISIBLE
                     binding.tlOnu.visibility = View.VISIBLE
-                    binding.ivRefresh.visibility= View.VISIBLE
+                    binding.ivRefresh.visibility = View.VISIBLE
                 }
                 R.id.rbWireless -> {
                     viewModel.installationType = InstallationType.WIRELESS
                     viewModel.getWirelessDevices()
                     binding.spnNapBox.visibility = View.GONE
                     binding.tlOnu.visibility = View.GONE
-                    binding.ivRefresh.visibility= View.GONE
+                    binding.ivRefresh.visibility = View.GONE
                 }
             }
             moveScrollViewToBottom()
@@ -202,9 +205,27 @@ class RegisterSubscriptionFragment : BaseFragment() {
                     }
                 }
                 is OnuDataError -> showErrorDialog(response.error)
+                is RefreshingOnus -> showOnusRefreshing(response.isRefreshing)
             }
         }
 
+    }
+
+    private fun showOnusRefreshing(refreshing: Boolean) {
+        if (refreshing) {
+            binding.ivRefresh.isEnabled = false
+            val rotateAnimation = RotateAnimation(
+                0f, 360f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f
+            )
+            rotateAnimation.duration = 1000
+            rotateAnimation.repeatCount = Animation.INFINITE
+            binding.ivRefresh.startAnimation(rotateAnimation)
+        } else {
+            binding.ivRefresh.isEnabled = true
+            binding.ivRefresh.clearAnimation()
+        }
     }
 
     private fun showConfirmationDialog(response: RegisterSubscriptionSuccess) {

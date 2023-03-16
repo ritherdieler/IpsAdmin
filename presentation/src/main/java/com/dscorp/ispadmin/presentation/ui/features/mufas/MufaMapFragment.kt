@@ -27,7 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
 
     private var mufas: List<Mufa> = emptyList()
-    val viewmodel: MufaViewmodel by viewModel()
+    val viewModel: MufaViewmodel by viewModel()
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
     private lateinit var selectedLatLng: LatLng
@@ -50,7 +50,7 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
 
     private fun observe() {
         lifecycleScope.launch {
-            viewmodel.mufaUiStateLiveData.observe(viewLifecycleOwner) {
+            viewModel.mufaUiStateLiveData.observe(viewLifecycleOwner) {
                 when (it) {
                     is MufaUiState.OnError -> {}
                     is MufaUiState.OnMufasListFound -> showMufasAsMakers(it.mufasList)
@@ -88,6 +88,7 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+        googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE;
         val santaRosa = LatLng(-11.234996, -77.380347)
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(santaRosa))
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.5f))
