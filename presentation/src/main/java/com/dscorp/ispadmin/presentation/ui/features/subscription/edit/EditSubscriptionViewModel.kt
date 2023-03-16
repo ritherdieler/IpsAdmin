@@ -6,9 +6,7 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.async
@@ -22,7 +20,6 @@ class EditSubscriptionViewModel(
     val editSubscriptionUiState = MutableSharedFlow<EditSubscriptionUiState>()
     var subscription: SubscriptionResponse? = null
 
-
     val planField = FormField(
         hintResourceId = R.string.plan,
         errorResourceId = R.string.mustSelectPlan,
@@ -30,8 +27,6 @@ class EditSubscriptionViewModel(
             override fun validate(fieldValue: PlanResponse?): Boolean = fieldValue != null
         }
     )
-
-
 
     fun getFormData() = viewModelScope.launch {
         try {
@@ -42,7 +37,6 @@ class EditSubscriptionViewModel(
                     plans
                 )
             )
-
         } catch (e: Exception) {
             e.printStackTrace()
             editSubscriptionUiState.emit(EditSubscriptionUiState.FormDataError(e.message.toString()))
@@ -66,7 +60,7 @@ class EditSubscriptionViewModel(
         if (!formIsValid()) throw Exception("Form is not valid")
 
         return UpdateSubscriptionPlanBody(
-            subscriptionId= subscription?.id!!,
+            subscriptionId = subscription?.id!!,
             planId = planField.value?.id!!,
         )
     }

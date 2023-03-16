@@ -74,4 +74,5 @@ class DashBoardFragment : BaseFragment() {
         }
         return binding.root
     }
+
 }

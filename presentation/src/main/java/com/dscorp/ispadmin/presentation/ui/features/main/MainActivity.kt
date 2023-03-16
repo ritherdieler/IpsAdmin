@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.ui.features.main
 
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -36,5 +37,16 @@ class MainActivity : BaseActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
         navView.setupWithNavController(navController)
+    }
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("¿Quieres salir de la aplicación?")
+        builder.setMessage("Presiona el botón Aceptar para salir o Cancelar para quedarte en la pantalla actual.")
+        builder.setPositiveButton("Aceptar") { _, _ ->
+            finishAffinity()
+        }
+        builder.setNegativeButton("Cancelar", null)
+        val dialog = builder.create()
+        dialog.show()
     }
 }

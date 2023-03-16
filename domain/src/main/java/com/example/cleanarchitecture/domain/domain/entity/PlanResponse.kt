@@ -11,4 +11,7 @@ data class PlanResponse(
     override fun toString(): String {
         return name!!
     }
+    override fun equals(other: Any?): Boolean {
+        return id == (other as PlanResponse).id
+    }
 }
