@@ -10,10 +10,9 @@ sealed class EditSubscriptionUiState {
         val plans: List<PlanResponse>
     ) : EditSubscriptionUiState()
 
-    class EditSubscriptionSuccess(val subscription: SubscriptionResponse) :EditSubscriptionUiState()
+    class EditSubscriptionSuccess(val subscription: SubscriptionResponse) :
+        EditSubscriptionUiState()
 
     class EditSubscriptionError(val error: String) : EditSubscriptionUiState()
     class FormDataError(val error: String) : EditSubscriptionUiState()
-
-
 }

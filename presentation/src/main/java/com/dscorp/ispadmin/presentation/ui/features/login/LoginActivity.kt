@@ -38,6 +38,19 @@ class LoginActivity : BaseActivity() {
         binding.cbCheckBox.setOnClickListener {
         }
     }
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("¿Quieres salir de la aplicación?")
+        builder.setMessage("Presiona el botón Aceptar para salir o Cancelar para quedarte en la pantalla actual.")
+        builder.setPositiveButton("Aceptar") { _, _ ->
+            // Cerrar todas las actividades abiertas y salir de la aplicación
+            finishAffinity()
+        }
+        builder.setNegativeButton("Cancelar", null)
+        val dialog = builder.create()
+        dialog.show()
+    }
+
 
     private fun observeLoginFormError() {
         viewModel.loginFormErrorLiveData.observe(this) { formError ->
