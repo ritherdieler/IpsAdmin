@@ -286,6 +286,9 @@
         <action
             android:id="@+id/action_nav_mufa_to_mufaDialogFragment"
             app:destination="@id/mufaDialogFragment" />
+        <action
+            android:id="@+id/nav_mufa_to_nap_box_dialog_fragment"
+            app:destination="@id/napBoxDialogFragment" />
     </dialog>
     <dialog
         android:id="@+id/mufaDialogFragment"
@@ -308,4 +311,12 @@
             android:id="@+id/action_editSubscriptionFragment_to_nav_dashboard"
             app:destination="@id/nav_dashboard" />
     </fragment>
+    <dialog
+        android:id="@+id/napBoxDialogFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.mufas.NapBoxDialogFragment"
+        android:label="NapBoxDialogFragment" >
+        <argument
+            android:name="napBox"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBox" />
+    </dialog>
 </navigation>

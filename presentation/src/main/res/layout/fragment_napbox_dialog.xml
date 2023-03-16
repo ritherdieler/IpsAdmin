@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/ProbandoItemView"
+        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="20dp"
+            android:background="#30B1EA81">
+
+            <TextView
+                android:id="@+id/tvIdMufa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="16dp"
+                android:text="ID"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toTopOf="@+id/tvReferenceMufa"
+                app:layout_constraintEnd_toStartOf="@+id/tvSeeNapBoxId"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/tvReferenceMufa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Referencia:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toTopOf="@+id/textView2"
+                app:layout_constraintStart_toStartOf="@+id/tvIdMufa"
+                app:layout_constraintTop_toBottomOf="@+id/tvIdMufa" />
+
+            <TextView
+                android:id="@+id/tvSeeNapBoxId"
+                android:layout_width="159dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="HOLA"
+                app:layout_constraintBottom_toBottomOf="@id/tvIdMufa"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvIdMufa"
+                app:layout_constraintTop_toTopOf="@+id/tvIdMufa"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Id" />
+
+            <TextView
+                android:id="@+id/tvSeeCode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvReferenceMufa"
+                app:layout_constraintEnd_toEndOf="@+id/tvSeeNapBoxId"
+                app:layout_constraintStart_toStartOf="@+id/tvSeeNapBoxId"
+                app:layout_constraintTop_toTopOf="@+id/tvReferenceMufa"
+                app:layout_constraintVertical_bias="0.0"
+                tools:text="codigo" />
+
+            <ImageView
+                android:id="@+id/ivButtonClose"
+                android:layout_width="32dp"
+                android:layout_height="34dp"
+                android:background="#997E7A7A"
+                android:shadowColor="@color/black"
+                android:src="@drawable/baseline_close_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="299dp"
+                android:layout_height="157dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_image_no_disponible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSeeAddress" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toTopOf="@id/imageView3"
+                app:layout_constraintEnd_toEndOf="@+id/tvReferenceMufa"
+                app:layout_constraintStart_toStartOf="@+id/tvReferenceMufa"
+                app:layout_constraintTop_toBottomOf="@id/tvReferenceMufa"
+                android:text="Dirección" />
+
+            <TextView
+                android:id="@+id/tvSeeAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toTopOf="@id/imageView3"
+                app:layout_constraintEnd_toEndOf="@+id/tvSeeCode"
+                app:layout_constraintStart_toStartOf="@+id/tvSeeCode"
+                app:layout_constraintTop_toBottomOf="@id/tvSeeCode"
+                tools:text="address" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

@@ -8,18 +8,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.databinding.FragmentMufaDialogBinding
-import com.example.cleanarchitecture.domain.domain.entity.Mufa
+import com.dscorp.ispadmin.databinding.FragmentNapboxDialogBinding
+import com.example.cleanarchitecture.domain.domain.entity.NapBox
 
-class MufaDialogFragment : DialogFragment(){
+class NapBoxDialogFragment : DialogFragment(){
 
-    private val args: MufaDialogFragmentArgs by navArgs()
-    lateinit var binding: FragmentMufaDialogBinding
-    lateinit var mufa: Mufa
+    private val args: NapBoxDialogFragmentArgs by navArgs()
+    lateinit var binding: FragmentNapboxDialogBinding
+    lateinit var mufa: NapBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mufa = args.mufas
+        mufa = args.napBox
 
     }
 
@@ -31,14 +31,12 @@ class MufaDialogFragment : DialogFragment(){
     ): View? {
         binding =
             DataBindingUtil.inflate(
-                layoutInflater, R.layout.fragment_mufa_dialog, null, true
+                layoutInflater, R.layout.fragment_napbox_dialog, null, true
             )
-        binding.mufa = mufa
-        binding.executePendingBindings()
-/*
-        binding.tvSeeReference.text = mufa.reference
-*/
-   /*     binding.tvSeeMufaId.text = mufa.id.toString()*/
+        binding.tvSeeNapBoxId.setText(args.napBox.id).toString()
+        binding.tvSeeCode.setText(args.napBox.code).toString()
+        binding.tvSeeAddress.setText(args.napBox.address).toString()
+
         binding.ivButtonClose.setOnClickListener {
         dismiss()
     }
