@@ -186,6 +186,14 @@ class SubscriptionViewModel(
             override fun validate(fieldValue: List<NetworkDevice>?): Boolean = fieldValue != null
         }
     )
+    val noteField = FormField(
+        hintResourceId = R.string.note,
+        errorResourceId = R.string.errorNote,
+        fieldValidator = object : FieldValidator<String> {
+            override fun validate(fieldValue: String?): Boolean = true
+        }
+
+    )
 
 
     fun getFormData() = viewModelScope.launch {
@@ -306,7 +314,8 @@ class SubscriptionViewModel(
                     onu = onuField.value,
                     installationType = installationType,
                     price = priceField.value,
-                    coupon = couponField.value
+                    coupon = couponField.value,
+                    note = noteField.value
 
                 )
             }
@@ -332,7 +341,8 @@ class SubscriptionViewModel(
                     onu = null,
                     installationType = installationType,
                     price = priceField.value,
-                    coupon = couponField.value
+                    coupon = couponField.value,
+                    note =noteField.value
                 )
             }
             null -> throw Exception("Invalid Installation Type")

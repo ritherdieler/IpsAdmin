@@ -366,11 +366,11 @@
                         android:id="@+id/tlOnu"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="10dp"
-                        android:layout_marginEnd="10dp"
                         android:layout_marginTop="20dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
                         android:error="@{viewModel.onuField.errorLiveData}"
                         android:hint="@{viewModel.onuField.hint}"
                         tools:hint="@string/select_onu"
@@ -463,8 +463,8 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="20dp"
                     android:gravity="center"
                     android:orientation="horizontal">
 
@@ -497,6 +497,27 @@
                         android:text="@string/activate" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tlNote"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="20dp"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4"
+                    android:hint="@{viewModel.noteField.hint}"
+                    android:error="@{viewModel.noteField.errorLiveData}"
+                    tools:hint="Nota(opcional)">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                         />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
                     android:id="@+id/btnRegisterSubscription"

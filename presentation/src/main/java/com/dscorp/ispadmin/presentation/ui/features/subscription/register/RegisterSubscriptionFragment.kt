@@ -160,6 +160,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etCupon.doOnTextChanged { text, start, before, count ->
             viewModel.couponField.value = text.toString()
         }
+        binding.etNote.doOnTextChanged { text, start, before, count ->
+            viewModel.noteField.value = text.toString()
+        }
     }
 
     private fun resetAdditionalDevicesUiState() {

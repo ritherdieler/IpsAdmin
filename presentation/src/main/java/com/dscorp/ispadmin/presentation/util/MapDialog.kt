@@ -53,10 +53,10 @@ class MapDialog : DialogFragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        val santaRosa = LatLng(-11.234996, -77.380347)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(santaRosa))
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.5f))
-
+        googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+        val santaRosa = LatLng(-11.234169, -77.378485)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(santaRosa, 14f))
+        selectedLatLng = santaRosa
         googleMap.setOnCameraMoveListener {
             selectedLatLng = googleMap.cameraPosition.target
             if (this@MapDialog::selectedLatLng.isInitialized) {

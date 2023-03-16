@@ -95,6 +95,7 @@
     <string name="select_cpe_device">Seleccione el dispositivo CPE</string>
     <string name="aditional_devices">Equipos adicionales</string>
     <string name="additionalDevices">Dispositivos adicionales</string>
+    <string name="note">Nota (Opcional)</string>
     <string name="installing_additionals">Se instalaran adicionales</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -123,6 +124,7 @@
     <string name="selec_nap_box">Seleccione una caja nap</string>
     <string name="mustSelectNapBox">Seleccione una caja nap</string>
     <string name="youCanSelectAdditionalNetworkDevices">(Opcional) Puede seleccionar dispositivos adicionales</string>
+    <string name="errorNote">"Probando el error"</string>
     <string name="metododepago">Metodo de pago</string>
     <string name="selectAMufa">Seleccione una mufa</string>
     <string name="mustSelectMufa">Debe seleccionar una mufa</string>
