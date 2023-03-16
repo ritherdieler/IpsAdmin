@@ -6,6 +6,7 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityRegisterBinding
 import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants.REGISTER_USER
 import com.dscorp.ispadmin.presentation.extension.analytics.sendSignUpEvent
+import com.dscorp.ispadmin.presentation.extension.showCrossDialog
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
@@ -35,8 +36,8 @@ class RegisterActivity : BaseActivity() {
     private fun observeRegisterResponse() {
         viewModel.registerResponseLiveData.observe(this) { it ->
             when (it) {
-                is RegisterResponse.OnError -> showErrorDialog(it.error.message?:"")
-                is RegisterResponse.OnRegister -> showSuccessDialog(it.register.name)
+                is RegisterResponse.OnError -> showErrorDialog(it.error.message ?: "")
+                is RegisterResponse.OnRegister -> showCrossDialog(it.register.name) { finish() }
             }
         }
     }
