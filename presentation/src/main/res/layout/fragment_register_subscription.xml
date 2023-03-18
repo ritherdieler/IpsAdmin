@@ -10,6 +10,8 @@
             type="com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel" />
 
         <import type="android.view.View" />
+
+        <import type="com.example.cleanarchitecture.domain.domain.entity.InstallationType" />
     </data>
 
     <LinearLayout
@@ -218,7 +220,7 @@
                         android:id="@+id/etPlace"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
+                        android:inputType="text"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -313,6 +315,15 @@
 
                 </RadioGroup>
 
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="20dp"
+                    android:onCheckedChanged="@{viewModel::onIsMigrationCheckedChanged}"
+                    android:text="@string/isMigration"
+                    android:visibility="@{viewModel.installationType == InstallationType.FIBER ? View.VISIBLE : View.GONE}" />
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tlCpeNetworkDevice"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
@@ -348,10 +359,10 @@
                     tools:visibility="visible">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/etNapBox"
+                        android:id="@+id/acNapBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
+                        android:inputType="text"
                         tools:ignore="LabelFor" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -505,17 +516,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
+                    android:error="@{viewModel.noteField.errorLiveData}"
+                    android:hint="@{viewModel.noteField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
-                    android:hint="@{viewModel.noteField.hint}"
-                    android:error="@{viewModel.noteField.errorLiveData}"
                     tools:hint="Nota(opcional)">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNote"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                         />
+                        android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -532,9 +542,6 @@
 
             </LinearLayout>
         </ScrollView>
-
-
-        <include layout="@layout/shimmer_register_subscription" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/viewLoading"

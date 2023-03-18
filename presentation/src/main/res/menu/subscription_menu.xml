@@ -8,12 +8,8 @@
         android:title="@string/register_service_order" />
     <item
         android:id="@+id/btn_edit_plan_subscription"
-        android:title="@string/register_service_order" />
-<!--    <item-->
-<!--        android:id="@+id/btn_edit_subscription"-->
-<!--        android:title="@string/edit_subscription" />-->
-
+        android:title="@string/edit_plan" />
     <item
-        android:id="@+id/btn_edit_plan_subscription"
-        android:title="Editar plan"/>
+        android:id="@+id/btn_see_details"
+        android:title="@string/see_details" />
 </menu>

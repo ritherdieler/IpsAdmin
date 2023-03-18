@@ -60,13 +60,15 @@ class NapBoxViewModel(val repository :IRepository) : ViewModel() {
         }
     )
 
+
     fun registerNapBox() = viewModelScope.launch {
         try {
             if (!formIsValid()) return@launch
             val registerNapBox = NapBox(
                 code = codeField.value!!,
                 address = addressField.value!!,
-                location = locationField.value!!,
+                latitude = locationField.value?.latitude!!,
+                longitude= locationField.value?.longitude!!,
                 mufaId = mufaField.value!!.id
             )
             val response = repository.registerNapBox(registerNapBox)
@@ -113,10 +115,15 @@ class NapBoxViewModel(val repository :IRepository) : ViewModel() {
         } else {
             editFormErrorLiveData.value = EditNapBoxFormErrorUiState.OnEtAddressCleanError
         }
-        if (napBox.location == null) {
+        if (napBox.latitude == null) {
             editFormErrorLiveData.value = EditNapBoxFormErrorUiState.OnEtLocationError()
             return false
-        } else {
+        }
+        if (napBox.longitude == null) {
+            editFormErrorLiveData.value = EditNapBoxFormErrorUiState.OnEtLocationError()
+            return false
+        }
+        else {
             editFormErrorLiveData.value = EditNapBoxFormErrorUiState.OnEtLocationCleanError
         }
 

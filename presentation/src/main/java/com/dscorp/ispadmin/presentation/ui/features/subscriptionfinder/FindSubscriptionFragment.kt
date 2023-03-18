@@ -67,11 +67,6 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
         showPopupMenu(view, subscription)
     }
 
-    override fun onCardSelected(subscription: SubscriptionResponse) {
-        val destination = FindSubscriptionFragmentDirections.findSubscriptionToSubscriptionDetail(subscription)
-        findNavController().navigate(destination)
-    }
-
     private fun navigateToEditSubscription(subscription: SubscriptionResponse): Boolean {
         findNavController().navigate(
             FindSubscriptionFragmentDirections.actionNavFindSubscriptionsToEditSubscriptionFragment(
@@ -88,6 +83,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
                 R.id.btn_show_payment_history -> navigateToPaymentHistory(subscription)
                 R.id.btn_register_service_order -> navigateToRegisterServiceOrder(subscription)
                 R.id.btn_edit_plan_subscription -> navigateToEditSubscription(subscription)
+                R.id.btn_see_details -> navigateToDetails(subscription)
 
 //                R.id.btn_edit_subscription -> navigateToEditSubscription(subscription)
 
@@ -96,6 +92,12 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
         }
         popupMenu.inflate(R.menu.subscription_menu)
         popupMenu.show()
+    }
+
+    private fun navigateToDetails(subscription: SubscriptionResponse): Boolean {
+        val destination = FindSubscriptionFragmentDirections.findSubscriptionToSubscriptionDetail(subscription)
+        findNavController().navigate(destination)
+        return true
     }
 
     private fun navigateToRegisterServiceOrder(subscription: SubscriptionResponse): Boolean {

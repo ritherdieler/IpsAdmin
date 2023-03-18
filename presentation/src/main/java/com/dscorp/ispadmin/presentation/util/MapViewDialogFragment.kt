@@ -47,6 +47,7 @@ class MapViewDialogFragment : DialogFragment(), OnMapReadyCallback {
     }
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+        googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID;
         val location = LatLng(args.location?.latitude ?: 0.0, args.location?.longitude ?: 0.0)
         googleMap.addMarker(
             MarkerOptions()

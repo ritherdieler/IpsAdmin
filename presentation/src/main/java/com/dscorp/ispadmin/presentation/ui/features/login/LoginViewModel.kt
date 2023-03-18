@@ -7,8 +7,8 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
 import com.example.cleanarchitecture.domain.domain.entity.Loging
+import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.repository.IRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
@@ -47,13 +47,17 @@ class LoginViewModel : ViewModel() {
             }
         })
 
-
-    init {
-        viewModelScope.launch {
-            val response = repository.getUserSession()
-            if (response != null)
-                loginResponseLiveData.postValue(LoginResponse.OnLoginSuccess(response))
+     fun checkSessionStatus(): Pair<Boolean, User?> {
+        val status = repository.getRememberSessionCheckBoxStatus()
+        if (status) {
+            repository.getUserSession()?.let {
+                loginResponseLiveData.postValue(LoginResponse.OnLoginSuccess(it))
+                return Pair(true, it)
+            }
+            return Pair(false, null)
         }
+
+        return Pair(false, null)
     }
 
     fun doLogin() = viewModelScope.launch {

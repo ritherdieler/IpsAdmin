@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription
 
+import android.widget.CompoundButton
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -28,7 +29,7 @@ class SubscriptionViewModel(
 
     val registerSubscriptionUiState = MutableSharedFlow<RegisterSubscriptionUiState>()
     var subscription: SubscriptionResponse? = null
-    var installationType: InstallationType? = null
+    var installationType = MutableLiveData(InstallationType.FIBER)
     var selectedAdditionalDevice = MutableLiveData<NetworkDevice?>(null)
     val addButtonIsEnabled = Transformations.map(selectedAdditionalDevice) { it != null }
     var additionalNetworkDevicesList = mutableSetOf<NetworkDevice>()
@@ -89,8 +90,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.coupon,
         errorResourceId = R.string.fieldMustNotBeEmpty,
         fieldValidator = object : FieldValidator<String> {
-            override fun validate(fieldValue: String?): Boolean =
-                !fieldValue.isNullOrEmpty()
+            override fun validate(fieldValue: String?): Boolean = true
         }
     )
     val priceField = FormField(
@@ -154,6 +154,14 @@ class SubscriptionViewModel(
         }
     )
 
+    val isMigrationField = FormField(
+        hintResourceId = R.string.empty,
+        errorResourceId = R.string.empty,
+        fieldValidator = object : FieldValidator<Boolean> {
+            override fun validate(fieldValue: Boolean?): Boolean = true
+        }
+    )
+
     val cpeDeviceField = FormField(
         hintResourceId = R.string.select_cpe_device,
         errorResourceId = R.string.mustSelectCpeDevice,
@@ -183,7 +191,7 @@ class SubscriptionViewModel(
         hintResourceId = R.string.additionalDevices,
         errorResourceId = R.string.youCanSelectAdditionalNetworkDevices,
         fieldValidator = object : FieldValidator<List<NetworkDevice>> {
-            override fun validate(fieldValue: List<NetworkDevice>?): Boolean = fieldValue != null
+            override fun validate(fieldValue: List<NetworkDevice>?): Boolean = true
         }
     )
     val noteField = FormField(
@@ -232,6 +240,7 @@ class SubscriptionViewModel(
             registerSubscriptionUiState.emit(LoadingData(false))
         }
     }
+
     fun getOnuData() = viewModelScope.launch {
         try {
             registerSubscriptionUiState.emit(RefreshingOnus(true))
@@ -291,108 +300,72 @@ class SubscriptionViewModel(
 
     private fun createSubscription(): Subscription {
 
-        return when (installationType) {
-            InstallationType.FIBER -> {
-                Subscription(
-                    firstName = firstNameField.value,
-                    lastName = lastNameField.value,
-                    dni = dniField.value,
-                    address = addressField.value,
-                    phone = phoneField.value,
-                    subscriptionDate = subscriptionDateField.value,
-                    planId = planField.value?.id,
-                    additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
-                    placeId = placeField.value?.id,
-                    technicianId = technicianField.value?.id,
-                    napBoxId = napBoxField.value?.id,
-                    hostDeviceId = hostDeviceField.value?.id,
-                    location = GeoLocation(
-                        locationField.value?.latitude ?: 0.0,
-                        locationField.value?.longitude ?: 0.0
-                    ),
-                    cpeDeviceId = cpeDeviceField.value?.id,
-                    onu = onuField.value,
-                    installationType = installationType,
-                    price = priceField.value,
-                    coupon = couponField.value,
-                    note = noteField.value
 
-                )
+        val subscription = Subscription(
+            firstName = firstNameField.value,
+            lastName = lastNameField.value,
+            dni = dniField.value,
+            address = addressField.value,
+            phone = phoneField.value,
+            subscriptionDate = subscriptionDateField.value,
+            planId = planField.value?.id,
+            additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
+            placeId = placeField.value?.id,
+            technicianId = technicianField.value?.id,
+            hostDeviceId = hostDeviceField.value?.id,
+            location = GeoLocation(
+                locationField.value?.latitude ?: 0.0,
+                locationField.value?.longitude ?: 0.0
+            ),
+            cpeDeviceId = cpeDeviceField.value?.id,
+            installationType = installationType.value,
+            price = priceField.value,
+            coupon = couponField.value,
+            isMigration = isMigrationField.value,
+            note = noteField.value
+        )
+
+        return when (installationType.value) {
+            InstallationType.FIBER -> subscription.apply {
+                napBoxId = napBoxField.value?.id
+                onu = onuField.value
             }
-            InstallationType.WIRELESS -> {
-                Subscription(
-                    firstName = firstNameField.value,
-                    lastName = lastNameField.value,
-                    dni = dniField.value,
-                    address = addressField.value,
-                    phone = phoneField.value,
-                    subscriptionDate = subscriptionDateField.value,
-                    planId = planField.value?.id,
-                    additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
-                    placeId = placeField.value?.id,
-                    technicianId = technicianField.value?.id,
-                    napBoxId = null,
-                    hostDeviceId = hostDeviceField.value?.id,
-                    location = GeoLocation(
-                        locationField.value?.latitude ?: 0.0,
-                        locationField.value?.longitude ?: 0.0
-                    ),
-                    cpeDeviceId = cpeDeviceField.value?.id,
-                    onu = null,
-                    installationType = installationType,
-                    price = priceField.value,
-                    coupon = couponField.value,
-                    note =noteField.value
-                )
-            }
-            null -> throw Exception("Invalid Installation Type")
+            InstallationType.WIRELESS -> subscription
+            else -> throw Exception("Invalid Installation Type")
         }
 
     }
 
     private fun formIsValid(): Boolean {
 
-        val fields = when (installationType) {
-            InstallationType.FIBER -> listOf(
-                firstNameField,
-                lastNameField,
-                dniField,
-                addressField,
-                phoneField,
-                priceField,
-                locationField,
-                planField,
-                placeField,
-                technicianField,
-                hostDeviceField,
-                subscriptionDateField,
-                cpeDeviceField,
-                napBoxField,
-                onuField
-            )
-            InstallationType.WIRELESS -> listOf(
-                firstNameField,
-                lastNameField,
-                dniField,
-                addressField,
-                phoneField,
-                priceField,
-                locationField,
-                planField,
-                placeField,
-                technicianField,
-                hostDeviceField,
-                subscriptionDateField,
-                cpeDeviceField,
-            )
-            null -> emptyList()
+        val formFields = mutableListOf(
+            firstNameField,
+            lastNameField,
+            dniField,
+            addressField,
+            phoneField,
+            priceField,
+            locationField,
+            planField,
+            placeField,
+            technicianField,
+            hostDeviceField,
+            subscriptionDateField,
+            cpeDeviceField,
+        )
+
+        if (installationType.value == InstallationType.FIBER) {
+            formFields.apply {
+                add(napBoxField)
+                add(onuField)
+            }
         }
 
-        fields.forEach {
+        formFields.forEach {
             it.emitErrorIfExists()
         }
 
-        return fields.all { it.isValid == true } && installationType != null
+        return formFields.all { it.isValid }
     }
 
     fun addSelectedAdditionalNetworkDeviceToList() {
@@ -405,4 +378,9 @@ class SubscriptionViewModel(
         selectedAdditionalDevice.value = null
         additionalNetworkDevicesList = mutableSetOf()
     }
+
+    fun onIsMigrationCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+        isMigrationField.value = isChecked
+    }
+
 }

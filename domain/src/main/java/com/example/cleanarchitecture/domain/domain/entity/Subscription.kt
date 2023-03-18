@@ -15,8 +15,8 @@ class Subscription(
     var address: String? = null,
     var phone: String? = null,
     var subscriptionDate: Long? = null,
-    var isNew: Boolean? = null,
-    var serviceIsSuspended: Boolean? = null,
+    var isNew: Boolean? = false,
+    var serviceIsSuspended: Boolean? = false,
     var planId: String? = null,
     var additionalDeviceIds: List<Int> = emptyList(),
     var placeId: String? = null,
@@ -27,12 +27,13 @@ class Subscription(
     var cpeDeviceId: Int? = null,
     var onu: Onu? = null,
     var ip: String? = null,
-    var installationType : InstallationType? = null,
-    var price:Double?=null,
-    var coupon:String?=null,
-    var note:String?=null,
+    var installationType: InstallationType? = null,
+    var price: Double? = null,
+    var coupon: String? = null,
+    var isMigration: Boolean? = false,
+    var note: String? = null,
 
-) : java.io.Serializable {
+    ) : java.io.Serializable {
     override fun toString(): String {
         return firstName ?: ""
     }

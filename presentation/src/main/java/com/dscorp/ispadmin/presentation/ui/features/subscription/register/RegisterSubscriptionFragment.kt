@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
@@ -89,7 +90,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
             additionalDevicesAdapter.clear()
             additionalDevicesAdapter.addAll(viewModel.additionalNetworkDevicesList)
         }
-
         return binding.root
     }
 
@@ -105,14 +105,14 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
             when (checkedId) {
                 R.id.rbFiber -> {
-                    viewModel.installationType = InstallationType.FIBER
+                    viewModel.installationType.value = InstallationType.FIBER
                     viewModel.getFiberDevices()
                     binding.spnNapBox.visibility = View.VISIBLE
                     binding.tlOnu.visibility = View.VISIBLE
                     binding.ivRefresh.visibility = View.VISIBLE
                 }
                 R.id.rbWireless -> {
-                    viewModel.installationType = InstallationType.WIRELESS
+                    viewModel.installationType.value = InstallationType.WIRELESS
                     viewModel.getWirelessDevices()
                     binding.spnNapBox.visibility = View.GONE
                     binding.tlOnu.visibility = View.GONE
@@ -125,7 +125,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
     private fun resetNapBoxSpinner() {
         viewModel.napBoxField.value = null
-        binding.etNapBox.setText("")
+        binding.acNapBox.setText("")
     }
 
     private fun moveScrollViewToBottom() {
@@ -272,7 +272,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etTechnician.populate(response.technicians) {
             viewModel.technicianField.value = it
         }
-        binding.etNapBox.populate(response.napBoxes) {
+        binding.acNapBox.populate(response.napBoxes) {
             viewModel.napBoxField.value = it
         }
         binding.etHostDevice.populate(response.hostNetworkDevices) {

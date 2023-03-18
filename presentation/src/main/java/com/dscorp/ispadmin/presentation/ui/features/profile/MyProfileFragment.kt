@@ -21,7 +21,7 @@ class MyProfileFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_my_profile, null, true)
 
         binding.btnLogOut.setOnClickListener { logOut() }

@@ -4,17 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityLoginBinding
-import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
-import com.dscorp.ispadmin.presentation.extension.analytics.sendLoginEvent
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterActivity
-import com.example.cleanarchitecture.domain.domain.entity.Loging
 import com.example.cleanarchitecture.domain.domain.entity.User
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : BaseActivity() {
@@ -23,21 +21,28 @@ class LoginActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
 
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = this
-        binding.executePendingBindings()
+        val (status, user) = viewModel.checkSessionStatus()
+        if (status) {
+            navigateToMainActivity(user!!)
+        } else {
+            setContentView(binding.root)
 
-        observe()
+            binding.viewModel = viewModel
+            binding.lifecycleOwner = this@LoginActivity
+            binding.executePendingBindings()
 
-        binding.tvCreateAccount.setOnClickListener {
-            navigateToRegister()
-        }
+            observe()
 
-        binding.cbCheckBox.setOnClickListener {
+            binding.tvCreateAccount.setOnClickListener {
+                navigateToRegister()
+            }
+
+            binding.cbCheckBox.setOnClickListener {
+            }
         }
     }
+
     override fun onBackPressed() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("¿Quieres salir de la aplicación?")

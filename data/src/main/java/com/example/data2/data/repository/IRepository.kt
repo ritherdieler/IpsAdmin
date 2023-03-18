@@ -19,6 +19,7 @@ interface IRepository {
     suspend fun doLogin(login: Loging): User
     suspend fun saveUserSession(user: User, rememberSessionCheckBoxStatus: Boolean?)
     fun getUserSession(): User?
+    fun getRememberSessionCheckBoxStatus(): Boolean
     suspend fun clearUserSession()
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice

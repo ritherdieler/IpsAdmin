@@ -145,5 +145,12 @@
     <string name="username">Nombre de usuario</string>
     <string name="mustDigitPassword">Debe digitar su contraseña</string>
     <string name="saveSession">Mantener sesión iniciada</string>
+    <string name="isMigration">Es una migración</string>
+    <string name="empty" />
+    <string name="editPlanSuccess">Se actualizó el plan correctamente</string>
+    <string name="edit_plan">Editar plan</string>
+    <string name="see_details">Ver detalles</string>
+    <string name="name1">Nombre</string>
+    <string name="id">ID</string>
 
 </resources>

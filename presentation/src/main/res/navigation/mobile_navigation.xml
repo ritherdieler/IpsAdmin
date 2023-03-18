@@ -301,9 +301,9 @@
     </dialog>
     <fragment
         android:id="@+id/editSubscriptionFragment"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditPlanSubscription"
         android:label="EditSubscriptionFragment"
-        tools:layout="@layout/fragment_edit_subscription">
+        tools:layout="@layout/fragment_edit_plan_subscription">
         <argument
             android:name="subscription"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />

@@ -5,5 +5,4 @@ import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
 interface SelectableSubscriptionListener {
     fun onSubscriptionPopupButtonSelected(subscription: SubscriptionResponse, view: View)
-    fun onCardSelected(subscription: SubscriptionResponse)
 }

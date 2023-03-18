@@ -79,7 +79,7 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
                 val napBoxLatLng = LatLng((napBox.latitude ?: 0.0), (napBox.longitude ?: 0.0))
                 val napBoxMarkerOptions = MarkerOptions()
                     .position(napBoxLatLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(R.drawable.ic_person)))
+                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(R.drawable.ic_napbox)))
                 val marker = googleMap.addMarker(napBoxMarkerOptions)?.apply {
                     tag = "napBox"
 
@@ -106,7 +106,7 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE;
+        googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID;
         val santaRosa = LatLng(-11.234996, -77.380347)
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(santaRosa))
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.5f))

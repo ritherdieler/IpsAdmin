@@ -28,11 +28,9 @@ class FindSubscriptionAdapter(val listener: SelectableSubscriptionListener) :
             binding.subscription = subscription
             binding.executePendingBindings()
             binding.root.setOnClickListener {
-                listener.onCardSelected(subscription)
-            }
-            binding.btnMenu.setOnClickListener {
                 listener.onSubscriptionPopupButtonSelected(subscription, it)
             }
+
         }
     }
 

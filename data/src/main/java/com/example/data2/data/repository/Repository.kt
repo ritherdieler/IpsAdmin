@@ -67,21 +67,20 @@ class Repository : IRepository, KoinComponent {
     }
 
     override fun getUserSession(): User? {
-        val rememberCheckBoxStatus = prefs.getBoolean(REMEMBER_CHECKBOX_STATUS, false)
-        return if (rememberCheckBoxStatus) {
-            User(
-                id = prefs.getInt(SESSION_ID, 0),
-                name = prefs.getString(SESSION_NAME, "")!!,
-                lastName = prefs.getString(SESSION_LAST_NAME, "")!!,
-                type = prefs.getInt(SESSION_TYPE, 0),
-                username = prefs.getString(SESSION_USER_NAME, "")!!,
-                password = prefs.getString(SESSION_PASSWORD, "")!!,
-                verified = prefs.getBoolean(SESSION_VERIFIED, false),
-            )
-        } else {
-            null
-        }
+        if(!prefs.contains(SESSION_ID)) return null
+        return User(
+            id = prefs.getInt(SESSION_ID, 0),
+            name = prefs.getString(SESSION_NAME, "")!!,
+            lastName = prefs.getString(SESSION_LAST_NAME, "")!!,
+            type = prefs.getInt(SESSION_TYPE, 0),
+            username = prefs.getString(SESSION_USER_NAME, "")!!,
+            password = prefs.getString(SESSION_PASSWORD, "")!!,
+            verified = prefs.getBoolean(SESSION_VERIFIED, false),
+        )
+    }
 
+    override fun getRememberSessionCheckBoxStatus(): Boolean {
+        return prefs.getBoolean(REMEMBER_CHECKBOX_STATUS, false)
     }
 
     override suspend fun clearUserSession() {
