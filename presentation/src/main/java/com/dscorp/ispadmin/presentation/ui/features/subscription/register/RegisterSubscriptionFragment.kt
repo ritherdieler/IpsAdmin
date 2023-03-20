@@ -61,7 +61,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
         setInstallationTypeRadioGroupListener()
         binding.lvAditionalNetworkDevices.adapter = additionalDevicesAdapter
         binding.rgInstallationType.check(R.id.rbFiber)
-        binding.btnRegisterSubscription.setOnClickListener {
+
+        binding.ProgressButton.clickButtonProgress = {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
             viewModel.registerSubscription()
         }
@@ -201,7 +202,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 is CouponIsValid -> showCouponActivationResponse(response.isValid)
                 is GenericError -> showErrorDialog(response.error)
                 is LoadingData -> showLoadingStatus(response)
-                is LoadingLogin -> binding.btnRegisterSubscription.isEnabled = !response.loading
+                is LoadingLogin -> binding.ProgressButton.setProgressButtonDisable(response.loading)
                 is OnOnuDataFound -> {
                     binding.acOnu.populate(response.onus) {
                         viewModel.onuField.value = it
@@ -209,9 +210,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 }
                 is OnuDataError -> showErrorDialog(response.error)
                 is RefreshingOnus -> showOnusRefreshing(response.isRefreshing)
+                is ButtomProgressBar -> binding.ProgressButton.setProgressBarVisible(response.loading)
             }
         }
-
     }
 
     private fun showOnusRefreshing(refreshing: Boolean) {
@@ -241,7 +242,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
             findNavController().popBackStack(R.id.nav_subscription, true)
         }
     }
-
 
     private fun showLoadingStatus(response: LoadingData) {
         binding.viewLoading.visibility =
@@ -319,14 +319,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             val formattedDate = formatter.format(it)
             binding.etSubscriptionDate.setText(formattedDate)
         }
-
         datePicker.show(childFragmentManager, "DatePicker")
-
     }
-
-    private fun showSuccessDialog(response: RegisterSubscriptionSuccess) {
-        showSuccessDialog("El registro numero ${response.subscription.dni} ah sido registrado correctamente")
-    }
-
 }
 

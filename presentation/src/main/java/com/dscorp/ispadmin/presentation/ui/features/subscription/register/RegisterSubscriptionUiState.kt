@@ -41,4 +41,5 @@ sealed class RegisterSubscriptionUiState {
     class LoadingLogin(val loading: Boolean) : RegisterSubscriptionUiState()
     class CouponIsValid(val isValid: Boolean) : RegisterSubscriptionUiState()
     class RefreshingOnus(val isRefreshing: Boolean) : RegisterSubscriptionUiState()
+    class ButtomProgressBar(val loading: Boolean) : RegisterSubscriptionUiState()
 }

@@ -276,16 +276,20 @@ class SubscriptionViewModel(
 
         try {
             if (!formIsValid()) return@launch
+            registerSubscriptionUiState.emit(ButtomProgressBar(true))
             registerSubscriptionUiState.emit(LoadingLogin(true))
+            delay(500)
             val subscription = createSubscription()
             val subscriptionFromRepository = repository.registerSubscription(subscription)
             registerSubscriptionUiState.emit(
                 RegisterSubscriptionSuccess(subscriptionFromRepository)
             )
-            registerSubscriptionUiState.emit(LoadingLogin(true))
         } catch (error: Exception) {
             registerSubscriptionUiState.emit(RegisterSubscriptionError(error.message.toString()))
             registerSubscriptionUiState.emit(LoadingLogin(false))
+        }
+        finally {
+            registerSubscriptionUiState.emit(ButtomProgressBar(false))
         }
     }
 

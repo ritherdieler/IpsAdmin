@@ -81,7 +81,7 @@ class EditNapBoxFragment : BaseFragment() {
         val registerNapBox = NapBox(
             code = binding.etCode.text.toString(),
             address = binding.etAddress.text.toString(),
-            location = location
+//            location = location
         )
 
         viewModel.editNapBox(registerNapBox)

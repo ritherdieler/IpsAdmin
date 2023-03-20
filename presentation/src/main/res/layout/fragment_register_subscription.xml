@@ -14,7 +14,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context=".presentation.ui.features.subscription.register.RegisterSubscriptionFragment">
 
@@ -519,29 +519,27 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <Button
-                    android:id="@+id/btnRegisterSubscription"
+                <com.dscorp.ispadmin.presentation.util.ProgressButtonFragment
+                    android:id="@+id/ProgressButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:enabled="true"
-                    android:text="Registrar" />
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginBottom="20dp"/>
+
+
 
 
             </LinearLayout>
         </ScrollView>
-
-
-        <include layout="@layout/shimmer_register_subscription" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/viewLoading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="visible"
+            tools:visibility="gone">
 
             <include layout="@layout/shimmer_register_subscription" />
 
