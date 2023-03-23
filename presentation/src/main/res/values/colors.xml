@@ -18,7 +18,7 @@
     <color name="black_overlay">#66000000</color>
     <color name="azuloscuro">#202732</color>
 
-    //Material3
+<!--    //Material3-->
     <color name="seed">#00bf8d</color>
     <color name="md_theme_light_primary">#006C4E</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
@@ -84,5 +84,7 @@
     <color name="purple_claro_fondo">#E8DEF8</color>
     <color name="shimmer_color_loading">#939393</color>
 
+
+    <color name="colorPrimary">#131d47</color>
 
 </resources>

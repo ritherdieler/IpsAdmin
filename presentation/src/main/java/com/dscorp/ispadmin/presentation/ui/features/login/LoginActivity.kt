@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityLoginBinding
@@ -21,7 +22,7 @@ class LoginActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        installSplashScreen()
         val (status, user) = viewModel.checkSessionStatus()
         if (status) {
             navigateToMainActivity(user!!)
