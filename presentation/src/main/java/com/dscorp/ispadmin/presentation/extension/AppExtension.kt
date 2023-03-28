@@ -21,6 +21,9 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 fun NavController.navigateSafe(destinationId: Int) {
     try {
@@ -92,10 +95,18 @@ fun <T> MaterialAutoCompleteTextView.populate(data: List<T>, onItemSelected: (T)
 }
 
 
-fun Fragment.showCrossDialog(text: String?=null, positiveButtonClickListener: (() -> Unit)? = null) {
-    CrossDialogFragment(text, positiveButtonClickListener).show(childFragmentManager,CrossDialogFragment::class.simpleName)
+fun Fragment.showCrossDialog(text: String?=null,closeButtonClickListener: (() -> Unit)? = null, positiveButtonClickListener: (() -> Unit)? = null) {
+    CrossDialogFragment(text,closeButtonClickListener ,positiveButtonClickListener).show(childFragmentManager,CrossDialogFragment::class.simpleName)
 }
 
 fun AppCompatActivity.showCrossDialog(text: String?=null, positiveButtonClickListener: (() -> Unit)? = null) {
     CrossDialogFragment(text, positiveButtonClickListener).show(supportFragmentManager,CrossDialogFragment::class.simpleName)
 }
+
+
+fun Long.asStringDate(): String {
+    val date = Date(this)
+    val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return format.format(date)
+}
+

@@ -5,7 +5,6 @@ import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
-import kotlinx.coroutines.Job
 
 /**
  * Created by Sergio Carrillo Diestra on 25/12/2022.
@@ -37,7 +36,7 @@ interface IRepository {
     suspend fun getTechnicians(): List<Technician>
     suspend fun getNapBoxes(): List<NapBoxResponse>
     suspend fun getFilteredPaymentHistory(request: SearchPaymentsRequest): List<Payment>
-    suspend fun findSubscription(id: String): List<SubscriptionResponse>
+    suspend fun findSubscriptionByDNI(id: String): List<SubscriptionResponse>
     suspend fun registerPayment(payment: Payment): Payment
     suspend fun getNetworkDeviceTypes(): List<String>
     suspend fun getDebtors(): List<SubscriptionResponse>
@@ -48,7 +47,7 @@ interface IRepository {
     suspend fun editSubscription(subscription: UpdateSubscriptionPlanBody): SubscriptionResponse
     suspend fun downloadDebtorsDocument(): DownloadDocumentResponse
     suspend fun getDashBoardData(): DashBoardDataResponse
-    suspend fun startServicetCut()
+    suspend fun startServiceCut()
     suspend fun getHostDevices(): List<NetworkDevice>
     suspend fun getIpList(poolId: Int): List<Ip>
     suspend fun getCpeDevices(): List<NetworkDevice>
@@ -57,5 +56,6 @@ interface IRepository {
     suspend fun getMufas(): List<Mufa>
     suspend fun getUnconfirmedOnus(): List<Onu>
     suspend fun applyCoupon(code: String):Coupon?
+    suspend fun findSubscriptionBySubscriptionDate(startDate: Long, endDate:Long): List<SubscriptionResponse>
 
 }

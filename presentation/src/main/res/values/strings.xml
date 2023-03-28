@@ -1,7 +1,7 @@
 <resources>
 
 
-    <string name="digit_subscription">Digite el DNI</string>
+    <string name="digit_dni">Digite el DNI</string>
     <string name="app_name">ispAdminAndroid</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     find_subscription
@@ -152,5 +152,13 @@
     <string name="see_details">Ver detalles</string>
     <string name="name1">Nombre</string>
     <string name="id">ID</string>
+    <string name="clickForOpenMap">click aqui para abrir el mapa</string>
+    <string name="DNI">DNI</string>
+    <string name="find">Buscar</string>
+    <string name="start_date">Fecha de inicio</string>
+    <string name="end_date">Fecha de fin</string>
+    <string name="must_digit_dni">Debe seleccionar el dni</string>
+    <string name="must_select_start_date">Debe seleccionar una fecha de inicio</string>
+    <string name="must_select_end_date">Debe seleccionar una fecha de fin</string>
 
 </resources>

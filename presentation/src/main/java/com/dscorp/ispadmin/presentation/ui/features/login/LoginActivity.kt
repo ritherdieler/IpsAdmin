@@ -23,6 +23,7 @@ class LoginActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
+        Thread.sleep(1000)
         val (status, user) = viewModel.checkSessionStatus()
         if (status) {
             navigateToMainActivity(user!!)

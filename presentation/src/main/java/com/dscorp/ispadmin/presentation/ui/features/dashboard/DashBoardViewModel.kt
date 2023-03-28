@@ -32,7 +32,7 @@ class DashBoardViewModel : ViewModel(), KoinComponent {
             return@launch
         }
         try {
-            repository.startServicetCut()
+            repository.startServiceCut()
             uiState.postValue(DashBoardDataUiState.CutServiceSuccess)
         } catch (e: Exception) {
             uiState.postValue(DashBoardDataUiState.CutServiceError(e.message ?: ""))

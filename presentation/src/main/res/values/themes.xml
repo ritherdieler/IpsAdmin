@@ -30,12 +30,10 @@
 
 
     <style name="Theme.AppSplashScreen" parent="Theme.SplashScreen">
-
         <item name="windowSplashScreenBackground">@color/colorPrimary</item>
-
-        <item name="windowSplashScreenAnimatedIcon">@drawable/img_logo</item>
-
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="postSplashScreenTheme">@style/Theme.IspAdminAndroid</item>
+
 
     </style>
 </resources>

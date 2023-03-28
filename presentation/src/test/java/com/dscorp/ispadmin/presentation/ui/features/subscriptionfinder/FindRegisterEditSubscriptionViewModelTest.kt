@@ -71,7 +71,7 @@ class FindRegisterEditSubscriptionViewModelTest : AutoCloseKoinTest() {
         )
 
         // when
-        viewModel.findSubscription(dni)
+        viewModel.findSubscriptionByDni(dni)
 
         // then
         val value = viewModel.uiStateLiveData.getValueForTest() as OnSubscriptionFound
@@ -88,7 +88,7 @@ class FindRegisterEditSubscriptionViewModelTest : AutoCloseKoinTest() {
         )
 
         // when
-        viewModel.findSubscription(dni)
+        viewModel.findSubscriptionByDni(dni)
 
         // then
         val value = viewModel.uiStateLiveData.getValueForTest() as OnError

@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +9,12 @@ import android.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
+import com.dscorp.ispadmin.presentation.extension.asStringDate
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.inject
+import java.util.*
 
 class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener {
 
@@ -23,16 +26,26 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
 
     private val adapter = FindSubscriptionAdapter(this)
 
+    private val calendar: Calendar = Calendar.getInstance()
+    val currentYear = calendar.get(Calendar.YEAR)
+    val currentMonth = calendar.get(Calendar.MONTH)
+    val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        binding.executePendingBindings()
         binding.findSubscriptionRecyclerView.adapter = adapter
-        binding.btnFind.setOnClickListener {
-            val dni = binding.findSubscriptionEditText.text.toString()
-            viewModel.findSubscription(dni)
+
+        binding.etStartDate.setOnClickListener {
+            showStartDatePickerDialog()
+        }
+        binding.etEndDate.setOnClickListener {
+            showEndDatePickerDialog()
         }
 
         viewModel.loadingUiState.observe(viewLifecycleOwner) {
@@ -41,6 +54,9 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
 
         observeUiState()
 
+
+
+
         return binding.root
     }
 
@@ -48,19 +64,49 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
         viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is FindSubscriptionUiState.OnSubscriptionFound -> adapter.submitList(it.subscriptions)
-                is FindSubscriptionUiState.OnError -> showMaterialDialog(it.message)
+                is FindSubscriptionUiState.OnError -> showErrorDialog(it.message)
             }
         }
     }
 
-    private fun showMaterialDialog(message: String?) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Error")
-            .setMessage(message)
-            .setPositiveButton("Aceptar") { dialog, _ ->
-                dialog.dismiss()
+
+    private fun showStartDatePickerDialog() {
+        DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
+            val selectedCalendar = Calendar.getInstance()
+            selectedCalendar.set(Calendar.YEAR, year)
+            selectedCalendar.set(Calendar.MONTH, month)
+            selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            //clear time
+            selectedCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            selectedCalendar.set(Calendar.MINUTE, 0)
+            selectedCalendar.set(Calendar.SECOND, 0)
+            selectedCalendar.set(Calendar.MILLISECOND, 0)
+
+
+            viewModel.startDateField.value = selectedCalendar.timeInMillis
+            viewModel.startDateField.value?.let {
+                binding.etStartDate.setText(it.asStringDate())
             }
-            .show()
+        }, currentYear, currentMonth, currentDay).show()
+    }
+
+
+    private fun showEndDatePickerDialog() {
+        DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
+            val selectedCalendar = Calendar.getInstance()
+            selectedCalendar.set(Calendar.YEAR, year)
+            selectedCalendar.set(Calendar.MONTH, month)
+            selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            //clear time
+            selectedCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            selectedCalendar.set(Calendar.MINUTE, 0)
+            selectedCalendar.set(Calendar.SECOND, 0)
+            selectedCalendar.set(Calendar.MILLISECOND, 0)
+            viewModel.endDateField.value = selectedCalendar.timeInMillis
+            viewModel.endDateField.value?.let {
+                binding.etEndDate.setText(it.asStringDate())
+            }
+        }, currentYear, currentMonth, currentDay).show()
     }
 
     override fun onSubscriptionPopupButtonSelected(subscription: SubscriptionResponse, view: View) {
@@ -84,9 +130,6 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
                 R.id.btn_register_service_order -> navigateToRegisterServiceOrder(subscription)
                 R.id.btn_edit_plan_subscription -> navigateToEditSubscription(subscription)
                 R.id.btn_see_details -> navigateToDetails(subscription)
-
-//                R.id.btn_edit_subscription -> navigateToEditSubscription(subscription)
-
                 else -> false
             }
         }
@@ -95,7 +138,8 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
     }
 
     private fun navigateToDetails(subscription: SubscriptionResponse): Boolean {
-        val destination = FindSubscriptionFragmentDirections.findSubscriptionToSubscriptionDetail(subscription)
+        val destination =
+            FindSubscriptionFragmentDirections.findSubscriptionToSubscriptionDetail(subscription)
         findNavController().navigate(destination)
         return true
     }

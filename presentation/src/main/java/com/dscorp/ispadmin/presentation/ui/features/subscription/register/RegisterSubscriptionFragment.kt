@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
@@ -22,6 +21,7 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.util.FORMAT_DATE
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
@@ -233,14 +233,12 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun showConfirmationDialog(response: RegisterSubscriptionSuccess) {
+        val action = RegisterSubscriptionFragmentDirections.saveSubscriptionToDashboard()
         showCrossDialog(
-            getString(R.string.subscription_register_success, response.subscription.ip.toString())
-        ) {
-            val action = RegisterSubscriptionFragmentDirections.saveSubscriptionToDashboard()
-            findNavController().navigate(action)
-            //navigate pop
-            findNavController().popBackStack(R.id.nav_subscription, true)
-        }
+            getString(R.string.subscription_register_success, response.subscription.ip.toString()),
+            closeButtonClickListener = { findNavController().navigate(action) },
+            positiveButtonClickListener = { findNavController().navigate(action) }
+        )
     }
 
     private fun showLoadingStatus(response: LoadingData) {
@@ -304,6 +302,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             CompositeDateValidator.allOf(listOf(dateValidatorMin, dateValidatorMax))
 
         val datePicker = MaterialDatePicker.Builder.datePicker()
+
             .setTitleText("Select date")
             .setCalendarConstraints(
                 CalendarConstraints.Builder()
@@ -314,9 +313,10 @@ class RegisterSubscriptionFragment : BaseFragment() {
 
         datePicker.addOnPositiveButtonClickListener {
             viewModel.subscriptionDateField.value = it
+            val date = Date(it)
             val formatter = SimpleDateFormat("dd/MM/yyyy")
             formatter.timeZone = TimeZone.getTimeZone("UTC")
-            val formattedDate = formatter.format(it)
+            val formattedDate = formatter.format(date)
             binding.etSubscriptionDate.setText(formattedDate)
         }
         datePicker.show(childFragmentManager, "DatePicker")

@@ -9,7 +9,10 @@
             name="viewModel"
             type="com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel" />
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
+
+        <import type="com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel.SearchType" />
+    <import type="com.dscorp.ispadmin.presentation.extension.AppExtensionKt"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,43 +20,124 @@
         android:layout_height="match_parent"
         tools:context=".presentation.ui.features.subscriptionfinder.FindSubscriptionFragment">
 
-        <EditText
-            android:id="@+id/findSubscriptionEditText"
+        <RadioGroup
+            android:id="@+id/rgFilterBy"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            android:hint="@string/digit_subscription"
-            android:maxLength="8"
-            android:inputType="numberDecimal"
-            app:layout_constraintEnd_toStartOf="@id/btnFind"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/btnFind"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="buscar"
-
-            app:layout_constraintBottom_toBottomOf="@+id/findSubscriptionEditText"
+            android:layout_marginHorizontal="12dp"
+            android:checkedButton="@id/rbByDni"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/findSubscriptionEditText"
-            app:layout_constraintTop_toTopOf="@+id/findSubscriptionEditText" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/rbByDni"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.onSearchTypeChanged(buttonView,isChecked)}"
+                android:paddingEnd="10dp"
+                android:text="@string/DNI" />
+
+            <RadioButton
+                android:id="@+id/rbBySubscriptionDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.onSearchTypeChanged(buttonView,isChecked)}"
+                android:text="@string/subscriptionDate" />
+
+        </RadioGroup>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/subscriptionDateFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:visibility="@{viewModel.searchType == SearchType.BY_SUBSCRIPTION_DATE ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rgFilterBy">
+
+            <EditText
+                android:id="@+id/etStartDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                android:error="@{viewModel.startDateField.errorLiveData}"
+                android:focusable="false"
+                android:hint="@{viewModel.startDateField.hint}"
+                tools:hint="@string/start_date" />
+
+            <EditText
+                android:id="@+id/etEndDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                android:error="@{viewModel.endDateField.errorLiveData}"
+                android:focusable="false"
+                android:hint="@{viewModel.endDateField.hint}"
+
+                tools:hint="@string/end_date" />
+
+            <Button
+                android:id="@+id/btnFindByDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.search()}"
+                android:text="@string/find" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/dniFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:visibility="@{viewModel.searchType == SearchType.BY_DNI ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toBottomOf="@+id/subscriptionDateFilter">
+
+            <EditText
+                android:id="@+id/findSubscriptionEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_weight="1"
+                android:error="@{viewModel.dniField.errorLiveData}"
+                android:hint="@{viewModel.dniField.hint}"
+                android:inputType="numberDecimal"
+                android:maxLength="8"
+                android:onTextChanged="@{(text, start, before, count) -> viewModel.dniField.setValue(text.toString())}"
+                tools:hint="@string/digit_dni" />
+
+            <Button
+                android:id="@+id/btnFind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.search()}"
+                android:text="@string/search" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/findSubscriptionRecyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="1dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="1dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/findSubscriptionEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/dniFilter" />
 
         <ProgressBar
             android:id="@+id/pbar_find_subscription"

@@ -77,8 +77,11 @@ interface RestApiServices {
         @Query("endDate") endDate: Long?
     ): Response<List<Payment>>
 
-    @GET("subscription/find")
-    suspend fun findSubscription(@Query("dni") dni: String): Response<List<SubscriptionResponse>>
+    @GET("subscription/find/dni")
+    suspend fun findSubscriptionByDNI(@Query("dni") dni: String): Response<List<SubscriptionResponse>>
+
+    @GET("subscription/find/date")
+    suspend fun findSubscriptionBySubscriptionDate(@Query("startDate") startDate: Long,@Query("endDate") endDate: Long): Response<List<SubscriptionResponse>>
 
     @PUT("payment")
     suspend fun registerPayment(@Body payment: Payment): Response<Payment>

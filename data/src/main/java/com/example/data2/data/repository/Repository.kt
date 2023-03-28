@@ -5,7 +5,6 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.api.RestApiServices
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
-import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.utils.*
 import org.koin.core.component.KoinComponent
@@ -67,7 +66,7 @@ class Repository : IRepository, KoinComponent {
     }
 
     override fun getUserSession(): User? {
-        if(!prefs.contains(SESSION_ID)) return null
+        if (!prefs.contains(SESSION_ID)) return null
         return User(
             id = prefs.getInt(SESSION_ID, 0),
             name = prefs.getString(SESSION_NAME, "")!!,
@@ -236,8 +235,8 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun findSubscription(id: String): List<SubscriptionResponse> {
-        val response = restApiServices.findSubscription(id)
+    override suspend fun findSubscriptionByDNI(id: String): List<SubscriptionResponse> {
+        val response = restApiServices.findSubscriptionByDNI(id)
         return when (response.code()) {
             200 -> response.body()!!.ifEmpty { listOf() }
             else -> throw Exception("Error")
@@ -337,7 +336,7 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun startServicetCut() {
+    override suspend fun startServiceCut() {
         val response = restApiServices.startServiceCut()
         if (response.code() != 200) {
             throw Exception("Error")
@@ -414,5 +413,13 @@ class Repository : IRepository, KoinComponent {
             else -> throw Exception("Ocurrio un error en la activacion del cupon")
         }
 
+    }
+
+    override suspend fun findSubscriptionBySubscriptionDate( startDate: Long, endDate: Long ): List<SubscriptionResponse> {
+        val response = restApiServices.findSubscriptionBySubscriptionDate(startDate, endDate)
+        return when (response.code()) {
+            200 -> response.body()!!.ifEmpty { listOf() }
+            else -> throw Exception("Error")
+        }
     }
 }

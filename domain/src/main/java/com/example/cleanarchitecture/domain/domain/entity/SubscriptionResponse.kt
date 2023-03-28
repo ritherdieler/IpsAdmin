@@ -17,7 +17,13 @@ data class SubscriptionResponse(
     var ip: String? = null,
     var serviceIsSuspended: Boolean? = null,
     var technician: Technician? = null,
-    var hostDevice:NetworkDevice?=null
-) : java.io.Serializable{
+    var hostDevice: NetworkDevice? = null,
+    var subscriptionDate: String? = null,
+    var isMigration: Boolean,
+    var price: Double? = null,
+) : java.io.Serializable {
     fun getFullName() = "$firstName $lastName"
+
+    fun migrationAsString() = if(isMigration) "Si" else "No"
+
 }

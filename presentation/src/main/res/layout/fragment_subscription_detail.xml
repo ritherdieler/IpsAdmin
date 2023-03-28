@@ -101,7 +101,7 @@
                     android:id="@+id/etLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="click aqui para abrir el mapa" />
+                    android:text="@string/clickForOpenMap" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -181,6 +181,64 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{subscription.technician.firstName}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/subscriptionDate"
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etSubscriptionDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.subscriptionDate}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/isMigration"
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etIsMigration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.migrationAsString()}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="@string/price"
+                app:endIconMode="clear_text"
+                app:endIconTint="#6750A4">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:id="@+id/etPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{subscription.price.toString()}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

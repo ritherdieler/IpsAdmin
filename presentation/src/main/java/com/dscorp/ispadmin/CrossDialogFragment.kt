@@ -10,6 +10,7 @@ import com.dscorp.ispadmin.databinding.FragmentCrossDialogBinding
 
 class CrossDialogFragment(
     val text: String? = null,
+    val onCloseButtonClick: (() -> Unit)? = null,
     val onPositiveButtonClick: (() -> Unit)? = null
 ) :
     DialogFragment() {
@@ -33,7 +34,8 @@ class CrossDialogFragment(
 
 
         binding.closeButton.setOnClickListener {
-            dismiss()
+            if (onCloseButtonClick == null) dismiss()
+            else onCloseButtonClick.invoke()
         }
 
         return binding.root
