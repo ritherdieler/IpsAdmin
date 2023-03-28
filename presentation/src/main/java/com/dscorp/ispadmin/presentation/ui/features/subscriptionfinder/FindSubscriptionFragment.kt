@@ -9,8 +9,8 @@ import android.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
-import com.dscorp.ispadmin.presentation.extension.asStringDate
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.extension.toFormattedDateString
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import org.koin.android.ext.android.inject
@@ -85,7 +85,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
 
             viewModel.startDateField.value = selectedCalendar.timeInMillis
             viewModel.startDateField.value?.let {
-                binding.etStartDate.setText(it.asStringDate())
+                binding.etStartDate.setText(it.toFormattedDateString())
             }
         }, currentYear, currentMonth, currentDay).show()
     }
@@ -104,7 +104,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
             selectedCalendar.set(Calendar.MILLISECOND, 0)
             viewModel.endDateField.value = selectedCalendar.timeInMillis
             viewModel.endDateField.value?.let {
-                binding.etEndDate.setText(it.asStringDate())
+                binding.etEndDate.setText(it.toFormattedDateString())
             }
         }, currentYear, currentMonth, currentDay).show()
     }

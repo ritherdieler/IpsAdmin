@@ -310,13 +310,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
                     .build()
             )
             .build()
-
         datePicker.addOnPositiveButtonClickListener {
             viewModel.subscriptionDateField.value = it
-            val date = Date(it)
-            val formatter = SimpleDateFormat("dd/MM/yyyy")
-            formatter.timeZone = TimeZone.getTimeZone("UTC")
-            val formattedDate = formatter.format(date)
+            val formattedDate = it.toFormattedDateString()
             binding.etSubscriptionDate.setText(formattedDate)
         }
         datePicker.show(childFragmentManager, "DatePicker")
