@@ -302,7 +302,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
             CompositeDateValidator.allOf(listOf(dateValidatorMin, dateValidatorMax))
 
         val datePicker = MaterialDatePicker.Builder.datePicker()
-
             .setTitleText("Select date")
             .setCalendarConstraints(
                 CalendarConstraints.Builder()
