@@ -1,11 +1,8 @@
 package com.dscorp.ispadmin.presentation.ui.features.serviceorder.register
 
-import android.app.Service
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxFormErrorUiState
-import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxUiState
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.editar.EditServiceOrderFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.editar.EditServiceOrderUiState
 import com.example.cleanarchitecture.domain.domain.entity.*
@@ -24,6 +21,7 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
     var subscription: SubscriptionResponse? = null
     var serviceOrder: ServiceOrderResponse? = null
 
+
     fun registerServiceOrder(serviceOrder: ServiceOrder) = viewModelScope.launch {
         serviceOrder.userId = user?.id
 
@@ -41,10 +39,14 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
                                 to = it,
                                 priority = "high",
                                 data = mapOf(
-                                    "title" to "SOY UNA NOTIFICACION",
-                                    "body" to "Usted ah sido baneado xd"
+                                    "title" to "Ord.S.- ${
+                                        obtenerTextoPrioridad(
+                                            serviceOrder?.priority
+                                        )
+                                    }",
+                                    "body" to "Discripcion: ${serviceOrder.issue} "
                                 ),
-                                time_to_live = 60 // Duración en segundos antes de que la notificación expire
+                                time_to_live = 5 // Duración en segundos antes de que la notificación expire
                             )
                             sendCloudMessaging(firebaseBody)
 
@@ -57,6 +59,15 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
         } catch (error: Exception) {
             error.printStackTrace()
             uiState.postValue(RegisterServiceOrderUiState.ServiceOrderRegisterErrorOrder(error))
+        }
+    }
+
+    private fun obtenerTextoPrioridad(priority: Int?): String {
+        return when (priority) {
+            3 -> "Critico"
+            2 -> "importante"
+            1 -> "Baja Prioridad"
+            else -> ""
         }
     }
 
@@ -131,5 +142,9 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
         }
 
         return true
+    }
+
+    companion object {
+        const val ALL_USERS = "/topics/all"
     }
 }

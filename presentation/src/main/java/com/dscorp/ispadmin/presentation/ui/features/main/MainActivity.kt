@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -27,19 +28,18 @@ class MainActivity : BaseActivity() {
     private val viewModel: MainActivityViewModel by inject()
     private val PERMISSION_CODE = 123
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Crear el canal de notificación si la versión de Android es mayor o igual a Android Oreo
-            val channel = NotificationChannel(
-                "default",
-                "Canal de notificaciones",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
-        }
+        // Crear el canal de notificación si la versión de Android es mayor o igual a Android Oreo
+        val channel = NotificationChannel(
+            "default",
+            "Canal de notificaciones",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
 
         // Verificar si ya se han otorgado permisos para las notificaciones
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
