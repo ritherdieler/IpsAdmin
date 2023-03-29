@@ -62,7 +62,7 @@ class Repository : IRepository, KoinComponent {
         editor.putString(SESSION_LAST_NAME, user.lastName)
         editor.putString(SESSION_USER_NAME, user.username)
         editor.putString(SESSION_PASSWORD, user.password)
-        editor.putInt(SESSION_TYPE, user.type)
+        editor.putString(SESSION_TYPE, user.type.toString())
         user.id?.let { editor.putInt(SESSION_ID, it) }
         editor.putBoolean(SESSION_VERIFIED, user.verified)
         editor.apply()
@@ -70,11 +70,12 @@ class Repository : IRepository, KoinComponent {
 
     override fun getUserSession(): User? {
         if (!prefs.contains(SESSION_ID)) return null
+        val userType = prefs.getString(SESSION_TYPE, "")
         return User(
             id = prefs.getInt(SESSION_ID, 0),
             name = prefs.getString(SESSION_NAME, "")!!,
             lastName = prefs.getString(SESSION_LAST_NAME, "")!!,
-            type = prefs.getInt(SESSION_TYPE, 0),
+            type = User.UserType.valueOf(userType!!),
             username = prefs.getString(SESSION_USER_NAME, "")!!,
             password = prefs.getString(SESSION_PASSWORD, "")!!,
             verified = prefs.getBoolean(SESSION_VERIFIED, false),

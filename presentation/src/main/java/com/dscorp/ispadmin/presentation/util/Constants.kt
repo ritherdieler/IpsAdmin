@@ -8,3 +8,5 @@ object Constants {
 
 const val FORMAT_DATE = "dd/MM/yyy"
 
+
+const val FCM_ALL_THEME = "all"
