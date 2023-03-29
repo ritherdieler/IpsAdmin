@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
+import com.dscorp.ispadmin.presentation.ui.features.serviceorder.detail.ServiceOrderDetailActivity
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderFragment
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -32,7 +33,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendNotification(data: Map<String, String>) {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, ServiceOrderDetailActivity::class.java).apply {
+            putExtra("title", data["title"])
+            putExtra("body", data["body"])
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* Request code */, intent,
