@@ -8,11 +8,9 @@ import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxFormEr
 import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxUiState
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.editar.EditServiceOrderFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.editar.EditServiceOrderUiState
-import com.example.cleanarchitecture.domain.domain.entity.NapBox
-import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
-import com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.repository.IRepository
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 
 class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewModel() {
@@ -25,6 +23,7 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
     val formErrorLiveData = MutableLiveData<RegisterServiceOrderFormError>()
     var subscription: SubscriptionResponse? = null
     var serviceOrder: ServiceOrderResponse? = null
+
     fun registerServiceOrder(serviceOrder: ServiceOrder) = viewModelScope.launch {
         serviceOrder.userId = user?.id
 
@@ -34,6 +33,27 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
             uiState.postValue(
                 RegisterServiceOrderUiState.ServiceOrderRegisterSuccessOrder(response)
             )
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    viewModelScope.launch {
+                        task.result?.let {
+                            val firebaseBody = FirebaseBody(
+                                to = it,
+                                priority = "high",
+                                data = mapOf(
+                                    "title" to "SOY UNA NOTIFICACION",
+                                    "body" to "Usted ah sido baneado xd"
+                                ),
+                                time_to_live = 60 // Duración en segundos antes de que la notificación expire
+                            )
+                            sendCloudMessaging(firebaseBody)
+
+                        }
+                    }
+                }
+            }
+
+
         } catch (error: Exception) {
             error.printStackTrace()
             uiState.postValue(RegisterServiceOrderUiState.ServiceOrderRegisterErrorOrder(error))
@@ -51,6 +71,15 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
             )
         } catch (e: Exception) {
             editServiceOrderUiState.postValue(EditServiceOrderUiState.ServiceOrderEditErrorOrder(e.message))
+        }
+    }
+
+    private suspend fun sendCloudMessaging(body: FirebaseBody) = viewModelScope.launch {
+        try {
+            repository.sendCloudMessaging(body)
+
+        } catch (e: Exception) {
+            e.message
         }
     }
 
