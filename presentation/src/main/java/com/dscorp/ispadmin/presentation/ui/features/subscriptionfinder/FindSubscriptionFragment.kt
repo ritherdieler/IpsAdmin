@@ -9,6 +9,7 @@ import android.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
+import com.dscorp.ispadmin.presentation.extension.localToUTC
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.toFormattedDateString
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
@@ -74,10 +75,11 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select date")
             .build()
+
         datePicker.addOnPositiveButtonClickListener {
-            viewModel.startDateField.value = it
-            viewModel.startDateField.value?.let {
-                binding.etStartDate.setText(it.toFormattedDateString())
+            viewModel.startDateField.value = it.localToUTC()
+            viewModel.startDateField.value?.let { date->
+                binding.etStartDate.setText(date.toFormattedDateString())
             }
         }
         datePicker.show(childFragmentManager, "DatePickerStart")
@@ -89,9 +91,9 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
             .setTitleText("Select date")
             .build()
         datePicker.addOnPositiveButtonClickListener {
-            viewModel.endDateField.value = it
-            viewModel.endDateField.value?.let {
-                binding.etEndDate.setText(it.toFormattedDateString())
+            viewModel.endDateField.value = it.localToUTC()
+            viewModel.endDateField.value?.let { date->
+                binding.etEndDate.setText(date.toFormattedDateString())
             }
         }
         datePicker.show(childFragmentManager, "DatePickerend")

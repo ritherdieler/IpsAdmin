@@ -91,6 +91,14 @@ class RegisterSubscriptionFragment : BaseFragment() {
             additionalDevicesAdapter.clear()
             additionalDevicesAdapter.addAll(viewModel.additionalNetworkDevicesList)
         }
+
+
+        val currentTimeMillis = System.currentTimeMillis()
+
+        viewModel.subscriptionDateField.value = currentTimeMillis
+        binding.etSubscriptionDate.setText(currentTimeMillis.toFormattedDateString())
+        binding.etSubscriptionDate.isEnabled = false
+        binding.etSubscriptionDate.visibility = View.GONE
         return binding.root
     }
 
@@ -267,15 +275,11 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etPlace.populate(response.places) {
             viewModel.placeField.value = it
         }
-        binding.etTechnician.populate(response.technicians) {
-            viewModel.technicianField.value = it
-        }
+        pupulateTechnicianSpinner(response)
         binding.acNapBox.populate(response.napBoxes) {
             viewModel.napBoxField.value = it
         }
-        binding.etHostDevice.populate(response.hostNetworkDevices) {
-            viewModel.hostDeviceField.value = it
-        }
+        populateHostDeviceSprinner(response)
         binding.acAditionalNetworkDevices.populate(response.networkDevices) {
             lifecycleScope.launch {
                 viewModel.selectedAdditionalDevice.value = it
@@ -286,6 +290,31 @@ class RegisterSubscriptionFragment : BaseFragment() {
                 viewModel.onuField.value = it
             }
         }
+    }
+
+    private fun pupulateTechnicianSpinner(response: FormDataFound) {
+        binding.etTechnician.populate(response.technicians) {
+            viewModel.technicianField.value = it
+        }
+        if (response.technicians.size == 1) {
+            viewModel.technicianField.value = response.technicians[0]
+            binding.etTechnician.setText(viewModel.technicianField.value.toString())
+            binding.spnTechnician.isEnabled = false
+            binding.spnTechnician.visibility = View.GONE
+        }
+    }
+
+    private fun populateHostDeviceSprinner(response: FormDataFound) {
+        binding.etHostDevice.populate(response.hostNetworkDevices) {
+            viewModel.hostDeviceField.value = it
+        }
+        if (response.hostNetworkDevices.size == 1) {
+            viewModel.hostDeviceField.value = response.hostNetworkDevices[0]
+            binding.etHostDevice.setText(viewModel.hostDeviceField.value.toString())
+            binding.spnHostDevice.isEnabled = false
+            binding.spnHostDevice.visibility = View.GONE
+        }
+
     }
 
 

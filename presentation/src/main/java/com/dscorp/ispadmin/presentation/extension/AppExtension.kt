@@ -118,6 +118,10 @@ fun AppCompatActivity.showCrossDialog(
 fun Long.toFormattedDateString(): String {
     val date = Date(this)
     val formatter = SimpleDateFormat("dd/MM/yyyy")
-    formatter.timeZone = TimeZone.getTimeZone("UTC")
     return formatter.format(date)
+}
+
+fun Long.localToUTC(): Long {
+    val offsetFromUtc = TimeZone.getDefault().getOffset(this)
+   return this - offsetFromUtc
 }
