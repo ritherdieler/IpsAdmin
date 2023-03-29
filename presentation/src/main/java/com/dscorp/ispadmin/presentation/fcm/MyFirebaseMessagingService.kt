@@ -6,14 +6,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.detail.ServiceOrderDetailActivity
-import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderFragment
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -34,14 +31,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private fun sendNotification(data: Map<String, String>) {
         val intent = Intent(this, ServiceOrderDetailActivity::class.java).apply {
-            putExtra("title", data["title"])
-            putExtra("body", data["body"])
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        val bundle = Bundle().apply {
+            putString("title", data["title"])
+            putString("body", data["body"])
+        }
+        intent.putExtras(bundle)
+
         val pendingIntent = PendingIntent.getActivity(
-            this, 0 /* Request code */, intent,
-            PendingIntent.FLAG_IMMUTABLE
+            this, 0, intent, PendingIntent.FLAG_IMMUTABLE
         )
+
+
 
         val channelId = "Default"
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -72,3 +75,4 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private fun sendRegistrationToServer(token: String?) {
     }
 }
+
