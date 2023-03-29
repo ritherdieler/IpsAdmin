@@ -9,7 +9,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityMainBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
+import com.dscorp.ispadmin.presentation.util.FCM_ALL_THEME
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -22,6 +24,9 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        FirebaseMessaging.getInstance().subscribeToTopic(FCM_ALL_THEME)
+
         lifecycleScope.launch {
 
             viewModel.uiState.collect {
@@ -31,6 +36,7 @@ class MainActivity : BaseActivity() {
                 }
             }
         }
+
 
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)

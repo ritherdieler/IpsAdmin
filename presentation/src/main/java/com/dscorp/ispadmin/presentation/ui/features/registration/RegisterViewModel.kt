@@ -73,7 +73,7 @@ class RegisterViewModel : ViewModel() {
         val user = User(
             name = firstName,
             lastName = lastName,
-            type = 0,
+            type = User.UserType.CLIENT,
             username = user,
             password = password1,
             verified = false
