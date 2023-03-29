@@ -1,7 +1,14 @@
 package com.dscorp.ispadmin.presentation.ui.features.main
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -18,10 +25,29 @@ class MainActivity : BaseActivity() {
         DataBindingUtil.setContentView(this, R.layout.activity_main)
     }
     private val viewModel: MainActivityViewModel by inject()
+    private val PERMISSION_CODE = 123
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Crear el canal de notificación si la versión de Android es mayor o igual a Android Oreo
+            val channel = NotificationChannel(
+                "default",
+                "Canal de notificaciones",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        // Verificar si ya se han otorgado permisos para las notificaciones
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // Si los permisos aún no se han otorgado, solicitar permiso
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), PERMISSION_CODE)
+        } else {
+
+        }
         lifecycleScope.launch {
 
             viewModel.uiState.collect {
