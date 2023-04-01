@@ -14,6 +14,7 @@ import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.toFormattedDateString
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.User
 import com.google.android.material.datepicker.*
 import org.koin.android.ext.android.inject
 import java.util.*
@@ -124,6 +125,10 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
             }
         }
         popupMenu.inflate(R.menu.subscription_menu)
+        if(viewModel.user!!.type == User.UserType.TECHNICIAN){
+            popupMenu.menu.findItem(R.id.btn_edit_plan_subscription).isVisible = false
+            popupMenu.menu.findItem(R.id.btn_register_service_order).isVisible = false
+        }
         popupMenu.show()
     }
 

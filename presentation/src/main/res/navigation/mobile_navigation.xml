@@ -310,6 +310,9 @@
         <action
             android:id="@+id/action_editSubscriptionFragment_to_nav_dashboard"
             app:destination="@id/nav_dashboard" />
+        <action
+            android:id="@+id/editSubscriptionPlan_to_findSubscription"
+            app:destination="@id/nav_find_subscriptions" />
     </fragment>
     <dialog
         android:id="@+id/napBoxDialogFragment"

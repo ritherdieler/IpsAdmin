@@ -18,13 +18,14 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:fillViewport="true">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/viewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -37,11 +38,7 @@
                     android:backgroundTint="@color/purple_claro_fondo"
                     android:elevation="20dp"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp"
-                    app:layout_constraintBottom_toTopOf="@+id/cardView2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:cardElevation="5dp">
 
                     <TextView
                         android:id="@+id/tv_gross_revenue"
@@ -65,11 +62,7 @@
                     android:backgroundTint="@color/purple_claro_fondo"
                     android:elevation="20dp"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp"
-                    app:layout_constraintBottom_toTopOf="@+id/cardView3"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView">
+                    app:cardElevation="5dp">
 
                     <TextView
                         android:id="@+id/tv_total_to_collect"
@@ -92,11 +85,7 @@
                     android:backgroundTint="@color/purple_claro_fondo"
                     android:elevation="20dp"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp"
-                    app:layout_constraintBottom_toTopOf="@+id/cardView4"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView2">
+                    app:cardElevation="5dp">
 
                     <TextView
                         android:id="@+id/tv_total_raised"
@@ -119,11 +108,7 @@
                     android:layout_marginBottom="24dp"
                     android:backgroundTint="@color/purple_claro_fondo"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp"
-                    app:layout_constraintBottom_toTopOf="@+id/btnStartCut"
-                    app:layout_constraintEnd_toEndOf="@+id/cardView3"
-                    app:layout_constraintStart_toStartOf="@+id/cardView3"
-                    app:layout_constraintTop_toBottomOf="@+id/cardView3">
+                    app:cardElevation="5dp">
 
                     <TextView
                         android:id="@+id/tv_total_discount"
@@ -137,6 +122,68 @@
                         tools:text="Total Recovered" />
                 </androidx.cardview.widget.CardView>
 
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView5"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginBottom="24dp"
+                    android:backgroundTint="@color/purple_claro_fondo"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_fiber_installations"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@{dashboardDataResponse.installationResume.fiberResume}"
+                            android:textSize="20sp"
+                            tools:text="Total Recovered" />
+
+                        <TextView
+                            android:id="@+id/tv_wireless_installations"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="@{dashboardDataResponse.installationResume.wirelessResume}"
+                            android:textSize="20sp"
+                            tools:text="Total Recovered" />
+
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView7"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginHorizontal="30dp"
+                    android:layout_marginBottom="24dp"
+                    android:backgroundTint="@color/purple_claro_fondo"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_cancelled_subscriptions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@{dashboardDataResponse.canceledSubscriptionsAsString()}"
+                        android:textSize="20sp"
+                        tools:text="Total Recovered" />
+                </androidx.cardview.widget.CardView>
 
                 <Button
                     android:id="@+id/btnStartCut"
@@ -156,7 +203,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </ScrollView>
 

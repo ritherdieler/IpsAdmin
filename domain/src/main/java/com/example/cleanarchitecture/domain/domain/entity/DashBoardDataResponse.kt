@@ -4,7 +4,9 @@ class DashBoardDataResponse(
     var grossRevenue: Double = 0.0,
     var totalRaised: Double = 0.0,
     var totalDiscount: Double = 0.0,
-    var totalToCollect: Double = 0.0
+    var totalToCollect: Double = 0.0,
+    val installationResume: InstallationResume,
+    val canceledSubscriptions: Int
 ) {
     fun grossRevenueAsString() = "Total bruto S/.$grossRevenue"
 
@@ -13,4 +15,5 @@ class DashBoardDataResponse(
     fun totalDiscountAsString() = "Descontado S/.$totalDiscount"
 
     fun totalToCollectAsString() = "Por cobrar S/.$totalToCollect"
+    fun canceledSubscriptionsAsString() = "Subs. canceladas $canceledSubscriptions"
 }

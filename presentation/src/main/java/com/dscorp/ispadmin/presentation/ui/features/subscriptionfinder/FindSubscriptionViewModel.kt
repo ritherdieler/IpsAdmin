@@ -18,6 +18,7 @@ class FindSubscriptionViewModel : ViewModel(), KoinComponent {
     val loadingUiState = MutableLiveData(false)
 
     var searchType = MutableLiveData(SearchType.BY_DNI)
+    val user = repository.getUserSession()
 
 
     val dniField =

@@ -19,7 +19,7 @@ class EditSubscriptionViewModel(
 
     val editSubscriptionUiState = MutableSharedFlow<EditSubscriptionUiState>()
     var subscription: SubscriptionResponse? = null
-
+    val user = repository.getUserSession()
     val planField = FormField(
         hintResourceId = R.string.plan,
         errorResourceId = R.string.mustSelectPlan,

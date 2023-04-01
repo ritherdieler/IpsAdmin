@@ -4,12 +4,16 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityMainBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
 import com.dscorp.ispadmin.presentation.util.FCM_ALL_THEME
+import com.dscorp.ispadmin.presentation.util.FCM_CUSTOMER_THEME
+import com.dscorp.ispadmin.presentation.util.FCM_TECHNICIAN_THEME
+import com.example.cleanarchitecture.domain.domain.entity.User
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
@@ -25,23 +29,52 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        FirebaseMessaging.getInstance().subscribeToTopic(FCM_ALL_THEME)
+        val navView: NavigationView = binding.navView
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
 
+        navView.setupWithNavController(navController)
         lifecycleScope.launch {
 
             viewModel.uiState.collect {
                 when (it) {
                     UiState.Idle -> {}
-                    is UiState.UserSessionsFound -> firebaseAnalytics.setUserId(it.response.id.toString())
+                    is UiState.UserSessionsFound -> {
+                        firebaseAnalytics.setUserId(it.response.id.toString())
+                        when (it.response.type) {
+                            User.UserType.TECHNICIAN -> {
+                                navView.menu.findItem(R.id.nav_dashboard).isVisible = false
+                                navView.menu.findItem(R.id.nav_reports).isVisible = false
+                                navView.menu.findItem(R.id.nav_ip_pool).isVisible = false
+                                FirebaseMessaging.getInstance()
+                                    .subscribeToTopic(FCM_TECHNICIAN_THEME)
+                            }
+                            User.UserType.SECRETARY -> {
+                                navView.menu.findItem(R.id.nav_ip_pool).isVisible = false
+                                navView.menu.findItem(R.id.nav_dashboard).isVisible = false
+
+                                val navOptions = NavOptions.Builder()
+                                    .setPopUpTo(navController.graph.startDestinationId, true)
+                                    .build()
+                                navController.navigate(
+                                    R.id.nav_find_subscriptions,
+                                    null,
+                                    navOptions
+                                )
+                            }
+                            User.UserType.CLIENT -> {
+                                FirebaseMessaging.getInstance().subscribeToTopic(FCM_CUSTOMER_THEME)
+                            }
+                            User.UserType.LOGISTIC -> {}
+                            User.UserType.SALES -> {}
+                            User.UserType.ADMIN -> {
+                                FirebaseMessaging.getInstance().subscribeToTopic(FCM_ALL_THEME)
+                            }
+                            null -> {}
+                        }
+                    }
                 }
             }
         }
-
-
-        val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-
-        navView.setupWithNavController(navController)
     }
 
     override fun onBackPressed() {

@@ -17,7 +17,7 @@ data class User(
     val verified: Boolean,
 ){
     enum class UserType {
-        ADMIN, TECHNICIAN, CLIENT, LOGISTIC, SALES, MANAGER
+        ADMIN, TECHNICIAN, CLIENT, LOGISTIC, SALES, SECRETARY
     }
 
 }

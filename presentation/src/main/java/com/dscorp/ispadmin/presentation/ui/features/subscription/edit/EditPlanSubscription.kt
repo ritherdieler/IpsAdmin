@@ -15,7 +15,7 @@ import com.dscorp.ispadmin.presentation.extension.populate
 import com.dscorp.ispadmin.presentation.extension.showCrossDialog
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.domain.entity.User
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -68,9 +68,16 @@ class EditPlanSubscription : BaseFragment() {
     private fun showEditSuccessDialog() {
         showCrossDialog(
             text = getString(R.string.editPlanSuccess), positiveButtonClickListener = {
-                val action =
-                    EditPlanSubscriptionDirections.actionEditSubscriptionFragmentToNavDashboard()
-                findNavController().navigate(action)
+                if (viewModel.user!!.type == User.UserType.ADMIN) {
+                    val action =
+                        EditPlanSubscriptionDirections.actionEditSubscriptionFragmentToNavDashboard()
+                    findNavController().navigate(action)
+                } else {
+                    val action =
+                        EditPlanSubscriptionDirections.editSubscriptionPlanToFindSubscription()
+                    findNavController().navigate(action)
+                }
+
             }
         )
     }
