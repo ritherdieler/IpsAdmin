@@ -322,4 +322,9 @@
             android:name="napBox"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBox" />
     </dialog>
+    <fragment
+        android:id="@+id/serviceOrderDetailFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.detail.ServiceOrderDetailFragment"
+        android:label="fragment_service_order_detail"
+        tools:layout="@layout/activity_service_order_detail" />
 </navigation>

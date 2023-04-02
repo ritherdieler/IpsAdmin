@@ -2,7 +2,9 @@ package com.example.data2.data.repository
 
 import android.content.SharedPreferences
 import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
 import com.example.data2.data.api.RestApiServices
+import com.example.data2.data.api.SendMessagingCloudApi
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
@@ -20,6 +22,7 @@ import org.koin.core.component.inject
 class Repository : IRepository, KoinComponent {
 
     private val restApiServices: RestApiServices by inject()
+    private val sendMessagingCloudApi: SendMessagingCloudApi by inject()
     private val prefs: SharedPreferences by inject()
 
 
@@ -423,4 +426,12 @@ class Repository : IRepository, KoinComponent {
             else -> throw Exception("Error")
         }
     }
+
+    override suspend fun sendCloudMessaging(body: FirebaseBody?): FireBaseResponse {
+        val response = sendMessagingCloudApi.sendCloudMessaging(body)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error en la notificacion")
+        }    }
 }

@@ -4,6 +4,7 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 
 /**
@@ -57,5 +58,6 @@ interface IRepository {
     suspend fun getUnconfirmedOnus(): List<Onu>
     suspend fun applyCoupon(code: String):Coupon?
     suspend fun findSubscriptionBySubscriptionDate(startDate: Long, endDate:Long): List<SubscriptionResponse>
+    suspend fun sendCloudMessaging( body: FirebaseBody?): FireBaseResponse
 
 }

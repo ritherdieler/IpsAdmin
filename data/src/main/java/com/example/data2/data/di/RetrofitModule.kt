@@ -51,6 +51,7 @@ fun provideOltServiceHttpClient(): OkHttpClient {
         val request = original.newBuilder()
             .header("Content-Type", "application/json")
             .header("X-Token", BuildConfig.OLT_SERVICE_API_KET)
+            .header("X-Token", BuildConfig.OLT_SERVICE_API_KET)
             .method(original.method, original.body)
             .build()
         chain.proceed(request)

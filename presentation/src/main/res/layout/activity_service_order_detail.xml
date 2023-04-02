@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="20dp"
+    tools:context=".presentation.ui.features.serviceorder.detail.ServiceOrderDetailActivity">
+
+    <TextView
+        android:id="@+id/tvPriority"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Prioridad"
+        app:layout_constraintBottom_toTopOf="@+id/tvProblemDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/tvSeePriority"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/tvSeeProblemDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvPriority"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Prioridad" />
+
+    <TextView
+        android:id="@+id/tvProblemDescription"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Problema:"
+        app:layout_constraintBottom_toTopOf="@+id/tvDetailProblem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPriority" />
+
+    <TextView
+        android:id="@+id/tvSeeProblemDescription"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvSeeDetailProblem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvProblemDescription"
+        app:layout_constraintTop_toBottomOf="@+id/tvSeePriority"
+        tools:text="Problema" />
+
+    <TextView
+        android:id="@+id/tvDetailProblem"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Detalle:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvProblemDescription" />
+
+    <TextView
+        android:id="@+id/tvSeeDetailProblem"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvDetailProblem"
+        app:layout_constraintTop_toBottomOf="@+id/tvSeeProblemDescription"
+        tools:text="Detalle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

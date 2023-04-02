@@ -1,18 +1,13 @@
 package com.dscorp.ispadmin.presentation.ui.features.serviceorder.register
 
-import android.app.Service
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxFormErrorUiState
-import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxUiState
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.editar.EditServiceOrderFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.editar.EditServiceOrderUiState
-import com.example.cleanarchitecture.domain.domain.entity.NapBox
-import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
-import com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.repository.IRepository
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 
 class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewModel() {
@@ -25,6 +20,8 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
     val formErrorLiveData = MutableLiveData<RegisterServiceOrderFormError>()
     var subscription: SubscriptionResponse? = null
     var serviceOrder: ServiceOrderResponse? = null
+
+
     fun registerServiceOrder(serviceOrder: ServiceOrder) = viewModelScope.launch {
         serviceOrder.userId = user?.id
 
@@ -34,9 +31,43 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
             uiState.postValue(
                 RegisterServiceOrderUiState.ServiceOrderRegisterSuccessOrder(response)
             )
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    viewModelScope.launch {
+                        task.result?.let {
+                            val firebaseBody = FirebaseBody(
+                                to = it,
+                                priority = "high",
+                                data = mapOf(
+                                    "title" to "Ord.S.- ${
+                                        obtenerTextoPrioridad(
+                                            serviceOrder?.priority
+                                        )
+                                    }",
+                                    "body" to "Discripcion: ${serviceOrder.issue} "
+                                ),
+                                time_to_live = 5 // Duración en segundos antes de que la notificación expire
+                            )
+                            sendCloudMessaging(firebaseBody)
+
+                        }
+                    }
+                }
+            }
+
+
         } catch (error: Exception) {
             error.printStackTrace()
             uiState.postValue(RegisterServiceOrderUiState.ServiceOrderRegisterErrorOrder(error))
+        }
+    }
+
+    private fun obtenerTextoPrioridad(priority: Int?): String {
+        return when (priority) {
+            3 -> "Critico"
+            2 -> "importante"
+            1 -> "Baja Prioridad"
+            else -> ""
         }
     }
 
@@ -51,6 +82,15 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
             )
         } catch (e: Exception) {
             editServiceOrderUiState.postValue(EditServiceOrderUiState.ServiceOrderEditErrorOrder(e.message))
+        }
+    }
+
+    private suspend fun sendCloudMessaging(body: FirebaseBody) = viewModelScope.launch {
+        try {
+            repository.sendCloudMessaging(body)
+
+        } catch (e: Exception) {
+            e.message
         }
     }
 
@@ -102,5 +142,9 @@ class RegisterServiceOrderViewModel(private val repository: IRepository) : ViewM
         }
 
         return true
+    }
+
+    companion object {
+        const val ALL_USERS = "/topics/all"
     }
 }

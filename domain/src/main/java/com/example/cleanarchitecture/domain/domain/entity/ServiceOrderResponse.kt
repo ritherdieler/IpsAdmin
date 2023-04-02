@@ -13,7 +13,7 @@ data class ServiceOrderResponse(
     val subscriptionId: Int? = null,
     var userId:Int?=null,
     val additionalDetails : String?=null,
-    val priority:Int?=null
+    var priority:Int?=null
 ):java.io.Serializable
 {
     override fun equals(other: Any?): Boolean {
