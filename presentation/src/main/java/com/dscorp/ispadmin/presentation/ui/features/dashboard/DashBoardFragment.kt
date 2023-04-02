@@ -13,6 +13,7 @@ import com.dscorp.ispadmin.databinding.FragmentDashBoardBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.example.cleanarchitecture.domain.domain.entity.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DashBoardFragment : BaseFragment() {
@@ -24,7 +25,7 @@ class DashBoardFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         viewModel.getDashBoardData()
-
+       binding.btnStartCut.visibility = if(viewModel.userSession?.type == User.UserType.ADMIN) View.VISIBLE else View.GONE
         binding.btnStartCut.setOnClickListener {
 
             MaterialAlertDialogBuilder(requireContext())
@@ -67,8 +68,10 @@ class DashBoardFragment : BaseFragment() {
                 is DashBoardDataUiState.CutServiceSuccess -> showSuccessDialog("Se ha iniciado el corte correctamente")
 
                 is DashBoardDataUiState.LoadingData -> {
-                    binding.shimmerDashBoard.visibility = if (state.loading) View.VISIBLE else View.GONE
-                    binding.viewContainer.visibility = if (state.loading) View.GONE else View.VISIBLE
+                    binding.shimmerDashBoard.visibility =
+                        if (state.loading) View.VISIBLE else View.GONE
+                    binding.viewContainer.visibility =
+                        if (state.loading) View.GONE else View.VISIBLE
                 }
             }
         }

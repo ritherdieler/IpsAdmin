@@ -1,9 +1,12 @@
 package com.dscorp.ispadmin.presentation.util
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
@@ -55,6 +58,19 @@ class MapViewDialogFragment : DialogFragment(), OnMapReadyCallback {
                 .title("Ubicación ")
         )
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,16f))
+
+        //show my location button
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        googleMap.isMyLocationEnabled = true
     }
 
     override fun onResume() {

@@ -163,27 +163,47 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tlLocationSubscription"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.locationField.errorLiveData}"
-                    android:focusable="false"
-                    android:hint="@{viewModel.locationField.hint}"
-                    app:endIconMode="clear_text"
-                    app:endIconTint="#6750A4"
-                    tools:hint="@string/location">
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etLocationSubscription"
-                        android:layout_width="match_parent"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tlLocationSubscription"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:focusable="false" />
+                        android:layout_weight="1"
+                        android:error="@{viewModel.locationField.errorLiveData}"
+                        android:focusable="false"
+                        android:hint="@{viewModel.locationField.hint}"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="#6750A4"
+                        tools:hint="@string/location">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etLocationSubscription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:id="@+id/ivMyLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_my_location"
+
+                         />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/spnPlan"
@@ -533,11 +553,9 @@
                     android:id="@+id/ProgressButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:layout_marginHorizontal="20dp"
-                    android:layout_marginBottom="20dp"/>
-
-
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp" />
 
 
             </LinearLayout>

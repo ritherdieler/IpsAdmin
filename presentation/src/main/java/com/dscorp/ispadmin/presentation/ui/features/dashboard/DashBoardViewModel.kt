@@ -12,7 +12,7 @@ import org.koin.core.component.inject
 class DashBoardViewModel : ViewModel(), KoinComponent {
     private val repository: IRepository by inject()
     val uiState = MutableLiveData<DashBoardDataUiState>()
-    private val userSession = repository.getUserSession()
+     val userSession = repository.getUserSession()
     fun getDashBoardData() = viewModelScope.launch {
         uiState.value = DashBoardDataUiState.LoadingData(true)
         try {

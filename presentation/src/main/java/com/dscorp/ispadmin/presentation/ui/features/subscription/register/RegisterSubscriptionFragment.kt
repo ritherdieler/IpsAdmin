@@ -1,7 +1,12 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +14,7 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -21,13 +27,12 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
-import com.dscorp.ispadmin.presentation.util.FORMAT_DATE
 import com.example.cleanarchitecture.domain.domain.entity.*
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
@@ -36,11 +41,36 @@ import kotlin.time.DurationUnit
 class RegisterSubscriptionFragment : BaseFragment() {
     private val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
     private val viewModel: SubscriptionViewModel by viewModel()
+    private var rationaleShown = false
     private val additionalDevicesAdapter by lazy {
         ArrayAdapter<NetworkDevice>(
             requireContext(),
             android.R.layout.simple_spinner_item
         )
+    }
+
+    private val fusedLocationClient by lazy {
+        LocationServices.getFusedLocationProviderClient(requireActivity())
+    }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                getCurrentLocation()
+            } else {
+                if (rationaleShown) openLocationSettings(requireActivity())
+            }
+        }
+
+    private fun getCurrentLocation() {
+        binding.ivMyLocation.setImageResource(R.drawable.ic_rotate_right)
+        binding.ivMyLocation.animateRotate360InLoop()
+        fusedLocationClient.getCurrentLocation {
+            binding.etLocationSubscription.setText("${it.latitude}, ${it.longitude}")
+            viewModel.locationField.value = it
+            binding.ivMyLocation.clearAnimation()
+            binding.ivMyLocation.setImageResource(R.drawable.ic_my_location)
+        }
     }
 
     override fun onCreateView(
@@ -66,6 +96,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.ProgressButton.clickButtonProgress = {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
             viewModel.registerSubscription()
+        }
+        binding.ivMyLocation.setOnClickListener {
+            requestLocationPermission()
         }
 
         binding.etSubscriptionDate.setOnClickListener {
@@ -100,6 +133,23 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etSubscriptionDate.isEnabled = false
         binding.etSubscriptionDate.visibility = View.GONE
         return binding.root
+    }
+
+    private fun requestLocationPermission() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Permiso de ubicación requerido")
+                .setMessage("Se requiere el permiso de ubicación para obtener la ubicación actual")
+                .setPositiveButton("OK") { _, _ ->
+                    requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                }
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show()
+            rationaleShown = true
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
     }
 
     private fun setInstallationTypeRadioGroupListener() {
@@ -345,5 +395,11 @@ class RegisterSubscriptionFragment : BaseFragment() {
         }
         datePicker.show(childFragmentManager, "DatePicker")
     }
+
+    private fun openLocationSettings(activity: Activity) {
+        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        activity.startActivity(intent)
+    }
+
 }
 

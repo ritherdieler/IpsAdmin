@@ -8,13 +8,20 @@
         <variable
             name="dashboardDataResponse"
             type="com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse" />
+
+        <variable
+            name="viewModel"
+            type="com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardViewModel" />
+
+        <import type="com.example.cleanarchitecture.domain.domain.entity.User.UserType" />
+
+        <import type="android.view.View" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
 
         <ScrollView
             android:layout_width="match_parent"
@@ -157,7 +164,6 @@
                             android:textSize="20sp"
                             tools:text="Total Recovered" />
 
-
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
@@ -202,7 +208,6 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
-
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

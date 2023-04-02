@@ -1,12 +1,17 @@
 package com.dscorp.ispadmin.presentation.extension
 
 import android.R
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.net.Uri
 import android.os.Environment
+import android.os.Looper
 import android.util.Base64
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -16,6 +21,7 @@ import com.dscorp.ispadmin.CrossDialogFragment
 import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import org.koin.android.ext.android.inject
@@ -123,5 +129,44 @@ fun Long.toFormattedDateString(): String {
 
 fun Long.localToUTC(): Long {
     val offsetFromUtc = TimeZone.getDefault().getOffset(this)
-   return this - offsetFromUtc
+    return this - offsetFromUtc
+}
+
+@SuppressLint("MissingPermission")
+fun FusedLocationProviderClient.getCurrentLocation(onLocation: (LatLng) -> Unit) {
+    this.requestLocationUpdates(
+        LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
+            .apply {
+                setWaitForAccurateLocation(true)
+                setMinUpdateIntervalMillis(LocationRequest.Builder.IMPLICIT_MIN_UPDATE_INTERVAL)
+                setMaxUpdateDelayMillis(1000)
+            }.build(),
+
+        object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                val location = locationResult.lastLocation
+                location?.let {
+                    onLocation(LatLng(it.latitude, location.longitude))
+                    removeLocationUpdates(this)
+                }
+            }
+        },
+        Looper.getMainLooper()
+    )
+}
+
+fun ImageView.animateRotate360InLoop() {
+    startAnimation(
+        RotateAnimation(
+            0f,
+            360f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        ).apply {
+            duration = 1000
+            repeatCount = Animation.INFINITE
+        }
+    )
 }
