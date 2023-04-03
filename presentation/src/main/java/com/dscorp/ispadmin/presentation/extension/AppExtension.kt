@@ -3,6 +3,8 @@ package com.dscorp.ispadmin.presentation.extension
 import android.R
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Environment
 import android.os.Looper
@@ -21,8 +23,10 @@ import com.dscorp.ispadmin.CrossDialogFragment
 import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import org.koin.android.ext.android.inject
 import java.io.File
@@ -153,6 +157,37 @@ fun FusedLocationProviderClient.getCurrentLocation(onLocation: (LatLng) -> Unit)
         },
         Looper.getMainLooper()
     )
+}
+
+fun Fragment.checkGpsEnabled(onGpsEnabled: () -> Unit) {
+    if ((requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager).isProviderEnabled(
+            LocationManager.GPS_PROVIDER
+        )
+    ) {
+        onGpsEnabled.invoke()
+    } else {
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(LocationRequest.create().apply {
+                interval = 10000
+                fastestInterval = 5000
+                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            })
+        val client: SettingsClient =
+            LocationServices.getSettingsClient(requireActivity())
+        val task: Task<LocationSettingsResponse> =
+            client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener {
+            // GPS is enabled, so you can perform your location-related tasks here
+            onGpsEnabled.invoke()
+        }.addOnFailureListener { exception ->
+            when ((exception as ResolvableApiException).statusCode) {
+                LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> {
+                    exception.startResolutionForResult(requireActivity(), 1)
+                }
+            }
+        }
+    }
 }
 
 fun ImageView.animateRotate360InLoop() {
