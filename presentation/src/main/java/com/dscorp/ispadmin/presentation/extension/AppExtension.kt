@@ -31,6 +31,8 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.FileOutputStream
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -204,4 +206,11 @@ fun ImageView.animateRotate360InLoop() {
             repeatCount = Animation.INFINITE
         }
     )
+}
+
+fun String.encryptWithSHA384(): String {
+    val bytes = MessageDigest
+        .getInstance("SHA-384")
+        .digest(this.toByteArray(StandardCharsets.UTF_8))
+    return bytes.fold("") { str, it -> str + "%02x".format(it) }
 }

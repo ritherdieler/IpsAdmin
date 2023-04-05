@@ -14,4 +14,16 @@ data class PlanResponse(
     override fun equals(other: Any?): Boolean {
         return id == (other as PlanResponse).id
     }
+
+    fun priceToString(): String {
+        return "S/$price"
+    }
+
+    fun downloadSpeedToString(): String {
+        return "${downloadSpeed}Mbps"
+    }
+
+    fun uploadSpeedToString(): String {
+        return "${uploadSpeed}Mbps"
+    }
 }

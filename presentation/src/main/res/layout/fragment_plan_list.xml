@@ -5,6 +5,11 @@
 
     <data>
 
+        <variable
+            name="adapter"
+            type="com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanAdapter" />
+        <variable name="viewModel"
+            type="com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,11 +18,12 @@
         tools:context=".presentation.ui.features.plan.planlist.PlanListFragment">
 
         <androidx.recyclerview.widget.RecyclerView
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:id="@+id/rvPlanList"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
+            android:adapter="@{adapter}"
+            android:visibility="@{viewModel.recyclerVisibility}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -4,36 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.databinding.FragmentNapBoxesListBinding
 import com.dscorp.ispadmin.databinding.FragmentPlanListBinding
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanListFragment : BaseFragment() {
 
-    private lateinit var binding: FragmentPlanListBinding
+    private val binding by lazy { FragmentPlanListBinding.inflate(layoutInflater) }
     private val viewModel: PlanListViewModel by viewModel()
-
+    private val planAdapter by lazy { PlanAdapter() }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding =
-            DataBindingUtil.inflate(
-                layoutInflater,
-                R.layout.fragment_plan_list,
-                null,
-                true
-            )
+        binding.adapter = planAdapter
+        binding.executePendingBindings()
         observe()
         return binding.root
     }
@@ -42,19 +31,11 @@ class PlanListFragment : BaseFragment() {
         lifecycleScope.launch {
             viewModel.responseLiveData.observe(viewLifecycleOwner) {
                 when (it) {
-                    is PlanListResponse.OnError -> {}
-                    is PlanListResponse.OnPlanListFound -> fillRecycleView(it)
+                    is PlanListUiState.OnError -> showErrorDialog(it.error.message)
+                    is PlanListUiState.OnPlanListFound -> planAdapter.submitList(it.planList)
                 }
             }
         }
     }
 
-    private fun fillRecycleView(it: PlanListResponse.OnPlanListFound) {
-        val adapter = PlanAdapter()
-        adapter.submitList(it.planList)
-        binding.rvPlanList.adapter = adapter
-
-        binding.rvPlanList.visibility =
-            if (it.planList.isNotEmpty()) View.VISIBLE else View.GONE
-    }
 }

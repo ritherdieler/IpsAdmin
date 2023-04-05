@@ -43,9 +43,6 @@ class LoginActivity : BaseActivity() {
             binding.tvCreateAccount.setOnClickListener {
                 navigateToRegister()
             }
-
-            binding.cbCheckBox.setOnClickListener {
-            }
         }
     }
 

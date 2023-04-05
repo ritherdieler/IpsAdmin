@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.ui.features.registration
 
 import android.os.Bundle
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.databinding.DataBindingUtil
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityRegisterBinding
@@ -19,8 +20,9 @@ class RegisterActivity : BaseActivity() {
     val viewModel: RegisterViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
+        installSplashScreen()
+
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_register, null, true)
         setContentView(binding.root)
 
@@ -70,11 +72,11 @@ class RegisterActivity : BaseActivity() {
     }
 
     fun register() {
-        var usertext = binding.etUser.text.toString()
-        var passwordtext1 = binding.etPassword1.text.toString()
-        var passwordtext2 = binding.etPassword2.text.toString()
-        var firstnametext = binding.etFirstName.text.toString()
-        var lastnametext = binding.etLastName.text.toString()
+        val usertext = binding.etUser.text.toString()
+        val passwordtext1 = binding.etPassword1.text.toString()
+        val passwordtext2 = binding.etPassword2.text.toString()
+        val firstnametext = binding.etFirstName.text.toString()
+        val lastnametext = binding.etLastName.text.toString()
 
         viewModel.validateForm(
             user = usertext,

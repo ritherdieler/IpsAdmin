@@ -66,6 +66,7 @@ android {
         implementation 'androidx.recyclerview:recyclerview:1.2.1'
         implementation 'com.facebook.stetho:stetho-okhttp3:1.6.0'
 
+        debugImplementation "com.github.chuckerteam.chucker:library:3.5.2"
         def koin_version = "3.3.1"
         api "io.insert-koin:koin-android:$koin_version"
 

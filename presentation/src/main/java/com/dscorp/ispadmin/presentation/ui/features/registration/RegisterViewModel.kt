@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.registration
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.extension.encryptWithSHA384
 import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
@@ -75,7 +76,7 @@ class RegisterViewModel : ViewModel() {
             lastName = lastName,
             type = User.UserType.CLIENT,
             username = user,
-            password = password1,
+            password = password1.encryptWithSHA384(),
             verified = false
         )
         viewModelScope.launch {

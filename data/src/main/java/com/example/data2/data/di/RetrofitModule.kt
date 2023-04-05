@@ -1,5 +1,7 @@
 package com.example.data2.data.di
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.data2.BuildConfig
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
@@ -12,8 +14,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val BASE_URL = "BASE_URL"
 
 val retrofitModule = module {
-    single { provideRetrofit(getProperty(BASE_URL), provideHttpClient()) }
-    single { provideHttpClient() }
+    single { provideRetrofit(getProperty(BASE_URL), provideHttpClient(get())) }
+    single { provideHttpClient(get()) }
 }
 
 fun provideRetrofit(url: String, okHttpClient: OkHttpClient): Retrofit {
@@ -26,35 +28,14 @@ fun provideRetrofit(url: String, okHttpClient: OkHttpClient): Retrofit {
         .build()
 }
 
-fun provideHttpClient(): OkHttpClient {
+fun provideHttpClient(context:Context): OkHttpClient {
     val httpClient = OkHttpClient.Builder()
     val logging = HttpLoggingInterceptor()
     logging.level = HttpLoggingInterceptor.Level.BODY
     httpClient.addInterceptor(logging)
+    httpClient.addInterceptor(ChuckerInterceptor.Builder(context).build())
     if (BuildConfig.DEBUG) {
         httpClient.addNetworkInterceptor(StethoInterceptor())
-    }
-
-    return httpClient.build()
-}
-
-fun provideOltServiceHttpClient(): OkHttpClient {
-    val httpClient = OkHttpClient.Builder()
-    val logging = HttpLoggingInterceptor()
-    logging.level = HttpLoggingInterceptor.Level.BODY
-    httpClient.addInterceptor(logging)
-    if (BuildConfig.DEBUG) {
-        httpClient.addNetworkInterceptor(StethoInterceptor())
-    }
-    httpClient.addInterceptor { chain ->
-        val original = chain.request()
-        val request = original.newBuilder()
-            .header("Content-Type", "application/json")
-            .header("X-Token", BuildConfig.OLT_SERVICE_API_KET)
-            .header("X-Token", BuildConfig.OLT_SERVICE_API_KET)
-            .method(original.method, original.body)
-            .build()
-        chain.proceed(request)
     }
 
     return httpClient.build()

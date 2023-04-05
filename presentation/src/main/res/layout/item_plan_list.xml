@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-<variable
-    name="planList"
-    type="com.example.cleanarchitecture.domain.domain.entity.PlanResponse" />
+
+        <variable
+            name="planList"
+            type="com.example.cleanarchitecture.domain.domain.entity.PlanResponse" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/ProbandoItemView"
-        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:checkable="true"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_margin="8dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp"
+       >
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,11 +30,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="ID del Nap Box"
+                android:text="Nombre"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toTopOf="@+id/tvCodeNapBox"
-                app:layout_constraintEnd_toStartOf="@+id/tvSeeNapBoxId"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed" />
@@ -42,78 +41,85 @@
                 android:id="@+id/tvCodeNapBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
-                android:text="Codigo"
+                android:text="Precio"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                 app:layout_constraintBottom_toTopOf="@id/tvDateNapBox"
-                app:layout_constraintEnd_toEndOf="@+id/tvIdNapbox"
                 app:layout_constraintStart_toStartOf="@+id/tvIdNapbox"
                 app:layout_constraintTop_toBottomOf="@+id/tvIdNapbox" />
+
+            <TextView
+                android:id="@+id/tvCodeNapBox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:text="Vel. Subida"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvDateNapBox"
+                app:layout_constraintTop_toBottomOf="@+id/tvDateNapBox" />
 
             <TextView
                 android:id="@+id/tvDateNapBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Dirección"
+                android:layout_marginTop="8dp"
+                android:text="Vel. Descarga"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tvCodeNapBox"
                 app:layout_constraintStart_toStartOf="@+id/tvCodeNapBox"
                 app:layout_constraintTop_toBottomOf="@id/tvCodeNapBox" />
 
 
             <TextView
                 android:id="@+id/tvSeeNapBoxId"
-                android:layout_width="159dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@{planList.name}"
                 android:layout_marginBottom="16dp"
+                android:text="@{planList.name}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 app:layout_constraintBottom_toBottomOf="@id/tvIdNapbox"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvIdNapbox"
                 app:layout_constraintTop_toTopOf="@+id/tvIdNapbox"
                 app:layout_constraintVertical_chainStyle="packed"
-                tools:text="Id" />
+                tools:text="Nombre" />
 
             <TextView
                 android:id="@+id/tvSeeCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{planList.downloadSpeed}"
-
+                android:text="@{planList.priceToString()}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 app:layout_constraintBottom_toBottomOf="@+id/tvCodeNapBox"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeeNapBoxId"
-                app:layout_constraintStart_toStartOf="@+id/tvSeeNapBoxId"
                 app:layout_constraintTop_toTopOf="@+id/tvCodeNapBox"
                 app:layout_constraintVertical_bias="0.0"
-                tools:text="codigo" />
+                tools:text="Precio" />
 
             <TextView
                 android:id="@+id/tv_see_address"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@{planList.uploadSpeed}"
+                android:text="@{planList.downloadSpeedToString}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 app:layout_constraintBottom_toBottomOf="@+id/tvDateNapBox"
                 app:layout_constraintEnd_toEndOf="@+id/tvSeeCode"
-                app:layout_constraintStart_toStartOf="@+id/tvSeeCode"
                 app:layout_constraintTop_toTopOf="@+id/tvDateNapBox"
-                tools:text="direccion" />
-            <Button
-                android:id="@+id/btnMenu"
-                style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="15dp"
-                app:icon="@drawable/ic_more_dot"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                tools:text="30M" />
 
+            <TextView
+                android:id="@+id/tvSeeCode3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{planList.uploadSpeedToString}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                app:layout_constraintBottom_toBottomOf="@+id/tvCodeNapBox2"
+                app:layout_constraintEnd_toEndOf="@+id/tv_see_address"
+                app:layout_constraintTop_toTopOf="@+id/tvCodeNapBox2"
+                tools:text="30M" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>

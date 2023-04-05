@@ -57,10 +57,7 @@
             android:id="@+id/nav_see_nap_boxes"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/see_nap_boxes" />
-        <item
-            android:id="@+id/nav_see_plan_list"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="Vér lista de planes"/>
+
         <item
             android:id="@+id/see_network_device_list"
             android:icon="@drawable/ic_launcher_foreground"
@@ -88,6 +85,9 @@
             android:id="@+id/nav_my_profile"
             android:icon="@drawable/ic_person"
             android:title="@string/mi_perfil" />
-
+        <item
+            android:id="@+id/nav_see_plan_list"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="Vér lista de planes"/>
     </group>
 </menu>
