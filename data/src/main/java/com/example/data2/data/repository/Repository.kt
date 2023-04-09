@@ -434,4 +434,13 @@ class Repository : IRepository, KoinComponent {
         } else {
             throw Exception("Error en la notificacion")
         }    }
+
+    override suspend fun updatePlan(plan: Plan): PlanResponse {
+        val response = restApiServices.updatePlan(plan)
+        if(response.code() == 200){
+            return response.body()!!
+        }else{
+            throw Exception("Ocurrio un error al registrar el plan")
+        }
+    }
 }

@@ -29,7 +29,7 @@ import kotlin.test.assertNotNull
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = KoinAppForInstrumentation::class)
-class FindRegisterEditSubscriptionViewModelTest : AutoCloseKoinTest() {
+class FindRegisterEditRegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
     private val mockWebServer = MockWebServer()
 
     private lateinit var viewModel: FindSubscriptionViewModel

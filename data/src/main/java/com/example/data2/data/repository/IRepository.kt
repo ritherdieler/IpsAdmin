@@ -56,8 +56,13 @@ interface IRepository {
     suspend fun editServiceOrder(serviceOrder: ServiceOrder): ServiceOrderResponse
     suspend fun getMufas(): List<Mufa>
     suspend fun getUnconfirmedOnus(): List<Onu>
-    suspend fun applyCoupon(code: String):Coupon?
-    suspend fun findSubscriptionBySubscriptionDate(startDate: Long, endDate:Long): List<SubscriptionResponse>
-    suspend fun sendCloudMessaging( body: FirebaseBody?): FireBaseResponse
+    suspend fun applyCoupon(code: String): Coupon?
+    suspend fun findSubscriptionBySubscriptionDate(
+        startDate: Long,
+        endDate: Long
+    ): List<SubscriptionResponse>
+
+    suspend fun sendCloudMessaging(body: FirebaseBody?): FireBaseResponse
+    suspend fun updatePlan(plan: Plan): PlanResponse
 
 }

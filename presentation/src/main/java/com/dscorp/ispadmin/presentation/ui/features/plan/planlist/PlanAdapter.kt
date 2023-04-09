@@ -8,9 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemPlanListBinding
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 
-class PlanAdapter : ListAdapter<PlanResponse, PlanAdapter.PlanListAdapterViewHolder>(
-    PlanListDiffCallback()
-) {
+class PlanAdapter(val onItemSelected: OnPlanSelectedListener) :
+    ListAdapter<PlanResponse, PlanAdapter.PlanListAdapterViewHolder>(PlanListDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanListAdapterViewHolder {
         val binding =
@@ -27,6 +26,10 @@ class PlanAdapter : ListAdapter<PlanResponse, PlanAdapter.PlanListAdapterViewHol
         fun bind(plan: PlanResponse) {
             binding.planList = plan
             binding.executePendingBindings()
+
+            binding.root.setOnClickListener {
+                onItemSelected.onPlanSelected(plan, it)
+            }
         }
     }
 }
@@ -37,6 +40,6 @@ private class PlanListDiffCallback : DiffUtil.ItemCallback<PlanResponse>() {
     }
 
     override fun areContentsTheSame(oldItem: PlanResponse, newItem: PlanResponse): Boolean {
-        return oldItem == newItem
+        return oldItem.id == newItem.id
     }
 }

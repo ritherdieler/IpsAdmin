@@ -7,7 +7,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.dscorp.ispadmin.databinding.FragmentProgressButtonBinding
 
-class ProgressButtonFragment @JvmOverloads constructor(
+class ProgressButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : ConstraintLayout(context, attrs) {
 
@@ -27,12 +27,15 @@ class ProgressButtonFragment @JvmOverloads constructor(
         if (progressBar) {
             binding.progressBar.visibility = View.VISIBLE
             binding.button.textSize = 0f
+            binding.button.isEnabled = false
         } else {
             binding.progressBar.visibility = View.GONE
             binding.button.textSize = 14f
+            binding.button.isEnabled = true
         }
     }
-    fun setProgressButtonDisable(status:Boolean){
+
+    fun setProgressButtonDisable(status: Boolean) {
         binding.button.isEnabled = status != true
-        }
+    }
 }

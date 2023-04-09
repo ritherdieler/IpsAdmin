@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 class MainActivityViewModel(private val repository: IRepository) : ViewModel() {
 
-    val uiState = MutableStateFlow<UiState>(UiState.Idle)
+    val uiState = MutableStateFlow<MainActivityUiState>(MainActivityUiState.Idle)
 
     init {
         getUserSession()
@@ -16,6 +16,6 @@ class MainActivityViewModel(private val repository: IRepository) : ViewModel() {
 
     private fun getUserSession() = viewModelScope.launch {
         val response = repository.getUserSession()
-        response?.let { uiState.emit(UiState.UserSessionsFound(response)) }
+        response?.let { uiState.emit(MainActivityUiState.UserSessionsFound(response)) }
     }
 }

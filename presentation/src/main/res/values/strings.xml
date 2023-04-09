@@ -162,4 +162,11 @@
     <string name="must_select_end_date">Debe seleccionar una fecha de fin</string>
     <string name="my_text">&lt;ul&gt;&lt;li&gt;First bullet poiirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinnt&lt;/li&gt;&lt;li&gt;Second bullet point&lt;/li&gt;&lt;li&gt;Third bullet point&lt;/li&gt;&lt;/ul&gt;</string>
 <string name="text">Para pacientes menores de edad, el horario de pediatría es de 7 am a 7 pm. En caso se ingrese la solicitud fuera del horario, será registrada y nos comunicaremos al día siguiente.\nSi tienes alguna duda o consulta comunícate al (01) 411-1111 opción 2-3.</string>
+    <string name="plan_name">Nombre plan</string>
+    <string name="update">Actualizar</string>
+    <string name="invalidPlanName">Nombre de plan invalido</string>
+    <string name="plan_price">Precio del plan</string>
+    <string name="invalid_value">Valor no valido</string>
+    <string name="plan_edit_successful">El plan fue editado correctamente</string>
+    <string name="installation_date">Fecha de instalación</string>
 </resources>

@@ -1,5 +1,9 @@
 package com.example.cleanarchitecture.domain.domain.entity
 
+import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
+import java.text.SimpleDateFormat
+import java.util.*
+
 data class SubscriptionResponse(
     var id: Int? = null,
     var address: String? = null,
@@ -18,12 +22,14 @@ data class SubscriptionResponse(
     var serviceIsSuspended: Boolean? = null,
     var technician: Technician? = null,
     var hostDevice: NetworkDevice? = null,
-    var subscriptionDate: String? = null,
+    var subscriptionDate: Long? = null,
     var isMigration: Boolean,
     var price: Double? = null,
 ) : java.io.Serializable {
     fun getFullName() = "$firstName $lastName"
 
-    fun migrationAsString() = if(isMigration) "Si" else "No"
+    fun migrationAsString() = if (isMigration) "Si" else "No"
+
+    fun dateAsString() = subscriptionDate?.toFormattedDateString()
 
 }

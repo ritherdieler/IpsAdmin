@@ -136,5 +136,8 @@ interface RestApiServices {
 
     @GET("subscription/apply-coupon/{code}")
     suspend fun applyCoupon(@Path("code") code:String): Response<Coupon?>
+
+    @PUT("plan")
+   suspend fun updatePlan(@Body plan: Plan): Response<PlanResponse>
 }
 

@@ -3,7 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.edit
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionViewModel
 import com.dscorp.ispadmin.util.*
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
@@ -20,13 +20,13 @@ import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
 @Config(application = KoinAppForInstrumentation::class)
-class EditSubscriptionViewModelTest : AutoCloseKoinTest() {
+class EditRegisterSubscriptionViewModelTest : AutoCloseKoinTest() {
 
     private val mockServer: MockWebServer = MockWebServer()
 
     private lateinit var idlingResource: IdlingResource
 
-    private val viewModel: SubscriptionViewModel by inject()
+    private val viewModel: RegisterSubscriptionViewModel by inject()
 
     @Before
     fun setUp() {

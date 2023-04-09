@@ -63,8 +63,8 @@ class MainActivity : BaseActivity() {
 
             viewModel.uiState.collect {
                 when (it) {
-                    UiState.Idle -> {}
-                    is UiState.UserSessionsFound -> {
+                    MainActivityUiState.Idle -> {}
+                    is MainActivityUiState.UserSessionsFound -> {
                         firebaseAnalytics.setUserId(it.response.id.toString())
                         when (it.response.type) {
                             User.UserType.TECHNICIAN -> {

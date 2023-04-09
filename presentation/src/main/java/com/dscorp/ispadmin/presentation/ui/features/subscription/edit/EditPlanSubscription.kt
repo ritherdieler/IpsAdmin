@@ -39,7 +39,7 @@ class EditPlanSubscription : BaseFragment() {
 
         binding.btnEditSubscription.setOnClickListener {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
-            viewModel.editarSubscription()
+            viewModel.editSubscription()
         }
 
         return binding.root

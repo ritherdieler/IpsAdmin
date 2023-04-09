@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,17 +8,15 @@ import android.widget.PopupMenu
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
-import com.dscorp.ispadmin.presentation.extension.localToUTC
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
-import com.dscorp.ispadmin.presentation.extension.toFormattedDateString
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.domain.entity.extensions.localToUTC
+import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
 import com.google.android.material.datepicker.*
 import org.koin.android.ext.android.inject
 import java.util.*
-import kotlin.time.Duration.Companion.days
-import kotlin.time.DurationUnit
 
 class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener {
 
@@ -31,10 +28,6 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
 
     private val adapter = FindSubscriptionAdapter(this)
 
-    private val calendar: Calendar = Calendar.getInstance()
-    val currentYear = calendar.get(Calendar.YEAR)
-    val currentMonth = calendar.get(Calendar.MONTH)
-    val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,7 +72,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
 
         datePicker.addOnPositiveButtonClickListener {
             viewModel.startDateField.value = it.localToUTC()
-            viewModel.startDateField.value?.let { date->
+            viewModel.startDateField.value?.let { date ->
                 binding.etStartDate.setText(date.toFormattedDateString())
             }
         }
@@ -93,7 +86,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
             .build()
         datePicker.addOnPositiveButtonClickListener {
             viewModel.endDateField.value = it.localToUTC()
-            viewModel.endDateField.value?.let { date->
+            viewModel.endDateField.value?.let { date ->
                 binding.etEndDate.setText(date.toFormattedDateString())
             }
         }
@@ -125,7 +118,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
             }
         }
         popupMenu.inflate(R.menu.subscription_menu)
-        if(viewModel.user!!.type == User.UserType.TECHNICIAN){
+        if (viewModel.user!!.type == User.UserType.TECHNICIAN) {
             popupMenu.menu.findItem(R.id.btn_edit_plan_subscription).isVisible = false
             popupMenu.menu.findItem(R.id.btn_register_service_order).isVisible = false
         }

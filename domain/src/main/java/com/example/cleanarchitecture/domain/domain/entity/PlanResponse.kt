@@ -1,11 +1,11 @@
 package com.example.cleanarchitecture.domain.domain.entity
 
 data class PlanResponse(
-    val id: String? =null,
-    val name:String?=null,
-    val price: Double?=null,
-    val downloadSpeed: String?=null,
-    val uploadSpeed: String?=null,
+    var id: String? =null,
+    var name:String?=null,
+    var price: Double?=null,
+    var downloadSpeed: String?=null,
+    var uploadSpeed: String?=null,
     ):java.io.Serializable
 {
     override fun toString(): String {

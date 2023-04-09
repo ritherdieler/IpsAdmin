@@ -43,7 +43,7 @@ class EditSubscriptionViewModel(
         }
     }
 
-    fun editarSubscription() = viewModelScope.launch {
+    fun editSubscription() = viewModelScope.launch {
         try {
             if (!formIsValid()) return@launch
             val subscription = createSubscription()

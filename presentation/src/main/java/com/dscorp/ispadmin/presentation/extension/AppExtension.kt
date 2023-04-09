@@ -111,7 +111,11 @@ fun Fragment.showCrossDialog(
     closeButtonClickListener: (() -> Unit)? = null,
     positiveButtonClickListener: (() -> Unit)? = null
 ) {
-    CrossDialogFragment(text, closeButtonClickListener, positiveButtonClickListener).show(
+    CrossDialogFragment(
+        text = text,
+        onCloseButtonClick = closeButtonClickListener ?: positiveButtonClickListener,
+        onPositiveButtonClick = positiveButtonClickListener
+    ).apply { isCancelable = false }.show(
         childFragmentManager,
         CrossDialogFragment::class.simpleName
     )
@@ -127,16 +131,7 @@ fun AppCompatActivity.showCrossDialog(
     )
 }
 
-fun Long.toFormattedDateString(): String {
-    val date = Date(this)
-    val formatter = SimpleDateFormat("dd/MM/yyyy")
-    return formatter.format(date)
-}
 
-fun Long.localToUTC(): Long {
-    val offsetFromUtc = TimeZone.getDefault().getOffset(this)
-    return this - offsetFromUtc
-}
 
 @SuppressLint("MissingPermission")
 fun FusedLocationProviderClient.getCurrentLocation(onLocation: (LatLng) -> Unit) {

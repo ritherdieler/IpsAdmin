@@ -38,7 +38,6 @@ sealed class RegisterSubscriptionUiState {
     class FormDataError(val error: String) : RegisterSubscriptionUiState()
 
     class LoadingData(val loading: Boolean) : RegisterSubscriptionUiState()
-    class LoadingLogin(val loading: Boolean) : RegisterSubscriptionUiState()
     class CouponIsValid(val isValid: Boolean) : RegisterSubscriptionUiState()
     class RefreshingOnus(val isRefreshing: Boolean) : RegisterSubscriptionUiState()
     class ButtomProgressBar(val loading: Boolean) : RegisterSubscriptionUiState()

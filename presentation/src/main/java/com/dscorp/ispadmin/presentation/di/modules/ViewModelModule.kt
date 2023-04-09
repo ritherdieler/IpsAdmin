@@ -15,13 +15,14 @@ import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPay
 import com.dscorp.ispadmin.presentation.ui.features.place.PlaceViewModel
 import com.dscorp.ispadmin.presentation.ui.features.place.placelist.PlaceListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.plan.PlanViewModel
+import com.dscorp.ispadmin.presentation.ui.features.plan.edit.EditPlanViewModel
 import com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileViewModel
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianViewModel
@@ -42,7 +43,7 @@ val viewModelModule = module {
     viewModel { PlaceViewModel() }
     viewModel { PlanViewModel() }
     viewModel { RegisterViewModel() }
-    viewModel { SubscriptionViewModel(get()) }
+    viewModel { RegisterSubscriptionViewModel(get()) }
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel(get()) }
     viewModel { RegisterServiceOrderViewModel(get()) }
@@ -57,13 +58,11 @@ val viewModelModule = module {
     viewModel { ReportsViewModel(get()) }
     viewModel { DashBoardViewModel() }
     viewModel { IpListViewModel(get()) }
-
-
-    viewModel { PlanListViewModel() }
+    viewModel { PlanListViewModel(get()) }
     viewModel { NetworkDeviceListViewModel() }
     viewModel { PlaceListViewModel() }
     viewModel { TechnicianListViewModel() }
     viewModel { MufaViewmodel() }
     viewModel { EditSubscriptionViewModel(get()) }
-
+    viewModel { EditPlanViewModel(get()) }
 }

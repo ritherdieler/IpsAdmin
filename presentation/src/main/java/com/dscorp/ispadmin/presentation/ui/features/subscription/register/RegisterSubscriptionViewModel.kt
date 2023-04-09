@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.subscription
+package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import android.widget.CompoundButton
 import androidx.lifecycle.MutableLiveData
@@ -6,10 +6,10 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class SubscriptionViewModel(
+class RegisterSubscriptionViewModel(
     private val repository: IRepository,
 ) : ViewModel() {
 
@@ -43,166 +43,119 @@ class SubscriptionViewModel(
         cpeDevices?.filter { it.networkDeviceType == NetworkDevice.NetworkDeviceType.WIRELESS_ROUTER }
     }
 
-    val firstNameField = FormField(
+    val firstNameField = ReactiveFormField<String?>(
         hintResourceId = R.string.name,
         errorResourceId = R.string.fieldMustNotBeEmpty,
-        fieldValidator = object : FieldValidator<String> {
-            override fun validate(fieldValue: String?): Boolean =
-                !fieldValue.isNullOrEmpty()
-        }
+        validator = { !it.isNullOrEmpty() }
     )
 
-    val lastNameField = FormField(
+    val lastNameField = ReactiveFormField<String?>(
         hintResourceId = R.string.lastName,
         errorResourceId = R.string.fieldMustNotBeEmpty,
-        fieldValidator = object : FieldValidator<String> {
-            override fun validate(fieldValue: String?): Boolean =
-                !fieldValue.isNullOrEmpty()
-        }
+        validator = { !it.isNullOrEmpty() }
     )
 
-    val dniField = FormField(
+    val dniField = ReactiveFormField<String?>(
         hintResourceId = R.string.dni,
         errorResourceId = R.string.invalidDNI,
-        fieldValidator = object : FieldValidator<String> {
-            override fun validate(fieldValue: String?): Boolean = fieldValue.isValidDni()
-        }
+        validator = { it.isValidDni() }
     )
 
-    val addressField = FormField(
+    val addressField = ReactiveFormField<String?>(
         hintResourceId = R.string.address,
         errorResourceId = R.string.fieldMustNotBeEmpty,
-        fieldValidator = object : FieldValidator<String> {
-            override fun validate(fieldValue: String?): Boolean =
-                !fieldValue.isNullOrEmpty()
-        }
+        validator = { !it.isNullOrEmpty() }
     )
 
-    val phoneField = FormField(
+    val phoneField = ReactiveFormField<String?>(
         hintResourceId = R.string.phoneNumer,
         errorResourceId = R.string.invalidPhoneNumber,
-        fieldValidator = object : FieldValidator<String?> {
-            override fun validate(fieldValue: String?): Boolean =
-                fieldValue.isValidPhone()
-        }
+        validator = { it.isValidPhone() }
     )
-    val couponField = FormField(
+
+    val couponField = ReactiveFormField<String?>(
         hintResourceId = R.string.coupon,
         errorResourceId = R.string.fieldMustNotBeEmpty,
-        fieldValidator = object : FieldValidator<String> {
-            override fun validate(fieldValue: String?): Boolean = true
-        }
+        validator = { true }
     )
-    val priceField = FormField(
+
+    val priceField = ReactiveFormField<String?>(
         hintResourceId = R.string.price,
         errorResourceId = R.string.invalidPrice,
-        fieldValidator = object : FieldValidator<Double?> {
-            override fun validate(fieldValue: Double?): Boolean =
-                (fieldValue != null) && (fieldValue > 0)
-        }
+        validator = { (it != null) && (it.toDouble() > 0) }
     )
 
-    val locationField = FormField(
+    val locationField = ReactiveFormField<LatLng?>(
         hintResourceId = R.string.location,
         errorResourceId = R.string.mustSelectLocation,
-        fieldValidator = object : FieldValidator<LatLng?> {
-            override fun validate(fieldValue: LatLng?): Boolean =
-                fieldValue != null
-        }
+        validator = { it != null }
     )
 
-    val planField = FormField(
+    val planField = ReactiveFormField<PlanResponse?>(
         hintResourceId = R.string.plan,
         errorResourceId = R.string.mustSelectPlan,
-        fieldValidator = object : FieldValidator<PlanResponse?> {
-            override fun validate(fieldValue: PlanResponse?): Boolean = fieldValue != null
-        }
+        validator = { it != null }
     )
 
-    val placeField = FormField(
+    val placeField = ReactiveFormField<PlaceResponse?>(
         hintResourceId = R.string.place,
         errorResourceId = R.string.mustSelectPlace,
-        fieldValidator = object : FieldValidator<PlaceResponse> {
-            override fun validate(fieldValue: PlaceResponse?): Boolean =
-                fieldValue != null
-        }
+        validator = { it != null }
     )
 
-    val technicianField = FormField(
+    val technicianField = ReactiveFormField<Technician?>(
         hintResourceId = R.string.technician,
         errorResourceId = R.string.mustSelectTechnician,
-        fieldValidator = object : FieldValidator<Technician> {
-            override fun validate(fieldValue: Technician?): Boolean =
-                fieldValue != null
-        }
+        validator = { it != null }
     )
 
-    val hostDeviceField = FormField(
+    val hostDeviceField = ReactiveFormField<NetworkDevice?>(
         hintResourceId = R.string.host_device,
         errorResourceId = R.string.mustSelectHostDevice,
-        fieldValidator = object : FieldValidator<NetworkDevice> {
-            override fun validate(fieldValue: NetworkDevice?): Boolean =
-                fieldValue != null
-        }
+        validator = { it != null }
     )
 
-    val subscriptionDateField = FormField(
+    val subscriptionDateField = ReactiveFormField<Long?>(
         hintResourceId = R.string.subscriptionDate,
         errorResourceId = R.string.mustSelectSubscriptionDate,
-        fieldValidator = object : FieldValidator<Long> {
-            override fun validate(fieldValue: Long?): Boolean = fieldValue != null
-        }
+        validator = { it != null }
     )
 
-    val isMigrationField = FormField(
+    val isMigrationField = ReactiveFormField<Boolean?>(
         hintResourceId = R.string.empty,
         errorResourceId = R.string.empty,
-        fieldValidator = object : FieldValidator<Boolean> {
-            override fun validate(fieldValue: Boolean?): Boolean = true
-        }
+        validator = { true }
     )
 
-    val cpeDeviceField = FormField(
+    val cpeDeviceField = ReactiveFormField<NetworkDevice?>(
         hintResourceId = R.string.select_cpe_device,
         errorResourceId = R.string.mustSelectCpeDevice,
-        fieldValidator = object : FieldValidator<NetworkDevice> {
-            override fun validate(fieldValue: NetworkDevice?): Boolean = fieldValue != null
-        }
+        validator = { it != null }
     )
 
-    val napBoxField = FormField(
+    val napBoxField = ReactiveFormField<NapBoxResponse?>(
         hintResourceId = R.string.selec_nap_box,
         errorResourceId = R.string.mustSelectNapBox,
-        fieldValidator = object : FieldValidator<NapBoxResponse> {
-            override fun validate(fieldValue: NapBoxResponse?): Boolean = fieldValue != null
-        }
+        validator = { it != null }
     )
 
-    val onuField = FormField(
+    val onuField = ReactiveFormField<Onu?>(
         hintResourceId = R.string.select_onu,
         errorResourceId = R.string.mustSelectOnu,
-        fieldValidator = object : FieldValidator<Onu> {
-            override fun validate(fieldValue: Onu?): Boolean = fieldValue != null
-        }
+        validator = { it != null }
     )
 
-
-    val additionalDevicesField = FormField(
+    val additionalDevicesField = ReactiveFormField<NetworkDevice?>(
         hintResourceId = R.string.additionalDevices,
         errorResourceId = R.string.youCanSelectAdditionalNetworkDevices,
-        fieldValidator = object : FieldValidator<List<NetworkDevice>> {
-            override fun validate(fieldValue: List<NetworkDevice>?): Boolean = true
-        }
+        validator = { true }
     )
-    val noteField = FormField(
+
+    val noteField = ReactiveFormField<String?>(
         hintResourceId = R.string.note,
         errorResourceId = R.string.errorNote,
-        fieldValidator = object : FieldValidator<String> {
-            override fun validate(fieldValue: String?): Boolean = true
-        }
-
+        validator = { true }
     )
-
 
     fun getFormData() = viewModelScope.launch {
         registerSubscriptionUiState.emit(LoadingData(true))
@@ -244,7 +197,6 @@ class SubscriptionViewModel(
     fun getOnuData() = viewModelScope.launch {
         try {
             registerSubscriptionUiState.emit(RefreshingOnus(true))
-            delay(1000)
             val unconfirmedOnus = repository.getUnconfirmedOnus()
             registerSubscriptionUiState.emit(OnOnuDataFound(unconfirmedOnus))
         } catch (e: Exception) {
@@ -254,7 +206,6 @@ class SubscriptionViewModel(
             registerSubscriptionUiState.emit(RefreshingOnus(false))
         }
     }
-
 
     fun getFiberDevices() = viewModelScope.launch {
         fiberCpeDevices.collectLatest {
@@ -272,7 +223,7 @@ class SubscriptionViewModel(
 
     fun activateCoupon() = viewModelScope.launch {
         try {
-            val response = repository.applyCoupon(couponField.value!!)
+            val response = repository.applyCoupon(couponField.getValue()!!)
             if (response != null) registerSubscriptionUiState.emit(CouponIsValid(true))
             else registerSubscriptionUiState.emit(CouponIsValid(false))
         } catch (e: Exception) {
@@ -282,12 +233,9 @@ class SubscriptionViewModel(
     }
 
     fun registerSubscription() = viewModelScope.launch {
-
         try {
             if (!formIsValid()) return@launch
             registerSubscriptionUiState.emit(ButtomProgressBar(true))
-            registerSubscriptionUiState.emit(LoadingLogin(true))
-            delay(500)
             val subscription = createSubscription()
             val subscriptionFromRepository = repository.registerSubscription(subscription)
             registerSubscriptionUiState.emit(
@@ -295,44 +243,40 @@ class SubscriptionViewModel(
             )
         } catch (error: Exception) {
             registerSubscriptionUiState.emit(RegisterSubscriptionError(error.message.toString()))
-            registerSubscriptionUiState.emit(LoadingLogin(false))
-        }
-        finally {
+        } finally {
             registerSubscriptionUiState.emit(ButtomProgressBar(false))
         }
     }
 
     private fun createSubscription(): Subscription {
-
-
         val subscription = Subscription(
-            firstName = firstNameField.value,
-            lastName = lastNameField.value,
-            dni = dniField.value,
-            address = addressField.value,
-            phone = phoneField.value,
-            subscriptionDate = subscriptionDateField.value,
-            planId = planField.value?.id,
+            firstName = firstNameField.getValue(),
+            lastName = lastNameField.getValue(),
+            dni = dniField.getValue(),
+            address = addressField.getValue(),
+            phone = phoneField.getValue(),
+            subscriptionDate = subscriptionDateField.getValue(),
+            planId = planField.getValue()?.id,
             additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
-            placeId = placeField.value?.id,
-            technicianId = technicianField.value?.id,
-            hostDeviceId = hostDeviceField.value?.id,
+            placeId = placeField.getValue()?.id,
+            technicianId = technicianField.getValue()?.id,
+            hostDeviceId = hostDeviceField.getValue()?.id,
             location = GeoLocation(
-                locationField.value?.latitude ?: 0.0,
-                locationField.value?.longitude ?: 0.0
+                locationField.getValue()?.latitude ?: 0.0,
+                locationField.getValue()?.longitude ?: 0.0
             ),
-            cpeDeviceId = cpeDeviceField.value?.id,
+            cpeDeviceId = cpeDeviceField.getValue()?.id,
             installationType = installationType.value,
-            price = priceField.value,
-            coupon = couponField.value,
-            isMigration = isMigrationField.value,
-            note = noteField.value
+            price = priceField.getValue()?.toDouble(),
+            coupon = couponField.getValue(),
+            isMigration = isMigrationField.getValue(),
+            note = noteField.getValue()
         )
 
         return when (installationType.value) {
             InstallationType.FIBER -> subscription.apply {
-                napBoxId = napBoxField.value?.id
-                onu = onuField.value
+                napBoxId = napBoxField.getValue()?.id
+                onu = onuField.getValue()
             }
             InstallationType.WIRELESS -> subscription
             else -> throw Exception("Invalid Installation Type")
@@ -365,9 +309,7 @@ class SubscriptionViewModel(
             }
         }
 
-        formFields.forEach {
-            it.emitErrorIfExists()
-        }
+        formFields.forEach { it.isValid }
 
         return formFields.all { it.isValid }
     }
@@ -384,7 +326,7 @@ class SubscriptionViewModel(
     }
 
     fun onIsMigrationCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-        isMigrationField.value = isChecked
+        isMigrationField.liveData.value = isChecked
     }
 
 }

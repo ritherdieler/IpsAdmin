@@ -43,6 +43,6 @@ class MainActivityViewModelTest : AutoCloseKoinTest() {
         viewModel = MainActivityViewModel(repository)
 
         // Then
-        assertTrue(viewModel.uiState.value is UiState.UserSessionsFound)
+        assertTrue(viewModel.uiState.value is MainActivityUiState.UserSessionsFound)
     }
 }

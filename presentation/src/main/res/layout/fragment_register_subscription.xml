@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.dscorp.ispadmin.presentation.ui.features.subscription.SubscriptionViewModel" />
+            type="com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionViewModel" />
 
         <import type="android.view.View" />
 
@@ -50,7 +50,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.firstNameField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,7 +71,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLastName"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.lastNameField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,7 +97,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:maxLength="8" />
+                        android:maxLength="8"
+                        android:text="@={viewModel.dniField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -115,7 +118,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etAddress"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.addressField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -137,7 +141,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:maxLength="9" />
+                        android:maxLength="9"
+                        android:text="@={viewModel.phoneField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -159,7 +164,8 @@
                         android:id="@+id/etPriceSubscription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal" />
+                        android:inputType="numberDecimal"
+                        android:text="@={viewModel.priceField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -194,13 +200,13 @@
                     <ImageView
                         android:id="@+id/ivMyLocation"
                         android:layout_width="wrap_content"
-                        android:layout_marginTop="2dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="2dp"
                         android:src="@drawable/ic_my_location"
 
-                         />
+                        />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -514,6 +520,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etCupon"
                             android:layout_width="match_parent"
+                            android:text="@={viewModel.couponField.liveData}"
                             android:layout_height="wrap_content" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -523,7 +530,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:enabled="@{viewModel.couponField.isValidObservable}"
+                        android:enabled="@{viewModel.couponField.isValidLiveData()}"
                         android:onClick="@{() -> viewModel.activateCoupon()}"
                         android:text="@string/activate" />
 
@@ -545,11 +552,12 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNote"
                         android:layout_width="match_parent"
+                        android:text="@={viewModel.noteField.liveData}"
                         android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.dscorp.ispadmin.presentation.util.ProgressButtonFragment
+                <com.dscorp.ispadmin.presentation.util.ProgressButton
                     android:id="@+id/ProgressButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

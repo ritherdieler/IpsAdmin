@@ -250,11 +250,22 @@
             android:id="@+id/action_editServiceOrderFragment_to_mapDialog"
             app:destination="@id/mapDialog" />
     </fragment>
+
     <fragment
         android:id="@+id/nav_see_plan_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListFragment"
         android:label="PlanListFragment"
-        tools:layout="@layout/item_plan_list" />
+        tools:layout="@layout/item_plan_list" >
+        <action android:id="@+id/to_edit_plan" app:destination="@+id/editPlanFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/editPlanFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.plan.edit.EditPlanFragment"
+        tools:layout="@layout/fragment_edit_plan">
+        <argument android:name="plan" app:argType="com.example.cleanarchitecture.domain.domain.entity.PlanResponse"/>
+    </fragment>
+
     <fragment
         android:id="@+id/see_network_device_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.networkdevice.networkdevicelist.NetworkDeviceListFragment"

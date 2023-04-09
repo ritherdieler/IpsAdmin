@@ -82,12 +82,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
                 android:text="DNI"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                app:layout_constraintStart_toStartOf="@+id/tvPlanId"
+                app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+            <TextView
+                android:id="@+id/tvName3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/installation_date"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvPlanId"
-                app:layout_constraintTop_toBottomOf="@+id/tvName" />
+                app:layout_constraintTop_toBottomOf="@+id/tvName2" />
 
             <TextView
                 android:id="@+id/tvDni"
@@ -95,12 +105,24 @@
                 android:layout_height="0dp"
                 android:text="@{subscription.dni}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
 
                 app:layout_constraintStart_toEndOf="@+id/tvName2"
                 app:layout_constraintTop_toTopOf="@+id/tvName2"
+                tools:text="renato" />
+
+            <TextView
+                android:id="@+id/tvDni2"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:text="@{subscription.dateAsString()}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                app:layout_constraintBottom_toBottomOf="@+id/tvName3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/tvName2"
+                app:layout_constraintTop_toTopOf="@+id/tvName3"
                 tools:text="renato" />
 
 

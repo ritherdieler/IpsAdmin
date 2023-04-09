@@ -1,5 +1,8 @@
 package com.example.cleanarchitecture.domain.domain.entity.extensions
 
+import java.text.SimpleDateFormat
+import java.util.*
+
 fun String.isValidIpv4( ): Boolean {
     val pattern = "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$"
     val ipv4Regex = Regex(pattern)
@@ -23,4 +26,14 @@ fun String.IsValidIpv4Segment( ): Boolean {
     return ipv4SegmentRegex.matches(this)
 }
 
+fun Long.toFormattedDateString(): String {
+    val date = Date(this)
+    val formatter = SimpleDateFormat("dd/MM/yyyy")
+    return formatter.format(date)
+}
+
+fun Long.localToUTC(): Long {
+    val offsetFromUtc = TimeZone.getDefault().getOffset(this)
+    return this - offsetFromUtc
+}
 

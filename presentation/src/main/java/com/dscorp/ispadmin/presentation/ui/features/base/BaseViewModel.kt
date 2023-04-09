@@ -3,26 +3,23 @@ package com.dscorp.ispadmin.presentation.ui.features.base
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import com.dscorp.ispadmin.presentation.ui.features.plan.planlist.BaseUiState
+import kotlinx.coroutines.launch
 
-open class BaseViewModel : ViewModel() {
+open class BaseViewModel<T> : ViewModel() {
+    val uiState = MutableLiveData<BaseUiState<T>>()
 
-    private val loadingLiveData = MutableLiveData(false)
-    private val errorLiveDate = MutableLiveData<Throwable>()
-
-
-    fun <T> executeSuspend(block: suspend () -> T) = flow {
+    fun executeWithProgress(func: suspend () -> Unit) = viewModelScope.launch {
         try {
-            loadingLiveData.value = true
-            emit(block())
+            uiState.value = BaseUiState(true)
+            func()
         } catch (e: Exception) {
-            errorLiveDate.value = e
+            uiState.value = BaseUiState(error = e)
         } finally {
-            loadingLiveData.value = false
+            uiState.value = BaseUiState(false)
         }
-    }.flowOn(viewModelScope.coroutineContext)
-
-
+    }
 }
+
+
 
