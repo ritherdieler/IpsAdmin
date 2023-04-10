@@ -182,4 +182,6 @@
     <string name="mustDigitEmail">Debe digitar su correo electrónico</string>
     <string name="mustDigitPhoneNumber">Debe digitar su número de teléfono</string>
     <string name="user_register_success">El usuario fué registrado con éxito.</string>
+    <string name="phone">Teléfono</string>
+    <string name="plans">Planes</string>
 </resources>

@@ -184,7 +184,9 @@ class RegisterSubscriptionViewModel(
             )
         }
 
-    fun getOnuData() = executeWithProgress {
+    fun getOnuData() = executeWithProgress(doFinally = {
+        uiState.value = BaseUiState(uiState = RefreshingOnus(false))
+    }) {
         uiState.value = BaseUiState(uiState = RefreshingOnus(true))
         val unconfirmedOnus = repository.getUnconfirmedOnus()
         uiState.value = BaseUiState(uiState = OnOnuDataFound(unconfirmedOnus))

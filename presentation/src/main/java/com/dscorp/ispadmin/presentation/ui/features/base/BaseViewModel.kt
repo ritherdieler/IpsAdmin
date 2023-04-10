@@ -18,6 +18,7 @@ open class BaseViewModel<T> : ViewModel() {
         try {
             uiState.value = BaseUiState(loading = true)
             func(this)
+            onSuccess.invoke()
         } catch (e: Exception) {
             uiState.value = BaseUiState(error = e)
             onError.invoke()
