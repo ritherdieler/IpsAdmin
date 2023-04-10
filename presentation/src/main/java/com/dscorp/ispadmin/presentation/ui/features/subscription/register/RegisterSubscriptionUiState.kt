@@ -12,8 +12,6 @@ import com.example.cleanarchitecture.domain.domain.entity.Onu
  *
  **/
 sealed class RegisterSubscriptionUiState {
-    class GenericError(val error:String?) : RegisterSubscriptionUiState()
-
     class FormDataFound(
         val plans: List<PlanResponse>,
         val networkDevices: List<NetworkDevice>,
@@ -25,7 +23,6 @@ sealed class RegisterSubscriptionUiState {
     ) : RegisterSubscriptionUiState()
 
     class OnOnuDataFound(val onus:List<Onu>) : RegisterSubscriptionUiState()
-    class OnuDataError(val error:String) : RegisterSubscriptionUiState()
 
     class FiberDevicesFound(val devices: List<NetworkDevice>) : RegisterSubscriptionUiState()
 
@@ -34,11 +31,8 @@ sealed class RegisterSubscriptionUiState {
     class RegisterSubscriptionSuccess(val subscription: Subscription) :
         RegisterSubscriptionUiState()
 
-    class RegisterSubscriptionError(val error: String) : RegisterSubscriptionUiState()
-    class FormDataError(val error: String) : RegisterSubscriptionUiState()
 
-    class LoadingData(val loading: Boolean) : RegisterSubscriptionUiState()
+    class ShimmerVisibility(val showShimmer: Boolean) : RegisterSubscriptionUiState()
     class CouponIsValid(val isValid: Boolean) : RegisterSubscriptionUiState()
     class RefreshingOnus(val isRefreshing: Boolean) : RegisterSubscriptionUiState()
-    class ButtomProgressBar(val loading: Boolean) : RegisterSubscriptionUiState()
 }

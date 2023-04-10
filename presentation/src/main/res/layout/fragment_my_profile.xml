@@ -111,7 +111,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="DNI"
+            android:text="@{user.dni}"
             app:layout_constraintEnd_toEndOf="@+id/tvToolUserNameMyProfile"
             app:layout_constraintStart_toStartOf="@+id/tvToolUserNameMyProfile"
             app:layout_constraintTop_toBottomOf="@+id/tvToolUserNameMyProfile"
@@ -133,7 +133,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Email"
+            android:text="@{user.email}"
             app:layout_constraintEnd_toEndOf="@+id/tvToolDniMyProfile"
             app:layout_constraintStart_toStartOf="@+id/tvToolDniMyProfile"
             app:layout_constraintTop_toBottomOf="@+id/tvToolDniMyProfile"
@@ -158,12 +158,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="50dp"
-            android:text="type"
+            android:text="@{user.typeAsString()}"
             app:layout_constraintBottom_toTopOf="@+id/btnLogOut"
             app:layout_constraintEnd_toEndOf="@+id/tvToolEmailMyProfile"
             app:layout_constraintStart_toStartOf="@+id/tvToolEmailMyProfile"
             app:layout_constraintTop_toBottomOf="@+id/tvToolEmailMyProfile"
-            tools:text="@{}" />
+        />
 
         <Button
             android:id="@+id/btnLogOut"

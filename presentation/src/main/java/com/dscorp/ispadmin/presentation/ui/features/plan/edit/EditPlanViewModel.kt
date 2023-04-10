@@ -2,7 +2,7 @@ package com.dscorp.ispadmin.presentation.ui.features.plan.edit
 
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
-import com.dscorp.ispadmin.presentation.ui.features.plan.planlist.BaseUiState
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
 import com.example.cleanarchitecture.domain.domain.entity.Plan
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse

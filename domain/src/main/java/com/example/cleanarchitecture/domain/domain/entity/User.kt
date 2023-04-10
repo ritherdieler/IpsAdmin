@@ -15,9 +15,19 @@ data class User(
     val username: String,
     var password: String,
     val verified: Boolean,
-){
-    enum class UserType {
-        ADMIN, TECHNICIAN, CLIENT, LOGISTIC, SALES, SECRETARY
+    val dni: String,
+    val email: String,
+    val phone: String,
+    ) {
+    enum class UserType(val value: String) {
+        ADMIN("Administrador"),
+        TECHNICIAN("Tecnico"),
+        CLIENT("Cliente"),
+        LOGISTIC("Logistica"),
+        SALES("Ventas"),
+        SECRETARY("Secretario")
     }
+
+    fun typeAsString() = type?.value ?: ""
 
 }

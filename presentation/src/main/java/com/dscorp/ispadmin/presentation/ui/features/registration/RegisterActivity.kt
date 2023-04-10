@@ -9,93 +9,34 @@ import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants.R
 import com.dscorp.ispadmin.presentation.extension.analytics.sendSignUpEvent
 import com.dscorp.ispadmin.presentation.extension.showCrossDialog
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
-import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RegisterActivity : BaseActivity() {
 
-    lateinit var binding: ActivityRegisterBinding
-
+    val binding: ActivityRegisterBinding by lazy { ActivityRegisterBinding.inflate(layoutInflater) }
     val viewModel: RegisterViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
-
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.activity_register, null, true)
         setContentView(binding.root)
-
-        binding.btRegister.setOnClickListener {
-            register()
-            firebaseAnalytics.sendSignUpEvent(REGISTER_USER)
-        }
-
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        binding.executePendingBindings()
         observe()
-        observeCleanError()
     }
 
-    private fun observeRegisterResponse() {
-        viewModel.registerResponseLiveData.observe(this) { it ->
-            when (it) {
-                is RegisterResponse.OnError -> showErrorDialog(it.error.message ?: "")
-                is RegisterResponse.OnRegister -> showCrossDialog(it.register.name) { finish() }
-            }
-        }
-    }
-
-    private fun ObserveRegisterFormError() {
-        viewModel.registerFormErrorLiveData.observe(this) { it ->
-            when (it) {
-                is RegisterFormError.OnEtFirstNameError -> binding.tlFirstName.error = it.error
-                is RegisterFormError.OnEtLastNameError -> binding.tlLastName.error = it.error
-                is RegisterFormError.OnEtPassword1Error -> binding.tlPassword1.error = it.error
-                is RegisterFormError.OnEtPassword2Error -> binding.tlPassword2.error = it.error
-                is RegisterFormError.OnEtUserError -> binding.tlUser.error = it.error
-                is RegisterFormError.OnEtFirstNameIsInvalidError ->
-                    binding.tlFirstName.error =
-                        it.error
-                is RegisterFormError.OnEtLastNameIsInvalidError ->
-                    binding.tlLastName.error =
-                        it.error
-                is RegisterFormError.OnDifferentPasswords -> {
-                    binding.tlPassword1.error = it.error
-                    binding.tlPassword2.error = it.error
+    fun observe() {
+        viewModel.uiState.observe(this) {
+            it.error?.let { error -> showErrorDialog(error.message ?: "") }
+            it.loading?.let { }
+            it.uiState?.let { uiState ->
+                when (uiState) {
+                    is RegisterUiState.OnRegister -> showCrossDialog(getString(R.string.user_register_success)) { finish() }
                 }
             }
         }
     }
 
-    fun observe() {
-        ObserveRegisterFormError()
-        observeRegisterResponse()
-    }
-
-    fun register() {
-        val usertext = binding.etUser.text.toString()
-        val passwordtext1 = binding.etPassword1.text.toString()
-        val passwordtext2 = binding.etPassword2.text.toString()
-        val firstnametext = binding.etFirstName.text.toString()
-        val lastnametext = binding.etLastName.text.toString()
-
-        viewModel.validateForm(
-            user = usertext,
-            password1 = passwordtext1,
-            password2 = passwordtext2,
-            firstName = firstnametext,
-            lastName = lastnametext,
-        )
-    }
-
-    private fun observeCleanError() {
-        viewModel.cleanErrorFormLiveData.observe(this) { cleanError ->
-            when (cleanError) {
-                CleanFormErrors.OnEtFirstNameCleanError -> binding.tlFirstName.error = null
-                CleanFormErrors.OnEtLastNameCleanError -> binding.tlLastName.error = null
-                CleanFormErrors.OnEtPassword1CleanError -> binding.tlPassword1.error = null
-                CleanFormErrors.OnEtPassword2CleanError -> binding.tlPassword2.error = null
-                CleanFormErrors.OnEtUserCleanError -> binding.tlUser.error = null
-            }
-        }
-    }
 }

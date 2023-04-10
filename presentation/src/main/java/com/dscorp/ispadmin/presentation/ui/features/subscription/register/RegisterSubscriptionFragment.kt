@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentRegisterSubscriptionBinding
@@ -28,7 +27,6 @@ import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormatted
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.*
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.time.Duration.Companion.days
@@ -212,31 +210,29 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etLocationSubscription.setText("${it.latitude}, ${it.longitude}")
     }
 
-    private fun observeState() = lifecycleScope.launch {
-        viewModel.registerSubscriptionUiState.collect { response ->
-            when (response) {
-                is RegisterSubscriptionSuccess -> showConfirmationDialog(response)
-                is RegisterSubscriptionError -> showErrorDialog(response.error)
-                is FormDataFound -> fillFormSpinners(response)
-                is FormDataError -> showErrorDialog(response.error)
-                is FiberDevicesFound -> fillCpeDeviceSpinner(response.devices)
-                is WirelessDevicesFound -> fillCpeDeviceSpinner(response.devices)
-                is CouponIsValid -> showCouponActivationResponse(response.isValid)
-                is GenericError -> showErrorDialog(response.error)
-                is LoadingData -> showLoadingStatus(response)
-                is OnOnuDataFound -> populatreOnuSpinner(response)
-                is OnuDataError -> showErrorDialog(response.error)
-                is RefreshingOnus -> showOnusRefreshing(response.isRefreshing)
-                is ButtomProgressBar -> binding.ProgressButton.setProgressBarVisible(response.loading)
+    private fun observeState() {
+        viewModel.uiState.observe(viewLifecycleOwner) {
+            it.error?.let { showErrorDialog(it.message) }
+            it.loading?.let { binding.ProgressButton.setProgressBarVisible(it) }
+            it.uiState?.let { state ->
+                when (state) {
+                    is RegisterSubscriptionSuccess -> showConfirmationDialog(state)
+                    is FormDataFound -> fillFormSpinners(state)
+                    is FiberDevicesFound -> fillCpeDeviceSpinner(state.devices)
+                    is WirelessDevicesFound -> fillCpeDeviceSpinner(state.devices)
+                    is CouponIsValid -> showCouponActivationResponse(state.isValid)
+                    is OnOnuDataFound -> populateOnuSpinner(state)
+                    is RefreshingOnus -> showOnusRefreshing(state.isRefreshing)
+                    is ShimmerVisibility -> showLoadingStatus(state.showShimmer)
+                }
             }
         }
     }
 
-    private fun populatreOnuSpinner(response: OnOnuDataFound) {
+    private fun populateOnuSpinner(response: OnOnuDataFound) =
         binding.acOnu.populate(response.onus) {
             viewModel.onuField.liveData.value = it
         }
-    }
 
     private fun showOnusRefreshing(refreshing: Boolean) {
         if (refreshing) {
@@ -257,9 +253,9 @@ class RegisterSubscriptionFragment : BaseFragment() {
         )
     }
 
-    private fun showLoadingStatus(response: LoadingData) {
-        binding.viewLoading.visibility = if (response.loading) View.VISIBLE else View.GONE
-        binding.viewContainer.visibility = if (response.loading) View.GONE else View.VISIBLE
+    private fun showLoadingStatus(isLoading: Boolean) {
+        binding.shimmerInclude.shimmerLayout.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.viewContainer.visibility = if (isLoading) View.GONE else View.VISIBLE
     }
 
     private fun showCouponActivationResponse(couponIsValid: Boolean) {
@@ -285,7 +281,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.acNapBox.populate(response.napBoxes) {
             viewModel.napBoxField.liveData.value = it
         }
-        populateHostDeviceSprinner(response)
+        populateHostDeviceSpinner(response)
         binding.acAditionalNetworkDevices.populate(response.networkDevices) {
             viewModel.selectedAdditionalDevice.value = it
         }
@@ -306,7 +302,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
         }
     }
 
-    private fun populateHostDeviceSprinner(response: FormDataFound) {
+    private fun populateHostDeviceSpinner(response: FormDataFound) {
         binding.etHostDevice.populate(response.hostNetworkDevices) {
             viewModel.hostDeviceField.liveData.value = it
         }

@@ -520,8 +520,8 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etCupon"
                             android:layout_width="match_parent"
-                            android:text="@={viewModel.couponField.liveData}"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="@={viewModel.couponField.liveData}" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -552,8 +552,8 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etNote"
                         android:layout_width="match_parent"
-                        android:text="@={viewModel.noteField.liveData}"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.noteField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -569,16 +569,6 @@
             </LinearLayout>
         </ScrollView>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/viewLoading"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible"
-            tools:visibility="gone">
-
-            <include layout="@layout/shimmer_register_subscription" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        <include android:id="@+id/shimmerInclude" layout="@layout/shimmer_register_subscription" />
     </LinearLayout>
 </layout>

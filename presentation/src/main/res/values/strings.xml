@@ -157,7 +157,7 @@
     <string name="find">Buscar</string>
     <string name="start_date">Fecha de inicio</string>
     <string name="end_date">Fecha de fin</string>
-    <string name="must_digit_dni">Debe seleccionar el dni</string>
+    <string name="must_digit_dni">Debe digital el dni</string>
     <string name="must_select_start_date">Debe seleccionar una fecha de inicio</string>
     <string name="must_select_end_date">Debe seleccionar una fecha de fin</string>
     <string name="my_text">&lt;ul&gt;&lt;li&gt;First bullet poiirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinirst bullet poinnt&lt;/li&gt;&lt;li&gt;Second bullet point&lt;/li&gt;&lt;li&gt;Third bullet point&lt;/li&gt;&lt;/ul&gt;</string>
@@ -169,4 +169,17 @@
     <string name="invalid_value">Valor no valido</string>
     <string name="plan_edit_successful">El plan fue editado correctamente</string>
     <string name="installation_date">Fecha de instalación</string>
+    <string name="digit_firstName">Digite su nombre</string>
+    <string name="mustDigitFirstName">Digite su nombre</string>
+    <string name="digit_lastName">Apellidos</string>
+    <string name="mustDigitLastName">Debe digitar sus apellidos</string>
+    <string name="digit_password">contraseña</string>
+    <string name="repeat_password">Repita la contraseña</string>
+    <string name="passwordsMustBeEquals">Las contraseñas deben ser iguales</string>
+    <string name="firstName">Nombres</string>
+    <string name="mustDigitUserName">Debe digitar el nombre de usuario</string>
+    <string name="email">Correo</string>
+    <string name="mustDigitEmail">Debe digitar su correo electrónico</string>
+    <string name="mustDigitPhoneNumber">Debe digitar su número de teléfono</string>
+    <string name="user_register_success">El usuario fué registrado con éxito.</string>
 </resources>

@@ -42,7 +42,7 @@ val viewModelModule = module {
     viewModel { NetworkDeviceViewModel() }
     viewModel { PlaceViewModel() }
     viewModel { PlanViewModel() }
-    viewModel { RegisterViewModel() }
+    viewModel { RegisterViewModel(get(), get()) }
     viewModel { RegisterSubscriptionViewModel(get()) }
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel(get()) }

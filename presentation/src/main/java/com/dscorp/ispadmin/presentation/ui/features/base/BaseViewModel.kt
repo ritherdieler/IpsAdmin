@@ -3,20 +3,28 @@ package com.dscorp.ispadmin.presentation.ui.features.base
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.ui.features.plan.planlist.BaseUiState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 open class BaseViewModel<T> : ViewModel() {
     val uiState = MutableLiveData<BaseUiState<T>>()
 
-    fun executeWithProgress(func: suspend () -> Unit) = viewModelScope.launch {
+    fun executeWithProgress(
+        doFinally: () -> Unit = {},
+        onSuccess: () -> Unit = {},
+        onError: () -> Unit = {},
+        func: suspend (coroutineContext: CoroutineScope) -> Unit
+    ) = viewModelScope.launch {
         try {
-            uiState.value = BaseUiState(true)
-            func()
+            uiState.value = BaseUiState(loading = true)
+            func(this)
         } catch (e: Exception) {
             uiState.value = BaseUiState(error = e)
+            onError.invoke()
+            e.printStackTrace()
         } finally {
-            uiState.value = BaseUiState(false)
+            doFinally.invoke()
+            uiState.value = BaseUiState(loading = false)
         }
     }
 }

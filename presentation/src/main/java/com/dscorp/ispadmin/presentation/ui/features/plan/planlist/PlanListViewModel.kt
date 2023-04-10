@@ -2,12 +2,14 @@ package com.dscorp.ispadmin.presentation.ui.features.plan.planlist
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.example.data2.data.repository.IRepository
 import org.koin.core.component.KoinComponent
 
-class PlanListViewModel(val repository: IRepository) : BaseViewModel<PlanListUiState>(),
-    KoinComponent {
+class PlanListViewModel(
+    val repository: IRepository,
+) : BaseViewModel<PlanListUiState>(), KoinComponent {
 
     val recyclerVisibility = MutableLiveData(View.GONE)
 
@@ -20,10 +22,4 @@ class PlanListViewModel(val repository: IRepository) : BaseViewModel<PlanListUiS
 
 
 }
-
-data class BaseUiState<T>(
-    val loading: Boolean? = null,
-    val error: Exception? = null,
-    val uiState: T? = null
-)
 

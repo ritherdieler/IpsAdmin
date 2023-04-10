@@ -9,7 +9,6 @@ import com.example.cleanarchitecture.domain.domain.entity.User
  * Huacho, Peru.
  *
  **/
-sealed class RegisterResponse {
-    class OnRegister(val register: User) : RegisterResponse()
-    class OnError(val error: Exception) : RegisterResponse()
+sealed class RegisterUiState {
+    class OnRegister(val register: User) : RegisterUiState()
 }

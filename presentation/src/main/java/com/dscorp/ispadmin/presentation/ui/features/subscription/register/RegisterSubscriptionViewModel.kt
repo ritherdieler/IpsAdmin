@@ -3,12 +3,11 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 import android.widget.CompoundButton
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
@@ -16,8 +15,6 @@ import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhon
 import com.example.data2.data.repository.IRepository
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
@@ -25,9 +22,8 @@ import kotlinx.coroutines.launch
 
 class RegisterSubscriptionViewModel(
     private val repository: IRepository,
-) : ViewModel() {
+) : BaseViewModel<RegisterSubscriptionUiState>() {
 
-    val registerSubscriptionUiState = MutableSharedFlow<RegisterSubscriptionUiState>()
     var subscription: SubscriptionResponse? = null
     var installationType = MutableLiveData(InstallationType.FIBER)
     var selectedAdditionalDevice = MutableLiveData<NetworkDevice?>(null)
@@ -82,7 +78,7 @@ class RegisterSubscriptionViewModel(
     val priceField = ReactiveFormField<String?>(
         hintResourceId = R.string.price,
         errorResourceId = R.string.invalidPrice,
-        validator = { (it != null) && (it.toDouble() > 0) }
+        validator = { (it != null) && it.isNotEmpty() && (it.toDouble() > 0) }
     )
 
     val locationField = ReactiveFormField<LatLng?>(
@@ -157,20 +153,21 @@ class RegisterSubscriptionViewModel(
         validator = { true }
     )
 
-    fun getFormData() = viewModelScope.launch {
-        registerSubscriptionUiState.emit(LoadingData(true))
-        try {
-            val cpeDevicesJob = async { repository.getCpeDevices() }
+    fun getFormData() =
+        executeWithProgress(onSuccess = {
+            uiState.value = BaseUiState(uiState = ShimmerVisibility(false))
+        }) {
+            val cpeDevicesJob = it.async { repository.getCpeDevices() }
             val cpeDevicesList = cpeDevicesJob.await()
             cpeDevices.value = cpeDevicesList
 
-            val genericDevicesJob = async { repository.getGenericDevices() }
-            val plansJob = async { repository.getPlans() }
-            val placeJob = async { repository.getPlaces() }
-            val napBoxesJob = async { repository.getNapBoxes() }
-            val deferredTechnicians = async { repository.getTechnicians() }
-            val coreDevicesJob = async { repository.getCoreDevices() }
-            val unconfirmedOnusJob = async { repository.getUnconfirmedOnus() }
+            val genericDevicesJob = it.async { repository.getGenericDevices() }
+            val plansJob = it.async { repository.getPlans() }
+            val placeJob = it.async { repository.getPlaces() }
+            val napBoxesJob = it.async { repository.getNapBoxes() }
+            val deferredTechnicians = it.async { repository.getTechnicians() }
+            val coreDevicesJob = it.async { repository.getCoreDevices() }
+            val unconfirmedOnusJob = it.async { repository.getUnconfirmedOnus() }
 
             val genericDevices = genericDevicesJob.await()
             val plans = plansJob.await()
@@ -179,76 +176,51 @@ class RegisterSubscriptionViewModel(
             val napBoxes = napBoxesJob.await()
             val coreDevices = coreDevicesJob.await()
             val unconfirmedOnus = unconfirmedOnusJob.await()
-            registerSubscriptionUiState.emit(
-                FormDataFound(
+            uiState.value = BaseUiState(
+                uiState = FormDataFound(
                     plans, genericDevices, places,
                     technicians, napBoxes, coreDevices, unconfirmedOnus
                 )
             )
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            registerSubscriptionUiState.emit(FormDataError(e.message.toString()))
-        } finally {
-            registerSubscriptionUiState.emit(LoadingData(false))
         }
+
+    fun getOnuData() = executeWithProgress {
+        uiState.value = BaseUiState(uiState = RefreshingOnus(true))
+        val unconfirmedOnus = repository.getUnconfirmedOnus()
+        uiState.value = BaseUiState(uiState = OnOnuDataFound(unconfirmedOnus))
     }
 
-    fun getOnuData() = viewModelScope.launch {
-        try {
-            registerSubscriptionUiState.emit(RefreshingOnus(true))
-            val unconfirmedOnus = repository.getUnconfirmedOnus()
-            registerSubscriptionUiState.emit(OnOnuDataFound(unconfirmedOnus))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            registerSubscriptionUiState.emit(OnuDataError(e.message.toString()))
-        } finally {
-            registerSubscriptionUiState.emit(RefreshingOnus(false))
-        }
-    }
-
-    fun getFiberDevices() = viewModelScope.launch {
+    fun getFiberDevices() = executeWithProgress {
         fiberCpeDevices.collectLatest {
             it?.let {
-                registerSubscriptionUiState.emit(FiberDevicesFound(it))
+                uiState.value = BaseUiState(FiberDevicesFound(it))
             }
         }
     }
 
     fun getWirelessDevices() = viewModelScope.launch {
         wirelessCpeDevices.collectLatest {
-            registerSubscriptionUiState.emit(WirelessDevicesFound(it!!))
+            uiState.value = BaseUiState(WirelessDevicesFound(it!!))
         }
     }
 
-    fun activateCoupon() = viewModelScope.launch {
-        try {
-            val response = repository.applyCoupon(couponField.getValue()!!)
-            if (response != null) registerSubscriptionUiState.emit(CouponIsValid(true))
-            else registerSubscriptionUiState.emit(CouponIsValid(false))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            registerSubscriptionUiState.emit(GenericError(e.message))
-        }
+    fun activateCoupon() = executeWithProgress {
+        val response = repository.applyCoupon(couponField.getValue()!!)
+        if (response != null) uiState.value = BaseUiState(CouponIsValid(true))
+        else uiState.value = BaseUiState(CouponIsValid(false))
     }
 
-    fun registerSubscription() = viewModelScope.launch {
-        try {
-            if (!formIsValid()) return@launch
-            registerSubscriptionUiState.emit(ButtomProgressBar(true))
-            val subscription = createSubscription()
-            val subscriptionFromRepository = repository.registerSubscription(subscription)
-            registerSubscriptionUiState.emit(
-                RegisterSubscriptionSuccess(subscriptionFromRepository)
-            )
-        } catch (error: Exception) {
-            registerSubscriptionUiState.emit(RegisterSubscriptionError(error.message.toString()))
-        } finally {
-            registerSubscriptionUiState.emit(ButtomProgressBar(false))
-        }
+    fun registerSubscription() = executeWithProgress {
+        if (!formIsValid()) return@executeWithProgress
+        val subscription = createSubscription()
+        val subscriptionFromRepository = repository.registerSubscription(subscription)
+        uiState.value = BaseUiState(
+            RegisterSubscriptionSuccess(subscriptionFromRepository)
+        )
     }
 
     private fun createSubscription(): Subscription {
+
         val subscription = Subscription(
             firstName = firstNameField.getValue(),
             lastName = lastNameField.getValue(),

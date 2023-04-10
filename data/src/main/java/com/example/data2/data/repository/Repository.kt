@@ -62,6 +62,10 @@ class Repository : IRepository, KoinComponent {
         editor.putString(SESSION_LAST_NAME, user.lastName)
         editor.putString(SESSION_USER_NAME, user.username)
         editor.putString(SESSION_PASSWORD, user.password)
+        editor.putString(SESSION_DNI, user.dni)
+        editor.putString(SESSION_EMAIL, user.email)
+        editor.putString(SESSION_PHONE, user.phone)
+
         editor.putString(SESSION_TYPE, user.type.toString())
         user.id?.let { editor.putInt(SESSION_ID, it) }
         editor.putBoolean(SESSION_VERIFIED, user.verified)
@@ -79,6 +83,9 @@ class Repository : IRepository, KoinComponent {
             username = prefs.getString(SESSION_USER_NAME, "")!!,
             password = prefs.getString(SESSION_PASSWORD, "")!!,
             verified = prefs.getBoolean(SESSION_VERIFIED, false),
+            dni = prefs.getString(SESSION_DNI, "")!!,
+            email = prefs.getString(SESSION_EMAIL, "")!!,
+            phone = prefs.getString(SESSION_PHONE, "")!!,
         )
     }
 
@@ -419,7 +426,10 @@ class Repository : IRepository, KoinComponent {
 
     }
 
-    override suspend fun findSubscriptionBySubscriptionDate( startDate: Long, endDate: Long ): List<SubscriptionResponse> {
+    override suspend fun findSubscriptionBySubscriptionDate(
+        startDate: Long,
+        endDate: Long
+    ): List<SubscriptionResponse> {
         val response = restApiServices.findSubscriptionBySubscriptionDate(startDate, endDate)
         return when (response.code()) {
             200 -> response.body()!!.ifEmpty { listOf() }
@@ -433,13 +443,14 @@ class Repository : IRepository, KoinComponent {
             return response.body()!!
         } else {
             throw Exception("Error en la notificacion")
-        }    }
+        }
+    }
 
     override suspend fun updatePlan(plan: Plan): PlanResponse {
         val response = restApiServices.updatePlan(plan)
-        if(response.code() == 200){
+        if (response.code() == 200) {
             return response.body()!!
-        }else{
+        } else {
             throw Exception("Ocurrio un error al registrar el plan")
         }
     }

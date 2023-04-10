@@ -10,7 +10,6 @@ class ReactiveFormField<T>(
     private val validator: (validation: T) -> Boolean,
 ) {
 
-
     private val applicationContext: Context by inject(Context::class.java)
 
     var liveData = CustomLiveData<T>(null, onValueChanged = { validateField(it) })
@@ -28,7 +27,6 @@ class ReactiveFormField<T>(
             if (!field) errorLiveData.value = applicationContext.getString(errorResourceId)
             return field
         }
-
 
     private fun validateField(fieldValue: T?): Boolean {
         return if (fieldValue == null || !validator(fieldValue)) {
