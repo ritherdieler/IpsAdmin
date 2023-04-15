@@ -184,4 +184,8 @@
     <string name="user_register_success">El usuario fué registrado con éxito.</string>
     <string name="phone">Teléfono</string>
     <string name="plans">Planes</string>
+    <string name="register_payment_commitment">Registrar compromiso de pago</string>
+    <string name="register_payment_commitment_message">Esta seguro que quiere registrar un compromiso de pago? El servicio se reactivara y se habilitara al usuario para la siguiente facturacion.</string>
+    <string name="yes">Si</string>
+    <string name="cancel">Cancelar</string>
 </resources>

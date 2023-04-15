@@ -7,6 +7,9 @@
         android:id="@+id/btn_register_service_order"
         android:title="@string/register_service_order" />
     <item
+        android:id="@+id/btn_register_payment_commitment"
+        android:title="@string/register_payment_commitment" />
+    <item
         android:id="@+id/btn_edit_plan_subscription"
         android:title="@string/edit_plan" />
     <item

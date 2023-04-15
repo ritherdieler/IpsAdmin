@@ -1,10 +1,13 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
@@ -15,6 +18,8 @@ import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.cleanarchitecture.domain.domain.entity.extensions.localToUTC
 import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
 import com.google.android.material.datepicker.*
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
 import org.koin.android.ext.android.inject
 import java.util.*
 
@@ -111,6 +116,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.btn_show_payment_history -> navigateToPaymentHistory(subscription)
+                R.id.btn_register_payment_commitment -> showPaymentCommitmentDialog()
                 R.id.btn_register_service_order -> navigateToRegisterServiceOrder(subscription)
                 R.id.btn_edit_plan_subscription -> navigateToEditSubscription(subscription)
                 R.id.btn_see_details -> navigateToDetails(subscription)
@@ -123,6 +129,20 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
             popupMenu.menu.findItem(R.id.btn_register_service_order).isVisible = false
         }
         popupMenu.show()
+    }
+
+    private fun showPaymentCommitmentDialog(): Boolean {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.register_payment_commitment)
+            .setMessage(R.string.register_payment_commitment_message)
+            .setPositiveButton(
+                R.string.yes
+            ) { p0, p1 -> Toast.makeText(requireContext(), "Registrar compromiso", Toast.LENGTH_SHORT).show() }
+            .setNegativeButton(R.string.cancel) { p0, p1 ->
+                p0.dismiss()
+            }.show()
+
+        return true
     }
 
     private fun navigateToDetails(subscription: SubscriptionResponse): Boolean {
