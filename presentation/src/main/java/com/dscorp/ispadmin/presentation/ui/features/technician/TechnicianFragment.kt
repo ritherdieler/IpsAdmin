@@ -62,7 +62,7 @@ class TechnicianFragment : BaseFragment() {
 
     private fun registerTechnician() {
         val technician = Technician(
-            firstName = binding.etFirstName.text.toString(),
+            name = binding.etFirstName.text.toString(),
             lastName = binding.etLastName.text.toString(),
             dni = binding.etDni.text.toString(),
             type = binding.etType.text.toString(),
@@ -86,7 +86,7 @@ class TechnicianFragment : BaseFragment() {
         }
     }
     private fun showSuccessDialog(response: TechnicianResponse.OnTechnicianRegistered) {
-        showSuccessDialog("El técnico${response.technician.firstName} ah sido registrado exitosamente")
+        showSuccessDialog("El técnico${response.technician.name} ah sido registrado exitosamente")
     }
 
     private fun observeFromError() {

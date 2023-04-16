@@ -34,7 +34,7 @@ class TechnicianViewModel : ViewModel() {
 
     private fun formIsValid(technician: Technician): Boolean {
 
-        if (technician.firstName.isEmpty()) {
+        if (technician.name.isEmpty()) {
             technicianFromErrorLiveData.value = TechnicianFromError.OnEtFirstNameError()
             return false
         } else {

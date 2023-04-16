@@ -50,7 +50,7 @@ val viewModelModule = module {
     viewModel { ServicesOrderListViewModel() }
     viewModel { NapBoxesListViewModel() }
     viewModel { PaymentHistoryViewModel() }
-    viewModel { FindSubscriptionViewModel() }
+    viewModel { FindSubscriptionViewModel(get(),get()) }
     viewModel { RegisterPaymentViewModel(get()) }
     viewModel { IpPoolViewModel() }
     viewModel { MyProfileViewModel() }

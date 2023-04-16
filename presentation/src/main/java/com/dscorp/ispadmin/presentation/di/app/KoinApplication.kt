@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.di.app
 
 import android.app.Application
+import com.dscorp.ispadmin.presentation.di.modules.applicationModule
 import com.example.data2.data.di.apiModule
 import com.dscorp.ispadmin.presentation.di.modules.dialogFactoryModule
 import com.example.data2.data.di.repositoryModule
@@ -43,6 +44,7 @@ class KoinApplication : Application() {
                 viewModelModule,
                 dialogFactoryModule,
                 localDataModule,
+                applicationModule,
                 module {
                     single { firebaseAnalytics }
                 }

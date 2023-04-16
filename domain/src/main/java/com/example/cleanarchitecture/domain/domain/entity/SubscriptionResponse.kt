@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 data class SubscriptionResponse(
-    var id: Int? = null,
+    var id: Int,
     var address: String? = null,
     var dni: String? = null,
     var firstName: String? = null,
@@ -19,12 +19,15 @@ data class SubscriptionResponse(
     var place: PlaceResponse? = null,
     var plan: PlanResponse? = null,
     var ip: String? = null,
-    var serviceIsSuspended: Boolean? = null,
+    var serviceStatus: ServiceStatus,
     var technician: Technician? = null,
     var hostDevice: NetworkDevice? = null,
     var subscriptionDate: Long? = null,
     var isMigration: Boolean,
     var price: Double? = null,
+    var paymentCommitmentDate: Long? = null,
+    var isPaymentCommitment: Boolean = false,
+    var lastCutOffDate: Long? = null,
 ) : java.io.Serializable {
     fun getFullName() = "$firstName $lastName"
 

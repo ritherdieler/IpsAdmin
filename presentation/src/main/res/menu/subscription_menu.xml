@@ -7,7 +7,13 @@
         android:id="@+id/btn_register_service_order"
         android:title="@string/register_service_order" />
     <item
+        android:id="@+id/btn_reactivate_service"
+        android:visible="false"
+        android:title="@string/reactivate_service" />
+
+    <item
         android:id="@+id/btn_register_payment_commitment"
+        android:visible="false"
         android:title="@string/register_payment_commitment" />
     <item
         android:id="@+id/btn_edit_plan_subscription"

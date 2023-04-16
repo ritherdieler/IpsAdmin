@@ -14,7 +14,7 @@ import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
 class SubscriptionDetailFragment : BaseFragment() {
     private val args: SubscriptionDetailFragmentArgs by navArgs()
-    lateinit var binding: FragmentSubscriptionDetailBinding
+    val binding by lazy { FragmentSubscriptionDetailBinding.inflate(layoutInflater) }
     lateinit var subscription: SubscriptionResponse
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +28,7 @@ class SubscriptionDetailFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding =
-            DataBindingUtil.inflate(
-                layoutInflater, R.layout.fragment_subscription_detail, null, true
-            )
+
         binding.subscription = subscription
         binding.executePendingBindings()
 

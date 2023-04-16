@@ -33,7 +33,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
-import java.text.SimpleDateFormat
 import java.util.*
 
 fun NavController.navigateSafe(destinationId: Int) {
@@ -66,6 +65,10 @@ fun Fragment.showErrorDialog(error: String? = "Error desconocido") {
     val dialogFactory: IDialogFactory by inject()
     val errorDialog = dialogFactory.createErrorDialog(requireContext(), error!!)
     errorDialog.show()
+}
+
+fun Fragment.showLoadingFullScreen() {
+
 }
 
 fun Activity.showSuccessDialog(text: String) {
@@ -130,7 +133,6 @@ fun AppCompatActivity.showCrossDialog(
         CrossDialogFragment::class.simpleName
     )
 }
-
 
 
 @SuppressLint("MissingPermission")
@@ -209,3 +211,12 @@ fun String.encryptWithSHA384(): String {
         .digest(this.toByteArray(StandardCharsets.UTF_8))
     return bytes.fold("") { str, it -> str + "%02x".format(it) }
 }
+
+fun Calendar.isSameMonthAndYear(calendar: Calendar) =
+    get(Calendar.YEAR) == calendar.get(Calendar.YEAR) && get(Calendar.MONTH) == calendar.get(
+        Calendar.MONTH
+    )
+
+fun Calendar.isLastDayOfMonth() = get(Calendar.DAY_OF_MONTH) == getActualMaximum(Calendar.DAY_OF_MONTH)
+
+fun Long.asCalendar() = Calendar.getInstance().apply { timeInMillis = this@asCalendar }

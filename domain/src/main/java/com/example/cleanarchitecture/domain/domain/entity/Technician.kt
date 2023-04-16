@@ -9,7 +9,7 @@ package com.example.cleanarchitecture.domain.domain.entity
  **/
 data class Technician(
     val id: Int? = null,
-    val firstName: String="",
+    val name: String="",
     val lastName: String="",
     val dni: String="",
     val type: String="",
@@ -20,5 +20,5 @@ data class Technician(
     val phone: String="",
     val birthday: Long=0
 ):java.io.Serializable {
-    override fun toString() = "$firstName $lastName"
+    override fun toString() = "$name $lastName"
 }

@@ -139,5 +139,8 @@ interface RestApiServices {
 
     @PUT("plan")
    suspend fun updatePlan(@Body plan: Plan): Response<PlanResponse>
+
+   @PUT("subscription/payment-commitment")
+   suspend fun setPaymentCommitment(@Query("subscriptionId") id: Int):Response<Unit>
 }
 

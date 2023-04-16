@@ -188,4 +188,9 @@
     <string name="register_payment_commitment_message">Esta seguro que quiere registrar un compromiso de pago? El servicio se reactivara y se habilitara al usuario para la siguiente facturacion.</string>
     <string name="yes">Si</string>
     <string name="cancel">Cancelar</string>
+    <string name="payment_commitment_cant_create_at_last_day_of_month">El compromiso de pago no puede ser creado el uiltimo dia del mes</string>
+    <string name="subscription_has_not_service_cut_off">El cliente no tiene el servicio cortado.</string>
+    <string name="payment_commitment_cant_be_registered_in_different_month_tan_cut_off_date">El compromiso de pago no puede ser registrado en un mes diferente al del corte.</string>
+    <string name="payment_commitment_save_success">Se registro el compromiso de pago, el servicio fue reactivado.</string>
+    <string name="reactivate_service">Reactivar servicio</string>
 </resources>

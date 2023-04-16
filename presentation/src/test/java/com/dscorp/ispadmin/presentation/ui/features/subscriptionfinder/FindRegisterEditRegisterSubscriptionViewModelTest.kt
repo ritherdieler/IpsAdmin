@@ -4,7 +4,6 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.*
 import com.dscorp.ispadmin.util.fromJson
 import com.dscorp.ispadmin.util.getValueForTest
 import com.dscorp.ispadmin.util.mockService
