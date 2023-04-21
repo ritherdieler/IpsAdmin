@@ -193,4 +193,6 @@
     <string name="payment_commitment_cant_be_registered_in_different_month_tan_cut_off_date">El compromiso de pago no puede ser registrado en un mes diferente al del corte.</string>
     <string name="payment_commitment_save_success">Se registro el compromiso de pago, el servicio fue reactivado.</string>
     <string name="reactivate_service">Reactivar servicio</string>
+    <string name="service_reactivated_successfully">El servicio fue reactivado con exito</string>
+    <string name="reactivate_service_message">Se reactivara la facturacion para este cliente. Solo se facturara  los dias restantes.</string>
 </resources>

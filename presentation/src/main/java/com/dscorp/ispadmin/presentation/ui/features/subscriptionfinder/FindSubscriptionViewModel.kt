@@ -2,7 +2,6 @@ package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.di.app.ResourceProvider
 import com.dscorp.ispadmin.presentation.extension.asCalendar
@@ -12,12 +11,16 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.OnSubscriptionFound
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.PaymentCommitmentSuccess
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowEditPlanOption
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowPaymentCommitmentOption
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowReactivateServiceOption
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowRegisterServiceOrder
 import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.repository.IRepository
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import java.util.Calendar
 
@@ -104,14 +107,18 @@ class FindSubscriptionViewModel(
 
     fun filterMenuItems(subscription: SubscriptionResponse) {
         val currentCal = Calendar.getInstance()
+        if (!subscription.isPaymentCommitment && !subscription.isReactivation) {
+            when (subscription.serviceStatus) {
+                ServiceStatus.CUT_OFF -> {
+                    handleCutOffUiState(subscription, currentCal)
+                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
+                }
 
-        when (subscription.serviceStatus) {
-            ServiceStatus.CUT_OFF -> handleCutOffUiState(subscription, currentCal)
+                ServiceStatus.SUSPENDED ->
+                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
 
-            ServiceStatus.SUSPENDED ->
-                uiState.value = BaseUiState(ShowReactivateServiceOption(true))
-
-            else -> {}
+                else -> {}
+            }
         }
 
         user?.let {
@@ -135,6 +142,11 @@ class FindSubscriptionViewModel(
         }
     }
 
+    fun reactivateService(subscription: SubscriptionResponse) = executeWithProgress {
+        repository.reactivateService(subscription)
+        uiState.value = BaseUiState(FindSubscriptionUiState.ReactivateServiceSuccess)
+    }
+
 
     enum class SearchType {
         BY_DNI,
@@ -144,6 +156,8 @@ class FindSubscriptionViewModel(
 
 sealed interface FindSubscriptionUiState {
     object PaymentCommitmentSuccess : FindSubscriptionUiState
+    object ReactivateServiceSuccess : FindSubscriptionUiState
+
     class ShowPaymentCommitmentOption(val showOption: Boolean) : FindSubscriptionUiState
     class ShowReactivateServiceOption(val showOption: Boolean) : FindSubscriptionUiState
     class OnSubscriptionFound(val subscriptions: List<SubscriptionResponse>) :
@@ -151,5 +165,5 @@ sealed interface FindSubscriptionUiState {
 
     class ShowEditPlanOption(val showOption: Boolean) : FindSubscriptionUiState
 
-    class ShowRegisterServiceOrder(val showOption: Boolean) :FindSubscriptionUiState
+    class ShowRegisterServiceOrder(val showOption: Boolean) : FindSubscriptionUiState
 }

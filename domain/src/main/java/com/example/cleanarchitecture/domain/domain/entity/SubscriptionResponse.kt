@@ -28,6 +28,8 @@ data class SubscriptionResponse(
     var paymentCommitmentDate: Long? = null,
     var isPaymentCommitment: Boolean = false,
     var lastCutOffDate: Long? = null,
+    var isReactivation: Boolean = false,
+    var reactivationDate: Long? = null,
 ) : java.io.Serializable {
     fun getFullName() = "$firstName $lastName"
 

@@ -142,5 +142,8 @@ interface RestApiServices {
 
    @PUT("subscription/payment-commitment")
    suspend fun setPaymentCommitment(@Query("subscriptionId") id: Int):Response<Unit>
+
+    @PUT("subscription/reactivate-service")
+    suspend fun reactivateService(@Query("subscriptionId") subscription: Int): Response<Unit>
 }
 

@@ -462,4 +462,12 @@ class Repository : IRepository, KoinComponent {
             else -> throw Exception("Ocurrio un error al registrar el compromiso de pago, contacte con el administrador")
         }
     }
+
+    override suspend fun reactivateService(subscription: SubscriptionResponse) {
+        val response = restApiServices.reactivateService(subscription.id)
+        when(response.code()){
+            HttpCodes.OK ->{}
+            else -> throw Exception("Ocurrio un error al reactivar el servicio")
+        }
+    }
 }

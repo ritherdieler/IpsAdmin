@@ -65,5 +65,6 @@ interface IRepository {
     suspend fun sendCloudMessaging(body: FirebaseBody?): FireBaseResponse
     suspend fun updatePlan(plan: Plan): PlanResponse
     suspend fun savePaymentCommitment(id: Int)
+    suspend fun reactivateService(subscription: SubscriptionResponse)
 
 }

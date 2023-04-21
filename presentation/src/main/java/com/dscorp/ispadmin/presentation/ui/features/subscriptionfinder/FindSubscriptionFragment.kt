@@ -85,6 +85,8 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
                         popupMenu.menu.findItem(R.id.btn_register_service_order).isVisible =
                             state.showOption
                     }
+
+                    ReactivateServiceSuccess -> showSuccessDialog(getString(R.string.service_reactivated_successfully))
                 }
             }
         }
@@ -141,12 +143,27 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
                 R.id.btn_register_service_order -> navigateToRegisterServiceOrder(subscription)
                 R.id.btn_edit_plan_subscription -> navigateToEditSubscription(subscription)
                 R.id.btn_see_details -> navigateToDetails(subscription)
+                R.id.btn_reactivate_service->showReactivateServiceDialog(subscription)
                 else -> false
             }
         }
         popupMenu.inflate(R.menu.subscription_menu)
         viewModel.filterMenuItems(subscription)
         popupMenu.show()
+    }
+
+    private fun showReactivateServiceDialog(subscription: SubscriptionResponse): Boolean {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.reactivate_service)
+            .setMessage(R.string.reactivate_service_message)
+            .setPositiveButton(R.string.yes) { p0, p1 ->
+                viewModel.reactivateService(subscription)
+            }
+            .setNegativeButton(R.string.cancel) { p0, p1 ->
+                p0.dismiss()
+            }.show()
+        return true
+
     }
 
     private fun showPaymentCommitmentDialog(subscription: SubscriptionResponse): Boolean {
