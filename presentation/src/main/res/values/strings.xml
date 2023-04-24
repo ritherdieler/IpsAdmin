@@ -195,4 +195,5 @@
     <string name="reactivate_service">Reactivar servicio</string>
     <string name="service_reactivated_successfully">El servicio fue reactivado con exito</string>
     <string name="reactivate_service_message">Se reactivara la facturacion para este cliente. Solo se facturara  los dias restantes.</string>
+    <string name="select">Seleccionar\n</string>
 </resources>

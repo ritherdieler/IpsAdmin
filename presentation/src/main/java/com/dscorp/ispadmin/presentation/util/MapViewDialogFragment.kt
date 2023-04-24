@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.util
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -48,28 +49,14 @@ class MapViewDialogFragment : DialogFragment(), OnMapReadyCallback {
 
         return binding.root
     }
+
+    @SuppressLint("MissingPermission")
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID;
         val location = LatLng(args.location?.latitude ?: 0.0, args.location?.longitude ?: 0.0)
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(location)
-                .title("Ubicación ")
-        )
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,16f))
-
-        //show my location button
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
+        googleMap.addMarker(MarkerOptions().position(location).title("Ubicación "))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16f))
         googleMap.isMyLocationEnabled = true
     }
 

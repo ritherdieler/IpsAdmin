@@ -56,7 +56,7 @@ class EditNapBoxFragment : BaseFragment() {
     private fun fillFormWithSubscriptionData() {
         binding.etCode.setText(viewModel.napBoxResponse?.code)
         binding.etAddress.setText(viewModel.napBoxResponse?.address)
-        binding.etLocationNapBox.setText("${viewModel.napBoxResponse?.location?.latitude}, ${viewModel.napBoxResponse?.location?.longitude}")
+        binding.etLocationNapBox.setText("${viewModel.napBoxResponse?.latitude}, ${viewModel.napBoxResponse?.longitude}")
     }
 
     private fun observeMapDialogResult() {
@@ -73,18 +73,13 @@ class EditNapBoxFragment : BaseFragment() {
     }
 
     private fun editNapBox() {
-        var location: GeoLocation?
-        location = args.napBox.location
-        selectedLocation?.let {
-            location = GeoLocation(it.latitude, it.longitude)
-        }
+        val location = selectedLocation?.let { GeoLocation(it.latitude, it.longitude) }
         val registerNapBox = NapBox(
             code = binding.etCode.text.toString(),
             address = binding.etAddress.text.toString(),
             latitude = location?.latitude,
             longitude = location?.longitude,
         )
-
         viewModel.editNapBox(registerNapBox)
     }
 
@@ -93,15 +88,20 @@ class EditNapBoxFragment : BaseFragment() {
             when (formError) {
                 is EditNapBoxFormErrorUiState.OnEtAddressError -> binding.tlAddress.error =
                     formError.error
+
                 is EditNapBoxFormErrorUiState.OnEtCodeError -> binding.tlCode.error =
                     formError.error
+
                 is EditNapBoxFormErrorUiState.OnEtLocationError ->
                     binding.tlLocationNapBox.error =
                         formError.error
+
                 is EditNapBoxFormErrorUiState.OnEtAddressCleanError -> binding.etAddress.error =
                     null
+
                 is EditNapBoxFormErrorUiState.OnEtLocationCleanError -> binding.etAddress.error =
                     null
+
                 is EditNapBoxFormErrorUiState.OnEtCodeCleanError -> binding.etAddress.error = null
             }
         }

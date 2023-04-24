@@ -84,12 +84,11 @@ class NapBoxesListFragment : BaseFragment(), OnItemClickListener {
     }
 
     override fun onItemClick(napBox: NapBoxResponse) {
-        parentFragmentManager.beginTransaction().apply {
-            val destination =
-                NapBoxesListFragmentDirections.actionNavSeeNapBoxesToNapBoxeDetailsFragment(
-                    napBox
-                )
-            findNavController().navigate(destination)
+//
+//            val destination =
+//                NapBoxesListFragmentDirections.actionNavSeeNapBoxesToNapBoxeDetailsFragment(
+//                    napBox
+//                )
+//            findNavController().navigate(destination)
         }
-    }
 }

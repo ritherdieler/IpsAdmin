@@ -1,10 +1,13 @@
 package com.example.cleanarchitecture.domain.domain.entity
 
 data class NapBoxResponse(
-    var id: String? = null,
-    var code: String? = null,
-    var address: String? = null,
-    var location: GeoLocation? = null,
+    val id: String? = null,
+    val code: String = "",
+    val address: String = "",
+    val mufaId: Int? = null,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
+    val ports_number: Int? = null,
 ):java.io.Serializable
 {
     override fun toString(): String {

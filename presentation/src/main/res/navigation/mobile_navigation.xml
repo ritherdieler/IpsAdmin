@@ -27,6 +27,10 @@
         <action
             android:id="@+id/save_subscription_to_dashboard"
             app:destination="@+id/nav_dashboard" />
+
+        <action
+            android:id="@+id/save_subscription_to_napBoxMapFragment"
+            app:destination="@+id/napBoxMapDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/nav_register_place"
@@ -93,25 +97,13 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListFragment"
         android:label="NapBoxesListFragment"
         tools:layout="@layout/fragment_nap_boxes_list">
-        <action
-            android:id="@+id/action_nav_see_nap_boxes_to_napBoxeDetailsFragment"
-            app:destination="@id/napBoxeDetailsFragment" />
+
         <action
             android:id="@+id/action_nav_see_nap_boxes_to_editNapBoxFragment"
             app:destination="@id/editNapBoxFragment" />
 
     </fragment>
 
-    <fragment
-        android:id="@+id/napBoxeDetailsFragment"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.napboxeslist.napboxdetails.NapBoxDetailsFragment"
-        android:label="NapBoxeDetailsFragment"
-        tools:layout="@layout/fragment_nap_box_detail">
-
-        <argument
-            android:name="napBoxResponse"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse" />
-    </fragment>
     <dialog
         android:id="@+id/mapDialog"
         android:name="com.dscorp.ispadmin.presentation.util.MapDialog"
@@ -255,15 +247,19 @@
         android:id="@+id/nav_see_plan_list"
         android:name="com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListFragment"
         android:label="PlanListFragment"
-        tools:layout="@layout/item_plan_list" >
-        <action android:id="@+id/to_edit_plan" app:destination="@+id/editPlanFragment"/>
+        tools:layout="@layout/item_plan_list">
+        <action
+            android:id="@+id/to_edit_plan"
+            app:destination="@+id/editPlanFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/editPlanFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.plan.edit.EditPlanFragment"
         tools:layout="@layout/fragment_edit_plan">
-        <argument android:name="plan" app:argType="com.example.cleanarchitecture.domain.domain.entity.PlanResponse"/>
+        <argument
+            android:name="plan"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.PlanResponse" />
     </fragment>
 
     <fragment
@@ -299,7 +295,7 @@
             app:destination="@id/mufaDialogFragment" />
         <action
             android:id="@+id/nav_mufa_to_nap_box_dialog_fragment"
-            app:destination="@id/napBoxDialogFragment" />
+            app:destination="@id/napBoxDetailDialogFragment" />
     </dialog>
     <dialog
         android:id="@+id/mufaDialogFragment"
@@ -326,16 +322,27 @@
             app:destination="@id/nav_find_subscriptions" />
     </fragment>
     <dialog
-        android:id="@+id/napBoxDialogFragment"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.mufas.NapBoxDialogFragment"
-        android:label="NapBoxDialogFragment" >
+        android:id="@+id/napBoxDetailDialogFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.mufas.NapBoxDetailDialogFragment"
+        android:label="NapBoxDialogFragment">
         <argument
             android:name="napBox"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBox" />
+        <argument
+            android:name="showSelectionButton"
+            app:argType="boolean"
+            />
+
     </dialog>
+
     <fragment
-        android:id="@+id/serviceOrderDetailFragment"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.detail.ServiceOrderDetailFragment"
-        android:label="fragment_service_order_detail"
-        tools:layout="@layout/activity_service_order_detail" />
+        android:id="@+id/napBoxMapDialogFragment"
+        android:name="NapBoxMapFragment"
+        android:label="NapBoxMapFragment">
+
+        <action
+            android:id="@+id/mapBoxMap_to_NapBoxDetailDialog"
+            app:destination="@id/napBoxDetailDialogFragment" />
+
+    </fragment>
 </navigation>

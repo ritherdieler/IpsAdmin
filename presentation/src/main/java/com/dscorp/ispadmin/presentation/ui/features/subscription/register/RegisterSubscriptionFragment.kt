@@ -1,5 +1,7 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
+import NapBoxMapFragment.Companion.NAP_BOX_OBJECT
+import NapBoxMapFragment.Companion.NAP_BOX_SELECTION_RESULT
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -21,6 +23,8 @@ import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFragment.LocationRequestOrigin.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFragmentDirections.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
@@ -37,6 +41,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
     private val viewModel: RegisterSubscriptionViewModel by viewModel()
     private var rationaleShown = false
+    private var locationReqOrigin: LocationRequestOrigin? = null
     private val additionalDevicesAdapter by lazy {
         ArrayAdapter<NetworkDevice>(
             requireContext(),
@@ -51,7 +56,25 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted)
-                checkGpsEnabled { getCurrentLocation() }
+                checkGpsEnabled {
+                    if (locationReqOrigin == null) return@checkGpsEnabled
+                    when (locationReqOrigin!!) {
+                        NAP_BOX_TEXT_BOX -> {
+                            val action = saveSubscriptionToNapBoxMapFragment()
+                            findNavController().navigate(action)
+                        }
+
+                        MY_LOCATION_BUTTON -> {
+                            getCurrentLocation()
+                        }
+
+                        LOCATION_TEXT_BOX -> {
+                            val action = actionNavSubscriptionToMapDialog()
+                            findNavController().navigate(action)
+                        }
+
+                    }
+                }
             else
                 if (rationaleShown) openLocationSettings(requireActivity())
         }
@@ -75,6 +98,11 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
+
+        observeNapBoxSelection()
+
+
+
         viewModel.getFormData()
         binding.ivRefresh.setOnClickListener {
             viewModel.getOnuData()
@@ -91,6 +119,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
             viewModel.registerSubscription()
         }
         binding.ivMyLocation.setOnClickListener {
+            locationReqOrigin = MY_LOCATION_BUTTON
             requestLocationPermission()
         }
 
@@ -99,7 +128,8 @@ class RegisterSubscriptionFragment : BaseFragment() {
         }
 
         binding.etLocationSubscription.setOnClickListener {
-            findNavController().navigateSafe(R.id.action_nav_subscription_to_mapDialog)
+            locationReqOrigin = LOCATION_TEXT_BOX
+            requestLocationPermission()
         }
 
         binding.chkAdditionalDevices.setOnCheckedChangeListener { _, isChecked ->
@@ -118,6 +148,11 @@ class RegisterSubscriptionFragment : BaseFragment() {
             additionalDevicesAdapter.addAll(viewModel.additionalNetworkDevicesList)
         }
 
+        binding.acNapBox.setOnLongClickListener {
+            locationReqOrigin = NAP_BOX_TEXT_BOX
+            requestLocationPermission()
+            true
+        }
 
         val currentTimeMillis = System.currentTimeMillis()
 
@@ -126,6 +161,16 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etSubscriptionDate.isEnabled = false
         binding.etSubscriptionDate.visibility = View.GONE
         return binding.root
+    }
+
+    private fun observeNapBoxSelection() {
+        parentFragmentManager.setFragmentResultListener(
+            NAP_BOX_SELECTION_RESULT, this
+        ) { _, result ->
+            val napBox = result.getSerializable(NAP_BOX_OBJECT) as NapBoxResponse
+            viewModel.napBoxField.liveData.value = napBox
+            binding.acNapBox.setText(napBox.toString())
+        }
     }
 
     private fun requestLocationPermission() {
@@ -163,6 +208,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
                     binding.tlOnu.visibility = View.VISIBLE
                     binding.ivRefresh.visibility = View.VISIBLE
                 }
+
                 R.id.rbWireless -> {
                     viewModel.installationType.value = InstallationType.WIRELESS
                     viewModel.getWirelessDevices()
@@ -245,7 +291,7 @@ class RegisterSubscriptionFragment : BaseFragment() {
     }
 
     private fun showConfirmationDialog(response: RegisterSubscriptionSuccess) {
-        val action = RegisterSubscriptionFragmentDirections.saveSubscriptionToDashboard()
+        val action = saveSubscriptionToDashboard()
         showCrossDialog(
             getString(R.string.subscription_register_success, response.subscription.ip.toString()),
             closeButtonClickListener = { findNavController().navigate(action) },
@@ -346,6 +392,12 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private fun openLocationSettings(activity: Activity) {
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         activity.startActivity(intent)
+    }
+
+    enum class LocationRequestOrigin {
+        NAP_BOX_TEXT_BOX,
+        MY_LOCATION_BUTTON,
+        LOCATION_TEXT_BOX
     }
 
 }

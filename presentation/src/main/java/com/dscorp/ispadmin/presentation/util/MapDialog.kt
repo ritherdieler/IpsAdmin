@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.util
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,8 +52,10 @@ class MapDialog : DialogFragment(), OnMapReadyCallback {
         return binding.root
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+        googleMap.isMyLocationEnabled = true
         googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
         val santaRosa = LatLng(-11.234169, -77.378485)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(santaRosa, 14f))

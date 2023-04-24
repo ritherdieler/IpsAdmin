@@ -6,7 +6,7 @@ data class Mufa(
     var longitude: Double? = null,
     var reference: String? = null,
     var threads: Int? = null,
-    var napBoxes: List<NapBox>? = null,
+    var napBoxes: List<NapBoxResponse>? = null,
 ) : java.io.Serializable{
     override fun toString(): String {
         return "$id - $reference"
