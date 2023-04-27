@@ -18,3 +18,4 @@ rootProject.name = "ispAdminAndroid"
 include ':presentation'
 include ':domain'
 include ':data'
+include ':components'

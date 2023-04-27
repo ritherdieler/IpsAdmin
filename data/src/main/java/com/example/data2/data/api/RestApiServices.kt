@@ -110,8 +110,20 @@ interface RestApiServices {
     @PUT("subscription/update-plan")
     suspend fun editSubscription(@Body subscription: UpdateSubscriptionPlanBody): Response<SubscriptionResponse>
 
-    @GET("subscription/debtors-document")
-    suspend fun downloadDebtorsDocument(): Response<DownloadDocumentResponse>
+    @GET("subscription/debtors-report-document")
+    suspend fun downloadDebtorsReportDocument(): Response<DownloadDocumentResponse>
+
+    @GET("subscription/with-payment-commitment-report-document")
+    suspend fun downloadWithPaymentCommitmentSubscriptionsReportDocument(): Response<DownloadDocumentResponse>
+
+    @GET("subscription/suspended-report-document")
+    suspend fun downloadSuspendedSubscriptionsReportDocument(): Response<DownloadDocumentResponse>
+
+    @GET("subscription/cutoff-report-document")
+    suspend fun downloadCutOffSubscriptionsReportDocument(): Response<DownloadDocumentResponse>
+
+    @GET("subscription/last-month-debtors-report-document")
+    suspend  fun downloadPastMontDebtorsSubscriptionsReportDocument(): Response<DownloadDocumentResponse>
 
     @GET("dashboard")
     suspend fun getDashBoardData(): Response<DashBoardDataResponse>
@@ -145,5 +157,7 @@ interface RestApiServices {
 
     @PUT("subscription/reactivate-service")
     suspend fun reactivateService(@Query("subscriptionId") subscription: Int): Response<Unit>
+
+
 }
 

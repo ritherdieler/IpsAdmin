@@ -10,21 +10,21 @@ open class BaseViewModel<T> : ViewModel() {
     val uiState = MutableLiveData<BaseUiState<T>>()
 
     fun executeWithProgress(
-        doFinally: () -> Unit = {},
-        onSuccess: () -> Unit = {},
-        onError: () -> Unit = {},
+        doFinally: (() -> Unit)? = null,
+        onSuccess: (() -> Unit)? = null,
+        onError: (() -> Unit)? = null,
         func: suspend (coroutineContext: CoroutineScope) -> Unit
     ) = viewModelScope.launch {
         try {
             uiState.value = BaseUiState(loading = true)
             func(this)
-            onSuccess.invoke()
+            onSuccess?.invoke()
         } catch (e: Exception) {
             uiState.value = BaseUiState(error = e)
-            onError.invoke()
+            onError?.invoke()
             e.printStackTrace()
         } finally {
-            doFinally.invoke()
+            doFinally?.invoke()
             uiState.value = BaseUiState(loading = false)
         }
     }

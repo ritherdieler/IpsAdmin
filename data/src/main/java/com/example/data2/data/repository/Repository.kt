@@ -329,8 +329,44 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun downloadDebtorsDocument(): DownloadDocumentResponse {
-        val response = restApiServices.downloadDebtorsDocument()
+    override suspend fun downloadDebtorSubscriptionsDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadDebtorsReportDocument()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun downloadWithPaymentCommitmentSubscriptionsDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadWithPaymentCommitmentSubscriptionsReportDocument()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun downloadSuspendedSubscriptionsDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadSuspendedSubscriptionsReportDocument()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun downloadCutOffSubscriptionsDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadCutOffSubscriptionsReportDocument()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun downloadPastMontSubscriptionsDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadPastMontDebtorsSubscriptionsReportDocument()
         if (response.code() == 200) {
             return response.body()!!
         } else {

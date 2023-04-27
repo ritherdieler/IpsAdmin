@@ -2,7 +2,7 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
 import android.widget.CompoundButton
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
@@ -27,7 +27,7 @@ class RegisterSubscriptionViewModel(
     var subscription: SubscriptionResponse? = null
     var installationType = MutableLiveData(InstallationType.FIBER)
     var selectedAdditionalDevice = MutableLiveData<NetworkDevice?>(null)
-    val addButtonIsEnabled = Transformations.map(selectedAdditionalDevice) { it != null }
+    val addButtonIsEnabled = selectedAdditionalDevice.map { it != null }
     var additionalNetworkDevicesList = mutableSetOf<NetworkDevice>()
     private val cpeDevices = MutableStateFlow<List<NetworkDevice>?>(null)
 

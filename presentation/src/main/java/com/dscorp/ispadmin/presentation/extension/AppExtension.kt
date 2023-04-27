@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import com.dscorp.components.ProgressFullScreenDialogFragment
 import com.dscorp.ispadmin.BuildConfig
 import com.dscorp.ispadmin.CrossDialogFragment
 import com.dscorp.ispadmin.presentation.util.IDialogFactory
@@ -67,8 +68,14 @@ fun Fragment.showErrorDialog(error: String? = "Error desconocido") {
     errorDialog.show()
 }
 
-fun Fragment.showLoadingFullScreen() {
-
+fun Fragment.showLoadingFullScreen(show: Boolean) {
+    if (show)
+        ProgressFullScreenDialogFragment().show(
+            childFragmentManager,
+            ProgressFullScreenDialogFragment::class.java.name
+        )
+    else
+        (childFragmentManager.findFragmentByTag(ProgressFullScreenDialogFragment::class.java.name) as ProgressFullScreenDialogFragment?)?.dismiss()
 }
 
 fun Activity.showSuccessDialog(text: String) {
@@ -217,6 +224,7 @@ fun Calendar.isSameMonthAndYear(calendar: Calendar) =
         Calendar.MONTH
     )
 
-fun Calendar.isLastDayOfMonth() = get(Calendar.DAY_OF_MONTH) == getActualMaximum(Calendar.DAY_OF_MONTH)
+fun Calendar.isLastDayOfMonth() =
+    get(Calendar.DAY_OF_MONTH) == getActualMaximum(Calendar.DAY_OF_MONTH)
 
 fun Long.asCalendar() = Calendar.getInstance().apply { timeInMillis = this@asCalendar }

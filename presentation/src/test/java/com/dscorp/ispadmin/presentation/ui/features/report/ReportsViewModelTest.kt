@@ -2,8 +2,6 @@ package com.dscorp.ispadmin.presentation.ui.features.report
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dscorp.ispadmin.TestApp.KoinAppForInstrumentation
-import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState
-import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.util.getValueForTest
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.data2.data.repository.IRepository
@@ -36,7 +34,7 @@ class ReportsViewModelTest : AutoCloseKoinTest() {
     fun `when downloadDebtorsDocument is called, then should emit DebtorsDocument state`() =
         runBlocking {
             // Given
-            Mockito.`when`(repository.downloadDebtorsDocument()).thenReturn(
+            Mockito.`when`(repository.downloadDebtorSubscriptionsDocument()).thenReturn(
                 DownloadDocumentResponse(
                     name = "",
                     type = "",
@@ -46,7 +44,7 @@ class ReportsViewModelTest : AutoCloseKoinTest() {
             val viewModel = ReportsViewModel(repository)
 
             // When
-            viewModel.downloadDebtorsDocument()
+            viewModel.downloadDebtorSubscriptionsDocument()
             val value = viewModel.uiStateLiveData.getValueForTest()
 
             // Then
@@ -57,11 +55,11 @@ class ReportsViewModelTest : AutoCloseKoinTest() {
     fun `when downloadDebtorsDocument call has error then should emit Error state`() =
         runBlocking {
             // Given
-            Mockito.`when`(repository.downloadDebtorsDocument()).thenThrow(NullPointerException())
+            Mockito.`when`(repository.downloadDebtorSubscriptionsDocument()).thenThrow(NullPointerException())
             val viewModel = ReportsViewModel(repository)
 
             // When
-            viewModel.downloadDebtorsDocument()
+            viewModel.downloadDebtorSubscriptionsDocument()
             val value = viewModel.uiStateLiveData.getValueForTest()
 
             // Then

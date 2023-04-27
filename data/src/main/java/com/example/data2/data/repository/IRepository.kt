@@ -46,7 +46,16 @@ interface IRepository {
     suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit: Int): List<Payment>
     suspend fun getCoreDevices(): List<NetworkDevice>
     suspend fun editSubscription(subscription: UpdateSubscriptionPlanBody): SubscriptionResponse
-    suspend fun downloadDebtorsDocument(): DownloadDocumentResponse
+    suspend fun downloadDebtorSubscriptionsDocument(): DownloadDocumentResponse
+
+    suspend fun downloadWithPaymentCommitmentSubscriptionsDocument(): DownloadDocumentResponse
+
+    suspend fun downloadSuspendedSubscriptionsDocument(): DownloadDocumentResponse
+
+    suspend fun downloadCutOffSubscriptionsDocument(): DownloadDocumentResponse
+
+    suspend fun downloadPastMontSubscriptionsDocument(): DownloadDocumentResponse
+
     suspend fun getDashBoardData(): DashBoardDataResponse
     suspend fun startServiceCut()
     suspend fun getHostDevices(): List<NetworkDevice>

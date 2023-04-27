@@ -61,7 +61,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
     private fun observeUiState() {
         viewModel.uiState.observe(viewLifecycleOwner) {
             it.error?.let { showErrorDialog(it.message) }
-            it.loading?.let { showLoadingFullScreen() }
+            it.loading?.let { showLoadingFullScreen(it) }
             it.uiState?.let { state ->
                 when (state) {
                     is OnSubscriptionFound -> adapter.submitList(state.subscriptions)

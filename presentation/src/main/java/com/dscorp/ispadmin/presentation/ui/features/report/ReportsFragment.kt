@@ -1,18 +1,26 @@
 package com.dscorp.ispadmin.presentation.ui.features.report
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
+import com.dscorp.components.ProgressFullScreenDialogFragment
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentReportsBinding
 import com.dscorp.ispadmin.presentation.extension.getDownloadedFileUri
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.extension.showLoadingFullScreen
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.CutOffSubscriptionsDocument
+import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.DebtorsSubscriptionsDocument
+import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.SuspendedSubscriptionsDocument
+import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.WithPaymentCommitmentSubscriptionsDocument
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -20,6 +28,26 @@ class ReportsFragment : BaseFragment() {
 
     private val binding by lazy { FragmentReportsBinding.inflate(layoutInflater) }
     private val viewModel: ReportsViewModel by inject()
+    private var downloadDocumentType: DownloadDocumentType? = null
+    private val requestPermissionManager =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                downloadDocumentType?.let {
+                    downloadDocument(it)
+                }
+            } else {
+                showErrorDialog(getString(R.string.permission_denied))
+            }
+        }
+
+    private fun downloadDocument(it: DownloadDocumentType) =
+        when (it) {
+            DownloadDocumentType.DEBTORS -> viewModel.downloadDebtorSubscriptionsDocument()
+            DownloadDocumentType.WITH_PAYMENT_COMMITMENT -> viewModel.downloadPaymentCommitmentSubscriptionsDocument()
+            DownloadDocumentType.SUSPENDED -> viewModel.downloadSuspendedSubscriptionsDocument()
+            DownloadDocumentType.CUT_OFF -> viewModel.downloadCutOffSubscriptionsDocument()
+            DownloadDocumentType.DEBTORS_FROM_PAST_MONTH -> viewModel.downloadPastMonthDebtors()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,8 +55,30 @@ class ReportsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding.btnGetDebtors.setOnClickListener {
-            viewModel.downloadDebtorsDocument()
+        binding.btnGetDebtorsCustomers.setOnClickListener {
+            downloadDocumentType = DownloadDocumentType.DEBTORS
+
+            requestExternalStoragePermissionAndDownloadDocument()
+        }
+
+        binding.btnGetWithPaymentCommitmentCusstomers.setOnClickListener {
+            downloadDocumentType = DownloadDocumentType.WITH_PAYMENT_COMMITMENT
+            requestExternalStoragePermissionAndDownloadDocument()
+        }
+
+        binding.btnSuspendedCustomers.setOnClickListener {
+            downloadDocumentType = DownloadDocumentType.SUSPENDED
+            requestExternalStoragePermissionAndDownloadDocument()
+        }
+
+        binding.btnGetCutoffCustomers.setOnClickListener {
+            downloadDocumentType = DownloadDocumentType.CUT_OFF
+            requestExternalStoragePermissionAndDownloadDocument()
+        }
+
+        binding.btnGetPastMonthDebtorCustomers.setOnClickListener {
+            downloadDocumentType = DownloadDocumentType.DEBTORS_FROM_PAST_MONTH
+            requestExternalStoragePermissionAndDownloadDocument()
         }
 
         observeUiState()
@@ -36,16 +86,27 @@ class ReportsFragment : BaseFragment() {
         return binding.root
     }
 
+    private fun requestExternalStoragePermissionAndDownloadDocument() {
+
+        requestPermissionManager.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
+
     private fun observeUiState() {
-        viewModel.uiStateLiveData.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is ReportsUiState.DebtorsDocument -> downloadDocument(state.document)
-                is ReportsUiState.DebtorsDocumentError -> showErrorDialog(state.error)
+        viewModel.uiState.observe(viewLifecycleOwner) {
+            it.error?.let { error -> showErrorDialog(error.message) }
+            it.loading?.let { isLoading ->  showLoadingFullScreen(isLoading)}
+            it.uiState?.let { state ->
+                when (state) {
+                    is CutOffSubscriptionsDocument -> downloadFile(state.document)
+                    is DebtorsSubscriptionsDocument -> downloadFile(state.document)
+                    is SuspendedSubscriptionsDocument -> downloadFile(state.document)
+                    is WithPaymentCommitmentSubscriptionsDocument -> downloadFile(state.document)
+                }
             }
         }
     }
 
-    private fun downloadDocument(document: DownloadDocumentResponse) {
+    private fun downloadFile(document: DownloadDocumentResponse) {
         lifecycleScope.launch {
             val uri = requireActivity().getDownloadedFileUri(document)
             val intent = openWithXlsxApp(uri)
@@ -66,5 +127,13 @@ class ReportsFragment : BaseFragment() {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         return intent
+    }
+
+    private enum class DownloadDocumentType {
+        DEBTORS,
+        WITH_PAYMENT_COMMITMENT,
+        SUSPENDED,
+        CUT_OFF,
+        DEBTORS_FROM_PAST_MONTH
     }
 }

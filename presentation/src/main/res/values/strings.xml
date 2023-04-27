@@ -196,4 +196,9 @@
     <string name="service_reactivated_successfully">El servicio fue reactivado con exito</string>
     <string name="reactivate_service_message">Se reactivara la facturacion para este cliente. Solo se facturara  los dias restantes.</string>
     <string name="select">Seleccionar\n</string>
+    <string name="with_payment_commitment">Con compromiso de pago</string>
+    <string name="cutt_off">Cortados</string>
+    <string name="last_month_debt">Por cobrar del mes anterior</string>
+    <string name="Suspendeds">Suspendidos</string>
+    <string name="permission_denied">No puede continuar porque no acepto los permisos.</string>
 </resources>
