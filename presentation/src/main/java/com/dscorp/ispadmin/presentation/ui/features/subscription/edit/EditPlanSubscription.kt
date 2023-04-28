@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,10 +20,19 @@ import com.example.cleanarchitecture.domain.domain.entity.User
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EditPlanSubscription : BaseFragment() {
+class EditPlanSubscription : BaseFragment<EditSubscriptionUiState,FragmentEditPlanSubscriptionBinding >() {
     private val args by navArgs<EditPlanSubscriptionArgs>()
-    private val binding by lazy { FragmentEditPlanSubscriptionBinding.inflate(layoutInflater) }
-    private val viewModel: EditSubscriptionViewModel by viewModel()
+    override val binding by lazy { FragmentEditPlanSubscriptionBinding.inflate(layoutInflater) }
+    override val viewModel: EditSubscriptionViewModel by viewModels()
+
+    override fun handleState(state: EditSubscriptionUiState) {
+        when (state) {
+            is EditSubscriptionUiState.EditFormDataFound -> fillFormSpinners(state)
+            is EditSubscriptionUiState.EditSubscriptionSuccess -> showEditSuccessDialog()
+            is EditSubscriptionUiState.FormDataError -> showErrorDialog(state.error)
+            is EditSubscriptionUiState.EditSubscriptionError -> showErrorDialog(state.error)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +45,6 @@ class EditPlanSubscription : BaseFragment() {
         binding.lifecycleOwner = this
         binding.executePendingBindings()
         viewModel.getFormData()
-        observeState()
 
         binding.btnEditSubscription.setOnClickListener {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
@@ -51,18 +60,6 @@ class EditPlanSubscription : BaseFragment() {
         binding.etDni.setText(viewModel.subscription?.dni)
 
 
-    }
-
-    private fun observeState() = lifecycleScope.launch {
-        viewModel.editSubscriptionUiState.collect { response ->
-            when (response) {
-
-                is EditSubscriptionUiState.EditFormDataFound -> fillFormSpinners(response)
-                is EditSubscriptionUiState.EditSubscriptionSuccess -> showEditSuccessDialog()
-                is EditSubscriptionUiState.FormDataError -> showErrorDialog(response.error)
-                is EditSubscriptionUiState.EditSubscriptionError -> showErrorDialog(response.error)
-            }
-        }
     }
 
     private fun showEditSuccessDialog() {

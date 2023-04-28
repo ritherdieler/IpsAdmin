@@ -28,6 +28,25 @@ open class BaseViewModel<T> : ViewModel() {
             uiState.value = BaseUiState(loading = false)
         }
     }
+
+
+    fun executeNoProgress(
+        doFinally: (() -> Unit)? = null,
+        onSuccess: (() -> Unit)? = null,
+        onError: (() -> Unit)? = null,
+        func: suspend (coroutineContext: CoroutineScope) -> Unit
+    ) = viewModelScope.launch {
+        try {
+            func(this)
+            onSuccess?.invoke()
+        } catch (e: Exception) {
+            uiState.value = BaseUiState(error = e)
+            onError?.invoke()
+            e.printStackTrace()
+        } finally {
+            doFinally?.invoke()
+        }
+    }
 }
 
 

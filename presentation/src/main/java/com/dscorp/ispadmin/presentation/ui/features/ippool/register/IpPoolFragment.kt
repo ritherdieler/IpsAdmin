@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.databinding.FragmentIpPoolBinding
 import com.dscorp.ispadmin.presentation.extension.populate
@@ -13,21 +14,42 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.IpPool
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import com.example.data2.data.apirequestmodel.IpPoolRequest
-import org.koin.android.ext.android.inject
 
-class IpPoolFragment : BaseFragment(), IpPoolSelectionListener {
+class IpPoolFragment : BaseFragment<IpPoolUiState, FragmentIpPoolBinding>(),
+    IpPoolSelectionListener {
 
     private var selectedHostDevice: NetworkDevice? = null
-    val binding by lazy { FragmentIpPoolBinding.inflate(layoutInflater) }
 
-    private val viewModel: IpPoolViewModel by inject()
+
+    override val viewModel: IpPoolViewModel by viewModels()
+    override val binding by lazy { FragmentIpPoolBinding.inflate(layoutInflater) }
+    override fun handleState(state: IpPoolUiState) = when (state) {
+        is IpPoolUiState.IpPoolRegister -> showSuccessDialog(state)
+        is IpPoolUiState.IpPoolCleanError -> binding.tlIpSegment.error = null
+        is IpPoolUiState.IpPoolCleanInvalidIpSegment -> binding.tlIpSegment.error = null
+        is IpPoolUiState.IpPoolError -> binding.tlIpSegment.error = state.error
+        is IpPoolUiState.IpPoolInvalidIpSegment ->
+            binding.tlIpSegment.error =
+                state.error
+
+        is IpPoolUiState.IpPoolList -> fillRecycleView(state)
+        is IpPoolUiState.IpPoolListError -> {}
+        is IpPoolUiState.HostDevicesError -> showErrorDialog(state.message)
+        is IpPoolUiState.HostDevicesReady -> fillHostDevicesSpinner(state.hostDevices)
+        IpPoolUiState.CleanNoHostDeviceSelectedError -> binding.spnHostDevice.error = null
+        IpPoolUiState.NoHostDeviceSelectedError -> showErrorDialog(state.error)
+        is IpPoolUiState.LoadingData -> {
+            binding.viewShimmerIpPool.visibility = if (state.loading) View.VISIBLE else View.GONE
+            binding.viewContainterIpPoool.visibility =
+                if (state.loading) View.GONE else View.VISIBLE
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        observeResponse()
         viewModel.getHostDevices()
         viewModel.getIpPoolList()
         binding.btnRegisterIpSegment.setOnClickListener {
@@ -42,31 +64,6 @@ class IpPoolFragment : BaseFragment(), IpPoolSelectionListener {
             hostDeviceId = selectedHostDevice?.id
         )
         viewModel.registerIpPool(ipPool)
-    }
-
-    private fun observeResponse() {
-        viewModel.uiState.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is IpPoolUiState.IpPoolRegister -> showSuccessDialog(response)
-                is IpPoolUiState.IpPoolRegisterError -> showErrorDialog()
-                is IpPoolUiState.IpPoolCleanError -> binding.tlIpSegment.error = null
-                is IpPoolUiState.IpPoolCleanInvalidIpSegment -> binding.tlIpSegment.error = null
-                is IpPoolUiState.IpPoolError -> binding.tlIpSegment.error = response.error
-                is IpPoolUiState.IpPoolInvalidIpSegment ->
-                    binding.tlIpSegment.error =
-                        response.error
-                is IpPoolUiState.IpPoolList -> fillRecycleView(response)
-                is IpPoolUiState.IpPoolListError -> {}
-                is IpPoolUiState.HostDevicesError -> showErrorDialog(response.message)
-                is IpPoolUiState.HostDevicesReady -> fillHostDevicesSpinner(response.hostDevices)
-                IpPoolUiState.CleanNoHostDeviceSelectedError -> binding.spnHostDevice.error = null
-                IpPoolUiState.NoHostDeviceSelectedError -> showErrorDialog(response.error)
-                is IpPoolUiState.LoadingData -> {
-                    binding.viewShimmerIpPool.visibility = if (response.loading) View.VISIBLE else View.GONE
-                    binding.viewContainterIpPoool.visibility = if (response.loading) View.GONE else View.VISIBLE
-                }
-            }
-        }
     }
 
     private fun fillHostDevicesSpinner(hostDevices: List<NetworkDevice>) {

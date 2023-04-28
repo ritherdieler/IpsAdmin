@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentViewModel" />
     </data>
 
     <ScrollView
@@ -13,7 +16,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -43,12 +46,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:hint="@string/metododepago">
+                android:hint="@{viewModel.paymentMethodField.hint}">
+
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/acPaymentMethod"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
+
                     tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,14 +65,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:ems="10"
-                android:hint="@string/descuento"
+                android:hint="@{viewModel.discountAmountField.hint}"
+                android:error="@{viewModel.discountAmountField.errorLiveData}"
                 android:inputType="numberDecimal">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPaymentDiscount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="0" />
+                    android:text="@={viewModel.discountAmountField.liveData}" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -78,13 +84,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:ems="10"
-                android:hint="@string/motivo_de_descuento"
+                android:hint="@{viewModel.discountReasonField.hint}"
                 android:inputType="textPersonName">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPaymentDiscountReason"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="@={viewModel.discountReasonField.liveData}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <View

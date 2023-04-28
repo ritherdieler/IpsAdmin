@@ -21,54 +21,46 @@ class RegisterViewModel(
 
     val firstNameField = ReactiveFormField<String>(
         hintResourceId = R.string.firstName,
-        errorResourceId = R.string.mustDigitFirstName,
-        validator = { it.isNotEmpty() }
-    )
+        errorResourceId = R.string.mustDigitFirstName
+    ) { it.isNotEmpty() }
 
     val lastNameField = ReactiveFormField<String>(
         hintResourceId = R.string.lastName,
-        errorResourceId = R.string.mustDigitLastName,
-        validator = { it.isNotEmpty() }
-    )
+        errorResourceId = R.string.mustDigitLastName
+    ) { it.isNotEmpty() }
 
     val emailField = ReactiveFormField<String>(
         hintResourceId = R.string.email,
-        errorResourceId = R.string.mustDigitEmail,
-        validator = { it.isValidEmail() }
-    )
+        errorResourceId = R.string.mustDigitEmail
+    ) { it.isValidEmail() }
 
     val phoneField = ReactiveFormField<String>(
         hintResourceId = R.string.phoneNumer,
-        errorResourceId = R.string.mustDigitPhoneNumber,
-        validator = { it.isValidPhone() }
-    )
+        errorResourceId = R.string.mustDigitPhoneNumber
+    ) { it.isValidPhone() }
 
     val dniField = ReactiveFormField<String>(
         hintResourceId = R.string.dni,
-        errorResourceId = R.string.must_digit_dni,
-        validator = { it.isValidDni() }
-    )
+        errorResourceId = R.string.must_digit_dni
+    ) { it.isValidDni() }
 
     val userNameField = ReactiveFormField<String>(
         hintResourceId = R.string.username,
-        errorResourceId = R.string.mustDigitUserName,
-        validator = { it.isNotEmpty() }
-    )
+        errorResourceId = R.string.mustDigitUserName
+    ) { it.isNotEmpty() }
 
     val password1Field = ReactiveFormField<String>(
         hintResourceId = R.string.password,
-        errorResourceId = R.string.mustDigitPassword,
-        validator = { it.isNotEmpty() }
-    )
+        errorResourceId = R.string.mustDigitPassword
+    ) { it.isNotEmpty() }
 
     val password2Field = ReactiveFormField<String>(
         hintResourceId = R.string.repeat_password,
-        errorResourceId = R.string.passwordsMustBeEquals,
-        validator = {
-            it.isNotEmpty() && !password1Field.getValue()
-                .isNullOrEmpty() && it == password1Field.getValue()!!
-        }
-    )
+        errorResourceId = R.string.passwordsMustBeEquals
+    ) {
+        it.isNotEmpty() && !password1Field.getValue()
+            .isNullOrEmpty() && it == password1Field.getValue()!!
+    }
 
     fun registerUser() = executeWithProgress {
         if (!formIsValid()) return@executeWithProgress

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.databinding.FragmentNetworkDeviceBinding
 import com.dscorp.ispadmin.presentation.extension.fillWithList
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
@@ -13,7 +14,7 @@ import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceF
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NetworkDeviceFragment : BaseFragment() {
+class NetworkDeviceFragment : Fragment() {
     private val binding by lazy { FragmentNetworkDeviceBinding.inflate(layoutInflater) }
     private val viewModel: NetworkDeviceViewModel by viewModel()
     private var selectedNetworkDeviceType: NetworkDevice.NetworkDeviceType? = null

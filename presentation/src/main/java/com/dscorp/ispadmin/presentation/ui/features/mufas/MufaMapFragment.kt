@@ -11,10 +11,9 @@ import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentMufasMapBinding
 import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaUiState
-import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaViewmodel
+import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaViewModel
 import com.dscorp.ispadmin.presentation.ui.features.mufas.NapBoxDetailDialogFragment
 import com.example.cleanarchitecture.domain.domain.entity.Mufa
-import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -29,7 +28,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
     lateinit var binding: FragmentMufasMapBinding
-    val viewModel: MufaViewmodel by viewModel()
+    val viewModel: MufaViewModel by viewModel()
     private var mufas: List<Mufa> = emptyList()
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
@@ -57,7 +56,6 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
         lifecycleScope.launch {
             viewModel.mufaUiStateLiveData.observe(viewLifecycleOwner) {
                 when (it) {
-                    is MufaUiState.OnError -> {}
                     is MufaUiState.OnMufasListFound -> showMufasAsMakers(it.mufasList)
                 }
             }

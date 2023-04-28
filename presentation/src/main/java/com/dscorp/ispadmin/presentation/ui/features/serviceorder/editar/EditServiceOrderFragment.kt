@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentEditServiceOrderBinding
@@ -21,7 +22,7 @@ import com.google.android.datatransport.Priority
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EditServiceOrderFragment() : BaseFragment() {
+class EditServiceOrderFragment() : Fragment() {
     private val navArgs by navArgs<EditServiceOrderFragmentArgs>()
     private val binding by lazy { FragmentEditServiceOrderBinding.inflate(layoutInflater) }
     private val viewModel: RegisterServiceOrderViewModel by viewModel()

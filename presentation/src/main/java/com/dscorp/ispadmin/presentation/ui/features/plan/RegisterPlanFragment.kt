@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlanBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
@@ -14,7 +15,7 @@ import com.dscorp.ispadmin.presentation.ui.features.plan.PlanFormError.*
 import com.example.cleanarchitecture.domain.domain.entity.Plan
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class RegisterPlanFragment : BaseFragment() {
+class RegisterPlanFragment : Fragment() {
     lateinit var binding: FragmentPlanBinding
     val viewModel: PlanViewModel by viewModel()
 

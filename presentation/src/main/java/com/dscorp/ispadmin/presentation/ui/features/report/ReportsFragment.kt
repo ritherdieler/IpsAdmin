@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.components.ProgressFullScreenDialogFragment
 import com.dscorp.ispadmin.R
@@ -16,6 +17,7 @@ import com.dscorp.ispadmin.presentation.extension.getDownloadedFileUri
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showLoadingFullScreen
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.CutOffSubscriptionsDocument
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.DebtorsSubscriptionsDocument
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.SuspendedSubscriptionsDocument
@@ -24,10 +26,21 @@ import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentRespon
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class ReportsFragment : BaseFragment() {
+class ReportsFragment : BaseFragment<ReportsUiState,FragmentReportsBinding >() {
 
-    private val binding by lazy { FragmentReportsBinding.inflate(layoutInflater) }
-    private val viewModel: ReportsViewModel by inject()
+    override val binding by lazy { FragmentReportsBinding.inflate(layoutInflater) }
+
+    override val viewModel: ReportsViewModel by viewModels()
+    override fun handleState(state: ReportsUiState) =
+        when (state) {
+            is CutOffSubscriptionsDocument -> downloadFile(state.document)
+            is DebtorsSubscriptionsDocument -> downloadFile(state.document)
+            is SuspendedSubscriptionsDocument -> downloadFile(state.document)
+            is WithPaymentCommitmentSubscriptionsDocument -> downloadFile(state.document)
+            is ReportsUiState.PastMonthSubscriptionDocument -> downloadFile(state.document)
+        }
+
+
     private var downloadDocumentType: DownloadDocumentType? = null
     private val requestPermissionManager =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -48,6 +61,7 @@ class ReportsFragment : BaseFragment() {
             DownloadDocumentType.CUT_OFF -> viewModel.downloadCutOffSubscriptionsDocument()
             DownloadDocumentType.DEBTORS_FROM_PAST_MONTH -> viewModel.downloadPastMonthDebtors()
         }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,29 +95,12 @@ class ReportsFragment : BaseFragment() {
             requestExternalStoragePermissionAndDownloadDocument()
         }
 
-        observeUiState()
-
         return binding.root
     }
 
     private fun requestExternalStoragePermissionAndDownloadDocument() {
 
         requestPermissionManager.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    }
-
-    private fun observeUiState() {
-        viewModel.uiState.observe(viewLifecycleOwner) {
-            it.error?.let { error -> showErrorDialog(error.message) }
-            it.loading?.let { isLoading ->  showLoadingFullScreen(isLoading)}
-            it.uiState?.let { state ->
-                when (state) {
-                    is CutOffSubscriptionsDocument -> downloadFile(state.document)
-                    is DebtorsSubscriptionsDocument -> downloadFile(state.document)
-                    is SuspendedSubscriptionsDocument -> downloadFile(state.document)
-                    is WithPaymentCommitmentSubscriptionsDocument -> downloadFile(state.document)
-                }
-            }
-        }
     }
 
     private fun downloadFile(document: DownloadDocumentResponse) {

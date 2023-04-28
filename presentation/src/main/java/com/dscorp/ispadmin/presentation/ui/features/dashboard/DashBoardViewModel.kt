@@ -1,41 +1,38 @@
 package com.dscorp.ispadmin.presentation.ui.features.dashboard
 
+import android.view.View
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class DashBoardViewModel : ViewModel(), KoinComponent {
+class DashBoardViewModel : BaseViewModel<DashBoardDataUiState>(), KoinComponent {
     private val repository: IRepository by inject()
-    val uiState = MutableLiveData<DashBoardDataUiState>()
-     val userSession = repository.getUserSession()
-    fun getDashBoardData() = viewModelScope.launch {
-        uiState.value = DashBoardDataUiState.LoadingData(true)
-        try {
-            val response = repository.getDashBoardData()
-            delay(500)
-            uiState.value = DashBoardDataUiState.DashBoardData(response)
-        } catch (e: Exception) {
-            uiState.value = DashBoardDataUiState.DashBoardDataError(e.message ?: "")
-        } finally {
-            uiState.value = DashBoardDataUiState.LoadingData(false)
-        }
+    val userSession = repository.getUserSession()
+    val showDashBoardShimmerLiveData = MutableLiveData(true)
+
+    init {
+        getDashBoardData()
     }
 
-    fun startServiceCut(password: String) = viewModelScope.launch {
+    fun getDashBoardData() = executeNoProgress (doFinally = {
+        showDashBoardShimmerLiveData.value = false
+    }) {
+        val response = repository.getDashBoardData()
+        delay(500)
+        uiState.value = BaseUiState(DashBoardDataUiState.DashBoardData(response))
+    }
+
+    fun startServiceCut(password: String) = executeWithProgress {
         if (password != (userSession?.password ?: "")) {
-            uiState.postValue(DashBoardDataUiState.CutServiceError("Contraseña incorrecta"))
-            return@launch
+            uiState.value =
+                BaseUiState(DashBoardDataUiState.InvalidPasswordError("Contraseña incorrecta"))
+            return@executeWithProgress
         }
-        try {
-            repository.startServiceCut()
-            uiState.postValue(DashBoardDataUiState.CutServiceSuccess)
-        } catch (e: Exception) {
-            uiState.postValue(DashBoardDataUiState.CutServiceError(e.message ?: ""))
-        }
+        repository.startServiceCut()
+        uiState.value = BaseUiState(DashBoardDataUiState.CutServiceSuccess)
     }
 }

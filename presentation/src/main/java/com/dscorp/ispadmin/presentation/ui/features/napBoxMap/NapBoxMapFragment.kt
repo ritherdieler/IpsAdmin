@@ -6,19 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapboxMapBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaUiState
-import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaViewmodel
+import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaViewModel
 import com.dscorp.ispadmin.presentation.ui.features.mufas.NapBoxDetailDialogFragment
 import com.example.cleanarchitecture.domain.domain.entity.Mufa
-import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -29,40 +28,31 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NapBoxMapFragment : BaseFragment(), OnMapReadyCallback,
+class NapBoxMapFragment : BaseFragment<MufaUiState, FragmentNapboxMapBinding>(), OnMapReadyCallback,
     NapBoxDetailDialogFragment.NapBoxSelectionListener {
-    private val binding by lazy { FragmentNapboxMapBinding.inflate(layoutInflater) }
-    private val viewModel: MufaViewmodel by viewModel()
+    override val binding by lazy { FragmentNapboxMapBinding.inflate(layoutInflater) }
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
     private lateinit var selectedLatLng: LatLng
     private val napBoxMarkersMap = mutableMapOf<Marker?, NapBoxResponse>()
+    override val viewModel: MufaViewModel by viewModels()
+
+    override fun handleState(state: MufaUiState) {
+        when (state) {
+            is MufaUiState.OnMufasListFound -> showMufasAsMakers(state.mufasList)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        observe()
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
         return binding.root
-    }
-
-    private fun observe() {
-        lifecycleScope.launch {
-            viewModel.mufaUiStateLiveData.observe(viewLifecycleOwner) {
-                when (it) {
-                    is MufaUiState.OnError -> {}
-                    is MufaUiState.OnMufasListFound -> showMufasAsMakers(it.mufasList)
-                }
-            }
-        }
-
-
     }
 
     private fun showMufasAsMakers(mufas: List<Mufa>) {
@@ -139,7 +129,9 @@ class NapBoxMapFragment : BaseFragment(), OnMapReadyCallback,
     }
 
     override fun onNapBoxSelected(napBox: NapBoxResponse) {
-        setFragmentResult(NAP_BOX_SELECTION_RESULT,Bundle().apply { putSerializable(NAP_BOX_OBJECT,napBox) })
+        setFragmentResult(
+            NAP_BOX_SELECTION_RESULT,
+            Bundle().apply { putSerializable(NAP_BOX_OBJECT, napBox) })
         findNavController().popBackStack(R.id.nav_subscription, false)
 
     }

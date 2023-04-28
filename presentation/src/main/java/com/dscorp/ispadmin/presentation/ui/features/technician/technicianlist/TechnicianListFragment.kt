@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechniciansListBinding
@@ -12,7 +13,7 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class TechnicianListFragment : BaseFragment() {
+class TechnicianListFragment : Fragment() {
 
     private lateinit var binding: FragmentTechniciansListBinding
     private val viewModel: TechnicianListViewModel by viewModel()

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
@@ -16,7 +17,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 
-class TechnicianFragment : BaseFragment() {
+class TechnicianFragment : Fragment() {
     lateinit var binding: FragmentTechnicianBinding
     var selectedDate: Long = 0
     val viewModel: TechnicianViewModel by viewModel()

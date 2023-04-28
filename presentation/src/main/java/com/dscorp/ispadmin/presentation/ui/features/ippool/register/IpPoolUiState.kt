@@ -11,7 +11,6 @@ sealed class IpPoolUiState(val error: String? = null) {
     }
 
     class IpPoolRegister(val ipPool: IpPool) : IpPoolUiState()
-    class IpPoolRegisterError(val registerError: String?) : IpPoolUiState()
 
     class IpPoolList(val ipPools: List<IpPool>) : IpPoolUiState()
     class IpPoolListError(val message: String?) : IpPoolUiState()

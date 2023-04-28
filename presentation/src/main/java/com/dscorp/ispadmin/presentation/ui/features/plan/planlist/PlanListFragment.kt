@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlanListBinding
@@ -13,7 +14,7 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlanListFragment : BaseFragment(), OnPlanSelectedListener {
+class PlanListFragment : Fragment(), OnPlanSelectedListener {
 
     private val binding by lazy { FragmentPlanListBinding.inflate(layoutInflater) }
     private val viewModel: PlanListViewModel by viewModel()

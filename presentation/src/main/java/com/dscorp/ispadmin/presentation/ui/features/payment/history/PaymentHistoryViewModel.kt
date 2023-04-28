@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.*
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
@@ -12,11 +14,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-class PaymentHistoryViewModel : ViewModel() {
-    val repository: IRepository by inject(IRepository::class.java)
-
-    val uiStateLiveData = MutableLiveData<PaymentHistoryUiState>()
-    val formErrorLiveData = MutableLiveData<PaymentHistoryErrorUiState>()
+class PaymentHistoryViewModel(val repository: IRepository) : BaseViewModel<PaymentHistoryUiState>() {
 
     companion object {
         const val LAST_PAYMENTS_LIMIT = 10
@@ -28,30 +26,24 @@ class PaymentHistoryViewModel : ViewModel() {
         payments.filter { payment -> !payment.paid }
     }
 
-    fun getFilteredPaymentHistory(request: SearchPaymentsRequest) = viewModelScope.launch {
-        try {
+    fun getFilteredPaymentHistory(request: SearchPaymentsRequest) = executeWithProgress{
             val response = repository.getFilteredPaymentHistory(request)
             payments.value = response
-            uiStateLiveData.postValue(OnPaymentHistoryFilteredResponse(response))
-        } catch (e: Exception) {
-            uiStateLiveData.postValue(OnError(e.message))
-        }
+            uiState.value = BaseUiState( OnPaymentHistoryFilteredResponse(response))
     }
 
-    fun getLastPayments(idSubscription: Int, itemsLimit: Int) = viewModelScope.launch {
-        try {
+    fun getLastPayments(idSubscription: Int, itemsLimit: Int) = executeWithProgress {
             val response = repository.getRecentPaymentsHistory(idSubscription, itemsLimit)
             payments.value = response
-            uiStateLiveData.postValue(GetRecentPaymentsHistoryResponse(response))
-        } catch (e: Exception) {
-            uiStateLiveData.postValue(GetRecentPaymentHistoryError(e.message))
-        }
+            uiState.value = BaseUiState(GetRecentPaymentsHistoryResponse(response))
+
     }
 
-    fun showOnlyPendingPayments() = viewModelScope.launch {
-        uiStateLiveData.postValue(OnPaymentHistoryFilteredResponse(pendingPayments.first()))
+     fun showOnlyPendingPayments()  = executeNoProgress{
+        uiState.value = BaseUiState(OnPaymentHistoryFilteredResponse(pendingPayments.first()))
     }
 
-    fun showAllPayments() =
-        uiStateLiveData.postValue(payments.value?.let { OnPaymentHistoryFilteredResponse(it) })
+    fun showAllPayments() = executeNoProgress {
+        uiState.value = BaseUiState(OnPaymentHistoryFilteredResponse(payments.value!!))
+    }
 }

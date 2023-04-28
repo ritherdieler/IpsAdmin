@@ -5,6 +5,7 @@ import android.os.Parcel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
@@ -19,14 +20,24 @@ import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHistoryAdapterListener {
+class PaymentHistoryFragment : BaseFragment<PaymentHistoryUiState, FragmentConsultPaymentsBinding>(), View.OnClickListener, PaymentHistoryAdapterListener {
     private val args: PaymentHistoryFragmentArgs by navArgs()
-    val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
-    private val viewModel: PaymentHistoryViewModel by inject()
+    override val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
     val adapter by lazy { PaymentHistoryAdapter(this) }
 
     private var selectedEndDate: Long? = null
     private var selectedStartDate: Long? = null
+    override val viewModel: PaymentHistoryViewModel by viewModels()
+
+    override fun handleState(state: PaymentHistoryUiState) {
+        when (state) {
+            is OnError -> showErrorDialog(state.message)
+            is OnPaymentHistoryFilteredResponse -> fillPaymentHistoryFiltered(state.payments)
+            is GetRecentPaymentsHistoryResponse -> fillRecentPaymentHistory(state.payments)
+            is GetRecentPaymentHistoryError -> showErrorDialog(state.message)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,9 +50,6 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHist
             if (isChecked) viewModel.showOnlyPendingPayments()
             else viewModel.showAllPayments()
         }
-
-        observeUiState()
-
         return binding.root
     }
 
@@ -53,16 +61,6 @@ class PaymentHistoryFragment : BaseFragment(), View.OnClickListener, PaymentHist
         }
     }
 
-    private fun observeUiState() {
-        viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is OnError -> showErrorDialog(it.message)
-                is OnPaymentHistoryFilteredResponse -> fillPaymentHistoryFiltered(it.payments)
-                is GetRecentPaymentsHistoryResponse -> fillRecentPaymentHistory(it.payments)
-                is GetRecentPaymentHistoryError -> showErrorDialog(it.message)
-            }
-        }
-    }
 
     private fun getPayments() {
         viewModel.getLastPayments(

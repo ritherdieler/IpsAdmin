@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Looper
 import android.util.Base64
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.AdapterView
@@ -17,6 +18,9 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import androidx.navigation.NavController
 import com.dscorp.components.ProgressFullScreenDialogFragment
 import com.dscorp.ispadmin.BuildConfig
@@ -74,8 +78,11 @@ fun Fragment.showLoadingFullScreen(show: Boolean) {
             childFragmentManager,
             ProgressFullScreenDialogFragment::class.java.name
         )
-    else
-        (childFragmentManager.findFragmentByTag(ProgressFullScreenDialogFragment::class.java.name) as ProgressFullScreenDialogFragment?)?.dismiss()
+    else {
+        val dialog =
+            (childFragmentManager.findFragmentByTag(ProgressFullScreenDialogFragment::class.java.name) as ProgressFullScreenDialogFragment?)
+        dialog?.dismiss()
+    }
 }
 
 fun Activity.showSuccessDialog(text: String) {
@@ -228,3 +235,10 @@ fun Calendar.isLastDayOfMonth() =
     get(Calendar.DAY_OF_MONTH) == getActualMaximum(Calendar.DAY_OF_MONTH)
 
 fun Long.asCalendar() = Calendar.getInstance().apply { timeInMillis = this@asCalendar }
+
+fun MutableLiveData<Boolean>.visibilityFromBoolean(): LiveData<Int> =
+    map { if (it) View.VISIBLE else View.GONE }
+
+fun Boolean.visibilityFromBoolean(): Int {
+    return if (this) View.VISIBLE else View.GONE
+}

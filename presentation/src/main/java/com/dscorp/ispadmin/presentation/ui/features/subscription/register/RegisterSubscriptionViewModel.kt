@@ -41,120 +41,101 @@ class RegisterSubscriptionViewModel(
 
     val firstNameField = ReactiveFormField<String?>(
         hintResourceId = R.string.name,
-        errorResourceId = R.string.fieldMustNotBeEmpty,
-        validator = { !it.isNullOrEmpty() }
-    )
+        errorResourceId = R.string.fieldMustNotBeEmpty
+    ) { !it.isNullOrEmpty() }
 
     val lastNameField = ReactiveFormField<String?>(
         hintResourceId = R.string.lastName,
-        errorResourceId = R.string.fieldMustNotBeEmpty,
-        validator = { !it.isNullOrEmpty() }
-    )
+        errorResourceId = R.string.fieldMustNotBeEmpty
+    ) { !it.isNullOrEmpty() }
 
     val dniField = ReactiveFormField<String?>(
         hintResourceId = R.string.dni,
-        errorResourceId = R.string.invalidDNI,
-        validator = { it.isValidDni() }
-    )
+        errorResourceId = R.string.invalidDNI
+    ) { it.isValidDni() }
 
     val addressField = ReactiveFormField<String?>(
         hintResourceId = R.string.address,
-        errorResourceId = R.string.fieldMustNotBeEmpty,
-        validator = { !it.isNullOrEmpty() }
-    )
+        errorResourceId = R.string.fieldMustNotBeEmpty
+    ) { !it.isNullOrEmpty() }
 
     val phoneField = ReactiveFormField<String?>(
         hintResourceId = R.string.phoneNumer,
-        errorResourceId = R.string.invalidPhoneNumber,
-        validator = { it.isValidPhone() }
-    )
+        errorResourceId = R.string.invalidPhoneNumber
+    ) { it.isValidPhone() }
 
     val couponField = ReactiveFormField<String?>(
         hintResourceId = R.string.coupon,
-        errorResourceId = R.string.fieldMustNotBeEmpty,
-        validator = { true }
-    )
+        errorResourceId = R.string.fieldMustNotBeEmpty
+    ) { true }
 
     val priceField = ReactiveFormField<String?>(
         hintResourceId = R.string.price,
-        errorResourceId = R.string.invalidPrice,
-        validator = { (it != null) && it.isNotEmpty() && (it.toDouble() > 0) }
-    )
+        errorResourceId = R.string.invalidPrice
+    ) { (it != null) && it.isNotEmpty() && (it.toDouble() > 0) }
 
     val locationField = ReactiveFormField<LatLng?>(
         hintResourceId = R.string.location,
-        errorResourceId = R.string.mustSelectLocation,
-        validator = { it != null }
-    )
+        errorResourceId = R.string.mustSelectLocation
+    ) { it != null }
 
     val planField = ReactiveFormField<PlanResponse?>(
         hintResourceId = R.string.plan,
-        errorResourceId = R.string.mustSelectPlan,
-        validator = { it != null }
-    )
+        errorResourceId = R.string.mustSelectPlan
+    ) { it != null }
 
     val placeField = ReactiveFormField<PlaceResponse?>(
         hintResourceId = R.string.place,
-        errorResourceId = R.string.mustSelectPlace,
-        validator = { it != null }
-    )
+        errorResourceId = R.string.mustSelectPlace
+    ) { it != null }
 
     val technicianField = ReactiveFormField<Technician?>(
         hintResourceId = R.string.technician,
-        errorResourceId = R.string.mustSelectTechnician,
-        validator = { it != null }
-    )
+        errorResourceId = R.string.mustSelectTechnician
+    ) { it != null }
 
     val hostDeviceField = ReactiveFormField<NetworkDevice?>(
         hintResourceId = R.string.host_device,
-        errorResourceId = R.string.mustSelectHostDevice,
-        validator = { it != null }
-    )
+        errorResourceId = R.string.mustSelectHostDevice
+    ) { it != null }
 
     val subscriptionDateField = ReactiveFormField<Long?>(
         hintResourceId = R.string.subscriptionDate,
-        errorResourceId = R.string.mustSelectSubscriptionDate,
-        validator = { it != null }
-    )
+        errorResourceId = R.string.mustSelectSubscriptionDate
+    ) { it != null }
 
     val isMigrationField = ReactiveFormField<Boolean?>(
         hintResourceId = R.string.empty,
-        errorResourceId = R.string.empty,
-        validator = { true }
-    )
+        errorResourceId = R.string.empty
+    ) { true }
 
     val cpeDeviceField = ReactiveFormField<NetworkDevice?>(
         hintResourceId = R.string.select_cpe_device,
-        errorResourceId = R.string.mustSelectCpeDevice,
-        validator = { it != null }
-    )
+        errorResourceId = R.string.mustSelectCpeDevice
+    ) { it != null }
 
     val napBoxField = ReactiveFormField<NapBoxResponse?>(
         hintResourceId = R.string.selec_nap_box,
-        errorResourceId = R.string.mustSelectNapBox,
-        validator = { it != null }
-    )
+        errorResourceId = R.string.mustSelectNapBox
+    ) { it != null }
 
     val onuField = ReactiveFormField<Onu?>(
         hintResourceId = R.string.select_onu,
-        errorResourceId = R.string.mustSelectOnu,
-        validator = { it != null }
-    )
+        errorResourceId = R.string.mustSelectOnu
+    ) { it != null }
 
     val additionalDevicesField = ReactiveFormField<NetworkDevice?>(
         hintResourceId = R.string.additionalDevices,
-        errorResourceId = R.string.youCanSelectAdditionalNetworkDevices,
-        validator = { true }
-    )
+        errorResourceId = R.string.youCanSelectAdditionalNetworkDevices
+    ) { true }
 
     val noteField = ReactiveFormField<String?>(
         hintResourceId = R.string.note,
-        errorResourceId = R.string.errorNote,
-        validator = { true }
-    )
+        errorResourceId = R.string.errorNote
+    ) { true }
 
     fun getFormData() =
-        executeWithProgress(onSuccess = {
+        executeNoProgress (onSuccess = {
             uiState.value = BaseUiState(uiState = ShimmerVisibility(false))
         }) {
             val cpeDevicesJob = it.async { repository.getCpeDevices() }
@@ -184,7 +165,7 @@ class RegisterSubscriptionViewModel(
             )
         }
 
-    fun getOnuData() = executeWithProgress(doFinally = {
+    fun getOnuData() = executeNoProgress (doFinally = {
         uiState.value = BaseUiState(uiState = RefreshingOnus(false))
     }) {
         uiState.value = BaseUiState(uiState = RefreshingOnus(true))
@@ -192,7 +173,7 @@ class RegisterSubscriptionViewModel(
         uiState.value = BaseUiState(uiState = OnOnuDataFound(unconfirmedOnus))
     }
 
-    fun getFiberDevices() = executeWithProgress {
+    fun getFiberDevices() = executeNoProgress {
         fiberCpeDevices.collectLatest {
             it?.let {
                 uiState.value = BaseUiState(FiberDevicesFound(it))

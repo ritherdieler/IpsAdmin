@@ -5,9 +5,6 @@ import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
 sealed class DashBoardDataUiState {
     object CutServiceSuccess : DashBoardDataUiState()
     class DashBoardData(val response: DashBoardDataResponse) : DashBoardDataUiState()
-    class DashBoardDataError(val message: String) : DashBoardDataUiState()
-    class CutServiceError(val error: String) : DashBoardDataUiState()
 
-    class LoadingData(val loading: Boolean) : DashBoardDataUiState()
-
+    class InvalidPasswordError(val error: String) : DashBoardDataUiState()
 }

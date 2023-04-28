@@ -5,7 +5,7 @@ import com.dscorp.ispadmin.presentation.ui.features.ippool.register.IpPoolViewMo
 import com.dscorp.ispadmin.presentation.ui.features.ippool.seeip.IpListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivityViewModel
-import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaViewmodel
+import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceViewModel
@@ -49,7 +49,7 @@ val viewModelModule = module {
     viewModel { RegisterServiceOrderViewModel(get()) }
     viewModel { ServicesOrderListViewModel() }
     viewModel { NapBoxesListViewModel() }
-    viewModel { PaymentHistoryViewModel() }
+    viewModel { PaymentHistoryViewModel(get()) }
     viewModel { FindSubscriptionViewModel(get(),get()) }
     viewModel { RegisterPaymentViewModel(get()) }
     viewModel { IpPoolViewModel() }
@@ -62,7 +62,7 @@ val viewModelModule = module {
     viewModel { NetworkDeviceListViewModel() }
     viewModel { PlaceListViewModel() }
     viewModel { TechnicianListViewModel() }
-    viewModel { MufaViewmodel() }
+    viewModel { MufaViewModel() }
     viewModel { EditSubscriptionViewModel(get()) }
     viewModel { EditPlanViewModel(get()) }
 }

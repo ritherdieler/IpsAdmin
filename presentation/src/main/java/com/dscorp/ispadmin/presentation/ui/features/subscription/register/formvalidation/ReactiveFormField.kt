@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import org.koin.java.KoinJavaComponent.inject
 
 class ReactiveFormField<T>(
-    private val hintResourceId: Int,
-    private val errorResourceId: Int,
-    private val validator: (validation: T) -> Boolean,
+    private val hintResourceId: Int? = null,
+    private val errorResourceId: Int? = null,
+    private val validator: ((validation: T) -> Boolean)? = null,
 ) {
 
     private val applicationContext: Context by inject(Context::class.java)
@@ -15,7 +15,7 @@ class ReactiveFormField<T>(
     var liveData = CustomLiveData<T>(null, onValueChanged = { validateField(it) })
 
     fun getValue() = liveData.value
-    val hint: String = applicationContext.getString(hintResourceId)
+    val hint: String? = hintResourceId?.let { applicationContext.getString(it) }
 
     val errorLiveData = MutableLiveData<String?>(null)
 
@@ -24,13 +24,12 @@ class ReactiveFormField<T>(
 
     var isValid: Boolean = false
         get() {
-            if (!field) errorLiveData.value = applicationContext.getString(errorResourceId)
+            if (!field) errorLiveData.value = errorResourceId?.let { applicationContext.getString(it) }
             return field
         }
-
     private fun validateField(fieldValue: T?): Boolean {
-        return if (fieldValue == null || !validator(fieldValue)) {
-            errorLiveData.value = applicationContext.getString(errorResourceId)
+        return if (fieldValue == null || validator?.invoke(fieldValue) == false) {
+            errorLiveData.value = errorResourceId?.let { applicationContext.getString(it) }
             isValid = false
             isValidLiveData.value = false
             false

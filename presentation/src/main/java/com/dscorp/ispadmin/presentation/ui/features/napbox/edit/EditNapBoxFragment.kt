@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
@@ -22,7 +23,7 @@ import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EditNapBoxFragment : BaseFragment() {
+class EditNapBoxFragment : Fragment() {
     private val args by navArgs<EditNapBoxFragmentArgs>()
     private var selectedLocation: LatLng? = null
     lateinit var binding: FragmentEditNapBoxBinding
@@ -41,7 +42,7 @@ class EditNapBoxFragment : BaseFragment() {
         observeNapBoxFormError()
 
         binding.btnRegisterNapBox.setOnClickListener {
-            firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.EDIT_NAP_BOX)
+//            firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.EDIT_NAP_BOX)
             editNapBox()
         }
 

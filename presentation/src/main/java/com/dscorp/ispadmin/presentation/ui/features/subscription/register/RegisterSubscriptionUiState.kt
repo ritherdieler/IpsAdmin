@@ -31,7 +31,6 @@ sealed class RegisterSubscriptionUiState {
     class RegisterSubscriptionSuccess(val subscription: Subscription) :
         RegisterSubscriptionUiState()
 
-
     class ShimmerVisibility(val showShimmer: Boolean) : RegisterSubscriptionUiState()
     class CouponIsValid(val isValid: Boolean) : RegisterSubscriptionUiState()
     class RefreshingOnus(val isRefreshing: Boolean) : RegisterSubscriptionUiState()

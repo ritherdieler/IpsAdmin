@@ -5,7 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -14,40 +19,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentIpListBinding
-import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.Ip
-import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class IpListFragment : BaseFragment() {
+class IpListFragment : BaseFragment<IpListUiState, FragmentIpListBinding>() {
 
     private val args by navArgs<IpListFragmentArgs>()
 
-    val binding by lazy { FragmentIpListBinding.inflate(layoutInflater) }
+    override val binding by lazy { FragmentIpListBinding.inflate(layoutInflater) }
+    override val viewModel: IpListViewModel by viewModels()
+    override fun handleState(state: IpListUiState) {
+        when (state) {
+            is IpListUiState.IpListReady -> fillIpRecyclerView(state.ips)
+        }
+    }
 
-    val viewModel: IpListViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         getIpList()
-        observeUiState()
         return binding.root
-    }
-
-    private fun observeUiState() = lifecycleScope.launch {
-        viewModel.uiState.collect {
-            when (it) {
-                IpListUiState.Idle -> {}
-                is IpListUiState.IpListError -> showErrorDialog(it.error)
-                is IpListUiState.IpListReady -> fillIpRecyclerView(it.ips)
-            }
-        }
     }
 
     private fun fillIpRecyclerView(ips: List<Ip>) {

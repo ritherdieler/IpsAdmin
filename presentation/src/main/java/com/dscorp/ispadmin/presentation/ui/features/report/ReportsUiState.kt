@@ -7,6 +7,6 @@ sealed class ReportsUiState {
     class WithPaymentCommitmentSubscriptionsDocument(val document: DownloadDocumentResponse) : ReportsUiState()
     class SuspendedSubscriptionsDocument(val document: DownloadDocumentResponse) : ReportsUiState()
     class CutOffSubscriptionsDocument(val document: DownloadDocumentResponse) : ReportsUiState()
-
+    class PastMonthSubscriptionDocument(val document: DownloadDocumentResponse) : ReportsUiState()
 
 }

@@ -5,8 +5,7 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.delay
 
-class ReportsViewModel(private val repository: IRepository) :
-    BaseViewModel<ReportsUiState>() {
+class ReportsViewModel(private val repository: IRepository) :BaseViewModel<ReportsUiState>() {
 
     fun downloadDebtorSubscriptionsDocument() = executeWithProgress {
 
@@ -39,7 +38,7 @@ class ReportsViewModel(private val repository: IRepository) :
     fun downloadPastMonthDebtors() = executeWithProgress {
         val response = repository.downloadPastMontSubscriptionsDocument()
         uiState.value =
-            BaseUiState(ReportsUiState.CutOffSubscriptionsDocument(response))
+            BaseUiState(ReportsUiState.PastMonthSubscriptionDocument(response))
         delay(1000)
     }
 }

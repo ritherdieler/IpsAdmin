@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlaceBinding
@@ -22,7 +23,7 @@ import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaceFragment() : BaseFragment() {
+class PlaceFragment() : Fragment() {
     private var selectedLocation: LatLng? = null
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),

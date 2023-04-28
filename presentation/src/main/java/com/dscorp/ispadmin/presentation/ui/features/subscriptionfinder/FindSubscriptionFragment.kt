@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
@@ -22,14 +23,42 @@ import com.google.android.material.datepicker.*
 import org.koin.android.ext.android.inject
 import java.util.Calendar
 
-class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener {
+class FindSubscriptionFragment : BaseFragment<FindSubscriptionUiState, FragmentFindSubscriptionBinding>(), SelectableSubscriptionListener {
 
-    private val viewModel: FindSubscriptionViewModel by inject()
-    private val binding: FragmentFindSubscriptionBinding by lazy {
+    override val binding: FragmentFindSubscriptionBinding by lazy {
         FragmentFindSubscriptionBinding.inflate(layoutInflater)
     }
     private val adapter = FindSubscriptionAdapter(this)
     private lateinit var popupMenu: PopupMenu
+    override val viewModel: FindSubscriptionViewModel by viewModels()
+
+    override fun handleState(state: FindSubscriptionUiState) {
+        when (state) {
+            is OnSubscriptionFound -> adapter.submitList(state.subscriptions)
+            is PaymentCommitmentSuccess -> showSuccessDialog(getString(R.string.payment_commitment_save_success))
+            is ShowPaymentCommitmentOption -> {
+                popupMenu.menu.findItem(R.id.btn_register_payment_commitment).isVisible =
+                    state.showOption
+            }
+
+            is ShowReactivateServiceOption -> {
+                popupMenu.menu.findItem(R.id.btn_reactivate_service).isVisible =
+                    state.showOption
+            }
+
+            is ShowEditPlanOption -> {
+                popupMenu.menu.findItem(R.id.btn_edit_plan_subscription).isVisible =
+                    state.showOption
+            }
+
+            is ShowRegisterServiceOrder -> {
+                popupMenu.menu.findItem(R.id.btn_register_service_order).isVisible =
+                    state.showOption
+            }
+
+            ReactivateServiceSuccess -> showSuccessDialog(getString(R.string.service_reactivated_successfully))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,43 +82,7 @@ class FindSubscriptionFragment : BaseFragment(), SelectableSubscriptionListener 
             binding.pbarFindSubscription.visibility = if (it) View.VISIBLE else View.GONE
         }
 
-        observeUiState()
-
         return binding.root
-    }
-
-    private fun observeUiState() {
-        viewModel.uiState.observe(viewLifecycleOwner) {
-            it.error?.let { showErrorDialog(it.message) }
-            it.loading?.let { showLoadingFullScreen(it) }
-            it.uiState?.let { state ->
-                when (state) {
-                    is OnSubscriptionFound -> adapter.submitList(state.subscriptions)
-                    is PaymentCommitmentSuccess -> showSuccessDialog(getString(R.string.payment_commitment_save_success))
-                    is ShowPaymentCommitmentOption -> {
-                        popupMenu.menu.findItem(R.id.btn_register_payment_commitment).isVisible =
-                            state.showOption
-                    }
-
-                    is ShowReactivateServiceOption -> {
-                        popupMenu.menu.findItem(R.id.btn_reactivate_service).isVisible =
-                            state.showOption
-                    }
-
-                    is ShowEditPlanOption -> {
-                        popupMenu.menu.findItem(R.id.btn_edit_plan_subscription).isVisible =
-                            state.showOption
-                    }
-
-                    is ShowRegisterServiceOrder -> {
-                        popupMenu.menu.findItem(R.id.btn_register_service_order).isVisible =
-                            state.showOption
-                    }
-
-                    ReactivateServiceSuccess -> showSuccessDialog(getString(R.string.service_reactivated_successfully))
-                }
-            }
-        }
     }
 
     private fun showStartDatePickerDialog() {

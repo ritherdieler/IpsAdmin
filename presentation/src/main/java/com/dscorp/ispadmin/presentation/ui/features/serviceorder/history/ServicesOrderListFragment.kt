@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
@@ -17,7 +18,7 @@ import com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ServicesOrderListFragment : BaseFragment(), OnItemServiceOrderClickListener {
+class ServicesOrderListFragment : Fragment(), OnItemServiceOrderClickListener {
     private lateinit var binding: FragmentServicesOrderListBinding
     private val viewModel: ServicesOrderListViewModel by viewModel()
 

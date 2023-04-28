@@ -7,11 +7,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.os.Bundle
 import android.provider.Settings
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,9 +34,23 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
 
 
-class RegisterSubscriptionFragment : BaseFragment() {
-    private val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
-    private val viewModel: RegisterSubscriptionViewModel by viewModel()
+class RegisterSubscriptionFragment :
+    BaseFragment<RegisterSubscriptionUiState, FragmentRegisterSubscriptionBinding>() {
+    override val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
+    override val viewModel: RegisterSubscriptionViewModel by viewModel()
+    override fun handleState(state: RegisterSubscriptionUiState) {
+        when (state) {
+            is RegisterSubscriptionSuccess -> showConfirmationDialog(state)
+            is FormDataFound -> fillFormSpinners(state)
+            is FiberDevicesFound -> fillCpeDeviceSpinner(state.devices)
+            is WirelessDevicesFound -> fillCpeDeviceSpinner(state.devices)
+            is CouponIsValid -> showCouponActivationResponse(state.isValid)
+            is OnOnuDataFound -> populateOnuSpinner(state)
+            is RefreshingOnus -> showOnusRefreshing(state.isRefreshing)
+            is ShimmerVisibility -> showLoadingStatus(state.showShimmer)
+        }
+    }
+
     private var rationaleShown = false
     private var locationReqOrigin: LocationRequestOrigin? = null
     private val additionalDevicesAdapter by lazy {
@@ -90,24 +101,18 @@ class RegisterSubscriptionFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun onViewReady() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
 
         observeNapBoxSelection()
 
-
-
         viewModel.getFormData()
         binding.ivRefresh.setOnClickListener {
             viewModel.getOnuData()
         }
-        observeState()
+
         observeMapDialogResult()
 
         setInstallationTypeRadioGroupListener()
@@ -160,7 +165,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
         binding.etSubscriptionDate.setText(currentTimeMillis.toFormattedDateString())
         binding.etSubscriptionDate.isEnabled = false
         binding.etSubscriptionDate.visibility = View.GONE
-        return binding.root
     }
 
     private fun observeNapBoxSelection() {
@@ -254,25 +258,6 @@ class RegisterSubscriptionFragment : BaseFragment() {
     private fun onLocationSelected(it: LatLng) {
         viewModel.locationField.liveData.value = it
         binding.etLocationSubscription.setText("${it.latitude}, ${it.longitude}")
-    }
-
-    private fun observeState() {
-        viewModel.uiState.observe(viewLifecycleOwner) {
-            it.error?.let { showErrorDialog(it.message) }
-            it.loading?.let { binding.ProgressButton.setProgressBarVisible(it) }
-            it.uiState?.let { state ->
-                when (state) {
-                    is RegisterSubscriptionSuccess -> showConfirmationDialog(state)
-                    is FormDataFound -> fillFormSpinners(state)
-                    is FiberDevicesFound -> fillCpeDeviceSpinner(state.devices)
-                    is WirelessDevicesFound -> fillCpeDeviceSpinner(state.devices)
-                    is CouponIsValid -> showCouponActivationResponse(state.isValid)
-                    is OnOnuDataFound -> populateOnuSpinner(state)
-                    is RefreshingOnus -> showOnusRefreshing(state.isRefreshing)
-                    is ShimmerVisibility -> showLoadingStatus(state.showShimmer)
-                }
-            }
-        }
     }
 
     private fun populateOnuSpinner(response: OnOnuDataFound) =

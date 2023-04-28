@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
@@ -12,7 +13,7 @@ import com.dscorp.ispadmin.databinding.FragmentSubscriptionDetailBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 
-class SubscriptionDetailFragment : BaseFragment() {
+class SubscriptionDetailFragment : Fragment() {
     private val args: SubscriptionDetailFragmentArgs by navArgs()
     val binding by lazy { FragmentSubscriptionDetailBinding.inflate(layoutInflater) }
     lateinit var subscription: SubscriptionResponse
