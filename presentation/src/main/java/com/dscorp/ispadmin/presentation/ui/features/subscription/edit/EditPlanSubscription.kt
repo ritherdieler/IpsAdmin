@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
@@ -17,13 +15,13 @@ import com.dscorp.ispadmin.presentation.extension.showCrossDialog
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.User
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class EditPlanSubscription : BaseFragment<EditSubscriptionUiState,FragmentEditPlanSubscriptionBinding >() {
+class EditPlanSubscription :
+    BaseFragment<EditSubscriptionUiState, FragmentEditPlanSubscriptionBinding>() {
     private val args by navArgs<EditPlanSubscriptionArgs>()
     override val binding by lazy { FragmentEditPlanSubscriptionBinding.inflate(layoutInflater) }
-    override val viewModel: EditSubscriptionViewModel by viewModels()
+    override val viewModel: EditSubscriptionViewModel by viewModel()
 
     override fun handleState(state: EditSubscriptionUiState) {
         when (state) {

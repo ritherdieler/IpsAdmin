@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -46,6 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:error="@{viewModel.paymentMethodField.errorLiveData}"
                 android:hint="@{viewModel.paymentMethodField.hint}">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -53,7 +55,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"
-
                     tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,14 +66,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:ems="10"
-                android:hint="@{viewModel.discountAmountField.hint}"
                 android:error="@{viewModel.discountAmountField.errorLiveData}"
-                android:inputType="numberDecimal">
+                android:hint="@{viewModel.discountAmountField.hint}"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPaymentDiscount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
                     android:text="@={viewModel.discountAmountField.liveData}" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -85,6 +87,8 @@
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:hint="@{viewModel.discountReasonField.hint}"
+                android:error="@{viewModel.discountReasonField.errorLiveData}"
+
                 android:inputType="textPersonName">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -99,12 +103,14 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <Button
+            <com.dscorp.ispadmin.presentation.util.ProgressButton
                 android:id="@+id/btnRegisterPayment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/register_payment" />
+                app:clickListener="@{() -> viewModel.registerPayment()}"
+                app:isLoading="@{viewModel.registerButtonProgress}"
+                app:text="@string/register_payment" />
 
         </LinearLayout>
 

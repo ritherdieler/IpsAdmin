@@ -17,7 +17,7 @@ class ProgressFullScreenDialogFragment(
     @DrawableRes val drawable: Int? = null
 ) : BaseDialogFragment() {
 
-    private val binding by lazy { FragmentProgressFullScreenDialogBinding.inflate(layoutInflater) }
+    private lateinit var binding: FragmentProgressFullScreenDialogBinding
 
     private var progressAnimator: ObjectAnimator? = null
 
@@ -28,6 +28,7 @@ class ProgressFullScreenDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding = FragmentProgressFullScreenDialogBinding.inflate(inflater, container, false)
         title?.let {
             binding.tvTitle.text = title
         }

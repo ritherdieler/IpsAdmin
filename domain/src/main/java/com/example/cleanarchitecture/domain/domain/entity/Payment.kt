@@ -6,8 +6,8 @@ import java.util.Date
  class Payment(
     var id: Int? = null,
     var amountPaid: Double = 0.0,
-    val discountAmount: Double = 0.0,
-    val discountReason: String = "",
+    val discountAmount: Double? = null,
+    val discountReason: String? = null,
     var paymentDate: Long = 0,
     var billingDate: Long = 0,
     var method: String = "",

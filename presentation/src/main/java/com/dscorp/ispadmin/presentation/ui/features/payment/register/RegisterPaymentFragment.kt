@@ -5,39 +5,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentRegisterPaymentBinding
 import com.dscorp.ispadmin.presentation.extension.populate
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class RegisterPaymentFragment : BaseFragment<RegisterPaymentUiState, FragmentRegisterPaymentBinding>() {
+class RegisterPaymentFragment :
+    BaseFragment<RegisterPaymentUiState, FragmentRegisterPaymentBinding>() {
     private val args: RegisterPaymentFragmentArgs by navArgs()
     override val binding by lazy { FragmentRegisterPaymentBinding.inflate(layoutInflater) }
-    override val viewModel: RegisterPaymentViewModel by viewModels()
-    override fun handleState(state: RegisterPaymentUiState) =
-        when (state) {
-            is RegisterPaymentUiState.OnPaymentRegistered -> showSuccessDialog("Pago registrado")
-        }
+    override val viewModel: RegisterPaymentViewModel by viewModel()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.payment = args.payment
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
+    override fun onViewReady() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
-
         setupView()
-        return binding.root
     }
+
+    override fun handleState(state: RegisterPaymentUiState) =
+        when (state) {
+            is RegisterPaymentUiState.OnPaymentRegistered -> showSuccessDialog("Pago registrado") {
+                    findNavController().popBackStack()
+            }
+        }
 
     private fun setupView() {
         binding.tvPlan.text = "Deuda: ${args.payment.amountToPayStr()}"

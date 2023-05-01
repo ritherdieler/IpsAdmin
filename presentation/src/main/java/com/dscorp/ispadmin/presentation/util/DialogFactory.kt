@@ -4,11 +4,21 @@ import android.app.AlertDialog
 import android.content.Context
 
 class DialogFactory : IDialogFactory {
-    override fun createSuccessDialog(context: Context, mensaje: String): AlertDialog {
+    override fun createSuccessDialog(
+        context: Context,
+        mensaje: String,
+        onPositiveCallback: (() -> Unit)?
+    ): AlertDialog {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Operacion exitosa")
         builder.setMessage(mensaje)
-        builder.setPositiveButton("Aceptar") { _, _ -> }
+        builder.setPositiveButton("Aceptar") { d, _ ->
+            if (onPositiveCallback != null) {
+                onPositiveCallback.invoke()
+            } else {
+                d.dismiss()
+            }
+        }
         return builder.create()
     }
 
@@ -16,7 +26,7 @@ class DialogFactory : IDialogFactory {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Ocurrío un error")
         builder.setMessage(error)
-        builder.setPositiveButton("Aceptar") { _, _ -> }
+        builder.setPositiveButton("Aceptar") { d, _ -> d.dismiss() }
         return builder.create()
     }
 }

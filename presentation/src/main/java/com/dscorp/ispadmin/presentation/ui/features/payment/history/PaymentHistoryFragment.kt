@@ -2,32 +2,38 @@ package com.dscorp.ispadmin.presentation.ui.features.payment.history
 
 import android.os.Bundle
 import android.os.Parcel
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragmentDirections.*
-import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.*
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragmentDirections.actionPaymentHistoryFragmentToPaymentDetailFragment
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragmentDirections.toRegisterPayment
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.GetRecentPaymentHistoryError
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.GetRecentPaymentsHistoryResponse
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.OnError
+import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.OnPaymentHistoryFilteredResponse
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
-import com.google.android.material.datepicker.*
-import org.koin.android.ext.android.inject
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.MaterialDatePicker
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
-class PaymentHistoryFragment : BaseFragment<PaymentHistoryUiState, FragmentConsultPaymentsBinding>(), View.OnClickListener, PaymentHistoryAdapterListener {
+class PaymentHistoryFragment :
+    BaseFragment<PaymentHistoryUiState, FragmentConsultPaymentsBinding>(),
+    PaymentHistoryAdapterListener {
     private val args: PaymentHistoryFragmentArgs by navArgs()
     override val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
     val adapter by lazy { PaymentHistoryAdapter(this) }
 
     private var selectedEndDate: Long? = null
     private var selectedStartDate: Long? = null
-    override val viewModel: PaymentHistoryViewModel by viewModels()
+    override val viewModel: PaymentHistoryViewModel by viewModel()
 
     override fun handleState(state: PaymentHistoryUiState) {
         when (state) {
@@ -35,44 +41,34 @@ class PaymentHistoryFragment : BaseFragment<PaymentHistoryUiState, FragmentConsu
             is OnPaymentHistoryFilteredResponse -> fillPaymentHistoryFiltered(state.payments)
             is GetRecentPaymentsHistoryResponse -> fillRecentPaymentHistory(state.payments)
             is GetRecentPaymentHistoryError -> showErrorDialog(state.message)
+            is PaymentHistoryUiState.ServiceReactivated -> showSuccessDialog(getString(R.string.service_reactivated_successfully))
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        initClickListeners()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.subscription = args.subscription
+    }
+
+    override fun onViewReady() {
+        binding.viewModel = viewModel
+        binding.executePendingBindings()
+        binding.etStartDate.setOnClickListener {showStartDatePickerDialog { selectedStartDate = it }  }
+        binding.etEndDate.setOnClickListener { showEndDatePickerDialog { selectedEndDate = it } }
+        binding.btnConsult.setOnClickListener { findFilteredPayments() }
         binding.rvPayments.adapter = adapter
         getPayments()
         binding.cbOnlyPending.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) viewModel.showOnlyPendingPayments()
             else viewModel.showAllPayments()
         }
-        return binding.root
     }
-
-    override fun onClick(view: View?) {
-        when (view) {
-            binding.etStartDate -> showStartDatePickerDialog { selectedStartDate = it }
-            binding.etEndDate -> showEndDatePickerDialog { selectedEndDate = it }
-            binding.btnConsult -> findFilteredPayments()
-        }
-    }
-
 
     private fun getPayments() {
         viewModel.getLastPayments(
-            args.subscription.id!!,
+            args.subscription.id,
             PaymentHistoryViewModel.LAST_PAYMENTS_LIMIT
         )
-    }
-
-    private fun initClickListeners() {
-        binding.etStartDate.setOnClickListener(this)
-        binding.etEndDate.setOnClickListener(this)
-        binding.btnConsult.setOnClickListener(this)
     }
 
     private fun fillPaymentHistoryFiltered(payments: List<Payment>) {

@@ -15,13 +15,13 @@ class CrossDialogFragment(
 ) :
     DialogFragment() {
 
-    val binding by lazy { FragmentCrossDialogBinding.inflate(layoutInflater) }
+    private lateinit var binding: FragmentCrossDialogBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
+        binding = FragmentCrossDialogBinding.inflate(inflater, container, false)
         text?.let {
             binding.dialogText.text = text
         }

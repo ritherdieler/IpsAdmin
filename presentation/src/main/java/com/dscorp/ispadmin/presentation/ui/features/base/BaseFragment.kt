@@ -10,7 +10,6 @@ import com.dscorp.components.ProgressFullScreenDialogFragment
 import com.dscorp.ispadmin.presentation.extension.analytics.sendScreen
 import com.dscorp.ispadmin.presentation.extension.showCurrentSimpleName
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
-import com.dscorp.ispadmin.presentation.extension.showLoadingFullScreen
 import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.android.inject
 
@@ -32,7 +31,7 @@ abstract class BaseFragment<T, U : ViewDataBinding> : Fragment() {
 
         onViewReady()
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-            uiState.error?.let { error -> showErrorDialog(error.message) }
+            uiState.error?.let { error -> showErrorDialog(error.message?:"") }
             uiState.loading?.let { isLoading -> onLoading(isLoading) }
             uiState.uiState?.let { handleState(it) }
         }

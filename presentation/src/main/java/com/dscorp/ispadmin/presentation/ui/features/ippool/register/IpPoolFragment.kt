@@ -14,6 +14,7 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.IpPool
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import com.example.data2.data.apirequestmodel.IpPoolRequest
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class IpPoolFragment : BaseFragment<IpPoolUiState, FragmentIpPoolBinding>(),
     IpPoolSelectionListener {
@@ -21,7 +22,7 @@ class IpPoolFragment : BaseFragment<IpPoolUiState, FragmentIpPoolBinding>(),
     private var selectedHostDevice: NetworkDevice? = null
 
 
-    override val viewModel: IpPoolViewModel by viewModels()
+    override val viewModel: IpPoolViewModel by viewModel()
     override val binding by lazy { FragmentIpPoolBinding.inflate(layoutInflater) }
     override fun handleState(state: IpPoolUiState) = when (state) {
         is IpPoolUiState.IpPoolRegister -> showSuccessDialog(state)

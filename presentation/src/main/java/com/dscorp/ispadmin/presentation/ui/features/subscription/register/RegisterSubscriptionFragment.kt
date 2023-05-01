@@ -119,7 +119,7 @@ class RegisterSubscriptionFragment :
         binding.lvAditionalNetworkDevices.adapter = additionalDevicesAdapter
         binding.rgInstallationType.check(R.id.rbFiber)
 
-        binding.ProgressButton.clickButtonProgress = {
+        binding.ProgressButton.clickListener = {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
             viewModel.registerSubscription()
         }

@@ -264,9 +264,9 @@ class RegisterSubscriptionViewModel(
             }
         }
 
-        formFields.forEach { it.isValid }
+        formFields.forEach { it.isValid() }
 
-        return formFields.all { it.isValid }
+        return formFields.all { it.isValid() }
     }
 
     fun addSelectedAdditionalNetworkDeviceToList() {

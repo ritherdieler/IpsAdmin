@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.presentation.ui.features.dashboard
 
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.dscorp.ispadmin.presentation.extension.encryptWithSHA384
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.example.data2.data.repository.IRepository
@@ -26,8 +27,8 @@ class DashBoardViewModel : BaseViewModel<DashBoardDataUiState>(), KoinComponent 
         uiState.value = BaseUiState(DashBoardDataUiState.DashBoardData(response))
     }
 
-    fun startServiceCut(password: String) = executeWithProgress {
-        if (password != (userSession?.password ?: "")) {
+    fun startServiceCut(password: String) = executeWithProgress() {
+        if (password.encryptWithSHA384() != (userSession?.password ?: "")) {
             uiState.value =
                 BaseUiState(DashBoardDataUiState.InvalidPasswordError("Contraseña incorrecta"))
             return@executeWithProgress

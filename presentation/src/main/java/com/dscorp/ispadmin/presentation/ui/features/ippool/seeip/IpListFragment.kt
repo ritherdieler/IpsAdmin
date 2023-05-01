@@ -24,19 +24,19 @@ import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentIpListBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.cleanarchitecture.domain.domain.entity.Ip
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class IpListFragment : BaseFragment<IpListUiState, FragmentIpListBinding>() {
 
     private val args by navArgs<IpListFragmentArgs>()
 
     override val binding by lazy { FragmentIpListBinding.inflate(layoutInflater) }
-    override val viewModel: IpListViewModel by viewModels()
+    override val viewModel: IpListViewModel by viewModel()
     override fun handleState(state: IpListUiState) {
         when (state) {
             is IpListUiState.IpListReady -> fillIpRecyclerView(state.ips)
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

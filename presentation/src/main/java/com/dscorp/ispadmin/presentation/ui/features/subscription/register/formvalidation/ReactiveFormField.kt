@@ -7,7 +7,7 @@ import org.koin.java.KoinJavaComponent.inject
 class ReactiveFormField<T>(
     private val hintResourceId: Int? = null,
     private val errorResourceId: Int? = null,
-    private val validator: ((validation: T) -> Boolean)? = null,
+    private val validator: ((validation: T?) -> Boolean)? = null,
 ) {
 
     private val applicationContext: Context by inject(Context::class.java)
@@ -22,22 +22,24 @@ class ReactiveFormField<T>(
     //Use this only for  enable or disable databinding views
     val isValidLiveData = MutableLiveData(false)
 
-    var isValid: Boolean = false
-        get() {
-            if (!field) errorLiveData.value = errorResourceId?.let { applicationContext.getString(it) }
-            return field
-        }
+    fun isValid(): Boolean {
+        val isValid = currentValueIsValid()
+        if (!isValid) errorLiveData.value =
+            errorResourceId?.let { applicationContext.getString(it) }
+        return isValid
+    }
+
+    private fun currentValueIsValid() = validator?.invoke(liveData.value) != false
+
     private fun validateField(fieldValue: T?): Boolean {
-        return if (fieldValue == null || validator?.invoke(fieldValue) == false) {
-            errorLiveData.value = errorResourceId?.let { applicationContext.getString(it) }
-            isValid = false
-            isValidLiveData.value = false
-            false
-        } else {
+        return if (currentValueIsValid()) {
             errorLiveData.value = null
-            isValid = true
             isValidLiveData.value = true
             true
+        } else {
+            errorLiveData.value = errorResourceId?.let { applicationContext.getString(it) }
+            isValidLiveData.value = false
+            false
         }
     }
 }

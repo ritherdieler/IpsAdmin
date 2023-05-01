@@ -1,36 +1,36 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
-import com.dscorp.ispadmin.presentation.extension.showErrorDialog
-import com.dscorp.ispadmin.presentation.extension.showLoadingFullScreen
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.OnSubscriptionFound
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.PaymentCommitmentSuccess
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ReactivateServiceSuccess
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowEditPlanOption
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowPaymentCommitmentOption
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowReactivateServiceOption
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowRegisterServiceOrder
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
-import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.cleanarchitecture.domain.domain.entity.extensions.localToUTC
 import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
-import com.google.android.material.datepicker.*
-import org.koin.android.ext.android.inject
-import java.util.Calendar
+import com.google.android.material.datepicker.MaterialDatePicker
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FindSubscriptionFragment : BaseFragment<FindSubscriptionUiState, FragmentFindSubscriptionBinding>(), SelectableSubscriptionListener {
+class FindSubscriptionFragment :
+    BaseFragment<FindSubscriptionUiState, FragmentFindSubscriptionBinding>(),
+    SelectableSubscriptionListener {
 
     override val binding: FragmentFindSubscriptionBinding by lazy {
         FragmentFindSubscriptionBinding.inflate(layoutInflater)
     }
     private val adapter = FindSubscriptionAdapter(this)
     private lateinit var popupMenu: PopupMenu
-    override val viewModel: FindSubscriptionViewModel by viewModels()
+    override val viewModel: FindSubscriptionViewModel by viewModel()
 
     override fun handleState(state: FindSubscriptionUiState) {
         when (state) {
@@ -60,12 +60,7 @@ class FindSubscriptionFragment : BaseFragment<FindSubscriptionUiState, FragmentF
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
+    override fun onViewReady() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
@@ -81,8 +76,6 @@ class FindSubscriptionFragment : BaseFragment<FindSubscriptionUiState, FragmentF
         viewModel.loadingUiState.observe(viewLifecycleOwner) {
             binding.pbarFindSubscription.visibility = if (it) View.VISIBLE else View.GONE
         }
-
-        return binding.root
     }
 
     private fun showStartDatePickerDialog() {
@@ -136,7 +129,7 @@ class FindSubscriptionFragment : BaseFragment<FindSubscriptionUiState, FragmentF
                 R.id.btn_register_service_order -> navigateToRegisterServiceOrder(subscription)
                 R.id.btn_edit_plan_subscription -> navigateToEditSubscription(subscription)
                 R.id.btn_see_details -> navigateToDetails(subscription)
-                R.id.btn_reactivate_service->showReactivateServiceDialog(subscription)
+                R.id.btn_reactivate_service -> showReactivateServiceDialog(subscription)
                 else -> false
             }
         }

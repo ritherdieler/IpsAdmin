@@ -125,9 +125,8 @@ class Repository : IRepository, KoinComponent {
     override suspend fun registerSubscription(subscription: Subscription): Subscription {
         val response = restApiServices.registerSubscription(subscription)
 
-        return when (response.code()) {
-            HttpCodes.OK -> response.body()!!
-            HttpCodes.CONFLICT -> throw Exception("Este usuario ya se encuentra registrado")
+        return when (response.status) {
+            HttpCodes.OK -> response.data!!
             else -> throw Exception("Ocurrion un error inesperado, contacte con soporte técnico")
         }
     }
@@ -501,9 +500,9 @@ class Repository : IRepository, KoinComponent {
 
     override suspend fun reactivateService(subscription: SubscriptionResponse) {
         val response = restApiServices.reactivateService(subscription.id)
-        when(response.code()){
+        when(response.status){
             HttpCodes.OK ->{}
-            else -> throw Exception("Ocurrio un error al reactivar el servicio")
+            else -> throw Exception(response.error)
         }
     }
 }

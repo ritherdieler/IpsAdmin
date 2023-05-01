@@ -11,8 +11,6 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentEditPlanBinding
 import com.dscorp.ispadmin.presentation.extension.showCrossDialog
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListUiState
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -32,14 +30,16 @@ class EditPlanFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.executePendingBindings()
         observer()
-        binding.btnEditPlan.clickButtonProgress = { viewModel.editPlan() }
+        binding.btnEditPlan.clickListener = {
+            viewModel.editPlan()
+        }
         return binding.root
     }
 
     private fun observer() {
         viewModel.uiState.observe(viewLifecycleOwner) {
             it.error?.let { showErrorDialog(it.message) }
-            it.loading?.let { binding.btnEditPlan.setProgressBarVisible(it) }
+            it.loading?.let { binding.btnEditPlan.isLoading = it }
             it.uiState?.let { state ->
                 when (state) {
                     is EditPlanUiState.EditPlanUpdateSuccess -> onEditPlanSuccess(state.plan)

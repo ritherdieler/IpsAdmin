@@ -22,9 +22,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.navigation.NavController
-import com.dscorp.components.ProgressFullScreenDialogFragment
 import com.dscorp.ispadmin.BuildConfig
 import com.dscorp.ispadmin.CrossDialogFragment
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
 import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
@@ -60,32 +60,24 @@ fun MaterialAutoCompleteTextView.fillWithList(data: List<Any>, onItemSelected: (
         }
 }
 
-fun Fragment.showSuccessDialog(text: String) {
+fun Fragment.showSuccessDialog(
+    text: String, onPositiveCallback: (() -> Unit)? = null
+) {
+    childFragmentManager.executePendingTransactions()
     val dialogFactory: IDialogFactory by inject()
-    val successDialog = dialogFactory.createSuccessDialog(requireContext(), text)
+    val successDialog = dialogFactory.createSuccessDialog(requireContext(), text, onPositiveCallback)
+    successDialog.setCancelable(false)
     successDialog.show()
 }
 
 fun Fragment.showErrorDialog(error: String? = "Error desconocido") {
     val dialogFactory: IDialogFactory by inject()
-    val errorDialog = dialogFactory.createErrorDialog(requireContext(), error!!)
+    val errorDialog = dialogFactory.createErrorDialog(requireContext(), error ?: "")
     errorDialog.show()
 }
 
-fun Fragment.showLoadingFullScreen(show: Boolean) {
-    if (show)
-        ProgressFullScreenDialogFragment().show(
-            childFragmentManager,
-            ProgressFullScreenDialogFragment::class.java.name
-        )
-    else {
-        val dialog =
-            (childFragmentManager.findFragmentByTag(ProgressFullScreenDialogFragment::class.java.name) as ProgressFullScreenDialogFragment?)
-        dialog?.dismiss()
-    }
-}
-
 fun Activity.showSuccessDialog(text: String) {
+
     val dialogFactory: IDialogFactory by inject()
     val successDialog = dialogFactory.createSuccessDialog(this, text)
     successDialog.show()
@@ -241,4 +233,9 @@ fun MutableLiveData<Boolean>.visibilityFromBoolean(): LiveData<Int> =
 
 fun Boolean.visibilityFromBoolean(): Int {
     return if (this) View.VISIBLE else View.GONE
+}
+
+fun List<ReactiveFormField<*>>.formIsValid(): Boolean {
+    forEach { it.isValid() }
+    return this.all { it.isValid() }
 }

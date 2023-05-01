@@ -8,29 +8,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.dscorp.components.ProgressFullScreenDialogFragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentReportsBinding
 import com.dscorp.ispadmin.presentation.extension.getDownloadedFileUri
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
-import com.dscorp.ispadmin.presentation.extension.showLoadingFullScreen
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.CutOffSubscriptionsDocument
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.DebtorsSubscriptionsDocument
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.SuspendedSubscriptionsDocument
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.WithPaymentCommitmentSubscriptionsDocument
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ReportsFragment : BaseFragment<ReportsUiState,FragmentReportsBinding >() {
+class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {
 
     override val binding by lazy { FragmentReportsBinding.inflate(layoutInflater) }
 
-    override val viewModel: ReportsViewModel by viewModels()
+    override val viewModel: ReportsViewModel by viewModel()
     override fun handleState(state: ReportsUiState) =
         when (state) {
             is CutOffSubscriptionsDocument -> downloadFile(state.document)

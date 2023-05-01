@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 open class BaseViewModel<T> : ViewModel() {
     val uiState = MutableLiveData<BaseUiState<T>>()
 
+    //this method handle the ui loaders automatically
     fun executeWithProgress(
         doFinally: (() -> Unit)? = null,
         onSuccess: (() -> Unit)? = null,
@@ -29,14 +30,16 @@ open class BaseViewModel<T> : ViewModel() {
         }
     }
 
-
+    //with this method you should mange ui loaders manually
     fun executeNoProgress(
+        doBefore: (() -> Unit)? = null,
         doFinally: (() -> Unit)? = null,
         onSuccess: (() -> Unit)? = null,
         onError: (() -> Unit)? = null,
         func: suspend (coroutineContext: CoroutineScope) -> Unit
     ) = viewModelScope.launch {
         try {
+            doBefore?.invoke()
             func(this)
             onSuccess?.invoke()
         } catch (e: Exception) {

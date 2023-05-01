@@ -1,12 +1,10 @@
 package com.dscorp.ispadmin.presentation.ui.features.dashboard
 
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.EditText
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentDashBoardBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
-import com.dscorp.ispadmin.presentation.extension.showLoadingFullScreen
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -26,6 +24,16 @@ class DashBoardFragment : BaseFragment<DashBoardDataUiState, FragmentDashBoardBi
             showCutConfirmationDialog()
         }
     }
+
+    override fun handleState(state: DashBoardDataUiState) =
+        when (state) {
+            is DashBoardDataUiState.DashBoardData -> binding.dashboardDataResponse = state.response
+            is DashBoardDataUiState.CutServiceSuccess -> {
+                showSuccessDialog(getString(R.string.cutt_off_iniated))
+            }
+
+            is DashBoardDataUiState.InvalidPasswordError -> showErrorDialog(state.error)
+        }
 
     private fun showCutConfirmationDialog() {
         MaterialAlertDialogBuilder(requireContext())
@@ -49,19 +57,13 @@ class DashBoardFragment : BaseFragment<DashBoardDataUiState, FragmentDashBoardBi
                         dialog.dismiss()
                     }
                     .show()
+                dialog.dismiss()
             }
             .setNegativeButton("No") { dialog, which ->
                 dialog.dismiss()
             }
             .show()
     }
-
-    override fun handleState(state: DashBoardDataUiState) =
-        when (state) {
-            is DashBoardDataUiState.DashBoardData -> binding.dashboardDataResponse = state.response
-            is DashBoardDataUiState.CutServiceSuccess -> showSuccessDialog(getString(R.string.cutt_off_iniated))
-            is DashBoardDataUiState.InvalidPasswordError -> showErrorDialog(state.error)
-        }
 
 
 }

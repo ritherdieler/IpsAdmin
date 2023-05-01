@@ -15,22 +15,22 @@ class EditPlanViewModel(val repository: IRepository) : BaseViewModel<EditPlanUiS
     val planNameField = ReactiveFormField<String>(
         hintResourceId = R.string.plan_name,
         errorResourceId = R.string.invalidPlanName
-    ) { it.isNotEmpty() }
+    ) { it.isNullOrEmpty() }
 
     val planPriceField = ReactiveFormField<String>(
         hintResourceId = R.string.plan_price,
         errorResourceId = R.string.invalidPrice
-    ) { it.isNotEmpty() }
+    ) { it.isNullOrEmpty() }
 
     val planDownloadSpeedField = ReactiveFormField<String>(
         hintResourceId = R.string.download_speed_in_mb,
         errorResourceId = R.string.invalid_value
-    ) { it.isNotEmpty() }
+    ) { it.isNullOrEmpty() }
 
     val planUploadSpeedField = ReactiveFormField<String>(
         hintResourceId = R.string.upload_speed_in_mb,
         errorResourceId = R.string.invalid_value
-    ) { it.isNotEmpty() }
+    ) { it.isNullOrEmpty() }
 
     fun setInitialPlanData(plan: PlanResponse) {
         planId = plan.id
@@ -62,5 +62,5 @@ class EditPlanViewModel(val repository: IRepository) : BaseViewModel<EditPlanUiS
         planPriceField,
         planDownloadSpeedField,
         planUploadSpeedField
-    ).all { it.isValid }
+    ).all { it.isValid() }
 }

@@ -4,6 +4,7 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
+import com.example.data2.data.response.BaseResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -29,7 +30,7 @@ interface RestApiServices {
     suspend fun registerNetworkDevice(@Body networkDevice: NetworkDevice): Response<NetworkDevice>
 
     @POST("subscription")
-    suspend fun registerSubscription(@Body subscription: Subscription): Response<Subscription>
+    suspend fun registerSubscription(@Body subscription: Subscription): BaseResponse<Subscription>
 
     @GET("plan")
     suspend fun getPlans(): Response<List<PlanResponse>>
@@ -156,7 +157,7 @@ interface RestApiServices {
    suspend fun setPaymentCommitment(@Query("subscriptionId") id: Int):Response<Unit>
 
     @PUT("subscription/reactivate-service")
-    suspend fun reactivateService(@Query("subscriptionId") subscription: Int): Response<Unit>
+    suspend fun reactivateService(@Query("subscriptionId") subscription: Int): BaseResponse<Unit>
 
 
 }

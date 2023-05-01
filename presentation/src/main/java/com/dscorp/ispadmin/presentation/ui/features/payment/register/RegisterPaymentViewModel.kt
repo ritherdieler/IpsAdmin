@@ -1,39 +1,51 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment.register
 
+import androidx.lifecycle.MutableLiveData
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.presentation.extension.formIsValid
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
 import com.example.cleanarchitecture.domain.domain.entity.Payment
+import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDouble
 import com.example.data2.data.repository.IRepository
 import org.koin.core.component.KoinComponent
 
 class RegisterPaymentViewModel(private val repository: IRepository) :
     BaseViewModel<RegisterPaymentUiState>(), KoinComponent {
 
-    private val user = repository.getUserSession()
     var payment: Payment? = null
+
+    var registerButtonProgress = MutableLiveData(false)
+
+    val paymentMethodField = ReactiveFormField<String?>(
+        hintResourceId = R.string.payment_method,
+        errorResourceId = R.string.must_select_payment_method,
+        validator = { !it.isNullOrEmpty() }
+    )
+
     val discountAmountField = ReactiveFormField<String?>(
         hintResourceId = R.string.discount,
-        validator = { it != null && it.toDouble() >= 0 }
+        errorResourceId = R.string.invalid_discount_amount,
+        validator = { it?.isValidDouble() ?: true }
     )
 
     val discountReasonField = ReactiveFormField<String?>(
         hintResourceId = R.string.discount_reason,
+        errorResourceId = R.string.must_select_payment_method,
     )
 
-    val paymentMethodField = ReactiveFormField<String?>(
-        hintResourceId = R.string.payment_method,
-    )
-
-    fun registerPayment() = executeWithProgress {
-        if (!formIsValid()) return@executeWithProgress
+    fun registerPayment() = executeNoProgress(
+        doBefore = { registerButtonProgress.value = true },
+        doFinally = { registerButtonProgress.value = false }
+    ) {
+        if (!formIsValid()) return@executeNoProgress
         payment?.let {
             val registerPayment = Payment(
                 id = payment!!.id,
                 amountPaid = payment!!.amountToPay,
-                discountAmount = discountAmountField.getValue()!!.toDouble(),
-                discountReason = discountReasonField.getValue()!!,
+                discountAmount = discountAmountField.getValue()?.toDouble(),
+                discountReason = discountReasonField.getValue(),
                 method = paymentMethodField.getValue()!!,
             )
             val response = repository.registerPayment(registerPayment)
@@ -41,7 +53,9 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
         }
     }
 
-    fun formIsValid(): Boolean =
-        listOf(discountAmountField, discountReasonField, paymentMethodField).all { it.isValid }
+    fun formIsValid(): Boolean {
+        val fields = listOf(paymentMethodField, discountAmountField, discountReasonField)
+        return fields.formIsValid()
+    }
 
 }

@@ -111,11 +111,14 @@ class FindSubscriptionViewModel(
             when (subscription.serviceStatus) {
                 ServiceStatus.CUT_OFF -> {
                     handleCutOffUiState(subscription, currentCal)
-                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
+                    // el servicio solo se puede reactivar si no tienes pagos pendientes
+//                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
                 }
 
-                ServiceStatus.SUSPENDED ->
-                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
+                ServiceStatus.SUSPENDED ->{
+                    //                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
+                    // el servicio solo se puede reactivar si no tienes pagos pendientes
+                }
 
                 else -> {}
             }
@@ -142,11 +145,10 @@ class FindSubscriptionViewModel(
         }
     }
 
-    fun reactivateService(subscription: SubscriptionResponse) = executeWithProgress {
+    fun reactivateService(subscription: SubscriptionResponse) = executeNoProgress() {
         repository.reactivateService(subscription)
         uiState.value = BaseUiState(FindSubscriptionUiState.ReactivateServiceSuccess)
     }
-
 
     enum class SearchType {
         BY_DNI,
@@ -157,7 +159,6 @@ class FindSubscriptionViewModel(
 sealed interface FindSubscriptionUiState {
     object PaymentCommitmentSuccess : FindSubscriptionUiState
     object ReactivateServiceSuccess : FindSubscriptionUiState
-
     class ShowPaymentCommitmentOption(val showOption: Boolean) : FindSubscriptionUiState
     class ShowReactivateServiceOption(val showOption: Boolean) : FindSubscriptionUiState
     class OnSubscriptionFound(val subscriptions: List<SubscriptionResponse>) :

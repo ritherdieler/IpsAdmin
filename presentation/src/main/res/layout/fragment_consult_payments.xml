@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,14 +70,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
-<!--        cbOnlyPending-->
+        <!--        cbOnlyPending-->
         <CheckBox
             android:id="@+id/cbOnlyPending"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/only_pending"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_disclaimer2"/>
+            app:layout_constraintTop_toBottomOf="@+id/tv_disclaimer2" />
 
         <TextView
             android:id="@+id/tv_disclaimer"
@@ -99,12 +102,23 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="32dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/btn_reactivate_service"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_disclaimer" />
+
+
+        <com.dscorp.ispadmin.presentation.util.ProgressButton
+            android:id="@+id/btn_reactivate_service"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:clickListener="@{() -> viewModel.reactivateService()}"
+            app:isLoading="@{viewModel.reactivationButtonIsLoading}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:text="@string/register"
+            tools:layout_editor_absoluteX="24dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
