@@ -205,5 +205,6 @@
     <string name="cutt_off_iniated">Corte de servicio iniciado</string>
     <string name="invalid_discount_amount">La cantidad de descuento debe ser mayor o igual a 0.</string>
     <string name="must_select_payment_method">Debes seleccionar un metodo de pago.</string>
+    <string name="must_enter_a_valid_ip_segment">Debe digitar un segmento de ip valido.</string>
 
 </resources>

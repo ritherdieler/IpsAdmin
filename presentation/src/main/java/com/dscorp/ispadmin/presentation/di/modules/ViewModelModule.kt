@@ -28,6 +28,7 @@ import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubsc
 import com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.technicianlist.TechnicianListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.scope.get
 import org.koin.dsl.module
 
 /**
@@ -52,7 +53,7 @@ val viewModelModule = module {
     viewModel { PaymentHistoryViewModel(get()) }
     viewModel { FindSubscriptionViewModel(get(),get()) }
     viewModel { RegisterPaymentViewModel(get()) }
-    viewModel { IpPoolViewModel() }
+    viewModel { IpPoolViewModel(get()) }
     viewModel { MyProfileViewModel() }
     viewModel { MainActivityViewModel(get()) }
     viewModel { ReportsViewModel(get()) }

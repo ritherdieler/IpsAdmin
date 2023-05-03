@@ -76,10 +76,10 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/Mufas" />
 
-        <item
-            android:id="@+id/nav_ip_pool"
-            android:icon="@drawable/ic_launcher_foreground"
-            android:title="@string/ip_pool" />
+<!--        <item-->
+<!--            android:id="@+id/nav_ip_pool"-->
+<!--            android:icon="@drawable/ic_launcher_foreground"-->
+<!--            android:title="@string/ip_pool" />-->
         <item
             android:id="@+id/nav_see_plan_list"
             android:icon="@drawable/ic_launcher_foreground"

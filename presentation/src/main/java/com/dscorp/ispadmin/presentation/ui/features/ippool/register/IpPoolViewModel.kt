@@ -1,59 +1,70 @@
 package com.dscorp.ispadmin.presentation.ui.features.ippool.register
 
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.MutableLiveData
+import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.presentation.extension.formIsValid
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import com.example.cleanarchitecture.domain.domain.entity.extensions.IsValidIpv4Segment
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.repository.IRepository
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class IpPoolViewModel : BaseViewModel<IpPoolUiState>(), KoinComponent {
+class IpPoolViewModel(private val repository: IRepository) : BaseViewModel<IpPoolUiState>(),
+    KoinComponent {
 
-    private val repository: IRepository by inject()
+    val formShimmerVisibility = MutableLiveData(true)
+    val registerIsLoading = MutableLiveData(false)
 
-    fun registerIpPool(ipPool: IpPoolRequest) =executeWithProgress{
-            if (!formIsValid(ipPool)) return@executeWithProgress
-            val response = repository.registerIpPool(ipPool)
-            uiState.value = BaseUiState(IpPoolUiState.IpPoolRegister(response))
+    val hostDeviceField = ReactiveFormField<NetworkDevice>(
+        hintResourceId = R.string.host_device,
+        errorResourceId = R.string.mustSelectHostDevice,
+        validator = { it != null })
 
+    val ipSegmentField = ReactiveFormField<String>(
+        hintResourceId = R.string.ip_segment,
+        errorResourceId = R.string.must_enter_a_valid_ip_segment,
+        validator = { it.IsValidIpv4Segment() })
+
+
+    fun registerIpPool() = executeNoProgress(
+        doBefore = { registerIsLoading.value = true },
+        doFinally = { registerIsLoading.value = false })
+    {
+        if (!formIsValid()) return@executeNoProgress
+        val ipPool = IpPoolRequest(
+            ipSegment = ipSegmentField.getValue()!!,
+            hostDeviceId = hostDeviceField.getValue()?.id
+        )
+
+        val response = repository.registerIpPool(ipPool)
+        uiState.value = BaseUiState(IpPoolUiState.IpPoolRegister(response))
     }
 
-    private fun formIsValid(ipPool: IpPoolRequest): Boolean {
+    private fun formIsValid() =
+        listOf(hostDeviceField, ipSegmentField).formIsValid()
 
-        if (ipPool.hostDeviceId == null) {
-            uiState.value = BaseUiState(IpPoolUiState.NoHostDeviceSelectedError)
-            return false
-        } else {
-            uiState.value = BaseUiState(IpPoolUiState.CleanNoHostDeviceSelectedError)
-        }
-        if (ipPool.ipSegment == null || ipPool.ipSegment!!.isEmpty()) {
-            uiState.value = BaseUiState(IpPoolUiState.IpPoolError())
-            return false
-        } else {
-            uiState.value = BaseUiState(IpPoolUiState.IpPoolCleanError)
-        }
-        if (!ipPool.ipSegment!!.IsValidIpv4Segment()) {
-            uiState.value = BaseUiState(IpPoolUiState.IpPoolInvalidIpSegment())
-            return false
-        } else {
-            uiState.value = BaseUiState(IpPoolUiState.IpPoolCleanInvalidIpSegment)
-        }
 
-        return true
+    init {
+        getFormData()
     }
 
-    fun getIpPoolList() = executeWithProgress {
-            val response = repository.getIpPoolList()
-            delay(500)
-            uiState.value = BaseUiState(IpPoolUiState.IpPoolList(response))
-    }
+    private fun getFormData() = executeNoProgress(doFinally = {
+        formShimmerVisibility.value = false
+    }) {
 
-    fun getHostDevices() = executeWithProgress{
-            val response = repository.getHostDevices()
-            uiState.value = BaseUiState((IpPoolUiState.HostDevicesReady(response)))
+        val responseHostDevices = it.async { repository.getHostDevices() }
+
+        val responseIpPoolList = it.async { repository.getIpPoolList() }
+
+        val hostDevices = responseHostDevices.await()
+
+        val ipPoolList = responseIpPoolList.await()
+
+        uiState.value = BaseUiState(IpPoolUiState.FormDataReady(hostDevices, ipPoolList))
+
     }
 }

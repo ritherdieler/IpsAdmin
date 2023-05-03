@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="dashboardDataResponse"
             type="com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse" />
@@ -26,16 +25,15 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:visibility="visible"
+            android:fillViewport="true"
             android:visibility="@{!viewModel.showDashBoardShimmerLiveData}"
-            android:fillViewport="true">
+            tools:visibility="visible">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/viewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView"
@@ -219,13 +217,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:visibility="gone"
-
             android:visibility="@{viewModel.showDashBoardShimmerLiveData}"
-           >
+            tools:visibility="gone">
 
             <include layout="@layout/shimmer_dash_board" />
-
         </androidx.appcompat.widget.LinearLayoutCompat>
     </LinearLayout>
 </layout>

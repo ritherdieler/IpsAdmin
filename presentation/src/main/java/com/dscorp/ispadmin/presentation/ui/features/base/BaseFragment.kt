@@ -28,10 +28,9 @@ abstract class BaseFragment<T, U : ViewDataBinding> : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        onViewReady()
+        onViewReady(savedInstanceState)
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
-            uiState.error?.let { error -> showErrorDialog(error.message?:"") }
+            uiState.error?.let { error -> showErrorDialog(error.message ?: "") }
             uiState.loading?.let { isLoading -> onLoading(isLoading) }
             uiState.uiState?.let { handleState(it) }
         }
@@ -46,7 +45,7 @@ abstract class BaseFragment<T, U : ViewDataBinding> : Fragment() {
         else fullScreenProgressDialog.dismiss()
     }
 
-    protected open fun onViewReady() {}
+    protected open fun onViewReady(savedInstanceState: Bundle?) {}
 
 
     override fun onResume() {

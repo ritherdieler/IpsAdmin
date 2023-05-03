@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.dashboard
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
 import com.dscorp.ispadmin.R
@@ -15,7 +16,7 @@ class DashBoardFragment : BaseFragment<DashBoardDataUiState, FragmentDashBoardBi
     override val viewModel: DashBoardViewModel by viewModel()
     override val binding by lazy { FragmentDashBoardBinding.inflate(layoutInflater) }
 
-    override fun onViewReady() {
+    override fun onViewReady(savedInstanceState: Bundle?) {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()

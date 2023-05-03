@@ -1,10 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment.register
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentRegisterPaymentBinding
@@ -25,7 +21,7 @@ class RegisterPaymentFragment :
         viewModel.payment = args.payment
     }
 
-    override fun onViewReady() {
+    override fun onViewReady(savedInstanceState: Bundle?) {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()

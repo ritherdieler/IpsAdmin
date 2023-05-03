@@ -50,7 +50,7 @@ class PaymentHistoryFragment :
         viewModel.subscription = args.subscription
     }
 
-    override fun onViewReady() {
+    override fun onViewReady(savedInstanceState: Bundle?) {
         binding.viewModel = viewModel
         binding.executePendingBindings()
         binding.etStartDate.setOnClickListener {showStartDatePickerDialog { selectedStartDate = it }  }

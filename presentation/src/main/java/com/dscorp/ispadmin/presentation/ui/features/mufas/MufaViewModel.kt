@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.presentation.ui.features.mufas
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
@@ -19,6 +20,6 @@ class MufaViewModel : BaseViewModel<MufaUiState>(), KoinComponent {
 
     private fun initGetMufas() = executeWithProgress {
         val mufaListFromRepository = repository.getMufas()
-        mufaUiStateLiveData.value = MufaUiState.OnMufasListFound(mufaListFromRepository)
+        uiState.value = BaseUiState( MufaUiState.OnMufasListFound(mufaListFromRepository))
     }
 }

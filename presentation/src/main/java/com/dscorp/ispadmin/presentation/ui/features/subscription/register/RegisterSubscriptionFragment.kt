@@ -7,6 +7,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.ArrayAdapter
@@ -33,24 +34,10 @@ import java.util.*
 import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
 
-
 class RegisterSubscriptionFragment :
     BaseFragment<RegisterSubscriptionUiState, FragmentRegisterSubscriptionBinding>() {
     override val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
     override val viewModel: RegisterSubscriptionViewModel by viewModel()
-    override fun handleState(state: RegisterSubscriptionUiState) {
-        when (state) {
-            is RegisterSubscriptionSuccess -> showConfirmationDialog(state)
-            is FormDataFound -> fillFormSpinners(state)
-            is FiberDevicesFound -> fillCpeDeviceSpinner(state.devices)
-            is WirelessDevicesFound -> fillCpeDeviceSpinner(state.devices)
-            is CouponIsValid -> showCouponActivationResponse(state.isValid)
-            is OnOnuDataFound -> populateOnuSpinner(state)
-            is RefreshingOnus -> showOnusRefreshing(state.isRefreshing)
-            is ShimmerVisibility -> showLoadingStatus(state.showShimmer)
-        }
-    }
-
     private var rationaleShown = false
     private var locationReqOrigin: LocationRequestOrigin? = null
     private val additionalDevicesAdapter by lazy {
@@ -74,7 +61,6 @@ class RegisterSubscriptionFragment :
                             val action = saveSubscriptionToNapBoxMapFragment()
                             findNavController().navigate(action)
                         }
-
                         MY_LOCATION_BUTTON -> {
                             getCurrentLocation()
                         }
@@ -90,6 +76,19 @@ class RegisterSubscriptionFragment :
                 if (rationaleShown) openLocationSettings(requireActivity())
         }
 
+    override fun handleState(state: RegisterSubscriptionUiState) {
+        when (state) {
+            is RegisterSubscriptionSuccess -> showConfirmationDialog(state)
+            is FormDataFound -> fillFormSpinners(state)
+            is FiberDevicesFound -> fillCpeDeviceSpinner(state.devices)
+            is WirelessDevicesFound -> fillCpeDeviceSpinner(state.devices)
+            is CouponIsValid -> showCouponActivationResponse(state.isValid)
+            is OnOnuDataFound -> populateOnuSpinner(state)
+            is RefreshingOnus -> showOnusRefreshing(state.isRefreshing)
+            is ShimmerVisibility -> showLoadingStatus(state.showShimmer)
+        }
+    }
+
     private fun getCurrentLocation() {
         binding.ivMyLocation.setImageResource(R.drawable.ic_rotate_right)
         binding.ivMyLocation.animateRotate360InLoop()
@@ -101,7 +100,7 @@ class RegisterSubscriptionFragment :
         }
     }
 
-    override fun onViewReady() {
+    override fun onViewReady(savedInstanceState: Bundle?) {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()

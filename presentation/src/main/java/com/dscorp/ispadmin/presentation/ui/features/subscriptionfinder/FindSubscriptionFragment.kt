@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 
+import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
@@ -60,7 +61,7 @@ class FindSubscriptionFragment :
         }
     }
 
-    override fun onViewReady() {
+    override fun onViewReady(savedInstanceState: Bundle?) {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()

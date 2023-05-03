@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapboxMapBinding
@@ -27,7 +26,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.launch
 
 class NapBoxMapFragment : BaseFragment<MufaUiState, FragmentNapboxMapBinding>(), OnMapReadyCallback,
     NapBoxDetailDialogFragment.NapBoxSelectionListener {
@@ -44,15 +42,10 @@ class NapBoxMapFragment : BaseFragment<MufaUiState, FragmentNapboxMapBinding>(),
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onViewReady(savedInstanceState: Bundle?) {
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        return binding.root
     }
 
     private fun showMufasAsMakers(mufas: List<Mufa>) {

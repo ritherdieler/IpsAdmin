@@ -38,7 +38,8 @@ fun String.isValidEmail(): Boolean {
     return emailRegex.matches(this)
 }
 
-fun String.IsValidIpv4Segment(): Boolean {
+fun String?.IsValidIpv4Segment(): Boolean {
+    if (this == null) return false
     val ipv4SegmentRegex = "^(\\d{1,3}\\.){3}\\d{1,3}/\\d{1,2}$".toRegex()
     return ipv4SegmentRegex.matches(this)
 }
