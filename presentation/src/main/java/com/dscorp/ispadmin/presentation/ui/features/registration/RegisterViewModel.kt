@@ -22,17 +22,17 @@ class RegisterViewModel(
     val firstNameField = ReactiveFormField<String>(
         hintResourceId = R.string.firstName,
         errorResourceId = R.string.mustDigitFirstName
-    ) { it.isNullOrEmpty() }
+    ) { !it.isNullOrEmpty() }
 
     val lastNameField = ReactiveFormField<String>(
         hintResourceId = R.string.lastName,
         errorResourceId = R.string.mustDigitLastName
-    ) { it.isNullOrEmpty() }
+    ) { !it.isNullOrEmpty() }
 
     val emailField = ReactiveFormField<String>(
         hintResourceId = R.string.email,
         errorResourceId = R.string.mustDigitEmail
-    ) { it.isNullOrEmpty() }
+    ) { it.isValidEmail() }
 
     val phoneField = ReactiveFormField<String>(
         hintResourceId = R.string.phoneNumer,
@@ -47,19 +47,18 @@ class RegisterViewModel(
     val userNameField = ReactiveFormField<String>(
         hintResourceId = R.string.username,
         errorResourceId = R.string.mustDigitUserName
-    ) { it.isNullOrEmpty() }
+    ) { !it.isNullOrEmpty() }
 
     val password1Field = ReactiveFormField<String>(
         hintResourceId = R.string.password,
         errorResourceId = R.string.mustDigitPassword
-    ) { it.isNullOrEmpty() }
+    ) { !it.isNullOrEmpty() }
 
     val password2Field = ReactiveFormField<String>(
         hintResourceId = R.string.repeat_password,
         errorResourceId = R.string.passwordsMustBeEquals
     ) {
-        it.isNullOrEmpty() && !password1Field.getValue()
-            .isNullOrEmpty() && it == password1Field.getValue()!!
+        !it.isNullOrEmpty() && !password1Field.getValue().isNullOrEmpty() && it == password1Field.getValue()!!
     }
 
     fun registerUser() = executeWithProgress {

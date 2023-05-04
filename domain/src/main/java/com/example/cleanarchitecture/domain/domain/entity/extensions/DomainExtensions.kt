@@ -32,10 +32,10 @@ fun String?.isValidPhone(): Boolean {
     return phoneRegex.matches(this ?: "")
 }
 
-fun String.isValidEmail(): Boolean {
+fun String?.isValidEmail(): Boolean {
     val pattern = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})\$"
     val emailRegex = Regex(pattern)
-    return emailRegex.matches(this)
+    return emailRegex.matches(this ?: "")
 }
 
 fun String?.IsValidIpv4Segment(): Boolean {

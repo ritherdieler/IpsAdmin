@@ -45,6 +45,7 @@
 
         <activity
             android:name=".presentation.ui.features.registration.RegisterActivity"
+            android:theme="@style/Theme.IspAdminAndroid"
             android:exported="false" />
         <activity
             android:name=".presentation.ui.features.login.LoginActivity"

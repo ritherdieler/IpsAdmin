@@ -65,7 +65,8 @@ fun Fragment.showSuccessDialog(
 ) {
     childFragmentManager.executePendingTransactions()
     val dialogFactory: IDialogFactory by inject()
-    val successDialog = dialogFactory.createSuccessDialog(requireContext(), text, onPositiveCallback)
+    val successDialog =
+        dialogFactory.createSuccessDialog(requireContext(), text, onPositiveCallback)
     successDialog.setCancelable(false)
     successDialog.show()
 }
@@ -132,9 +133,11 @@ fun Fragment.showCrossDialog(
 
 fun AppCompatActivity.showCrossDialog(
     text: String? = null,
-    positiveButtonClickListener: (() -> Unit)? = null
-) {
-    CrossDialogFragment(text, positiveButtonClickListener).show(
+    cancelable: Boolean = false,
+    positiveButtonClickListener: (() -> Unit)? = null,
+
+    ) {
+    CrossDialogFragment(text, positiveButtonClickListener).apply { isCancelable = cancelable }.show(
         supportFragmentManager,
         CrossDialogFragment::class.simpleName
     )

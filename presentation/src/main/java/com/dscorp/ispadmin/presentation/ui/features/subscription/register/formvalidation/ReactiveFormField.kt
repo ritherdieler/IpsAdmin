@@ -29,7 +29,7 @@ class ReactiveFormField<T>(
         return isValid
     }
 
-    private fun currentValueIsValid() = validator?.invoke(liveData.value) != false
+    private fun currentValueIsValid() = validator?.invoke(liveData.value) == true
 
     private fun validateField(fieldValue: T?): Boolean {
         return if (currentValueIsValid()) {

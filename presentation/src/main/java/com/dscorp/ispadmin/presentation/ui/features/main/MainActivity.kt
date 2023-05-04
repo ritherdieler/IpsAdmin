@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -23,14 +24,18 @@ import com.dscorp.ispadmin.presentation.util.FCM_CUSTOMER_THEME
 import com.dscorp.ispadmin.presentation.util.FCM_TECHNICIAN_THEME
 import com.example.cleanarchitecture.domain.domain.entity.User
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
-class MainActivity : BaseActivity() {
+class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         DataBindingUtil.setContentView(this, R.layout.activity_main)
     }
+
+    protected val firebaseAnalytics: FirebaseAnalytics by inject()
+
     private val viewModel: MainActivityViewModel by inject()
     private val PERMISSION_CODE = 123
 
