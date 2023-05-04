@@ -63,7 +63,7 @@ val viewModelModule = module {
     viewModel { NetworkDeviceListViewModel() }
     viewModel { PlaceListViewModel() }
     viewModel { TechnicianListViewModel() }
-    viewModel { MufaViewModel() }
+    viewModel { MufaViewModel(get()) }
     viewModel { EditSubscriptionViewModel(get()) }
     viewModel { EditPlanViewModel(get()) }
 }

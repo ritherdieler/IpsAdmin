@@ -58,44 +58,43 @@ class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {
             DownloadDocumentType.DEBTORS_FROM_PAST_MONTH -> viewModel.downloadPastMonthDebtors()
         }
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
+    override fun onViewReady(savedInstanceState: Bundle?) {
         binding.btnGetDebtorsCustomers.setOnClickListener {
-            downloadDocumentType = DownloadDocumentType.DEBTORS
-
-            requestExternalStoragePermissionAndDownloadDocument()
+//            downloadDocumentType = DownloadDocumentType.DEBTORS
+                downloadDocument(DownloadDocumentType.DEBTORS)
+//            requestExternalStoragePermissionAndDownloadDocument()
         }
 
         binding.btnGetWithPaymentCommitmentCusstomers.setOnClickListener {
-            downloadDocumentType = DownloadDocumentType.WITH_PAYMENT_COMMITMENT
-            requestExternalStoragePermissionAndDownloadDocument()
+//            downloadDocumentType = DownloadDocumentType.WITH_PAYMENT_COMMITMENT
+            downloadDocument(DownloadDocumentType.WITH_PAYMENT_COMMITMENT)
+
+//            requestExternalStoragePermissionAndDownloadDocument()
         }
 
         binding.btnSuspendedCustomers.setOnClickListener {
-            downloadDocumentType = DownloadDocumentType.SUSPENDED
-            requestExternalStoragePermissionAndDownloadDocument()
+//            downloadDocumentType = DownloadDocumentType.SUSPENDED
+//            requestExternalStoragePermissionAndDownloadDocument()
+            downloadDocument(DownloadDocumentType.SUSPENDED)
+
         }
 
         binding.btnGetCutoffCustomers.setOnClickListener {
-            downloadDocumentType = DownloadDocumentType.CUT_OFF
-            requestExternalStoragePermissionAndDownloadDocument()
+//            downloadDocumentType = DownloadDocumentType.CUT_OFF
+//            requestExternalStoragePermissionAndDownloadDocument()
+            downloadDocument(DownloadDocumentType.CUT_OFF)
+
         }
 
         binding.btnGetPastMonthDebtorCustomers.setOnClickListener {
-            downloadDocumentType = DownloadDocumentType.DEBTORS_FROM_PAST_MONTH
-            requestExternalStoragePermissionAndDownloadDocument()
+//            downloadDocumentType = DownloadDocumentType.DEBTORS_FROM_PAST_MONTH
+//            requestExternalStoragePermissionAndDownloadDocument()
+            downloadDocument(DownloadDocumentType.DEBTORS_FROM_PAST_MONTH)
+
         }
-
-        return binding.root
     }
-
     private fun requestExternalStoragePermissionAndDownloadDocument() {
-
+//WRITE_EXTERNAL_STORAGE RUNTIME PERMISSION
         requestPermissionManager.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     }
 

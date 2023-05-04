@@ -32,11 +32,7 @@ class EditPlanSubscription :
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun onCreate(savedInstanceState: Bundle?) {
         viewModel.subscription = args.subscription
         fillFormWithSubscriptionData()
         binding.viewModel = viewModel
@@ -48,16 +44,13 @@ class EditPlanSubscription :
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
             viewModel.editSubscription()
         }
-
-        return binding.root
+        super.onCreate(savedInstanceState)
     }
 
     private fun fillFormWithSubscriptionData() {
         binding.etFirstName.setText(viewModel.subscription?.firstName)
         binding.etLastName.setText(viewModel.subscription?.lastName)
         binding.etDni.setText(viewModel.subscription?.dni)
-
-
     }
 
     private fun showEditSuccessDialog() {

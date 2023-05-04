@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentMufasMapBinding
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaUiState
 import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaViewModel
 import com.dscorp.ispadmin.presentation.ui.features.mufas.NapBoxDetailDialogFragment
@@ -26,9 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
-    lateinit var binding: FragmentMufasMapBinding
-    val viewModel: MufaViewModel by viewModel()
+class MufaMapFragment : BaseFragment<MufaUiState, FragmentMufasMapBinding>(), OnMapReadyCallback {
     private var mufas: List<Mufa> = emptyList()
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
@@ -37,30 +35,21 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
     private val mufaMarkersMap = mutableMapOf<Marker?, Mufa>()
 
 
-    override fun getTheme(): Int = R.style.Theme_IspAdminAndroid
+    override val viewModel: MufaViewModel by viewModel()
+    override val binding by lazy { FragmentMufasMapBinding.inflate(layoutInflater) }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentMufasMapBinding.inflate(inflater, container, false)
-        observe()
+    override fun handleState(state: MufaUiState) {
+        when (state) {
+            is MufaUiState.OnMufasListFound -> showMufasAsMakers(state.mufasList)
+        }
+    }
+
+    override fun onViewReady(savedInstanceState: Bundle?) {
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        return binding.root
     }
 
-    private fun observe() {
-        lifecycleScope.launch {
-            viewModel.mufaUiStateLiveData.observe(viewLifecycleOwner) {
-                when (it) {
-                    is MufaUiState.OnMufasListFound -> showMufasAsMakers(it.mufasList)
-                }
-            }
-        }
-    }
 
     private fun showMufasAsMakers(mufas: List<Mufa>) {
         mufas.forEach { mufa ->
@@ -75,7 +64,7 @@ class MufaMapFragment : DialogFragment(), OnMapReadyCallback {
             mufaMarkersMap[mufaMarker] = mufa
 
             mufa.napBoxes?.forEach { napBox ->
-                val napBoxLatLng = LatLng(napBox.latitude?:0.0, (napBox.longitude ?: 0.0))
+                val napBoxLatLng = LatLng(napBox.latitude ?: 0.0, (napBox.longitude ?: 0.0))
                 val napBoxMarkerOptions = MarkerOptions()
                     .position(napBoxLatLng)
                     .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(R.drawable.ic_napbox)))
