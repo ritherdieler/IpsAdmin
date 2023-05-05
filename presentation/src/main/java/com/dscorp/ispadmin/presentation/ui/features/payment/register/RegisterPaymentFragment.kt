@@ -12,6 +12,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class RegisterPaymentFragment :
     BaseFragment<RegisterPaymentUiState, FragmentRegisterPaymentBinding>() {
     private val args: RegisterPaymentFragmentArgs by navArgs()
+
     override val binding by lazy { FragmentRegisterPaymentBinding.inflate(layoutInflater) }
     override val viewModel: RegisterPaymentViewModel by viewModel()
 
@@ -31,7 +32,7 @@ class RegisterPaymentFragment :
     override fun handleState(state: RegisterPaymentUiState) =
         when (state) {
             is RegisterPaymentUiState.OnPaymentRegistered -> showSuccessDialog("Pago registrado") {
-                    findNavController().popBackStack()
+                findNavController().popBackStack()
             }
         }
 

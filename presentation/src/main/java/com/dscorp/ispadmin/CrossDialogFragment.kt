@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.dscorp.ispadmin.databinding.FragmentCrossDialogBinding
 
-
 class CrossDialogFragment(
     val text: String? = null,
+    val lottieResource: Int? = null,
     val onCloseButtonClick: (() -> Unit)? = null,
     val onPositiveButtonClick: (() -> Unit)? = null
 ) :
@@ -26,6 +26,9 @@ class CrossDialogFragment(
             binding.dialogText.text = text
         }
 
+        lottieResource?.let {
+            binding.lottieAnimation.setAnimation(lottieResource)
+        }
 
         binding.acceptButton.setOnClickListener {
             if (onPositiveButtonClick == null) dismiss()

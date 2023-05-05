@@ -11,7 +11,4 @@ import com.example.cleanarchitecture.domain.domain.entity.User
  **/
 sealed class LoginResponse {
     class OnLoginSuccess(val user: User) : LoginResponse()
-    class OnError(val error: Exception) : LoginResponse()
-    class ShowProgressBarState(val dialogProgress: Boolean) : LoginResponse()
-
 }

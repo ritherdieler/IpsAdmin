@@ -206,5 +206,6 @@
     <string name="invalid_discount_amount">La cantidad de descuento debe ser mayor o igual a 0.</string>
     <string name="must_select_payment_method">Debes seleccionar un metodo de pago.</string>
     <string name="must_enter_a_valid_ip_segment">Debe digitar un segmento de ip valido.</string>
+    <string name="your_account_isnt_verified">Tu cuenta no está verificada. Contacta con soporte.</string>
 
 </resources>

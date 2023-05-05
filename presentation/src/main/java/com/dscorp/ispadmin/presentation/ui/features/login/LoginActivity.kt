@@ -2,18 +2,15 @@ package com.dscorp.ispadmin.presentation.ui.features.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Html
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.BulletSpan
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityLoginBinding
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseActivity
+import com.dscorp.ispadmin.presentation.extension.showCrossDialog
+import com.dscorp.ispadmin.presentation.extension.showErrorDialog
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterActivity
 import com.example.cleanarchitecture.domain.domain.entity.User
@@ -22,8 +19,21 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class LoginActivity : AppCompatActivity() {
+
     val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
+
     val viewModel: LoginViewModel by viewModel()
+
+    fun handleState(state: BaseUiState<LoginResponse>) {
+        state.loading?.let { showProgressBar(it) }
+        state.error?.let { showErrorDialog(it.message ?: "") }
+        state.uiState?.let { handleLoginResponse(it) }
+    }
+
+    private fun handleLoginResponse(it: LoginResponse) = when (it) {
+        is LoginResponse.OnLoginSuccess -> handleLoginResponse(it.user)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
         Thread.sleep(1000)
         val (status, user) = viewModel.checkSessionStatus()
         if (status) {
-            navigateToMainActivity(user!!)
+            handleLoginResponse(user!!)
         } else {
             setContentView(binding.root)
 
@@ -39,10 +49,12 @@ class LoginActivity : AppCompatActivity() {
             binding.lifecycleOwner = this@LoginActivity
             binding.executePendingBindings()
 
-            observe()
-
             binding.tvCreateAccount.setOnClickListener {
                 navigateToRegister()
+            }
+
+            viewModel.uiState.observe(this) {
+                handleState(it)
             }
         }
     }
@@ -60,51 +72,19 @@ class LoginActivity : AppCompatActivity() {
         dialog.show()
     }
 
-
-    private fun observeLoginFormError() {
-        viewModel.loginFormErrorLiveData.observe(this) { formError ->
-            when (formError) {
-                is LoginFormError.OnEtPassword -> binding.tlPassword.error = formError.error
-                is LoginFormError.OnEtUser -> binding.tlUser.error = formError.error
-            }
-        }
-    }
-
-    private fun observeLoginResponse() {
-        viewModel.loginResponseLiveData.observe(this) { response ->
-            when (response) {
-                is LoginResponse.OnError -> showErrorDialog(response.error.message)
-
-                is LoginResponse.OnLoginSuccess -> navigateToMainActivity(response.user)
-
-                is LoginResponse.ShowProgressBarState -> showProgressBar(response.dialogProgress)
-            }
-        }
-    }
-
     private fun showProgressBar(progressBar: Boolean) {
         binding.pbLoading.visibility = if (progressBar) ProgressBar.VISIBLE else ProgressBar.GONE
-
     }
 
-    private fun navigateToMainActivity(user: User) {
-        FirebaseCrashlytics.getInstance().setUserId(user.id.toString())
-        val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-    }
-
-    fun showErrorDialog(message: String?) {
-        AlertDialog.Builder(this)
-            .setTitle(R.string.login_Error_Tittle)
-            .setMessage(message)
-            .create()
-            .show()
-    }
-
-    fun observe() {
-        observeLoginResponse()
-        observeLoginFormError()
+    private fun handleLoginResponse(user: User) {
+        if (!user.verified)
+            showCrossDialog(R.string.your_account_isnt_verified, lottieRes = R.raw.info)
+        else {
+            FirebaseCrashlytics.getInstance().setUserId(user.id.toString())
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
     }
 
     private fun navigateToRegister() {

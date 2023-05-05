@@ -13,7 +13,7 @@ import java.util.Date
     var method: String = "",
     var paid: Boolean = false,
     var amountToPay: Double = 0.0,
-    var userId: Int = 0,
+    var responsibleId: Int = 0,
 ):java.io.Serializable
 {
     fun paymentDateStr(): String {

@@ -1,22 +1,16 @@
 package com.dscorp.ispadmin.presentation.ui.features.login
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.extension.encryptWithSHA384
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
 import com.example.cleanarchitecture.domain.domain.entity.Loging
 import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.repository.IRepository
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
-class LoginViewModel : ViewModel() {
-    private val repository: IRepository by inject(IRepository::class.java)
-    val loginResponseLiveData = MutableLiveData<LoginResponse>()
-    val loginFormErrorLiveData = MutableLiveData<LoginFormError>()
+class LoginViewModel(private val repository: IRepository) : BaseViewModel<LoginResponse>() {
 
 
     val username = FormField(
@@ -48,11 +42,11 @@ class LoginViewModel : ViewModel() {
             }
         })
 
-     fun checkSessionStatus(): Pair<Boolean, User?> {
+    fun checkSessionStatus(): Pair<Boolean, User?> {
         val status = repository.getRememberSessionCheckBoxStatus()
         if (status) {
             repository.getUserSession()?.let {
-                loginResponseLiveData.postValue(LoginResponse.OnLoginSuccess(it))
+                uiState.value = BaseUiState(LoginResponse.OnLoginSuccess(it))
                 return Pair(true, it)
             }
             return Pair(false, null)
@@ -61,21 +55,12 @@ class LoginViewModel : ViewModel() {
         return Pair(false, null)
     }
 
-    fun doLogin() = viewModelScope.launch {
-        try {
-            if (!formIsValid()) return@launch
-            loginResponseLiveData.value = LoginResponse.ShowProgressBarState(true)
-            val login = Loging(username.value!!, password.value?.encryptWithSHA384()!!, remember.value)
-            val responseFromRepository = repository.doLogin(login)
-            loginResponseLiveData.value = LoginResponse.OnLoginSuccess(responseFromRepository)
-            loginResponseLiveData.value = LoginResponse.ShowProgressBarState(false)
-
-        } catch (error: Exception) {
-            error.printStackTrace()
-            loginResponseLiveData.value = LoginResponse.OnError(error)
-            loginResponseLiveData.value = LoginResponse.ShowProgressBarState(false)
-
-        }
+    fun doLogin() = executeWithProgress {
+        if (!formIsValid()) return@executeWithProgress
+        val login =
+            Loging(username.value!!, password.value?.encryptWithSHA384()!!, remember.value)
+        val responseFromRepository = repository.doLogin(login)
+        uiState.value = BaseUiState(LoginResponse.OnLoginSuccess(responseFromRepository))
     }
 
     fun onCheckedChanged(checked: Boolean) {

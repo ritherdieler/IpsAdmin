@@ -32,7 +32,6 @@
             app:boxCornerRadiusBottomStart="20dp"
             app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp"
-            app:endIconMode="password_toggle"
             app:endIconTint="@color/purple_base_app"
             app:layout_constraintBottom_toTopOf="@+id/tlPassword"
             app:layout_constraintEnd_toEndOf="parent"

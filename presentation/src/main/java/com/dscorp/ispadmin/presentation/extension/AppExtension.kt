@@ -137,7 +137,22 @@ fun AppCompatActivity.showCrossDialog(
     positiveButtonClickListener: (() -> Unit)? = null,
 
     ) {
-    CrossDialogFragment(text, positiveButtonClickListener).apply { isCancelable = cancelable }.show(
+    CrossDialogFragment(text = text, onPositiveButtonClick = positiveButtonClickListener).apply { isCancelable = cancelable }.show(
+        supportFragmentManager,
+        CrossDialogFragment::class.simpleName
+    )
+}
+
+fun AppCompatActivity.showCrossDialog(
+    text: Int,
+    lottieRes : Int? = null,
+    cancelable: Boolean = false,
+    positiveButtonClickListener: (() -> Unit)? = null,
+
+    ) {
+    CrossDialogFragment(text = getString(text), lottieResource = lottieRes , onCloseButtonClick = positiveButtonClickListener).apply {
+        isCancelable = cancelable
+    }.show(
         supportFragmentManager,
         CrossDialogFragment::class.simpleName
     )

@@ -14,6 +14,7 @@ import org.koin.core.component.KoinComponent
 class RegisterPaymentViewModel(private val repository: IRepository) :
     BaseViewModel<RegisterPaymentUiState>(), KoinComponent {
 
+    val user = repository.getUserSession()
     var payment: Payment? = null
 
     var registerButtonProgress = MutableLiveData(false)
@@ -47,6 +48,8 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
                 discountAmount = discountAmountField.getValue()?.toDouble(),
                 discountReason = discountReasonField.getValue(),
                 method = paymentMethodField.getValue()!!,
+                responsibleId = user?.id!!
+
             )
             val response = repository.registerPayment(registerPayment)
             uiState.value = BaseUiState(RegisterPaymentUiState.OnPaymentRegistered(response))
