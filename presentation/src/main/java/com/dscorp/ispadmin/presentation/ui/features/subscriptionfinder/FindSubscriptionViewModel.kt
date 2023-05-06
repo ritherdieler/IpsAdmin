@@ -11,11 +11,11 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.OnSubscriptionFound
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.PaymentCommitmentSuccess
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowEditPlanOption
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowPaymentCommitmentOption
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowReactivateServiceOption
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowRegisterServiceOrder
 import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
@@ -50,6 +50,17 @@ class FindSubscriptionViewModel(
             override fun validate(fieldValue: Long?) = fieldValue != null
         })
 
+
+    val firstNameField = ReactiveFormField<String?>(
+        hintResourceId = R.string.first_name,
+        validator = {!it.isNullOrEmpty()}
+    )
+
+    val lastNameField = ReactiveFormField<String?>(
+        hintResourceId = R.string.lastName,
+        validator = { !it.isNullOrEmpty() }
+    )
+
     fun search() {
         when (searchType.value) {
             SearchType.BY_DNI -> findSubscriptionByDni()
@@ -64,6 +75,15 @@ class FindSubscriptionViewModel(
         uiState.value = BaseUiState(OnSubscriptionFound(response))
     }
 
+    fun findSubscriptionByNameAndLastName() = executeWithProgress {
+        if (!firstNameField.isValid() && !lastNameField.isValid()) return@executeWithProgress
+        val response = repository.findSubscriptionByNameAndLastName(
+            firstNameField.getValue(),
+            lastNameField.getValue()
+        )
+        uiState.value = BaseUiState(OnSubscriptionFound(response))
+    }
+
     private fun findSubscriptionsBySubscriptionDate() = executeWithProgress {
         if (!startDateField.isValid || !endDateField.isValid) return@executeWithProgress
         val response = repository.findSubscriptionBySubscriptionDate(
@@ -74,10 +94,12 @@ class FindSubscriptionViewModel(
     }
 
     fun onSearchTypeChanged(button: View, isChecked: Boolean) {
+        uiState.value = BaseUiState(OnSubscriptionFound(emptyList()))
         if (!isChecked) return
         when (button.id) {
             R.id.rbBySubscriptionDate -> searchType.value = SearchType.BY_SUBSCRIPTION_DATE
             R.id.rbByDni -> searchType.value = SearchType.BY_DNI
+            R.id.rbByNameAndLastName -> searchType.value = SearchType.BY_NAME_AND_LAST_NAME
             else -> {}
         }
     }
@@ -115,7 +137,7 @@ class FindSubscriptionViewModel(
 //                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
                 }
 
-                ServiceStatus.SUSPENDED ->{
+                ServiceStatus.SUSPENDED -> {
                     //                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
                     // el servicio solo se puede reactivar si no tienes pagos pendientes
                 }
@@ -152,7 +174,8 @@ class FindSubscriptionViewModel(
 
     enum class SearchType {
         BY_DNI,
-        BY_SUBSCRIPTION_DATE
+        BY_SUBSCRIPTION_DATE,
+        BY_NAME_AND_LAST_NAME
     }
 }
 

@@ -168,7 +168,7 @@
     <string name="plan_price">Precio del plan</string>
     <string name="invalid_value">Valor no valido</string>
     <string name="plan_edit_successful">El plan fue editado correctamente</string>
-    <string name="installation_date">Fecha de instalación</string>
+    <string name="installation_date">Fecha Inst.</string>
     <string name="digit_firstName">Digite su nombre</string>
     <string name="mustDigitFirstName">Digite su nombre</string>
     <string name="digit_lastName">Apellidos</string>
@@ -207,5 +207,8 @@
     <string name="must_select_payment_method">Debes seleccionar un metodo de pago.</string>
     <string name="must_enter_a_valid_ip_segment">Debe digitar un segmento de ip valido.</string>
     <string name="your_account_isnt_verified">Tu cuenta no está verificada. Contacta con soporte.</string>
+    <string name="first_name">Nombres</string>
+    <string name="nameAndLastName">Nombre y Apellido</string>
+    <string name="date">Fecha</string>
 
 </resources>

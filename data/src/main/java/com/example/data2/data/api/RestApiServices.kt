@@ -159,6 +159,8 @@ interface RestApiServices {
     @PUT("subscription/reactivate-service")
     suspend fun reactivateService(@Query("subscriptionId") subscription: Int): BaseResponse<Unit>
 
+    @GET("subscription/find/nameAndLastName")
+    suspend fun findSubscriptionByNameAndLastName(@Query("name") name: String?, @Query("lastName") lastName: String?): Response<List<SubscriptionResponse>>
 
 }
 

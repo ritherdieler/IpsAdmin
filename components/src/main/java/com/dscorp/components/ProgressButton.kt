@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.util
+package com.dscorp.components
 
 import android.content.Context
 import android.os.Handler
@@ -11,8 +11,7 @@ import androidx.core.os.postDelayed
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
-import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.databinding.FragmentProgressButtonBinding
+import com.dscorp.components.databinding.FragmentProgressButtonBinding
 
 class ProgressButton @JvmOverloads constructor(
     context: Context, private val attrs: AttributeSet? = null

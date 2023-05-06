@@ -557,7 +557,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.dscorp.ispadmin.presentation.util.ProgressButton
+                <com.dscorp.components.ProgressButton
                     android:id="@+id/ProgressButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

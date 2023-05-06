@@ -113,14 +113,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_disclaimer" />
 
 
-        <com.dscorp.ispadmin.presentation.util.ProgressButton
+        <com.dscorp.components.ProgressButton
             android:id="@+id/btn_reactivate_service"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:clickListener="@{() -> viewModel.reactivateService()}"
             app:isLoading="@{viewModel.reactivationButtonIsLoading}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:text="@string/register"
+            app:text="@string/reactivate_service"
             tools:layout_editor_absoluteX="24dp" />
 
 

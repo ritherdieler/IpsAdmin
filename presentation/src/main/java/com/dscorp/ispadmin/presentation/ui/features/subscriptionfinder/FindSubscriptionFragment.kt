@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
@@ -74,6 +75,22 @@ class FindSubscriptionFragment :
             showEndDatePickerDialog()
         }
 
+        //ime options listener
+        binding.findSubscriptionEditText.setOnEditorActionListener { _, actionId, _ ->
+            viewModel.findSubscriptionByDni()
+            true
+        }
+
+        binding.etFirstName.setOnEditorActionListener{_, actionId, _ ->
+            viewModel.findSubscriptionByNameAndLastName()
+            true
+        }
+
+
+        binding.etLastName.setOnEditorActionListener{_, actionId, _ ->
+            viewModel.findSubscriptionByNameAndLastName()
+            true
+        }
         viewModel.loadingUiState.observe(viewLifecycleOwner) {
             binding.pbarFindSubscription.visibility = if (it) View.VISIBLE else View.GONE
         }

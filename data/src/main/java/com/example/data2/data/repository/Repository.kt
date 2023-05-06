@@ -505,4 +505,15 @@ class Repository : IRepository, KoinComponent {
             else -> throw Exception(response.error)
         }
     }
+
+    override suspend fun findSubscriptionByNameAndLastName(
+        name: String?,
+        lastName: String?
+    ): List<SubscriptionResponse> {
+        val response = restApiServices.findSubscriptionByNameAndLastName(name, lastName)
+        return when (response.code()) {
+            200 -> response.body()!!.ifEmpty { listOf() }
+            else -> throw Exception("Error")
+        }
+    }
 }

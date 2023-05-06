@@ -11,11 +11,10 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        style="@style/Widget.App.Button.OutlinedButton.IconOnly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="4dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="5dp">
 
@@ -25,18 +24,6 @@
             android:padding="24dp">
 
             <TextView
-                android:id="@+id/tvPlanId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/name1"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                app:layout_constraintBottom_toTopOf="@+id/tvName"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="packed" />
-
-            <TextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,34 +31,32 @@
                 android:text="@string/plan"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:layout_constraintBottom_toTopOf="@+id/tvName2"
-                app:layout_constraintStart_toStartOf="@+id/tvPlanId"
-                app:layout_constraintTop_toBottomOf="@+id/tvPlanId" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_full_name" />
 
 
             <TextView
                 android:id="@+id/tv_full_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:gravity="center"
                 android:text="@{subscription.getFullName().toUpperCase()}"
-
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                app:layout_constraintBottom_toBottomOf="@id/tvPlanId"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/tvPlanId"
-                app:layout_constraintTop_toTopOf="@+id/tvPlanId"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed"
                 tools:text="saul" />
 
             <TextView
                 android:id="@+id/tv_id"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@{subscription.plan.name.toUpperCase()}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 app:layout_constraintBottom_toBottomOf="@+id/tvName"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:text="@{subscription.plan.name.toUpperCase()}"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/tvName"
                 app:layout_constraintTop_toTopOf="@+id/tvName"
@@ -84,7 +69,7 @@
                 android:layout_marginTop="16dp"
                 android:text="DNI"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                app:layout_constraintStart_toStartOf="@+id/tvPlanId"
+                app:layout_constraintStart_toStartOf="@+id/tvName"
                 app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
             <TextView
@@ -96,32 +81,34 @@
                 android:text="@string/installation_date"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/tvPlanId"
+                app:layout_constraintStart_toStartOf="@+id/tvName2"
                 app:layout_constraintTop_toBottomOf="@+id/tvName2" />
 
             <TextView
                 android:id="@+id/tvDni"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:text="@{subscription.dni}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
 
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/tvName2"
                 app:layout_constraintTop_toTopOf="@+id/tvName2"
                 tools:text="renato" />
 
             <TextView
                 android:id="@+id/tvDni2"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginStart="16dp"
                 android:text="@{subscription.dateAsString()}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                 app:layout_constraintBottom_toBottomOf="@+id/tvName3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/tvName2"
+                app:layout_constraintStart_toEndOf="@+id/tvName3"
                 app:layout_constraintTop_toTopOf="@+id/tvName3"
                 tools:text="renato" />
 

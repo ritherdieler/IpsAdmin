@@ -26,15 +26,18 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NapBoxMapFragment : BaseFragment<MufaUiState, FragmentNapboxMapBinding>(), OnMapReadyCallback,
     NapBoxDetailDialogFragment.NapBoxSelectionListener {
+
     override val binding by lazy { FragmentNapboxMapBinding.inflate(layoutInflater) }
+    override val viewModel: MufaViewModel by viewModel()
+
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
     private lateinit var selectedLatLng: LatLng
     private val napBoxMarkersMap = mutableMapOf<Marker?, NapBoxResponse>()
-    override val viewModel: MufaViewModel by viewModels()
 
     override fun handleState(state: MufaUiState) {
         when (state) {
@@ -46,17 +49,6 @@ class NapBoxMapFragment : BaseFragment<MufaUiState, FragmentNapboxMapBinding>(),
         mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-
-
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun showMufasAsMakers(mufas: List<Mufa>) {

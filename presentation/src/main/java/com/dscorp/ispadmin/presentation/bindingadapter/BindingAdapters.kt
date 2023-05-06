@@ -6,10 +6,20 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.databinding.BindingAdapter
 import androidx.databinding.InverseBindingAdapter
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
+import com.google.android.material.textfield.TextInputEditText
 
 //visibility from boolean binding adapter
 @BindingAdapter("android:visibility")
 fun setVisibility(view: View, value: Boolean) {
     view.visibility = if (value) TextView.VISIBLE else TextView.GONE
+}
+
+
+@BindingAdapter("app:imeActionListener")
+fun setImeActionListener(view: TextInputEditText, listener: () -> Unit) {
+    view.setOnEditorActionListener { _, _, _ ->
+        listener()
+        true
+    }
 }
 

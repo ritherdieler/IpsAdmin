@@ -62,7 +62,7 @@
                         android:text="@{viewModel.ipSegmentField.liveData}" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.dscorp.ispadmin.presentation.util.ProgressButton
+                <com.dscorp.components.ProgressButton
                     android:id="@+id/btnRegisterIpSegment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -12,19 +12,22 @@
         <import type="android.view.View" />
 
         <import type="com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel.SearchType" />
-    <import type="com.dscorp.ispadmin.presentation.extension.AppExtensionKt"/>
+
+        <import type="com.dscorp.ispadmin.presentation.extension.AppExtensionKt" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingHorizontal="12dp"
+
         tools:context=".presentation.ui.features.subscriptionfinder.FindSubscriptionFragment">
 
         <RadioGroup
             android:id="@+id/rgFilterBy"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
+
             android:checkedButton="@id/rbByDni"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,17 +48,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.onSearchTypeChanged(buttonView,isChecked)}"
-                android:text="@string/subscriptionDate" />
+                android:text="@string/date" />
 
+            <RadioButton
+                android:id="@+id/rbByNameAndLastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:onCheckedChanged="@{(buttonView, isChecked) -> viewModel.onSearchTypeChanged(buttonView,isChecked)}"
+                android:text="@string/nameAndLastName" />
         </RadioGroup>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/subscriptionDateFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:orientation="horizontal"
-            android:paddingHorizontal="12dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
             android:visibility="@{viewModel.searchType == SearchType.BY_SUBSCRIPTION_DATE ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,9 +72,8 @@
 
             <EditText
                 android:id="@+id/etStartDate"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
                 android:layout_weight="1"
                 android:error="@{viewModel.startDateField.errorLiveData}"
                 android:focusable="false"
@@ -74,10 +82,8 @@
 
             <EditText
                 android:id="@+id/etEndDate"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
                 android:layout_weight="1"
                 android:error="@{viewModel.endDateField.errorLiveData}"
                 android:focusable="false"
@@ -93,51 +99,79 @@
                 android:text="@string/find" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/dniFilter"
+        <EditText
+            android:id="@+id/findSubscriptionEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+
+            android:layout_weight="1"
+            android:error="@{viewModel.dniField.errorLiveData}"
+            android:hint="@{viewModel.dniField.hint}"
+            android:imeOptions="actionSearch"
+            android:inputType="numberDecimal"
+            android:maxLength="8"
+            android:onTextChanged="@{(text, start, before, count) -> viewModel.dniField.setValue(text.toString())}"
             android:paddingHorizontal="12dp"
             android:visibility="@{viewModel.searchType == SearchType.BY_DNI ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toBottomOf="@+id/subscriptionDateFilter">
+            app:layout_constraintTop_toBottomOf="@+id/subscriptionDateFilter"
+            tools:hint="@string/digit_dni" />
 
-            <EditText
-                android:id="@+id/findSubscriptionEditText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:layout_weight="1"
-                android:error="@{viewModel.dniField.errorLiveData}"
-                android:hint="@{viewModel.dniField.hint}"
-                android:inputType="numberDecimal"
-                android:maxLength="8"
-                android:onTextChanged="@{(text, start, before, count) -> viewModel.dniField.setValue(text.toString())}"
-                tools:hint="@string/digit_dni" />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayoutCompat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="@{viewModel.searchType == SearchType.BY_NAME_AND_LAST_NAME ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toBottomOf="@+id/findSubscriptionEditText">
 
-            <Button
-                android:id="@+id/btnFind"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewModel.search()}"
-                android:text="@string/search" />
+                android:error="@{viewModel.firstNameField.errorLiveData}"
+                android:hint="@{viewModel.firstNameField.hint}">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="textAutoComplete"
+                    android:text="@={viewModel.firstNameField.liveData}"
+                   />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:error="@{viewModel.lastNameField.errorLiveData}"
+                android:hint="@{viewModel.lastNameField.hint}">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="textAutoComplete"
+                    android:text="@={viewModel.lastNameField.liveData}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/findSubscriptionRecyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="1dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="1dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dniFilter" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat" />
 
         <ProgressBar
             android:id="@+id/pbar_find_subscription"

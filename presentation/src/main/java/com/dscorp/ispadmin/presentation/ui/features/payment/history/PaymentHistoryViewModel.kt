@@ -17,9 +17,8 @@ import kotlinx.coroutines.flow.map
 
 class PaymentHistoryViewModel(val repository: IRepository) :
     BaseViewModel<PaymentHistoryUiState>() {
-
     companion object {
-        const val LAST_PAYMENTS_LIMIT = 10
+        const val LAST_PAYMENTS_ROW_LIMIT = 10
     }
 
     private val payments = MutableLiveData<List<Payment>>()

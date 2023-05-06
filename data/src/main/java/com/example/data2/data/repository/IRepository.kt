@@ -1,10 +1,32 @@
 package com.example.data2.data.repository
 
-import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.cleanarchitecture.domain.domain.entity.Coupon
+import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
+import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
+import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
+import com.example.cleanarchitecture.domain.domain.entity.FirebaseBody
+import com.example.cleanarchitecture.domain.domain.entity.Ip
+import com.example.cleanarchitecture.domain.domain.entity.IpPool
+import com.example.cleanarchitecture.domain.domain.entity.Loging
+import com.example.cleanarchitecture.domain.domain.entity.Mufa
+import com.example.cleanarchitecture.domain.domain.entity.NapBox
+import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDeviceResponse
+import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.cleanarchitecture.domain.domain.entity.Payment
+import com.example.cleanarchitecture.domain.domain.entity.Place
+import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.domain.entity.Plan
+import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
+import com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse
+import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.Technician
+import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
-import com.example.cleanarchitecture.domain.domain.entity.Onu
-import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 
 /**
@@ -75,5 +97,9 @@ interface IRepository {
     suspend fun updatePlan(plan: Plan): PlanResponse
     suspend fun savePaymentCommitment(id: Int)
     suspend fun reactivateService(subscription: SubscriptionResponse)
+    suspend fun findSubscriptionByNameAndLastName(
+        name: String?,
+        lastName: String?
+    ): List<SubscriptionResponse>
 
 }

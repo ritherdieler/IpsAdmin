@@ -27,13 +27,13 @@ import java.util.Calendar
 class PaymentHistoryFragment :
     BaseFragment<PaymentHistoryUiState, FragmentConsultPaymentsBinding>(),
     PaymentHistoryAdapterListener {
-    private val args: PaymentHistoryFragmentArgs by navArgs()
+    override val viewModel: PaymentHistoryViewModel by viewModel()
     override val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
-    val adapter by lazy { PaymentHistoryAdapter(this) }
+    private val args: PaymentHistoryFragmentArgs by navArgs()
 
+    val adapter by lazy { PaymentHistoryAdapter(this) }
     private var selectedEndDate: Long? = null
     private var selectedStartDate: Long? = null
-    override val viewModel: PaymentHistoryViewModel by viewModel()
 
     override fun handleState(state: PaymentHistoryUiState) {
         when (state) {
@@ -67,7 +67,7 @@ class PaymentHistoryFragment :
     private fun getPayments() {
         viewModel.getLastPayments(
             args.subscription.id,
-            PaymentHistoryViewModel.LAST_PAYMENTS_LIMIT
+            PaymentHistoryViewModel.LAST_PAYMENTS_ROW_LIMIT
         )
     }
 
@@ -156,11 +156,8 @@ class PaymentHistoryFragment :
     }
 
     override fun onPaymentHistoryItemClicked(payment: Payment) {
-
         val action = if (!payment.paid) toRegisterPayment(payment)
         else actionPaymentHistoryFragmentToPaymentDetailFragment(payment)
-
         findNavController().navigate(action)
-
     }
 }
