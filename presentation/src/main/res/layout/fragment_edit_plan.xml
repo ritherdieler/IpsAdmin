@@ -24,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:error="@{viewModel.planDownloadSpeedField.errorLiveData}"
             android:hint="@{viewModel.planNameField.hint}">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -42,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:error="@{viewModel.planDownloadSpeedField.errorLiveData}"
             android:hint="@{viewModel.planPriceField.hint}">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -98,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/update" />
+            app:text="@string/update" />
 
     </LinearLayout>
 </layout>

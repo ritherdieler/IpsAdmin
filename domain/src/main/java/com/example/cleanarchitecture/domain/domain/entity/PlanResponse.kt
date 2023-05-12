@@ -6,6 +6,7 @@ data class PlanResponse(
     var price: Double?=null,
     var downloadSpeed: String?=null,
     var uploadSpeed: String?=null,
+    var type: PlanType
     ):java.io.Serializable
 {
     override fun toString(): String {
@@ -25,5 +26,8 @@ data class PlanResponse(
 
     fun uploadSpeedToString(): String {
         return "${uploadSpeed}Mbps"
+    }
+    enum class PlanType {
+        WIRELESS, FIBER
     }
 }

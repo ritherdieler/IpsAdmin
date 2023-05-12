@@ -3,12 +3,8 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapboxMapBinding
@@ -128,7 +124,7 @@ class NapBoxMapFragment : BaseFragment<MufaUiState, FragmentNapboxMapBinding>(),
         setFragmentResult(
             NAP_BOX_SELECTION_RESULT,
             Bundle().apply { putSerializable(NAP_BOX_OBJECT, napBox) })
-        findNavController().popBackStack(R.id.nav_subscription, false)
+        findNavController().popBackStack(R.id.nav_register_subscription, false)
 
     }
 

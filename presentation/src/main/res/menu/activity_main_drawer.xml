@@ -13,7 +13,7 @@
             android:title="@string/dashboard"
             />
         <item
-            android:id="@+id/nav_subscription"
+            android:id="@+id/nav_register_subscription"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/menu_subscription" />
         <item

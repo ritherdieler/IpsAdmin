@@ -19,6 +19,7 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
 
     var registerButtonProgress = MutableLiveData(false)
 
+
     val paymentMethodField = ReactiveFormField<String?>(
         hintResourceId = R.string.payment_method,
         errorResourceId = R.string.must_select_payment_method,

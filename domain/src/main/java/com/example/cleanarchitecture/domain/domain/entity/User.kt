@@ -11,7 +11,7 @@ data class User(
     val id: Int? = null,
     val name: String,
     val lastName: String,
-    val type: UserType? = null,
+    val type: UserType,
     val username: String,
     var password: String,
     val verified: Boolean,
@@ -28,6 +28,6 @@ data class User(
         SECRETARY("Secretario")
     }
 
-    fun typeAsString() = type?.value ?: ""
+    fun typeAsString() = type.value
 
 }

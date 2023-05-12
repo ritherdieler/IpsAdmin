@@ -210,5 +210,7 @@
     <string name="first_name">Nombres</string>
     <string name="nameAndLastName">Nombre y Apellido</string>
     <string name="date">Fecha</string>
+    <string name="dont_have_your_location_permission">No tenemos permiso para acceder a tu ubicación.\nPor favor concede el permiso para poder continuar.</string>
+    <string name="go_to_settings">Ir a configuraciones</string>
 
 </resources>

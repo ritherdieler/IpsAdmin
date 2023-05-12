@@ -5,11 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
+import com.dscorp.ispadmin.presentation.extension.formIsValid
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
-import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
+import com.example.cleanarchitecture.domain.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
 import com.example.data2.data.repository.IRepository
@@ -38,6 +48,17 @@ class RegisterSubscriptionViewModel(
     private val wirelessCpeDevices = cpeDevices.map { cpeDevices ->
         cpeDevices?.filter { it.networkDeviceType == NetworkDevice.NetworkDeviceType.WIRELESS_ROUTER }
     }
+
+    private val plans = MutableStateFlow<List<PlanResponse>?>(null)
+
+    private val plansFiber = plans.map { plans ->
+        plans?.filter { it.type == PlanResponse.PlanType.FIBER }
+    }
+
+    private val plansWireless = plans.map { plans ->
+        plans?.filter { it.type == PlanResponse.PlanType.WIRELESS }
+    }
+
 
     val firstNameField = ReactiveFormField<String?>(
         hintResourceId = R.string.name,
@@ -135,7 +156,7 @@ class RegisterSubscriptionViewModel(
     ) { true }
 
     fun getFormData() =
-        executeNoProgress (onSuccess = {
+        executeNoProgress(onSuccess = {
             uiState.value = BaseUiState(uiState = ShimmerVisibility(false))
         }) {
             val cpeDevicesJob = it.async { repository.getCpeDevices() }
@@ -151,7 +172,7 @@ class RegisterSubscriptionViewModel(
             val unconfirmedOnusJob = it.async { repository.getUnconfirmedOnus() }
 
             val genericDevices = genericDevicesJob.await()
-            val plans = plansJob.await()
+            this.plans.value = plansJob.await()
             val places = placeJob.await()
             val technicians = deferredTechnicians.await()
             val napBoxes = napBoxesJob.await()
@@ -159,18 +180,35 @@ class RegisterSubscriptionViewModel(
             val unconfirmedOnus = unconfirmedOnusJob.await()
             uiState.value = BaseUiState(
                 uiState = FormDataFound(
-                    plans, genericDevices, places,
+                    genericDevices, places,
                     technicians, napBoxes, coreDevices, unconfirmedOnus
                 )
             )
         }
 
-    fun getOnuData() = executeNoProgress (doFinally = {
+    fun getOnuData() = executeNoProgress(doFinally = {
         uiState.value = BaseUiState(uiState = RefreshingOnus(false))
     }) {
         uiState.value = BaseUiState(uiState = RefreshingOnus(true))
         val unconfirmedOnus = repository.getUnconfirmedOnus()
         uiState.value = BaseUiState(uiState = OnOnuDataFound(unconfirmedOnus))
+    }
+
+
+    fun getFiberPlans() = executeNoProgress {
+        plansFiber.collectLatest {
+            it?.let {
+                uiState.value = BaseUiState(PlansFound(it))
+            }
+        }
+    }
+
+    fun getWirelessPlans() = executeNoProgress {
+        plansWireless.collectLatest {
+            it?.let {
+                uiState.value = BaseUiState(PlansFound(it))
+            }
+        }
     }
 
     fun getFiberDevices() = executeNoProgress {
@@ -233,6 +271,7 @@ class RegisterSubscriptionViewModel(
                 napBoxId = napBoxField.getValue()?.id
                 onu = onuField.getValue()
             }
+
             InstallationType.WIRELESS -> subscription
             else -> throw Exception("Invalid Installation Type")
         }
@@ -264,9 +303,7 @@ class RegisterSubscriptionViewModel(
             }
         }
 
-        formFields.forEach { it.isValid() }
-
-        return formFields.all { it.isValid() }
+        return formFields.formIsValid()
     }
 
     fun addSelectedAdditionalNetworkDeviceToList() {

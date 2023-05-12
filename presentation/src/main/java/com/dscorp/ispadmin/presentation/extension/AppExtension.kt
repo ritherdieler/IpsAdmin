@@ -4,10 +4,12 @@ import android.R
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Environment
 import android.os.Looper
+import android.provider.Settings
 import android.util.Base64
 import android.view.View
 import android.view.animation.Animation
@@ -117,46 +119,49 @@ fun <T> MaterialAutoCompleteTextView.populate(data: List<T>, onItemSelected: (T)
 
 
 fun Fragment.showCrossDialog(
-    text: String? = null,
+    text: Any? = null,
+    lottieRes: Int? = null,
+    cancelable: Boolean = false,
     closeButtonClickListener: (() -> Unit)? = null,
     positiveButtonClickListener: (() -> Unit)? = null
 ) {
     CrossDialogFragment(
-        text = text,
+        text = when (text) {
+            is String -> text
+            is Int -> getString(text)
+            else -> ""
+        },
+        lottieResource = lottieRes,
         onCloseButtonClick = closeButtonClickListener ?: positiveButtonClickListener,
         onPositiveButtonClick = positiveButtonClickListener
-    ).apply { isCancelable = false }.show(
+    ).apply { isCancelable = cancelable }.show(
         childFragmentManager,
         CrossDialogFragment::class.simpleName
     )
 }
 
 fun AppCompatActivity.showCrossDialog(
-    text: String? = null,
+    text: Any? = null,
+    lottieRes: Int? = null,
     cancelable: Boolean = false,
-    positiveButtonClickListener: (() -> Unit)? = null,
-
-    ) {
-    CrossDialogFragment(text = text, onPositiveButtonClick = positiveButtonClickListener).apply { isCancelable = cancelable }.show(
+    closeButtonClickListener: (() -> Unit)? = null,
+    positiveButtonClickListener: (() -> Unit)? = null
+) {
+    CrossDialogFragment(
+        text = when (text) {
+            is String -> text
+            is Int -> getString(text)
+            else -> ""
+        },
+        lottieResource = lottieRes,
+        onCloseButtonClick = closeButtonClickListener ?: positiveButtonClickListener,
+        onPositiveButtonClick = positiveButtonClickListener
+    ).apply { isCancelable = cancelable }.show(
         supportFragmentManager,
         CrossDialogFragment::class.simpleName
     )
 }
 
-fun AppCompatActivity.showCrossDialog(
-    text: Int,
-    lottieRes : Int? = null,
-    cancelable: Boolean = false,
-    positiveButtonClickListener: (() -> Unit)? = null,
-
-    ) {
-    CrossDialogFragment(text = getString(text), lottieResource = lottieRes , onCloseButtonClick = positiveButtonClickListener).apply {
-        isCancelable = cancelable
-    }.show(
-        supportFragmentManager,
-        CrossDialogFragment::class.simpleName
-    )
-}
 
 
 @SuppressLint("MissingPermission")
@@ -182,7 +187,7 @@ fun FusedLocationProviderClient.getCurrentLocation(onLocation: (LatLng) -> Unit)
     )
 }
 
-fun Fragment.checkGpsEnabled(onGpsEnabled: () -> Unit) {
+fun Fragment.withGpsEnabled(onGpsEnabled: () -> Unit) {
     if ((requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager).isProviderEnabled(
             LocationManager.GPS_PROVIDER
         )
@@ -256,4 +261,22 @@ fun Boolean.visibilityFromBoolean(): Int {
 fun List<ReactiveFormField<*>>.formIsValid(): Boolean {
     forEach { it.isValid() }
     return this.all { it.isValid() }
+}
+
+
+//fun Fragment.openPermissionSettings(isRational: Boolean = false ) {
+//    if (!isRational)
+//        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+//    else {
+//        val intent = Intent()
+//        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+//        val uri = Uri.fromParts("package", requireActivity().packageName, null)
+//        intent.data = uri
+//        startActivity(intent)
+//    }
+//}
+
+fun Fragment.openLocationSetting(){
+    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+
 }

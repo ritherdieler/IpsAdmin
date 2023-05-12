@@ -6,16 +6,8 @@ import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-class MainActivityViewModel(private val repository: IRepository) : ViewModel() {
+class MainActivityViewModel(repository: IRepository) : ViewModel() {
 
-    val uiState = MutableStateFlow<MainActivityUiState>(MainActivityUiState.Idle)
+    val user = repository.getUserSession()
 
-    init {
-        getUserSession()
-    }
-
-    private fun getUserSession() = viewModelScope.launch {
-        val response = repository.getUserSession()
-        response?.let { uiState.emit(MainActivityUiState.UserSessionsFound(response)) }
-    }
 }

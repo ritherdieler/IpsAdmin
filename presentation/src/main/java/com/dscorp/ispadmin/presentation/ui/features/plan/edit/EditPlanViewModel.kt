@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.ui.features.plan.edit
 
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.presentation.extension.formIsValid
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
@@ -15,22 +16,22 @@ class EditPlanViewModel(val repository: IRepository) : BaseViewModel<EditPlanUiS
     val planNameField = ReactiveFormField<String>(
         hintResourceId = R.string.plan_name,
         errorResourceId = R.string.invalidPlanName
-    ) { it.isNullOrEmpty() }
+    ) { !it.isNullOrEmpty() }
 
     val planPriceField = ReactiveFormField<String>(
         hintResourceId = R.string.plan_price,
         errorResourceId = R.string.invalidPrice
-    ) { it.isNullOrEmpty() }
+    ) { !it.isNullOrEmpty() }
 
     val planDownloadSpeedField = ReactiveFormField<String>(
         hintResourceId = R.string.download_speed_in_mb,
         errorResourceId = R.string.invalid_value
-    ) { it.isNullOrEmpty() }
+    ) { !it.isNullOrEmpty() }
 
     val planUploadSpeedField = ReactiveFormField<String>(
         hintResourceId = R.string.upload_speed_in_mb,
         errorResourceId = R.string.invalid_value
-    ) { it.isNullOrEmpty() }
+    ) { !it.isNullOrEmpty() }
 
     fun setInitialPlanData(plan: PlanResponse) {
         planId = plan.id
@@ -62,5 +63,5 @@ class EditPlanViewModel(val repository: IRepository) : BaseViewModel<EditPlanUiS
         planPriceField,
         planDownloadSpeedField,
         planUploadSpeedField
-    ).all { it.isValid() }
+    ).formIsValid()
 }

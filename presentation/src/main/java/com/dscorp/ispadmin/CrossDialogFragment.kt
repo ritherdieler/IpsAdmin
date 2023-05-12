@@ -10,8 +10,9 @@ import com.dscorp.ispadmin.databinding.FragmentCrossDialogBinding
 class CrossDialogFragment(
     val text: String? = null,
     val lottieResource: Int? = null,
+    val positiveButtonText: String? = null,
     val onCloseButtonClick: (() -> Unit)? = null,
-    val onPositiveButtonClick: (() -> Unit)? = null
+    val onPositiveButtonClick: (() -> Unit)? = null,
 ) :
     DialogFragment() {
 
@@ -35,6 +36,9 @@ class CrossDialogFragment(
             else onPositiveButtonClick.invoke()
         }
 
+        positiveButtonText?.let {
+            binding.acceptButton.text = it
+        }
 
         binding.closeButton.setOnClickListener {
             if (onCloseButtonClick == null) dismiss()

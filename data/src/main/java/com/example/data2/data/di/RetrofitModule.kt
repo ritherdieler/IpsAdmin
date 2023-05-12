@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 const val BASE_URL = "BASE_URL"
 
@@ -30,6 +31,9 @@ fun provideRetrofit(url: String, okHttpClient: OkHttpClient): Retrofit {
 
 fun provideHttpClient(context:Context): OkHttpClient {
     val httpClient = OkHttpClient.Builder()
+        .connectTimeout(1, TimeUnit.MINUTES)
+        .writeTimeout(2, TimeUnit.MINUTES)
+        .readTimeout(1, TimeUnit.MINUTES)
     val logging = HttpLoggingInterceptor()
     logging.level = HttpLoggingInterceptor.Level.BODY
     httpClient.addInterceptor(logging)

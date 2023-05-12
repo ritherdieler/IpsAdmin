@@ -58,7 +58,7 @@ class LoginViewModel(private val repository: IRepository) : BaseViewModel<LoginR
     fun doLogin() = executeWithProgress {
         if (!formIsValid()) return@executeWithProgress
         val login =
-            Loging(username.value!!, password.value?.encryptWithSHA384()!!, remember.value)
+            Loging(username.value!!, password.value!!, remember.value)
         val responseFromRepository = repository.doLogin(login)
         uiState.value = BaseUiState(LoginResponse.OnLoginSuccess(responseFromRepository))
     }

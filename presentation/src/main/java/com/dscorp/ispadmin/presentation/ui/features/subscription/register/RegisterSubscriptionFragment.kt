@@ -4,15 +4,10 @@ import NapBoxMapFragment.Companion.NAP_BOX_OBJECT
 import NapBoxMapFragment.Companion.NAP_BOX_SELECTION_RESULT
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentRegisterSubscriptionBinding
@@ -21,9 +16,9 @@ import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFragment.LocationRequestOrigin.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFragmentDirections.*
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.util.PermissionManager
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
 import com.google.android.gms.location.*
@@ -36,45 +31,19 @@ import kotlin.time.DurationUnit
 
 class RegisterSubscriptionFragment :
     BaseFragment<RegisterSubscriptionUiState, FragmentRegisterSubscriptionBinding>() {
+
     override val binding by lazy { FragmentRegisterSubscriptionBinding.inflate(layoutInflater) }
     override val viewModel: RegisterSubscriptionViewModel by viewModel()
-    private var rationaleShown = false
-    private var locationReqOrigin: LocationRequestOrigin? = null
+
+    private lateinit var permissionManager: PermissionManager
+
     private val additionalDevicesAdapter by lazy {
-        ArrayAdapter<NetworkDevice>(
-            requireContext(),
-            android.R.layout.simple_spinner_item
-        )
+        ArrayAdapter<NetworkDevice>(requireContext(), android.R.layout.simple_spinner_item)
     }
 
     private val fusedLocationClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireActivity())
     }
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (isGranted)
-                checkGpsEnabled {
-                    if (locationReqOrigin == null) return@checkGpsEnabled
-                    when (locationReqOrigin!!) {
-                        NAP_BOX_TEXT_BOX -> {
-                            val action = saveSubscriptionToNapBoxMapFragment()
-                            findNavController().navigate(action)
-                        }
-                        MY_LOCATION_BUTTON -> {
-                            getCurrentLocation()
-                        }
-
-                        LOCATION_TEXT_BOX -> {
-                            val action = actionNavSubscriptionToMapDialog()
-                            findNavController().navigate(action)
-                        }
-
-                    }
-                }
-            else
-                if (rationaleShown) openLocationSettings(requireActivity())
-        }
 
     override fun handleState(state: RegisterSubscriptionUiState) {
         when (state) {
@@ -86,6 +55,13 @@ class RegisterSubscriptionFragment :
             is OnOnuDataFound -> populateOnuSpinner(state)
             is RefreshingOnus -> showOnusRefreshing(state.isRefreshing)
             is ShimmerVisibility -> showLoadingStatus(state.showShimmer)
+            is PlansFound -> fillPlanSpinner(state.plans)
+        }
+    }
+
+    private fun fillPlanSpinner(plans: List<PlanResponse>) {
+        binding.etPlan.populate(plans) {
+            viewModel.planField.liveData.value = it
         }
     }
 
@@ -100,10 +76,18 @@ class RegisterSubscriptionFragment :
         }
     }
 
+
     override fun onViewReady(savedInstanceState: Bundle?) {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
+
+        permissionManager = PermissionManager(
+            this,
+            onDeny = { openLocationSetting() },
+            onRationale = {
+                showLocationRationaleDialog()
+            })
 
         observeNapBoxSelection()
 
@@ -123,8 +107,14 @@ class RegisterSubscriptionFragment :
             viewModel.registerSubscription()
         }
         binding.ivMyLocation.setOnClickListener {
-            locationReqOrigin = MY_LOCATION_BUTTON
-            requestLocationPermission()
+            withGpsEnabled {
+                permissionManager.requestPermission(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    onGranted = {
+                        getCurrentLocation()
+                    }
+                )
+            }
         }
 
         binding.etSubscriptionDate.setOnClickListener {
@@ -132,8 +122,14 @@ class RegisterSubscriptionFragment :
         }
 
         binding.etLocationSubscription.setOnClickListener {
-            locationReqOrigin = LOCATION_TEXT_BOX
-            requestLocationPermission()
+            withGpsEnabled {
+                permissionManager.requestPermission(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    onGranted = {
+                        findNavController().navigate(actionNavSubscriptionToMapDialog())
+                    }
+                )
+            }
         }
 
         binding.chkAdditionalDevices.setOnCheckedChangeListener { _, isChecked ->
@@ -153,8 +149,14 @@ class RegisterSubscriptionFragment :
         }
 
         binding.acNapBox.setOnLongClickListener {
-            locationReqOrigin = NAP_BOX_TEXT_BOX
-            requestLocationPermission()
+            withGpsEnabled {
+                permissionManager.requestPermission(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    onGranted = {
+                        findNavController().navigate(saveSubscriptionToNapBoxMapFragment())
+                    }
+                )
+            }
             true
         }
 
@@ -176,23 +178,6 @@ class RegisterSubscriptionFragment :
         }
     }
 
-    private fun requestLocationPermission() {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            AlertDialog.Builder(requireContext())
-                .setTitle("Permiso de ubicación requerido")
-                .setMessage("Se requiere el permiso de ubicación para obtener la ubicación actual")
-                .setPositiveButton("OK") { _, _ ->
-                    requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                }
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show()
-            rationaleShown = true
-        } else {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-    }
-
     private fun setInstallationTypeRadioGroupListener() {
         binding.rgInstallationType.setOnCheckedChangeListener { _, checkedId ->
             resetCpeSpinner()
@@ -202,11 +187,13 @@ class RegisterSubscriptionFragment :
             binding.tlAditonalNetworkDevices.visibility = View.VISIBLE
             binding.tlCpeNetworkDevice.visibility = View.VISIBLE
             binding.chkAdditionalDevices.visibility = View.VISIBLE
+            resetPlanSpinner()
 
             when (checkedId) {
                 R.id.rbFiber -> {
                     viewModel.installationType.value = InstallationType.FIBER
                     viewModel.getFiberDevices()
+                    viewModel.getFiberPlans()
                     binding.spnNapBox.visibility = View.VISIBLE
                     binding.tlOnu.visibility = View.VISIBLE
                     binding.ivRefresh.visibility = View.VISIBLE
@@ -215,6 +202,7 @@ class RegisterSubscriptionFragment :
                 R.id.rbWireless -> {
                     viewModel.installationType.value = InstallationType.WIRELESS
                     viewModel.getWirelessDevices()
+                    viewModel.getWirelessPlans()
                     binding.spnNapBox.visibility = View.GONE
                     binding.tlOnu.visibility = View.GONE
                     binding.ivRefresh.visibility = View.GONE
@@ -222,6 +210,11 @@ class RegisterSubscriptionFragment :
             }
             moveScrollViewToBottom()
         }
+    }
+
+    private fun resetPlanSpinner() {
+        viewModel.planField.liveData.value = null
+        binding.etPlan.setText("")
     }
 
     private fun resetNapBoxSpinner() {
@@ -301,17 +294,19 @@ class RegisterSubscriptionFragment :
     }
 
     private fun fillFormSpinners(response: FormDataFound) {
-        binding.etPlan.populate(response.plans) {
-            viewModel.planField.liveData.value = it
-        }
+
         binding.etPlace.populate(response.places) {
             viewModel.placeField.liveData.value = it
         }
+
         populateTechnicianSpinner(response)
+
         binding.acNapBox.populate(response.napBoxes) {
             viewModel.napBoxField.liveData.value = it
         }
+
         populateHostDeviceSpinner(response)
+
         binding.acAditionalNetworkDevices.populate(response.networkDevices) {
             viewModel.selectedAdditionalDevice.value = it
         }
@@ -342,7 +337,6 @@ class RegisterSubscriptionFragment :
             binding.spnHostDevice.isEnabled = false
             binding.spnHostDevice.visibility = View.GONE
         }
-
     }
 
     private fun showDatePicker() {
@@ -371,17 +365,6 @@ class RegisterSubscriptionFragment :
             binding.etSubscriptionDate.setText(formattedDate)
         }
         datePicker.show(childFragmentManager, "DatePicker")
-    }
-
-    private fun openLocationSettings(activity: Activity) {
-        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        activity.startActivity(intent)
-    }
-
-    enum class LocationRequestOrigin {
-        NAP_BOX_TEXT_BOX,
-        MY_LOCATION_BUTTON,
-        LOCATION_TEXT_BOX
     }
 
 }

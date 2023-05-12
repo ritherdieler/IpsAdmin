@@ -17,6 +17,7 @@ abstract class BaseFragment<T, U : ViewDataBinding> : Fragment() {
     protected val firebaseAnalytics: FirebaseAnalytics by inject()
     protected abstract val viewModel: BaseViewModel<T>
     protected abstract val binding: U
+
     protected abstract fun handleState(state: T)
 
     private val fullScreenProgressDialog: ProgressFullScreenDialogFragment by lazy {
