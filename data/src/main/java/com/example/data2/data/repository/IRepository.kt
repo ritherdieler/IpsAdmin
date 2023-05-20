@@ -102,4 +102,6 @@ interface IRepository {
         lastName: String?
     ): List<SubscriptionResponse>
 
+    suspend fun downloadDebtorsCutOffCandidatesSubscriptionsDocument(): DownloadDocumentResponse
+   suspend fun cancelSubscription(subscription: SubscriptionResponse)
 }

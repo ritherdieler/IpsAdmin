@@ -4,26 +4,26 @@ import android.widget.CompoundButton
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.extension.formIsValid
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
+import com.dscorp.ispadmin.presentation.ui.features.forms.SubscriptionForm
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.CouponIsValid
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.FiberDevicesFound
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.FormDataFound
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.OnOnuDataFound
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.PlansFound
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.RefreshingOnus
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.RegisterSubscriptionSuccess
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.ShimmerVisibility
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.WirelessDevicesFound
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.InstallationType
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
-import com.example.cleanarchitecture.domain.domain.entity.Onu
-import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
-import com.example.cleanarchitecture.domain.domain.entity.Technician
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
 import com.example.data2.data.repository.IRepository
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 
 class RegisterSubscriptionViewModel(
     private val repository: IRepository,
+    val subscriptionForm: SubscriptionForm
 ) : BaseViewModel<RegisterSubscriptionUiState>() {
 
     var subscription: SubscriptionResponse? = null
@@ -58,102 +59,6 @@ class RegisterSubscriptionViewModel(
     private val plansWireless = plans.map { plans ->
         plans?.filter { it.type == PlanResponse.PlanType.WIRELESS }
     }
-
-
-    val firstNameField = ReactiveFormField<String?>(
-        hintResourceId = R.string.name,
-        errorResourceId = R.string.fieldMustNotBeEmpty
-    ) { !it.isNullOrEmpty() }
-
-    val lastNameField = ReactiveFormField<String?>(
-        hintResourceId = R.string.lastName,
-        errorResourceId = R.string.fieldMustNotBeEmpty
-    ) { !it.isNullOrEmpty() }
-
-    val dniField = ReactiveFormField<String?>(
-        hintResourceId = R.string.dni,
-        errorResourceId = R.string.invalidDNI
-    ) { it.isValidDni() }
-
-    val addressField = ReactiveFormField<String?>(
-        hintResourceId = R.string.address,
-        errorResourceId = R.string.fieldMustNotBeEmpty
-    ) { !it.isNullOrEmpty() }
-
-    val phoneField = ReactiveFormField<String?>(
-        hintResourceId = R.string.phoneNumer,
-        errorResourceId = R.string.invalidPhoneNumber
-    ) { it.isValidPhone() }
-
-    val couponField = ReactiveFormField<String?>(
-        hintResourceId = R.string.coupon,
-        errorResourceId = R.string.fieldMustNotBeEmpty
-    ) { true }
-
-    val priceField = ReactiveFormField<String?>(
-        hintResourceId = R.string.price,
-        errorResourceId = R.string.invalidPrice
-    ) { (it != null) && it.isNotEmpty() && (it.toDouble() > 0) }
-
-    val locationField = ReactiveFormField<LatLng?>(
-        hintResourceId = R.string.location,
-        errorResourceId = R.string.mustSelectLocation
-    ) { it != null }
-
-    val planField = ReactiveFormField<PlanResponse?>(
-        hintResourceId = R.string.plan,
-        errorResourceId = R.string.mustSelectPlan
-    ) { it != null }
-
-    val placeField = ReactiveFormField<PlaceResponse?>(
-        hintResourceId = R.string.place,
-        errorResourceId = R.string.mustSelectPlace
-    ) { it != null }
-
-    val technicianField = ReactiveFormField<Technician?>(
-        hintResourceId = R.string.technician,
-        errorResourceId = R.string.mustSelectTechnician
-    ) { it != null }
-
-    val hostDeviceField = ReactiveFormField<NetworkDevice?>(
-        hintResourceId = R.string.host_device,
-        errorResourceId = R.string.mustSelectHostDevice
-    ) { it != null }
-
-    val subscriptionDateField = ReactiveFormField<Long?>(
-        hintResourceId = R.string.subscriptionDate,
-        errorResourceId = R.string.mustSelectSubscriptionDate
-    ) { it != null }
-
-    val isMigrationField = ReactiveFormField<Boolean?>(
-        hintResourceId = R.string.empty,
-        errorResourceId = R.string.empty
-    ) { true }
-
-    val cpeDeviceField = ReactiveFormField<NetworkDevice?>(
-        hintResourceId = R.string.select_cpe_device,
-        errorResourceId = R.string.mustSelectCpeDevice
-    ) { it != null }
-
-    val napBoxField = ReactiveFormField<NapBoxResponse?>(
-        hintResourceId = R.string.selec_nap_box,
-        errorResourceId = R.string.mustSelectNapBox
-    ) { it != null }
-
-    val onuField = ReactiveFormField<Onu?>(
-        hintResourceId = R.string.select_onu,
-        errorResourceId = R.string.mustSelectOnu
-    ) { it != null }
-
-    val additionalDevicesField = ReactiveFormField<NetworkDevice?>(
-        hintResourceId = R.string.additionalDevices,
-        errorResourceId = R.string.youCanSelectAdditionalNetworkDevices
-    ) { true }
-
-    val noteField = ReactiveFormField<String?>(
-        hintResourceId = R.string.note,
-        errorResourceId = R.string.errorNote
-    ) { true }
 
     fun getFormData() =
         executeNoProgress(onSuccess = {
@@ -226,7 +131,7 @@ class RegisterSubscriptionViewModel(
     }
 
     fun activateCoupon() = executeWithProgress {
-        val response = repository.applyCoupon(couponField.getValue()!!)
+        val response = repository.applyCoupon(subscriptionForm.couponField.getValue()!!)
         if (response != null) uiState.value = BaseUiState(CouponIsValid(true))
         else uiState.value = BaseUiState(CouponIsValid(false))
     }
@@ -241,69 +146,71 @@ class RegisterSubscriptionViewModel(
     }
 
     private fun createSubscription(): Subscription {
+        with(subscriptionForm) {
+            val subscription = Subscription(
+                firstName = firstNameField.getValue(),
+                lastName = lastNameField.getValue(),
+                dni = dniField.getValue(),
+                address = addressField.getValue(),
+                phone = phoneField.getValue(),
+                subscriptionDate = subscriptionDateField.getValue(),
+                planId = planField.getValue()?.id,
+                additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
+                placeId = placeField.getValue()?.id,
+                technicianId = technicianField.getValue()?.id,
+                hostDeviceId = hostDeviceField.getValue()?.id,
+                location = GeoLocation(
+                    locationField.getValue()?.latitude ?: 0.0,
+                    locationField.getValue()?.longitude ?: 0.0
+                ),
+                cpeDeviceId = cpeDeviceField.getValue()?.id,
+                installationType = installationType.value,
+                price = priceField.getValue()?.toDouble(),
+                coupon = couponField.getValue(),
+                isMigration = isMigrationField.getValue(),
+                note = noteField.getValue()
+            )
 
-        val subscription = Subscription(
-            firstName = firstNameField.getValue(),
-            lastName = lastNameField.getValue(),
-            dni = dniField.getValue(),
-            address = addressField.getValue(),
-            phone = phoneField.getValue(),
-            subscriptionDate = subscriptionDateField.getValue(),
-            planId = planField.getValue()?.id,
-            additionalDeviceIds = additionalNetworkDevicesList.map { it.id!! },
-            placeId = placeField.getValue()?.id,
-            technicianId = technicianField.getValue()?.id,
-            hostDeviceId = hostDeviceField.getValue()?.id,
-            location = GeoLocation(
-                locationField.getValue()?.latitude ?: 0.0,
-                locationField.getValue()?.longitude ?: 0.0
-            ),
-            cpeDeviceId = cpeDeviceField.getValue()?.id,
-            installationType = installationType.value,
-            price = priceField.getValue()?.toDouble(),
-            coupon = couponField.getValue(),
-            isMigration = isMigrationField.getValue(),
-            note = noteField.getValue()
-        )
+            return when (installationType.value) {
+                InstallationType.FIBER -> subscription.apply {
+                    napBoxId = napBoxField.getValue()?.id
+                    onu = onuField.getValue()
+                }
 
-        return when (installationType.value) {
-            InstallationType.FIBER -> subscription.apply {
-                napBoxId = napBoxField.getValue()?.id
-                onu = onuField.getValue()
+                InstallationType.WIRELESS -> subscription
+                else -> throw Exception("Invalid Installation Type")
             }
-
-            InstallationType.WIRELESS -> subscription
-            else -> throw Exception("Invalid Installation Type")
         }
-
     }
 
     private fun formIsValid(): Boolean {
+        with(subscriptionForm) {
 
-        val formFields = mutableListOf(
-            firstNameField,
-            lastNameField,
-            dniField,
-            addressField,
-            phoneField,
-            priceField,
-            locationField,
-            planField,
-            placeField,
-            technicianField,
-            hostDeviceField,
-            subscriptionDateField,
-            cpeDeviceField,
-        )
+            val formFields = mutableListOf(
+                firstNameField,
+                lastNameField,
+                dniField,
+                addressField,
+                phoneField,
+                priceField,
+                locationField,
+                planField,
+                placeField,
+                technicianField,
+                hostDeviceField,
+                subscriptionDateField,
+                cpeDeviceField,
+            )
 
-        if (installationType.value == InstallationType.FIBER) {
-            formFields.apply {
-                add(napBoxField)
-                add(onuField)
+            if (installationType.value == InstallationType.FIBER) {
+                formFields.apply {
+                    add(napBoxField)
+                    add(onuField)
+                }
             }
-        }
 
-        return formFields.formIsValid()
+            return formFields.formIsValid()
+        }
     }
 
     fun addSelectedAdditionalNetworkDeviceToList() {
@@ -318,7 +225,7 @@ class RegisterSubscriptionViewModel(
     }
 
     fun onIsMigrationCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-        isMigrationField.liveData.value = isChecked
+        subscriptionForm.isMigrationField.liveData.value = isChecked
     }
 
 }

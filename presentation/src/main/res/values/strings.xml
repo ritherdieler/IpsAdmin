@@ -191,7 +191,7 @@
     <string name="payment_commitment_cant_create_at_last_day_of_month">El compromiso de pago no puede ser creado el uiltimo dia del mes</string>
     <string name="subscription_has_not_service_cut_off">El cliente no tiene el servicio cortado.</string>
     <string name="payment_commitment_cant_be_registered_in_different_month_tan_cut_off_date">El compromiso de pago no puede ser registrado en un mes diferente al del corte.</string>
-    <string name="payment_commitment_save_success">Se registro el compromiso de pago, el servicio fue reactivado.</string>
+    <string name="payment_commitment_save_success">Se registro el compromiso de pago correctamente.</string>
     <string name="reactivate_service">Reactivar servicio</string>
     <string name="service_reactivated_successfully">El servicio fue reactivado con exito</string>
     <string name="reactivate_service_message">Se reactivara la facturacion para este cliente. Solo se facturara  los dias restantes.</string>
@@ -212,5 +212,12 @@
     <string name="date">Fecha</string>
     <string name="dont_have_your_location_permission">No tenemos permiso para acceder a tu ubicación.\nPor favor concede el permiso para poder continuar.</string>
     <string name="go_to_settings">Ir a configuraciones</string>
+    <string name="cut_off_candidates">candidatos a corte</string>
+    <string name="cancel_subscription">Cancelar subscripción</string>
+    <string name="cancel_subscription_message">Esto hará que no se generen más facturas y no se incluya a este cliente en las métricas mensuales.</string>
+    <string name="service_cancelled_successfully">La suscripcion fue cancelada correctamente.</string>
+    <string name="subscription_updated">Datos de suscripción actualizados correctamente.</string>
+    <string name="must_digit_a_valid_ip">Debe digitar una direccion ip válida.</string>
+    <string name="edit_subscription_data">Editar datos de subscripcion</string>
 
 </resources>

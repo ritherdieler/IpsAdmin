@@ -73,6 +73,17 @@ fun Fragment.showSuccessDialog(
     successDialog.show()
 }
 
+fun Fragment.showSuccessDialog(
+    text: Int, onPositiveCallback: (() -> Unit)? = null
+) {
+    childFragmentManager.executePendingTransactions()
+    val dialogFactory: IDialogFactory by inject()
+    val successDialog =
+        dialogFactory.createSuccessDialog(requireContext(), getString(text), onPositiveCallback)
+    successDialog.setCancelable(false)
+    successDialog.show()
+}
+
 fun Fragment.showErrorDialog(error: String? = "Error desconocido") {
     val dialogFactory: IDialogFactory by inject()
     val errorDialog = dialogFactory.createErrorDialog(requireContext(), error ?: "")
@@ -232,13 +243,6 @@ fun ImageView.animateRotate360InLoop() {
             repeatCount = Animation.INFINITE
         }
     )
-}
-
-fun String.encryptWithSHA384(): String {
-    val bytes = MessageDigest
-        .getInstance("SHA-384")
-        .digest(this.toByteArray(StandardCharsets.UTF_8))
-    return bytes.fold("") { str, it -> str + "%02x".format(it) }
 }
 
 fun Calendar.isSameMonthAndYear(calendar: Calendar) =

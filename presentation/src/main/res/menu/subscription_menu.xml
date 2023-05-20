@@ -21,4 +21,7 @@
     <item
         android:id="@+id/btn_see_details"
         android:title="@string/see_details" />
+    <item
+        android:id="@+id/btn_cancel_subscription"
+        android:title="@string/cancel_subscription" />
 </menu>

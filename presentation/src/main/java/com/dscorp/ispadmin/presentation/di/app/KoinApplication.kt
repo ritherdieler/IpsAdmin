@@ -4,6 +4,7 @@ import android.app.Application
 import com.dscorp.ispadmin.presentation.di.modules.applicationModule
 import com.example.data2.data.di.apiModule
 import com.dscorp.ispadmin.presentation.di.modules.dialogFactoryModule
+import com.dscorp.ispadmin.presentation.di.modules.formFieldModule
 import com.example.data2.data.di.repositoryModule
 import com.dscorp.ispadmin.presentation.di.modules.viewModelModule
 import com.example.data2.data.di.BASE_URL
@@ -45,6 +46,7 @@ class KoinApplication : Application() {
                 dialogFactoryModule,
                 localDataModule,
                 applicationModule,
+                formFieldModule,
                 module {
                     single { firebaseAnalytics }
                 }

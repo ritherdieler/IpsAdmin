@@ -1,13 +1,13 @@
 package com.dscorp.ispadmin.presentation.ui.features.login
 
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.extension.encryptWithSHA384
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
 import com.example.cleanarchitecture.domain.domain.entity.Loging
 import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.data2.data.extensions.encryptWithSHA384
 import com.example.data2.data.repository.IRepository
 
 class LoginViewModel(private val repository: IRepository) : BaseViewModel<LoginResponse>() {
@@ -58,7 +58,7 @@ class LoginViewModel(private val repository: IRepository) : BaseViewModel<LoginR
     fun doLogin() = executeWithProgress {
         if (!formIsValid()) return@executeWithProgress
         val login =
-            Loging(username.value!!, password.value!!, remember.value)
+            Loging(username.value!!, password.value!!.encryptWithSHA384(), remember.value)
         val responseFromRepository = repository.doLogin(login)
         uiState.value = BaseUiState(LoginResponse.OnLoginSuccess(responseFromRepository))
     }

@@ -3,7 +3,6 @@ package com.dscorp.ispadmin.presentation.ui.features.registration
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendSignUpEvent
-import com.dscorp.ispadmin.presentation.extension.encryptWithSHA384
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
@@ -11,6 +10,7 @@ import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidEmail
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
+import com.example.data2.data.extensions.encryptWithSHA384
 import com.example.data2.data.repository.IRepository
 import com.google.firebase.analytics.FirebaseAnalytics
 
@@ -58,7 +58,8 @@ class RegisterViewModel(
         hintResourceId = R.string.repeat_password,
         errorResourceId = R.string.passwordsMustBeEquals
     ) {
-        !it.isNullOrEmpty() && !password1Field.getValue().isNullOrEmpty() && it == password1Field.getValue()!!
+        !it.isNullOrEmpty() && !password1Field.getValue()
+            .isNullOrEmpty() && it == password1Field.getValue()!!
     }
 
     fun registerUser() = executeWithProgress {

@@ -2,22 +2,18 @@ package com.dscorp.ispadmin.presentation.ui.features.report
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentReportsBinding
 import com.dscorp.ispadmin.presentation.extension.getDownloadedFileUri
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.CutOffSubscriptionsDocument
-import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.DebtorsSubscriptionsDocument
-import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.SuspendedSubscriptionsDocument
-import com.dscorp.ispadmin.presentation.ui.features.report.ReportsUiState.WithPaymentCommitmentSubscriptionsDocument
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -29,11 +25,7 @@ class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {
     override val viewModel: ReportsViewModel by viewModel()
     override fun handleState(state: ReportsUiState) =
         when (state) {
-            is CutOffSubscriptionsDocument -> downloadFile(state.document)
-            is DebtorsSubscriptionsDocument -> downloadFile(state.document)
-            is SuspendedSubscriptionsDocument -> downloadFile(state.document)
-            is WithPaymentCommitmentSubscriptionsDocument -> downloadFile(state.document)
-            is ReportsUiState.PastMonthSubscriptionDocument -> downloadFile(state.document)
+            is ReportsUiState.DocumentReady -> downloadFile(state.document)
         }
 
 
@@ -56,12 +48,18 @@ class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {
             DownloadDocumentType.SUSPENDED -> viewModel.downloadSuspendedSubscriptionsDocument()
             DownloadDocumentType.CUT_OFF -> viewModel.downloadCutOffSubscriptionsDocument()
             DownloadDocumentType.DEBTORS_FROM_PAST_MONTH -> viewModel.downloadPastMonthDebtors()
+            DownloadDocumentType.DEBTORS_CUT_OFF_CANDIDATES -> viewModel.downloadDebtorsCutOffCandidatesSubscriptionsDocument()
         }
 
     override fun onViewReady(savedInstanceState: Bundle?) {
+
+        binding.btnGetDebtorsCutOffCandidates.setOnClickListener {
+            downloadDocument(DownloadDocumentType.DEBTORS_CUT_OFF_CANDIDATES)
+        }
+
         binding.btnGetDebtorsCustomers.setOnClickListener {
 //            downloadDocumentType = DownloadDocumentType.DEBTORS
-                downloadDocument(DownloadDocumentType.DEBTORS)
+            downloadDocument(DownloadDocumentType.DEBTORS)
 //            requestExternalStoragePermissionAndDownloadDocument()
         }
 
@@ -93,19 +91,28 @@ class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {
 
         }
     }
-    private fun requestExternalStoragePermissionAndDownloadDocument() {
-//WRITE_EXTERNAL_STORAGE RUNTIME PERMISSION
-        requestPermissionManager.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    }
+
 
     private fun downloadFile(document: DownloadDocumentResponse) {
-        lifecycleScope.launch {
-            val uri = requireActivity().getDownloadedFileUri(document)
-            val intent = openWithXlsxApp(uri)
-            try {
-                startActivity(intent)
-            } catch (e: Exception) {
-                showErrorDialog("No se pudo abrir el archivo, el archivo se encuentra en la carpeta de descargas")
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                12
+            )
+        } else {
+            lifecycleScope.launch {
+                val uri = requireActivity().getDownloadedFileUri(document)
+                val intent = openWithXlsxApp(uri)
+                try {
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    showErrorDialog("No se pudo abrir el archivo, el archivo se encuentra en la carpeta de descargas")
+                }
             }
         }
     }
@@ -122,6 +129,7 @@ class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {
     }
 
     private enum class DownloadDocumentType {
+        DEBTORS_CUT_OFF_CANDIDATES,
         DEBTORS,
         WITH_PAYMENT_COMMITMENT,
         SUSPENDED,

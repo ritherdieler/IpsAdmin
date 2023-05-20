@@ -1,46 +1,45 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionDetailBinding
+import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
+import com.dscorp.ispadmin.presentation.extension.toGeoLocation
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SubscriptionDetailFragment : Fragment() {
+class SubscriptionDetailFragment :
+    BaseFragment<SubscriptionDetailUiState, FragmentSubscriptionDetailBinding>() {
+
     private val args: SubscriptionDetailFragmentArgs by navArgs()
-    val binding by lazy { FragmentSubscriptionDetailBinding.inflate(layoutInflater) }
-    lateinit var subscription: SubscriptionResponse
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override val viewModel: SubscriptionDetailViewModel by viewModel()
+    override val binding by lazy { FragmentSubscriptionDetailBinding.inflate(layoutInflater) }
 
-        subscription = args.subscription
+    override fun handleState(state: SubscriptionDetailUiState) {
+        when (state) {
+            SubscriptionDetailUiState.SubscriptionUpdated -> showSuccessDialog(R.string.subscription_updated)
+        }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun onViewReady(savedInstanceState: Bundle?) {
 
-        binding.subscription = subscription
+        viewModel.initForm(args.subscription)
+        binding.viewModel = viewModel
         binding.executePendingBindings()
 
-       binding.etLocation.setOnClickListener {
-           findNavController().navigate(
-             SubscriptionDetailFragmentDirections.actionSubscriptionDetailToMapView(
-                 subscription.location
-                    )
-            )
-       }
 
-        return binding.root
+        binding.etLocation.setOnClickListener {
+            viewModel.subscriptionForm.locationField.getValue()?.let {
+                findNavController().navigate(
+                    SubscriptionDetailFragmentDirections.actionSubscriptionDetailToMapView(
+                        it.toGeoLocation()
+                    )
+                )
+            }
+
+        }
     }
 }

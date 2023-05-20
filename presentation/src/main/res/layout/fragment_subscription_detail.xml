@@ -3,261 +3,316 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
-            name="subscription"
-            type="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+            name="viewModel"
+            type="com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailViewModel" />
+
     </data>
 
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <ScrollView
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.firstNameField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.firstNameField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etFirstName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.firstNameField.isEditableLiveData()}"
+                        android:text="@={viewModel.subscriptionForm.firstNameField.liveData}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.lastNameField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.lastNameField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLastName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.lastNameField.isEditableLiveData()}"
+                        android:text="@={viewModel.subscriptionForm.lastNameField.liveData}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.dniField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.dniField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDniSubscriptionDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.dniField.isEditableLiveData()}"
+                        android:text="@={viewModel.subscriptionForm.dniField.liveData}"  />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.addressField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.addressField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etAddressSubscriptionDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.addressField.isEditableLiveData()}"
+                        android:text="@={viewModel.subscriptionForm.addressField.liveData}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.ipField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.ipField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.ipField.isEditableLiveData()}"
+                        android:text="@={viewModel.subscriptionForm.ipField.liveData}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:focusable="false"
+                    android:error="@{viewModel.subscriptionForm.locationField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.locationField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.locationField.isEditableLiveData()}"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.phoneField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.phoneField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPhoneSubscriptionDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.phoneField.isEditableLiveData()}"
+                        android:text="@={viewModel.subscriptionForm.phoneField.liveData}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.planField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.planField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPlanSubscriptionDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.planField.isEditableLiveData()}"
+                        android:text="@{viewModel.subscriptionForm.planField.value.name}"
+
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.placeField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.placeField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPlaceSubscriptionDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.placeField.isEditableLiveData()}"
+                        android:text="@{viewModel.subscriptionForm.placeField.liveData.name}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.technicianField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.technicianField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTechnicianSubscriptionDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.technicianField.isEditableLiveData()}"
+                        android:text="@{viewModel.subscriptionForm.technicianField.toString()}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.subscriptionDateField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.subscriptionDateField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSubscriptionDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.subscriptionDateField.isEditableLiveData()}"
+                        android:text="@{viewModel.subscriptionForm.subscriptionDateField.liveData.toString()}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:hint="@{viewModel.subscriptionForm.isMigrationField().hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etIsMigration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.isMigrationField().isEditableLiveData()}"
+                        android:text="@{viewModel.subscriptionForm.isMigrationField().toString()}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.subscriptionForm.priceField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.priceField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="@{viewModel.subscriptionForm.priceField.isEditableLiveData()}"
+                        android:text="@{viewModel.subscriptionForm.priceField.toString()}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </ScrollView>
+
+        <!--        fab-->
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabEditSubscriptionDetail"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/baseline_edit_24"
+            app:fabSize="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:maxImageSize="35dp"
+            app:tint="#FFFFFF"
+            android:onClick="@{() -> viewModel.makeFieldsEditable()}"
+            android:contentDescription="@string/edit_subscription_data" />
+    </RelativeLayout>
 
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/fullName"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNameSubscriptionDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.fullName}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/dni"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDniSubscriptionDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.dni}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/address"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etAddressSubscriptionDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.address}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/ip_address"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.ip}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:focusable="false"
-                android:hint="@string/location"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@string/clickForOpenMap" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/phoneNumer"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPhoneSubscriptionDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.phone}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/plan"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPlanSubscriptionDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.plan.name}"
-
-                    />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/place"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPlaceSubscriptionDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.place.name}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/technician"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etTechnicianSubscriptionDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.technician.toString()}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/subscriptionDate"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSubscriptionDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.dateAsString()}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/isMigration"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etIsMigration"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.migrationAsString()}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:hint="@string/price"
-                app:endIconMode="clear_text"
-                app:endIconTint="#6750A4">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:text="@{subscription.price.toString()}" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-    </ScrollView>
 
 </layout>

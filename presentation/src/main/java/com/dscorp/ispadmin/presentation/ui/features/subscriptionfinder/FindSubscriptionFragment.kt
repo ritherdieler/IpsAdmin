@@ -3,7 +3,6 @@ package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
@@ -59,6 +58,10 @@ class FindSubscriptionFragment :
             }
 
             ReactivateServiceSuccess -> showSuccessDialog(getString(R.string.service_reactivated_successfully))
+            FindSubscriptionUiState.CancelSubscriptionSuccess -> {
+                adapter.submitList(emptyList())
+                showSuccessDialog(getString(R.string.service_cancelled_successfully))
+            }
         }
     }
 
@@ -81,13 +84,13 @@ class FindSubscriptionFragment :
             true
         }
 
-        binding.etFirstName.setOnEditorActionListener{_, actionId, _ ->
+        binding.etFirstName.setOnEditorActionListener { _, actionId, _ ->
             viewModel.findSubscriptionByNameAndLastName()
             true
         }
 
 
-        binding.etLastName.setOnEditorActionListener{_, actionId, _ ->
+        binding.etLastName.setOnEditorActionListener { _, actionId, _ ->
             viewModel.findSubscriptionByNameAndLastName()
             true
         }
@@ -148,12 +151,27 @@ class FindSubscriptionFragment :
                 R.id.btn_edit_plan_subscription -> navigateToEditSubscription(subscription)
                 R.id.btn_see_details -> navigateToDetails(subscription)
                 R.id.btn_reactivate_service -> showReactivateServiceDialog(subscription)
+                R.id.btn_cancel_subscription -> showCancelSubscriptionDialog(subscription)
                 else -> false
             }
         }
         popupMenu.inflate(R.menu.subscription_menu)
+        popupMenu.menu.findItem(R.id.btn_register_service_order).isVisible = false
         viewModel.filterMenuItems(subscription)
         popupMenu.show()
+    }
+
+    private fun showCancelSubscriptionDialog(subscription: SubscriptionResponse): Boolean {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.cancel_subscription)
+            .setMessage(R.string.cancel_subscription_message)
+            .setPositiveButton(R.string.yes) { p0, p1 ->
+                viewModel.cancelSubscription(subscription)
+            }
+            .setNegativeButton(R.string.cancel) { p0, p1 ->
+                p0.dismiss()
+            }.show()
+        return true
     }
 
     private fun showReactivateServiceDialog(subscription: SubscriptionResponse): Boolean {
@@ -201,11 +219,10 @@ class FindSubscriptionFragment :
     }
 
     private fun navigateToPaymentHistory(subscription: SubscriptionResponse): Boolean {
-        findNavController().navigate(
-            FindSubscriptionFragmentDirections.findSubscriptionToPaymentHistoryFragment(
-                subscription
-            )
+        val action = FindSubscriptionFragmentDirections.findSubscriptionToPaymentHistoryFragment(
+            subscription
         )
+        findNavController().navigate(action)
         return true
     }
 

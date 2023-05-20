@@ -106,14 +106,15 @@ class FindSubscriptionViewModel(
 
     fun savePaymentCommitment(subscription: SubscriptionResponse) = executeWithProgress {
         val currentDateCalendar = Calendar.getInstance()
-        if (subscription.lastCutOffDate == null) throw Exception(resourceProvider.getString(R.string.subscription_has_not_service_cut_off))
+        //la siguiente linea fue desactivada porque el cliente si debe poder registrar un compromiso de pago antes de que tenga el servicio cortado
+//        if (subscription.lastCutOffDate == null) throw Exception(resourceProvider.getString(R.string.subscription_has_not_service_cut_off))
 
-        val lasCancellationDateCalendar =
-            Calendar.getInstance().apply { timeInMillis = subscription.lastCutOffDate!! }
+//        val lasCancellationDateCalendar =
+//            Calendar.getInstance().apply { timeInMillis = subscription.lastCutOffDate!! }
         when {
-            !currentDateCalendar.isSameMonthAndYear(lasCancellationDateCalendar) -> {
-                throw Exception(resourceProvider.getString(R.string.payment_commitment_cant_be_registered_in_different_month_tan_cut_off_date))
-            }
+//            !currentDateCalendar.isSameMonthAndYear(lasCancellationDateCalendar) -> {
+//                throw Exception(resourceProvider.getString(R.string.payment_commitment_cant_be_registered_in_different_month_tan_cut_off_date))
+//            }
 
             currentDateCalendar.isLastDayOfMonth() -> {
                 throw Exception(resourceProvider.getString(R.string.payment_commitment_cant_create_at_last_day_of_month))
@@ -131,7 +132,7 @@ class FindSubscriptionViewModel(
         val currentCal = Calendar.getInstance()
         if (!subscription.isPaymentCommitment && !subscription.isReactivation) {
             when (subscription.serviceStatus) {
-                ServiceStatus.CUT_OFF -> {
+                ServiceStatus.CUT_OFF,ServiceStatus.ACTIVE -> {
                     handleCutOffUiState(subscription, currentCal)
                     // el servicio solo se puede reactivar si no tienes pagos pendientes
 //                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
@@ -158,18 +159,25 @@ class FindSubscriptionViewModel(
         subscription: SubscriptionResponse,
         currentCal: Calendar
     ) {
-        subscription.lastCutOffDate?.asCalendar()?.let {
+        //se quita el ultimo dia de corte porque se necesita poder registrar compromisos de pago antes de cortarle el servicio al cliente
+//        subscription.lastCutOffDate?.asCalendar()?.let {
             val showCommitmentOption =
-                it.isSameMonthAndYear(currentCal) && !currentCal.isLastDayOfMonth()
+//                Calendar.getInstance().isSameMonthAndYear(currentCal) &&
+                        !currentCal.isLastDayOfMonth()
             uiState.value = BaseUiState(
                 ShowPaymentCommitmentOption(showCommitmentOption)
             )
-        }
+//        }
     }
 
     fun reactivateService(subscription: SubscriptionResponse) = executeNoProgress() {
         repository.reactivateService(subscription)
         uiState.value = BaseUiState(FindSubscriptionUiState.ReactivateServiceSuccess)
+    }
+
+    fun cancelSubscription(subscription: SubscriptionResponse) = executeWithProgress {
+        repository.cancelSubscription(subscription)
+        uiState.value = BaseUiState(FindSubscriptionUiState.CancelSubscriptionSuccess)
     }
 
     enum class SearchType {
@@ -187,6 +195,8 @@ sealed interface FindSubscriptionUiState {
     class OnSubscriptionFound(val subscriptions: List<SubscriptionResponse>) :
         FindSubscriptionUiState
 
+
+    object CancelSubscriptionSuccess:FindSubscriptionUiState
     class ShowEditPlanOption(val showOption: Boolean) : FindSubscriptionUiState
 
     class ShowRegisterServiceOrder(val showOption: Boolean) : FindSubscriptionUiState

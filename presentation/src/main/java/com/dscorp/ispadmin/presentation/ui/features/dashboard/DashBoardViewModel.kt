@@ -1,10 +1,9 @@
 package com.dscorp.ispadmin.presentation.ui.features.dashboard
 
-import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.dscorp.ispadmin.presentation.extension.encryptWithSHA384
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
+import com.example.data2.data.extensions.encryptWithSHA384
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.delay
 import org.koin.core.component.KoinComponent
@@ -28,7 +27,10 @@ class DashBoardViewModel : BaseViewModel<DashBoardDataUiState>(), KoinComponent 
     }
 
     fun startServiceCut(password: String) = executeWithProgress() {
-        if (password.encryptWithSHA384() != (userSession?.password ?: "")) {
+        val pass = password.encryptWithSHA384()
+        val storedpass = userSession?.password?:""
+
+        if (pass != storedpass) {
             uiState.value =
                 BaseUiState(DashBoardDataUiState.InvalidPasswordError("Contraseña incorrecta"))
             return@executeWithProgress

@@ -41,8 +41,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.firstNameField.errorLiveData}"
-                    android:hint="@{viewModel.firstNameField.hint}"
+                    android:error="@{viewModel.subscriptionForm.firstNameField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.firstNameField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
                     tools:hint="@string/name">
@@ -51,7 +51,7 @@
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@={viewModel.firstNameField.liveData}" />
+                        android:text="@={viewModel.subscriptionForm.firstNameField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,8 +62,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.lastNameField.errorLiveData}"
-                    android:hint="@{viewModel.lastNameField.hint}"
+                    android:error="@{viewModel.subscriptionForm.lastNameField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.lastNameField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
                     tools:hint="@string/lastName">
@@ -72,7 +72,7 @@
                         android:id="@+id/etLastName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@={viewModel.lastNameField.liveData}" />
+                        android:text="@={viewModel.subscriptionForm.lastNameField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,8 +83,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.dniField.errorLiveData}"
-                    android:hint="@{viewModel.dniField.hint}"
+                    android:error="@{viewModel.subscriptionForm.dniField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.dniField.hint}"
                     app:counterEnabled="true"
                     app:counterMaxLength="8"
                     app:counterTextColor="@color/purple_base_app"
@@ -98,7 +98,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:maxLength="8"
-                        android:text="@={viewModel.dniField.liveData}" />
+                        android:text="@={viewModel.subscriptionForm.dniField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,8 +109,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
 
-                    android:error="@{viewModel.addressField.errorLiveData}"
-                    android:hint="@{viewModel.addressField.hint}"
+                    android:error="@{viewModel.subscriptionForm.addressField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.addressField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
                     tools:hint="@string/address">
@@ -119,7 +119,7 @@
                         android:id="@+id/etAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@={viewModel.addressField.liveData}" />
+                        android:text="@={viewModel.subscriptionForm.addressField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -130,8 +130,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.phoneField.errorLiveData}"
-                    android:hint="@{viewModel.phoneField.hint}"
+                    android:error="@{viewModel.subscriptionForm.phoneField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.phoneField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
                     tools:hint="Numero de telefono">
@@ -142,7 +142,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:maxLength="9"
-                        android:text="@={viewModel.phoneField.liveData}" />
+                        android:text="@={viewModel.subscriptionForm.phoneField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -154,8 +154,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.priceField.errorLiveData}"
-                    android:hint="@{viewModel.priceField.hint}"
+                    android:error="@{viewModel.subscriptionForm.priceField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.priceField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
                     tools:hint="Precio">
@@ -165,7 +165,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
-                        android:text="@={viewModel.priceField.liveData}" />
+                        android:text="@={viewModel.subscriptionForm.priceField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -182,9 +182,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:error="@{viewModel.locationField.errorLiveData}"
+                        android:error="@{viewModel.subscriptionForm.locationField.errorLiveData}"
                         android:focusable="false"
-                        android:hint="@{viewModel.locationField.hint}"
+                        android:hint="@{viewModel.subscriptionForm.locationField.hint}"
                         app:endIconMode="clear_text"
                         app:endIconTint="#6750A4"
                         tools:hint="@string/location">
@@ -217,8 +217,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.placeField.errorLiveData}"
-                    android:hint="@{viewModel.placeField.hint}"
+                    android:error="@{viewModel.subscriptionForm.placeField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.placeField.hint}"
                     tools:hint="@string/lugar">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -236,8 +236,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.technicianField.errorLiveData}"
-                    android:hint="@{viewModel.technicianField.hint}"
+                    android:error="@{viewModel.subscriptionForm.technicianField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.technicianField.hint}"
                     tools:hint="@string/technician">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -255,8 +255,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.hostDeviceField.errorLiveData}"
-                    android:hint="@{viewModel.hostDeviceField.hint}"
+                    android:error="@{viewModel.subscriptionForm.hostDeviceField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.hostDeviceField.hint}"
                     tools:hint="@string/host_device">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -274,9 +274,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionDateField.errorLiveData}"
+                    android:error="@{viewModel.subscriptionForm.subscriptionDateField.errorLiveData}"
                     android:focusable="false"
-                    android:hint="@{viewModel.subscriptionDateField.hint}"
+                    android:hint="@{viewModel.subscriptionForm.subscriptionDateField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
                     tools:hint="Fecha de Suscripción">
@@ -327,8 +327,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.planField.errorLiveData}"
-                    android:hint="@{viewModel.planField.hint}"
+                    android:error="@{viewModel.subscriptionForm.planField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.planField.hint}"
                     tools:hint="@string/plan">
 
                     <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -356,8 +356,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.cpeDeviceField.errorLiveData}"
-                    android:hint="@{viewModel.cpeDeviceField.hint}"
+                    android:error="@{viewModel.subscriptionForm.cpeDeviceField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.cpeDeviceField.hint}"
                     android:visibility="gone"
                     tools:hint="@string/select_cpe_device"
                     tools:visibility="visible">
@@ -377,8 +377,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.napBoxField.errorLiveData}"
-                    android:hint="@{viewModel.napBoxField.hint}"
+                    android:error="@{viewModel.subscriptionForm.napBoxField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.napBoxField.hint}"
                     android:visibility="gone"
                     tools:hint="@string/nap_box"
                     tools:visibility="visible">
@@ -407,8 +407,8 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="10dp"
                         android:layout_weight="1"
-                        android:error="@{viewModel.onuField.errorLiveData}"
-                        android:hint="@{viewModel.onuField.hint}"
+                        android:error="@{viewModel.subscriptionForm.onuField.errorLiveData}"
+                        android:hint="@{viewModel.subscriptionForm.onuField.hint}"
                         tools:hint="@string/select_onu"
                         tools:visibility="visible">
 
@@ -466,8 +466,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:layout_weight="1"
-                            android:error="@{viewModel.additionalDevicesField.errorLiveData}"
-                            android:hint="@{viewModel.additionalDevicesField.hint}"
+                            android:error="@{viewModel.subscriptionForm.additionalDevicesField.errorLiveData}"
+                            android:hint="@{viewModel.subscriptionForm.additionalDevicesField.hint}"
                             tools:hint="@string/additionalDevices">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -510,8 +510,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:error="@{viewModel.couponField.errorLiveData}"
-                        android:hint="@{viewModel.couponField.hint}"
+                        android:error="@{viewModel.subscriptionForm.couponField.errorLiveData}"
+                        android:hint="@{viewModel.subscriptionForm.couponField.hint}"
                         app:endIconMode="clear_text"
                         app:endIconTint="#6750A4"
                         tools:hint="Cupon">
@@ -520,7 +520,7 @@
                             android:id="@+id/etCupon"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@={viewModel.couponField.liveData}" />
+                            android:text="@={viewModel.subscriptionForm.couponField.liveData}" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -529,7 +529,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:enabled="@{viewModel.couponField.isValidLiveData()}"
+                        android:enabled="@{viewModel.subscriptionForm.couponField.isValidLiveData()}"
                         android:onClick="@{() -> viewModel.activateCoupon()}"
                         android:text="@string/activate" />
 
@@ -542,8 +542,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.noteField.errorLiveData}"
-                    android:hint="@{viewModel.noteField.hint}"
+                    android:error="@{viewModel.subscriptionForm.noteField.errorLiveData}"
+                    android:hint="@{viewModel.subscriptionForm.noteField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4"
                     tools:hint="Nota(opcional)">
@@ -552,7 +552,7 @@
                         android:id="@+id/etNote"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@={viewModel.noteField.liveData}" />
+                        android:text="@={viewModel.subscriptionForm.noteField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

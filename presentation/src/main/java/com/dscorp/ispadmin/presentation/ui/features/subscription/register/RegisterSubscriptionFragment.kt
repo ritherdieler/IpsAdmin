@@ -61,7 +61,7 @@ class RegisterSubscriptionFragment :
 
     private fun fillPlanSpinner(plans: List<PlanResponse>) {
         binding.etPlan.populate(plans) {
-            viewModel.planField.liveData.value = it
+            viewModel.subscriptionForm.planField.liveData.value = it
         }
     }
 
@@ -70,7 +70,7 @@ class RegisterSubscriptionFragment :
         binding.ivMyLocation.animateRotate360InLoop()
         fusedLocationClient.getCurrentLocation {
             binding.etLocationSubscription.setText("${it.latitude}, ${it.longitude}")
-            viewModel.locationField.liveData.value = it
+            viewModel.subscriptionForm.locationField.liveData.value = it
             binding.ivMyLocation.clearAnimation()
             binding.ivMyLocation.setImageResource(R.drawable.ic_my_location)
         }
@@ -162,7 +162,7 @@ class RegisterSubscriptionFragment :
 
         val currentTimeMillis = System.currentTimeMillis()
 
-        viewModel.subscriptionDateField.liveData.value = currentTimeMillis
+        viewModel.subscriptionForm.subscriptionDateField.liveData.value = currentTimeMillis
         binding.etSubscriptionDate.setText(currentTimeMillis.toFormattedDateString())
         binding.etSubscriptionDate.isEnabled = false
         binding.etSubscriptionDate.visibility = View.GONE
@@ -173,7 +173,7 @@ class RegisterSubscriptionFragment :
             NAP_BOX_SELECTION_RESULT, this
         ) { _, result ->
             val napBox = result.getSerializable(NAP_BOX_OBJECT) as NapBoxResponse
-            viewModel.napBoxField.liveData.value = napBox
+            viewModel.subscriptionForm.napBoxField.liveData.value = napBox
             binding.acNapBox.setText(napBox.toString())
         }
     }
@@ -213,12 +213,12 @@ class RegisterSubscriptionFragment :
     }
 
     private fun resetPlanSpinner() {
-        viewModel.planField.liveData.value = null
+        viewModel.subscriptionForm.planField.liveData.value = null
         binding.etPlan.setText("")
     }
 
     private fun resetNapBoxSpinner() {
-        viewModel.napBoxField.liveData.value = null
+        viewModel.subscriptionForm.napBoxField.liveData.value = null
         binding.acNapBox.setText("")
     }
 
@@ -235,7 +235,7 @@ class RegisterSubscriptionFragment :
     }
 
     private fun resetCpeSpinner() {
-        viewModel.cpeDeviceField.liveData.value = null
+        viewModel.subscriptionForm.cpeDeviceField.liveData.value = null
         binding.etCpeNetworkDevice.setText("")
     }
 
@@ -248,13 +248,13 @@ class RegisterSubscriptionFragment :
 
     @SuppressLint("SetTextI18n")
     private fun onLocationSelected(it: LatLng) {
-        viewModel.locationField.liveData.value = it
+        viewModel.subscriptionForm.locationField.liveData.value = it
         binding.etLocationSubscription.setText("${it.latitude}, ${it.longitude}")
     }
 
     private fun populateOnuSpinner(response: OnOnuDataFound) =
         binding.acOnu.populate(response.onus) {
-            viewModel.onuField.liveData.value = it
+            viewModel.subscriptionForm.onuField.liveData.value = it
         }
 
     private fun showOnusRefreshing(refreshing: Boolean) {
@@ -289,20 +289,20 @@ class RegisterSubscriptionFragment :
 
     private fun fillCpeDeviceSpinner(devices: List<NetworkDevice>) {
         binding.etCpeNetworkDevice.populate(devices) {
-            viewModel.cpeDeviceField.liveData.value = it
+            viewModel.subscriptionForm.cpeDeviceField.liveData.value = it
         }
     }
 
     private fun fillFormSpinners(response: FormDataFound) {
 
         binding.etPlace.populate(response.places) {
-            viewModel.placeField.liveData.value = it
+            viewModel.subscriptionForm.placeField.liveData.value = it
         }
 
         populateTechnicianSpinner(response)
 
         binding.acNapBox.populate(response.napBoxes) {
-            viewModel.napBoxField.liveData.value = it
+            viewModel.subscriptionForm.napBoxField.liveData.value = it
         }
 
         populateHostDeviceSpinner(response)
@@ -311,17 +311,17 @@ class RegisterSubscriptionFragment :
             viewModel.selectedAdditionalDevice.value = it
         }
         binding.acOnu.populate(response.unconfirmedOnus) {
-            viewModel.onuField.liveData.value = it
+            viewModel.subscriptionForm.onuField.liveData.value = it
         }
     }
 
     private fun populateTechnicianSpinner(response: FormDataFound) {
         binding.etTechnician.populate(response.technicians) {
-            viewModel.technicianField.liveData.value = it
+            viewModel.subscriptionForm.technicianField.liveData.value = it
         }
         if (response.technicians.size == 1) {
-            viewModel.technicianField.liveData.value = response.technicians[0]
-            binding.etTechnician.setText(viewModel.technicianField.liveData.value.toString())
+            viewModel.subscriptionForm.technicianField.liveData.value = response.technicians[0]
+            binding.etTechnician.setText(viewModel.subscriptionForm.technicianField.liveData.value.toString())
             binding.spnTechnician.isEnabled = false
             binding.spnTechnician.visibility = View.GONE
         }
@@ -329,11 +329,11 @@ class RegisterSubscriptionFragment :
 
     private fun populateHostDeviceSpinner(response: FormDataFound) {
         binding.etHostDevice.populate(response.hostNetworkDevices) {
-            viewModel.hostDeviceField.liveData.value = it
+            viewModel.subscriptionForm.hostDeviceField.liveData.value = it
         }
         if (response.hostNetworkDevices.size == 1) {
-            viewModel.hostDeviceField.liveData.value = response.hostNetworkDevices[0]
-            binding.etHostDevice.setText(viewModel.hostDeviceField.liveData.value.toString())
+            viewModel.subscriptionForm.hostDeviceField.liveData.value = response.hostNetworkDevices[0]
+            binding.etHostDevice.setText(viewModel.subscriptionForm.hostDeviceField.liveData.value.toString())
             binding.spnHostDevice.isEnabled = false
             binding.spnHostDevice.visibility = View.GONE
         }
@@ -360,7 +360,7 @@ class RegisterSubscriptionFragment :
             )
             .build()
         datePicker.addOnPositiveButtonClickListener {
-            viewModel.subscriptionDateField.liveData.value = it
+            viewModel.subscriptionForm.subscriptionDateField.liveData.value = it
             val formattedDate = it.toFormattedDateString()
             binding.etSubscriptionDate.setText(formattedDate)
         }

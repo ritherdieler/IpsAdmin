@@ -2,7 +2,6 @@ package com.example.data2.data.api
 
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
-import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.response.BaseResponse
 import retrofit2.Response
@@ -82,7 +81,10 @@ interface RestApiServices {
     suspend fun findSubscriptionByDNI(@Query("dni") dni: String): Response<List<SubscriptionResponse>>
 
     @GET("subscription/find/date")
-    suspend fun findSubscriptionBySubscriptionDate(@Query("startDate") startDate: Long,@Query("endDate") endDate: Long): Response<List<SubscriptionResponse>>
+    suspend fun findSubscriptionBySubscriptionDate(
+        @Query("startDate") startDate: Long,
+        @Query("endDate") endDate: Long
+    ): Response<List<SubscriptionResponse>>
 
     @PUT("payment")
     suspend fun registerPayment(@Body payment: Payment): Response<Payment>
@@ -124,7 +126,7 @@ interface RestApiServices {
     suspend fun downloadCutOffSubscriptionsReportDocument(): Response<DownloadDocumentResponse>
 
     @GET("subscription/last-month-debtors-report-document")
-    suspend  fun downloadPastMontDebtorsSubscriptionsReportDocument(): Response<DownloadDocumentResponse>
+    suspend fun downloadPastMontDebtorsSubscriptionsReportDocument(): Response<DownloadDocumentResponse>
 
     @GET("dashboard")
     suspend fun getDashBoardData(): Response<DashBoardDataResponse>
@@ -145,22 +147,31 @@ interface RestApiServices {
     suspend fun getMufas(): Response<List<Mufa>>
 
     @GET("onu/unconfigured_onus")
-    suspend fun getUnconfirmedOnus():Response<List<Onu>>
+    suspend fun getUnconfirmedOnus(): Response<List<Onu>>
 
     @GET("subscription/apply-coupon/{code}")
-    suspend fun applyCoupon(@Path("code") code:String): Response<Coupon?>
+    suspend fun applyCoupon(@Path("code") code: String): Response<Coupon?>
 
     @PUT("plan")
-   suspend fun updatePlan(@Body plan: Plan): Response<PlanResponse>
+    suspend fun updatePlan(@Body plan: Plan): Response<PlanResponse>
 
-   @PUT("subscription/payment-commitment")
-   suspend fun setPaymentCommitment(@Query("subscriptionId") id: Int):Response<Unit>
+    @PUT("subscription/payment-commitment")
+    suspend fun setPaymentCommitment(@Query("subscriptionId") id: Int): Response<Unit>
 
     @PUT("subscription/reactivate-service")
     suspend fun reactivateService(@Query("subscriptionId") subscription: Int): BaseResponse<Unit>
 
     @GET("subscription/find/nameAndLastName")
-    suspend fun findSubscriptionByNameAndLastName(@Query("name") name: String?, @Query("lastName") lastName: String?): Response<List<SubscriptionResponse>>
+    suspend fun findSubscriptionByNameAndLastName(
+        @Query("name") name: String?,
+        @Query("lastName") lastName: String?
+    ): Response<List<SubscriptionResponse>>
+
+    @GET("subscription/debtors-with-cut-report-document")
+    suspend fun downloadDebtorsCutOffCandidatesReportDocument(): Response<DownloadDocumentResponse>
+
+    @PUT("subscription/cancel-subscription")
+    suspend fun cancelSubscription(@Query("subscriptionId") subscriptionId: Int): Response<Unit>
 
 }
 

@@ -516,4 +516,21 @@ class Repository : IRepository, KoinComponent {
             else -> throw Exception("Error")
         }
     }
+
+    override suspend fun downloadDebtorsCutOffCandidatesSubscriptionsDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadDebtorsCutOffCandidatesReportDocument()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun cancelSubscription(subscription: SubscriptionResponse) {
+        val response = restApiServices.cancelSubscription(subscription.id)
+        when(response.code()){
+            HttpCodes.OK ->{}
+            else -> throw Exception("No se pudo cancelar el servicio, vuelva a intentarlos mas tarde")
+        }
+    }
 }

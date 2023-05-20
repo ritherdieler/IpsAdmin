@@ -30,7 +30,9 @@ data class SubscriptionResponse(
     var lastCutOffDate: Long? = null,
     var isReactivation: Boolean = false,
     var reactivationDate: Long? = null,
-) : java.io.Serializable {
+    var cpeDeviceId: Int? = null,
+    var note: String? = null,
+    ) : java.io.Serializable {
     fun getFullName() = "$firstName $lastName"
 
     fun migrationAsString() = if (isMigration) "Si" else "No"

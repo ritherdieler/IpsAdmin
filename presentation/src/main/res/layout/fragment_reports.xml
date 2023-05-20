@@ -19,6 +19,13 @@
             android:orientation="vertical"
             tools:context=".presentation.ui.features.report.ReportsFragment">
 
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_get_debtors_cut_off_candidates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cut_off_candidates" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_get_debtors_customers"
                 android:layout_width="match_parent"
