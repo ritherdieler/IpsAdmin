@@ -100,7 +100,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <EditText
-            android:id="@+id/findSubscriptionEditText"
+            android:id="@+id/etDni"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="@{viewModel.searchType == SearchType.BY_NAME_AND_LAST_NAME ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toBottomOf="@+id/findSubscriptionEditText">
+            app:layout_constraintTop_toBottomOf="@+id/etDni">
 <!--add clear toggle-->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"

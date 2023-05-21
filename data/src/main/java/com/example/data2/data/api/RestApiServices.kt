@@ -2,6 +2,7 @@ package com.example.data2.data.api
 
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
+import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.response.BaseResponse
 import retrofit2.Response
@@ -111,7 +112,7 @@ interface RestApiServices {
     suspend fun getCoreDevices(): Response<List<NetworkDevice>>
 
     @PUT("subscription/update-plan")
-    suspend fun editSubscription(@Body subscription: UpdateSubscriptionPlanBody): Response<SubscriptionResponse>
+    suspend fun updateSubscriptionPlan(@Body subscription: UpdateSubscriptionPlanBody): Response<SubscriptionResponse>
 
     @GET("subscription/debtors-report-document")
     suspend fun downloadDebtorsReportDocument(): Response<DownloadDocumentResponse>
@@ -172,6 +173,9 @@ interface RestApiServices {
 
     @PUT("subscription/cancel-subscription")
     suspend fun cancelSubscription(@Query("subscriptionId") subscriptionId: Int): Response<Unit>
+
+    @PUT("subscription/update-subscription-data")
+    suspend fun updateSubscriptionData(@Body subscriptionData: UpdateSubscriptionDataBody): Response<Unit>
 
 }
 

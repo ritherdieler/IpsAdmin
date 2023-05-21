@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.forms
+package com.dscorp.ispadmin.presentation.ui.features.forms.subscription
 
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
@@ -13,7 +13,11 @@ import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidIpv4
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
 import com.google.android.gms.maps.model.LatLng
 
-class SubscriptionForm {
+abstract class SubscriptionForm {
+
+    val idField = ReactiveFormField<String>(
+        validator = { it != null }
+    )
 
     val firstNameField = ReactiveFormField<String?>(
         hintResourceId = R.string.name,
@@ -93,7 +97,7 @@ class SubscriptionForm {
         validator = { it != null }
     )
 
-    val isMigrationField = ReactiveFormField<Boolean?>(
+    val migrationField = ReactiveFormField<Boolean?>(
         hintResourceId = R.string.isMigration,
         errorResourceId = R.string.empty,
         validator = { true }

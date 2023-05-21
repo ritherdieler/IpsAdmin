@@ -24,7 +24,10 @@ class ReactiveFormField<T>(
 
     val errorLiveData = MutableLiveData<String?>(null)
 
-    val isEditableLiveData = MutableLiveData(isEditable)
+    val editableLiveData = MutableLiveData(isEditable)
+    fun setEditable(isEditable: Boolean) {
+        editableLiveData.value = isEditable
+    }
 
     //Use this only for  enable or disable databinding views
     val isValidLiveData = MutableLiveData(false)

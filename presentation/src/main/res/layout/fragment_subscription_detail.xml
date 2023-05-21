@@ -35,8 +35,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.firstNameField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.firstNameField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.firstNameField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.firstNameField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -44,8 +44,8 @@
                         android:id="@+id/etFirstName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.firstNameField.isEditableLiveData()}"
-                        android:text="@={viewModel.subscriptionForm.firstNameField.liveData}" />
+                        app:focusablem="@{viewModel.editSubscriptionForm.firstNameField.editableLiveData}"
+                        android:text="@={viewModel.editSubscriptionForm.firstNameField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -55,8 +55,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.lastNameField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.lastNameField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.lastNameField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.lastNameField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -64,8 +64,8 @@
                         android:id="@+id/etLastName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.lastNameField.isEditableLiveData()}"
-                        android:text="@={viewModel.subscriptionForm.lastNameField.liveData}" />
+                        app:focusablem="@{viewModel.editSubscriptionForm.lastNameField.editableLiveData}"
+                        android:text="@={viewModel.editSubscriptionForm.lastNameField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,8 +75,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.dniField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.dniField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.dniField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.dniField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -84,8 +84,8 @@
                         android:id="@+id/etDniSubscriptionDetail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.dniField.isEditableLiveData()}"
-                        android:text="@={viewModel.subscriptionForm.dniField.liveData}"  />
+                        app:focusablem="@{viewModel.editSubscriptionForm.dniField.editableLiveData}"
+                        android:text="@={viewModel.editSubscriptionForm.dniField.liveData}"  />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,8 +95,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.addressField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.addressField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.addressField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.addressField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -104,38 +104,19 @@
                         android:id="@+id/etAddressSubscriptionDetail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.addressField.isEditableLiveData()}"
-                        android:text="@={viewModel.subscriptionForm.addressField.liveData}" />
+                        app:focusablem="@{viewModel.editSubscriptionForm.addressField.editableLiveData}"
+                        android:text="@={viewModel.editSubscriptionForm.addressField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.ipField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.ipField.hint}"
-                    app:endIconMode="clear_text"
-                    app:endIconTint="#6750A4">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.ipField.isEditableLiveData()}"
-                        android:text="@={viewModel.subscriptionForm.ipField.liveData}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:focusable="false"
-                    android:error="@{viewModel.subscriptionForm.locationField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.locationField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.locationField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.locationField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -143,7 +124,7 @@
                         android:id="@+id/etLocation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.locationField.isEditableLiveData()}"
+                        app:focusablem="@{viewModel.editSubscriptionForm.locationField.editableLiveData}"
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -154,8 +135,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.phoneField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.phoneField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.phoneField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.phoneField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -163,30 +144,8 @@
                         android:id="@+id/etPhoneSubscriptionDetail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.phoneField.isEditableLiveData()}"
-                        android:text="@={viewModel.subscriptionForm.phoneField.liveData}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.planField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.planField.hint}"
-                    app:endIconMode="clear_text"
-                    app:endIconTint="#6750A4">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPlanSubscriptionDetail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.planField.isEditableLiveData()}"
-                        android:text="@{viewModel.subscriptionForm.planField.value.name}"
-
-                        />
+                        app:focusablem="@{viewModel.editSubscriptionForm.phoneField.editableLiveData}"
+                        android:text="@={viewModel.editSubscriptionForm.phoneField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -196,8 +155,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.placeField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.placeField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.placeField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.placeField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -205,8 +164,27 @@
                         android:id="@+id/etPlaceSubscriptionDetail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.placeField.isEditableLiveData()}"
-                        android:text="@{viewModel.subscriptionForm.placeField.liveData.name}" />
+                        app:focusablem="@{viewModel.editSubscriptionForm.placeField.editableLiveData}"
+                        android:text="@{viewModel.editSubscriptionForm.placeField.liveData.name}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.editSubscriptionForm.ipField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.ipField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:focusablem="@{viewModel.editSubscriptionForm.ipField.editableLiveData}"
+                        android:text="@={viewModel.editSubscriptionForm.ipField.liveData}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -215,8 +193,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.technicianField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.technicianField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.planField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.planField.hint}"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="#6750A4">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPlanSubscriptionDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:focusablem="@{viewModel.editSubscriptionForm.planField.editableLiveData}"
+                        android:text="@{viewModel.editSubscriptionForm.planField.value.name}"
+
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:error="@{viewModel.editSubscriptionForm.technicianField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.technicianField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -224,8 +223,8 @@
                         android:id="@+id/etTechnicianSubscriptionDetail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.technicianField.isEditableLiveData()}"
-                        android:text="@{viewModel.subscriptionForm.technicianField.toString()}" />
+                        app:focusablem="@{viewModel.editSubscriptionForm.technicianField.editableLiveData}"
+                        android:text="@{viewModel.editSubscriptionForm.technicianField.toString()}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -235,8 +234,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.subscriptionDateField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.subscriptionDateField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.subscriptionDateField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.subscriptionDateField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -244,8 +243,8 @@
                         android:id="@+id/etSubscriptionDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.subscriptionDateField.isEditableLiveData()}"
-                        android:text="@{viewModel.subscriptionForm.subscriptionDateField.liveData.toString()}" />
+                        app:focusablem="@{viewModel.editSubscriptionForm.subscriptionDateField.editableLiveData}"
+                        android:text="@{viewModel.editSubscriptionForm.subscriptionDateField.liveData.toString()}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -256,7 +255,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:hint="@{viewModel.subscriptionForm.isMigrationField().hint}"
+                    android:hint="@{viewModel.editSubscriptionForm.migrationField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -264,8 +263,8 @@
                         android:id="@+id/etIsMigration"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.isMigrationField().isEditableLiveData()}"
-                        android:text="@{viewModel.subscriptionForm.isMigrationField().toString()}" />
+                        app:focusablem="@{viewModel.editSubscriptionForm.migrationField.editableLiveData}"
+                        android:text="@{viewModel.editSubscriptionForm.migrationField.toString()}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -274,8 +273,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:error="@{viewModel.subscriptionForm.priceField.errorLiveData}"
-                    android:hint="@{viewModel.subscriptionForm.priceField.hint}"
+                    android:error="@{viewModel.editSubscriptionForm.priceField.errorLiveData}"
+                    android:hint="@{viewModel.editSubscriptionForm.priceField.hint}"
                     app:endIconMode="clear_text"
                     app:endIconTint="#6750A4">
 
@@ -283,8 +282,8 @@
                         android:id="@+id/etPrice"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="@{viewModel.subscriptionForm.priceField.isEditableLiveData()}"
-                        android:text="@{viewModel.subscriptionForm.priceField.toString()}" />
+                        app:focusablem="@{viewModel.editSubscriptionForm.priceField.editableLiveData}"
+                        android:text="@{viewModel.editSubscriptionForm.priceField.toString()}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -303,8 +302,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/baseline_edit_24"
+            app:icon="@{viewModel.editingIcon}"
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

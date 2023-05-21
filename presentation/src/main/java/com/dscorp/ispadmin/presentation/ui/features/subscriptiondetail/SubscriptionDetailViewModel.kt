@@ -1,50 +1,44 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail
 
+import androidx.lifecycle.MutableLiveData
+import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
-import com.dscorp.ispadmin.presentation.ui.features.forms.SubscriptionForm
+import com.dscorp.ispadmin.presentation.ui.features.forms.subscription.EditSubscriptionDataForm
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
-import com.google.android.gms.maps.model.LatLng
+import com.example.data2.data.repository.IRepository
 
-class SubscriptionDetailViewModel(val subscriptionForm: SubscriptionForm) :
+class SubscriptionDetailViewModel(
+    val editSubscriptionForm: EditSubscriptionDataForm,
+    val repository: IRepository
+) :
     BaseViewModel<SubscriptionDetailUiState>() {
 
+    var isEditingForm = false
+    val editingIcon = MutableLiveData(R.drawable.baseline_edit_24)
     fun initForm(subscription: SubscriptionResponse) {
-        subscriptionForm.firstNameField.setValue(subscription.firstName)
-        subscriptionForm.lastNameField.setValue(subscription.lastName)
-        subscriptionForm.dniField.setValue(subscription.dni)
-        subscriptionForm.addressField.setValue(subscription.address)
-        subscriptionForm.ipField.setValue(subscription.ip)
-        subscriptionForm.locationField.setValue(subscription.location?.let {
-            LatLng(
-                it.latitude,
-                it.longitude
-            )
-        })
-
-        subscriptionForm.phoneField.setValue(subscription.phone)
-        subscriptionForm.planField.setValue(subscription.plan)
-        subscriptionForm.placeField.setValue(subscription.place)
-        subscriptionForm.technicianField.setValue(subscription.technician)
-        subscriptionForm.hostDeviceField.setValue(subscription.hostDevice)
-        subscriptionForm.subscriptionDateField.setValue(subscription.subscriptionDate)
-        subscriptionForm.isMigrationField.setValue(subscription.isMigration)
-        subscriptionForm.priceField.setValue(subscription.price.toString())
-        subscriptionForm.noteField.setValue(subscription.note)
-
-
+        editSubscriptionForm.initForm(subscription)
     }
 
     fun makeFieldsEditable() {
-        with(subscriptionForm) {
-            ipField.isEditableLiveData.value = false
-            technicianField.isEditableLiveData.value = false
-            subscriptionDateField.isEditableLiveData.value = false
-            priceField.isEditableLiveData.value = false
-            isMigrationField.isEditableLiveData.value = false
+        if (!isEditingForm) {
+            isEditingForm = true
+            editingIcon.value = R.drawable.baseline_check_24
+            editSubscriptionForm.changeEditableStatus(true)
+        } else {
+            updateSubscriptionData()
         }
     }
 
+    private fun updateSubscriptionData() {
+        executeWithProgress {
+            editSubscriptionForm.getUpdateSubscriptionBody()?.let {
+                repository.updateSubscriptionData(it)
+            }
 
+            uiState.value = BaseUiState(SubscriptionDetailUiState.SubscriptionUpdated)
+        }
+    }
 }
 
 sealed class SubscriptionDetailUiState {

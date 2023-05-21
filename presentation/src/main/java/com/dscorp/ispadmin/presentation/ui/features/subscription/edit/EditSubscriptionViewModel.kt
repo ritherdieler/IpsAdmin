@@ -32,7 +32,7 @@ class EditSubscriptionViewModel(
     fun editSubscription() = executeWithProgress {
         if (!formIsValid()) return@executeWithProgress
         val subscription = createSubscription()
-        val subscriptionFromRepository = repository.editSubscription(subscription)
+        val subscriptionFromRepository = repository.updateSubscriptionPlan(subscription)
         uiState.value =
             BaseUiState(EditSubscriptionUiState.EditSubscriptionSuccess(subscriptionFromRepository))
 

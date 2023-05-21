@@ -7,7 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.extension.formIsValid
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
-import com.dscorp.ispadmin.presentation.ui.features.forms.SubscriptionForm
+import com.dscorp.ispadmin.presentation.ui.features.forms.subscription.RegisterSubscriptionForm
+import com.dscorp.ispadmin.presentation.ui.features.forms.subscription.SubscriptionForm
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.CouponIsValid
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.FiberDevicesFound
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.FormDataFound
@@ -32,7 +33,7 @@ import kotlinx.coroutines.launch
 
 class RegisterSubscriptionViewModel(
     private val repository: IRepository,
-    val subscriptionForm: SubscriptionForm
+    val subscriptionForm: RegisterSubscriptionForm
 ) : BaseViewModel<RegisterSubscriptionUiState>() {
 
     var subscription: SubscriptionResponse? = null
@@ -167,7 +168,7 @@ class RegisterSubscriptionViewModel(
                 installationType = installationType.value,
                 price = priceField.getValue()?.toDouble(),
                 coupon = couponField.getValue(),
-                isMigration = isMigrationField.getValue(),
+                isMigration = migrationField.getValue(),
                 note = noteField.getValue()
             )
 
@@ -225,7 +226,7 @@ class RegisterSubscriptionViewModel(
     }
 
     fun onIsMigrationCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-        subscriptionForm.isMigrationField.liveData.value = isChecked
+        subscriptionForm.migrationField.liveData.value = isChecked
     }
 
 }

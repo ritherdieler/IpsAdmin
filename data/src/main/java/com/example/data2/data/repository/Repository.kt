@@ -7,6 +7,7 @@ import com.example.data2.data.api.RestApiServices
 import com.example.data2.data.api.SendMessagingCloudApi
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
+import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.utils.*
 import org.koin.core.component.KoinComponent
@@ -319,14 +320,16 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun editSubscription(subscription: UpdateSubscriptionPlanBody): SubscriptionResponse {
-        val response = restApiServices.editSubscription(subscription)
+    override suspend fun updateSubscriptionPlan(subscription: UpdateSubscriptionPlanBody): SubscriptionResponse {
+        val response = restApiServices.updateSubscriptionPlan(subscription)
         if (response.code() == 200) {
             return response.body()!!
         } else {
             throw Exception("Error")
         }
     }
+
+
 
     override suspend fun downloadDebtorSubscriptionsDocument(): DownloadDocumentResponse {
         val response = restApiServices.downloadDebtorsReportDocument()
@@ -531,6 +534,14 @@ class Repository : IRepository, KoinComponent {
         when(response.code()){
             HttpCodes.OK ->{}
             else -> throw Exception("No se pudo cancelar el servicio, vuelva a intentarlos mas tarde")
+        }
+    }
+
+    override suspend fun updateSubscriptionData(subscriptionData: UpdateSubscriptionDataBody) {
+        val response = restApiServices.updateSubscriptionData(subscriptionData)
+        when(response.code()){
+            HttpCodes.OK ->{}
+            else -> throw Exception("No se pudo actualizar los datos de la suscripcion")
         }
     }
 }

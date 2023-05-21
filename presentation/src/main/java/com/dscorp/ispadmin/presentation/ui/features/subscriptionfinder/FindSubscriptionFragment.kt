@@ -79,7 +79,7 @@ class FindSubscriptionFragment :
         }
 
         //ime options listener
-        binding.findSubscriptionEditText.setOnEditorActionListener { _, actionId, _ ->
+        binding.etDni.setOnEditorActionListener { _, actionId, _ ->
             viewModel.findSubscriptionByDni()
             true
         }
@@ -100,7 +100,6 @@ class FindSubscriptionFragment :
     }
 
     private fun showStartDatePickerDialog() {
-
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Select date")
             .build()
@@ -226,5 +225,18 @@ class FindSubscriptionFragment :
         return true
     }
 
+    override fun onResume() {
+        super.onResume()
+        clearFormData()
+    }
+
+    private fun clearFormData() {
+        adapter.submitList(emptyList())
+        binding.etLastName.text = null
+        binding.etFirstName.text = null
+        binding.etStartDate.text = null
+        binding.etEndDate.text = null
+        binding.etEndDate.text = null
+    }
 
 }

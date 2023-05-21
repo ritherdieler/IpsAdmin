@@ -20,19 +20,22 @@ class SubscriptionDetailFragment :
 
     override fun handleState(state: SubscriptionDetailUiState) {
         when (state) {
-            SubscriptionDetailUiState.SubscriptionUpdated -> showSuccessDialog(R.string.subscription_updated)
+            SubscriptionDetailUiState.SubscriptionUpdated -> showSuccessDialog(R.string.subscription_updated){
+                findNavController().popBackStack()
+            }
         }
     }
 
     override fun onViewReady(savedInstanceState: Bundle?) {
 
-        viewModel.initForm(args.subscription)
         binding.viewModel = viewModel
+        binding.lifecycleOwner = this
         binding.executePendingBindings()
 
+        viewModel.initForm(args.subscription)
 
         binding.etLocation.setOnClickListener {
-            viewModel.subscriptionForm.locationField.getValue()?.let {
+            viewModel.editSubscriptionForm.locationField.getValue()?.let {
                 findNavController().navigate(
                     SubscriptionDetailFragmentDirections.actionSubscriptionDetailToMapView(
                         it.toGeoLocation()

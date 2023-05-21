@@ -27,6 +27,7 @@ import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
+import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 
 /**
@@ -67,7 +68,7 @@ interface IRepository {
     suspend fun getIpPoolList(): List<IpPool>
     suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit: Int): List<Payment>
     suspend fun getCoreDevices(): List<NetworkDevice>
-    suspend fun editSubscription(subscription: UpdateSubscriptionPlanBody): SubscriptionResponse
+    suspend fun updateSubscriptionPlan(subscription: UpdateSubscriptionPlanBody): SubscriptionResponse
     suspend fun downloadDebtorSubscriptionsDocument(): DownloadDocumentResponse
 
     suspend fun downloadWithPaymentCommitmentSubscriptionsDocument(): DownloadDocumentResponse
@@ -103,5 +104,6 @@ interface IRepository {
     ): List<SubscriptionResponse>
 
     suspend fun downloadDebtorsCutOffCandidatesSubscriptionsDocument(): DownloadDocumentResponse
-   suspend fun cancelSubscription(subscription: SubscriptionResponse)
+    suspend fun cancelSubscription(subscription: SubscriptionResponse)
+    suspend fun updateSubscriptionData(subscriptionData: UpdateSubscriptionDataBody)
 }
