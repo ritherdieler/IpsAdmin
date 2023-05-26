@@ -1,15 +1,11 @@
-package com.dscorp.ispadmin.presentation.util
+package com.dscorp.ispadmin.presentation.ui.features.locationMapView
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ViewMapBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -17,20 +13,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 
-/**
- * Created by Sergio Carrillo Diestra on 15/01/2023.
- * scarrillo.peruapps@gmail.com
- * Peru Apps
- * Huacho, Peru.
- *
- **/
-class MapViewDialogFragment : DialogFragment(), OnMapReadyCallback {
+abstract class LocationMapViewDialogFragment(
+    val initialLocation: LatLng? = null,
+) : DialogFragment(), OnMapReadyCallback {
 
     private lateinit var mapView: MapView
-    private lateinit var googleMap: GoogleMap
-    private val args: MapViewDialogFragmentArgs by navArgs()
+    protected lateinit var googleMap: GoogleMap
 
     lateinit var binding: ViewMapBinding
 
@@ -43,21 +32,28 @@ class MapViewDialogFragment : DialogFragment(), OnMapReadyCallback {
     ): View? {
         binding = ViewMapBinding.inflate(inflater, container, false)
 
-        mapView = binding.mapView2
+        mapView = binding.mapView
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-
+        afterBindingInflated()
         return binding.root
+    }
+
+    protected open fun afterBindingInflated(){
+
     }
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID;
-        val location = LatLng(args.location?.latitude ?: 0.0, args.location?.longitude ?: 0.0)
-        googleMap.addMarker(MarkerOptions().position(location).title("Ubicación "))
+        val location = LatLng(initialLocation?.latitude ?: 0.0, initialLocation?.longitude ?: 0.0)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16f))
-        googleMap.isMyLocationEnabled = true
+        afterMapReady()
+    }
+
+    protected open fun afterMapReady() {
+
     }
 
     override fun onResume() {

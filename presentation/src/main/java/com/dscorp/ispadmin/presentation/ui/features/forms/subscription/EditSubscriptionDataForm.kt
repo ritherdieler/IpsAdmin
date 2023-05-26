@@ -121,7 +121,6 @@ class EditSubscriptionDataForm : SubscriptionForm() {
                 phone = phoneField.getValue()!!,
                 placeId = placeField.getValue()!!.id!!
             )
-
         } else {
             null
         }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -125,6 +126,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:focusablem="@{viewModel.editSubscriptionForm.locationField.editableLiveData}"
+                        app:location="@{viewModel.editSubscriptionForm.locationField.liveData}"
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -151,20 +153,22 @@
 
                 <com.google.android.material.textfield.TextInputLayout
 
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:error="@{viewModel.editSubscriptionForm.placeField.errorLiveData}"
                     android:hint="@{viewModel.editSubscriptionForm.placeField.hint}"
-                    app:endIconMode="clear_text"
-                    app:endIconTint="#6750A4">
+                    tools:hint="Lugar"
+                  >
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
                         android:id="@+id/etPlaceSubscriptionDetail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:focusablem="@{viewModel.editSubscriptionForm.placeField.editableLiveData}"
+                        app:places="@{viewModel.places}"
+                        app:fieldToSaveSelection="@{viewModel.editSubscriptionForm.placeField}"
                         android:text="@{viewModel.editSubscriptionForm.placeField.liveData.name}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -203,8 +207,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:focusablem="@{viewModel.editSubscriptionForm.planField.editableLiveData}"
-                        android:text="@{viewModel.editSubscriptionForm.planField.value.name}"
-
+                        android:text="@{viewModel.editSubscriptionForm.planField.liveData.name.toString()}"
                         />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -224,7 +227,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:focusablem="@{viewModel.editSubscriptionForm.technicianField.editableLiveData}"
-                        android:text="@{viewModel.editSubscriptionForm.technicianField.toString()}" />
+                        android:text="@{viewModel.editSubscriptionForm.technicianField.liveData.toString()}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -264,7 +267,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:focusablem="@{viewModel.editSubscriptionForm.migrationField.editableLiveData}"
-                        android:text="@{viewModel.editSubscriptionForm.migrationField.toString()}" />
+                        android:text="@{viewModel.editSubscriptionForm.migrationField.liveData.toString()}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -283,7 +286,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:focusablem="@{viewModel.editSubscriptionForm.priceField.editableLiveData}"
-                        android:text="@{viewModel.editSubscriptionForm.priceField.toString()}" />
+                        android:text="@{viewModel.editSubscriptionForm.priceField.liveData.toString()}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

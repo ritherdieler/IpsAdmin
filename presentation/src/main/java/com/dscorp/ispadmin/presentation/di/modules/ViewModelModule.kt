@@ -67,5 +67,5 @@ val viewModelModule = module {
     viewModel { MufaViewModel(get()) }
     viewModel { EditSubscriptionViewModel(get()) }
     viewModel { EditPlanViewModel(get()) }
-    viewModel{SubscriptionDetailViewModel(get(),get ())}
+    viewModel{SubscriptionDetailViewModel(get(),get (),get())}
 }

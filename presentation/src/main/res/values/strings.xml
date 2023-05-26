@@ -219,5 +219,6 @@
     <string name="subscription_updated">Datos de suscripción actualizados correctamente.</string>
     <string name="must_digit_a_valid_ip">Debe digitar una direccion ip válida.</string>
     <string name="edit_subscription_data">Editar datos de subscripcion</string>
+    <string name="error_invalid_data">Los datos no son validos.</string>
 
 </resources>
