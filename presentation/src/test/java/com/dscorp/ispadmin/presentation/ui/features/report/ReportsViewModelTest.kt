@@ -34,7 +34,7 @@ class ReportsViewModelTest : AutoCloseKoinTest() {
     fun `when downloadDebtorsDocument is called, then should emit DebtorsDocument state`() =
         runBlocking {
             // Given
-            Mockito.`when`(repository.downloadDebtorSubscriptionsDocument()).thenReturn(
+            Mockito.`when`(repository.downloadDebtorWithActiveSubscriptionsDocument()).thenReturn(
                 DownloadDocumentResponse(
                     name = "",
                     type = "",
@@ -44,7 +44,7 @@ class ReportsViewModelTest : AutoCloseKoinTest() {
             val viewModel = ReportsViewModel(repository)
 
             // When
-            viewModel.downloadDebtorSubscriptionsDocument()
+            viewModel.downloadDebtorWithActiveSubscriptionsDocument()
             val value = viewModel.uiStateLiveData.getValueForTest()
 
             // Then
@@ -55,11 +55,11 @@ class ReportsViewModelTest : AutoCloseKoinTest() {
     fun `when downloadDebtorsDocument call has error then should emit Error state`() =
         runBlocking {
             // Given
-            Mockito.`when`(repository.downloadDebtorSubscriptionsDocument()).thenThrow(NullPointerException())
+            Mockito.`when`(repository.downloadDebtorWithActiveSubscriptionsDocument()).thenThrow(NullPointerException())
             val viewModel = ReportsViewModel(repository)
 
             // When
-            viewModel.downloadDebtorSubscriptionsDocument()
+            viewModel.downloadDebtorWithActiveSubscriptionsDocument()
             val value = viewModel.uiStateLiveData.getValueForTest()
 
             // Then

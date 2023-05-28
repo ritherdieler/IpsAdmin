@@ -331,8 +331,8 @@ class Repository : IRepository, KoinComponent {
 
 
 
-    override suspend fun downloadDebtorSubscriptionsDocument(): DownloadDocumentResponse {
-        val response = restApiServices.downloadDebtorsReportDocument()
+    override suspend fun downloadDebtorWithActiveSubscriptionsDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadDebtorsWithActiveSubscriptionReportDocument()
         if (response.code() == 200) {
             return response.body()!!
         } else {
@@ -544,4 +544,32 @@ class Repository : IRepository, KoinComponent {
             else -> throw Exception("No se pudo actualizar los datos de la suscripcion")
         }
     }
+
+    override suspend fun downloadDebtorWithCancelledSubscriptionsDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadDebtorsWithCancelledSubscriptionReportDocument()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun downloadCancelledSubscriptionFromCurrentMonthDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadCancelledSubscriptionsFromCurrentMonth()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
+    override suspend fun downloadCancelledSubscriptionsFromPastMonthDocument(): DownloadDocumentResponse {
+        val response = restApiServices.downloadCancelledSubscriptionsFromLastMonth()
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
 }

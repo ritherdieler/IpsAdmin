@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class NapBoxMapFragment : BaseFragment<MufaUiState, FragmentNapboxMapBinding>(), OnMapReadyCallback,
     NapBoxDetailDialogFragment.NapBoxSelectionListener {
 
@@ -81,22 +82,27 @@ class NapBoxMapFragment : BaseFragment<MufaUiState, FragmentNapboxMapBinding>(),
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         googleMap.isMyLocationEnabled = true
+
         googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID;
-        val santaRosa = LatLng(-11.234996, -77.380347)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(santaRosa))
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(11.5f))
+        val santaRosa = LatLng(-11.234324, -77.379349)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(santaRosa, 15.5f))
         googleMap.setOnMarkerClickListener { marker ->
             NapBoxDetailDialogFragment(
                 napBox = napBoxMarkersMap[marker]!!,
                 showSelectButton = true,
                 listener = this
             ).show(childFragmentManager, NapBoxDetailDialogFragment::class.java.name)
-
             true
         }
 
         googleMap.setOnCameraMoveListener {
             selectedLatLng = googleMap.cameraPosition.target
+        }
+
+        googleMap.setOnMyLocationClickListener {
+            //zoom
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(35.5f))
+
         }
     }
 

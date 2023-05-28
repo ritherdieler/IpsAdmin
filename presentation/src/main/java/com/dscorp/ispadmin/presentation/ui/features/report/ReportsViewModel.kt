@@ -7,8 +7,8 @@ import kotlinx.coroutines.delay
 
 class ReportsViewModel(private val repository: IRepository) : BaseViewModel<ReportsUiState>() {
 
-    fun downloadDebtorSubscriptionsDocument() = executeWithProgress {
-        val response = repository.downloadDebtorSubscriptionsDocument()
+    fun downloadDebtorWithActiveSubscriptionsDocument() = executeWithProgress {
+        val response = repository.downloadDebtorWithActiveSubscriptionsDocument()
         uiState.value =
             BaseUiState(ReportsUiState.DocumentReady(response))
         delay(1000)
@@ -41,8 +41,29 @@ class ReportsViewModel(private val repository: IRepository) : BaseViewModel<Repo
         delay(1000)
     }
 
+    fun downloadCancelledSubscriptionsFromCurrentMonth() = executeWithProgress {
+        val response = repository.downloadCancelledSubscriptionFromCurrentMonthDocument()
+        uiState.value =
+            BaseUiState(ReportsUiState.DocumentReady(response))
+        delay(1000)
+    }
+
+    fun downloadCancelledSubscriptionsFromPastMonth() = executeWithProgress {
+        val response = repository.downloadCancelledSubscriptionsFromPastMonthDocument()
+        uiState.value =
+            BaseUiState(ReportsUiState.DocumentReady(response))
+        delay(1000)
+    }
+
     fun downloadDebtorsCutOffCandidatesSubscriptionsDocument() = executeWithProgress {
         val response = repository.downloadDebtorsCutOffCandidatesSubscriptionsDocument()
+        uiState.value =
+            BaseUiState(ReportsUiState.DocumentReady(response))
+        delay(1000)
+    }
+
+    fun downloadDebtorWithCancelledSubscriptionsDocument()= executeWithProgress {
+        val response = repository.downloadDebtorWithCancelledSubscriptionsDocument()
         uiState.value =
             BaseUiState(ReportsUiState.DocumentReady(response))
         delay(1000)

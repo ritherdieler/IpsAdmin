@@ -83,7 +83,8 @@
     <string name="only_pending">Solo pendientes</string>
     <string name="go_to_pay">Ir a pagar</string>
     <string name="reports">Reportes</string>
-    <string name="get_debtors">Obtener deudores</string>
+    <string name="get_active_debtors">Obtener deudores con servicio activo</string>
+    <string name="get_cancelled_debtors">Obtener deudores con servicio cancelado</string>
     <string name="download_speed_in_mb">Velocidad de descarga en MB</string>
     <string name="upload_speed_in_mb">Velocidad de subida en MB</string>
     <string name="see_nap_boxes">Ver Cajas Nap</string>
@@ -220,5 +221,7 @@
     <string name="must_digit_a_valid_ip">Debe digitar una direccion ip válida.</string>
     <string name="edit_subscription_data">Editar datos de subscripcion</string>
     <string name="error_invalid_data">Los datos no son validos.</string>
+    <string name="get_current_mont_cancelled_subscription">Obtener suscripciones canceladas de este mes</string>
+    <string name="get_past_month_cancelled_subscription">Obtener subscripciones canceladas del mes pasado</string>
 
 </resources>

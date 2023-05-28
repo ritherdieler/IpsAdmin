@@ -114,8 +114,6 @@ interface RestApiServices {
     @PUT("subscription/update-plan")
     suspend fun updateSubscriptionPlan(@Body subscription: UpdateSubscriptionPlanBody): Response<SubscriptionResponse>
 
-    @GET("subscription/debtors-report-document")
-    suspend fun downloadDebtorsReportDocument(): Response<DownloadDocumentResponse>
 
     @GET("subscription/with-payment-commitment-report-document")
     suspend fun downloadWithPaymentCommitmentSubscriptionsReportDocument(): Response<DownloadDocumentResponse>
@@ -177,5 +175,16 @@ interface RestApiServices {
     @PUT("subscription/update-subscription-data")
     suspend fun updateSubscriptionData(@Body subscriptionData: UpdateSubscriptionDataBody): Response<Unit>
 
+    @GET("subscription/debtors-with-active-subscription-report-document")
+    suspend fun downloadDebtorsWithActiveSubscriptionReportDocument(): Response<DownloadDocumentResponse>
+
+    @GET("subscription/debtors-with-cancelled-subscription-report-document")
+    suspend fun downloadDebtorsWithCancelledSubscriptionReportDocument(): Response<DownloadDocumentResponse>
+
+    @GET("report/canceled-current-month")
+    suspend fun downloadCancelledSubscriptionsFromCurrentMonth(): Response<DownloadDocumentResponse>
+
+    @GET("report/canceled-past-month")
+    suspend fun downloadCancelledSubscriptionsFromLastMonth(): Response<DownloadDocumentResponse>
 }
 
