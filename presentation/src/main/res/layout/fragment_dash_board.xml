@@ -204,6 +204,7 @@
                     app:cornerRadius="20dp"
                     app:iconPadding="10dp"
                     app:iconSize="24dp"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />

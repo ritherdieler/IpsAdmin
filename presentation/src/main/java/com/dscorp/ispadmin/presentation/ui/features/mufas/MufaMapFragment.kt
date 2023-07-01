@@ -50,7 +50,6 @@ class MufaMapFragment : BaseFragment<MufaUiState, FragmentMufasMapBinding>(), On
         mapView.getMapAsync(this)
     }
 
-
     private fun showMufasAsMakers(mufas: List<Mufa>) {
         mufas.forEach { mufa ->
             val latLng = LatLng((mufa.latitude ?: 0.0), (mufa.longitude ?: 0.0))

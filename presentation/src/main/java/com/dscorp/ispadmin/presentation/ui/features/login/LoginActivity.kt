@@ -34,7 +34,6 @@ class LoginActivity : AppCompatActivity() {
         is LoginResponse.OnLoginSuccess -> handleLoginResponse(it.user)
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()

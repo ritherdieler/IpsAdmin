@@ -2,12 +2,14 @@ package com.dscorp.ispadmin.presentation.ui.features.dashboard
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentDashBoardBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.example.cleanarchitecture.domain.domain.entity.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -21,14 +23,21 @@ class DashBoardFragment : BaseFragment<DashBoardDataUiState, FragmentDashBoardBi
         binding.lifecycleOwner = this
         binding.executePendingBindings()
 
-        binding.btnStartCut.setOnClickListener {
-            showCutConfirmationDialog()
+        viewModel.userSession?.type?.let {
+            if (it == User.UserType.ADMIN) {
+                binding.btnStartCut.visibility = View.VISIBLE
+            }
+            binding.btnStartCut.setOnClickListener {
+                showCutConfirmationDialog()
+            }
         }
     }
 
     override fun handleState(state: DashBoardDataUiState) =
         when (state) {
-            is DashBoardDataUiState.DashBoardData -> binding.dashboardDataResponse = state.response
+            is DashBoardDataUiState.DashBoardData -> binding.dashboardDataResponse =
+                state.response
+
             is DashBoardDataUiState.CutServiceSuccess -> {
                 showSuccessDialog(getString(R.string.cutt_off_iniated))
             }

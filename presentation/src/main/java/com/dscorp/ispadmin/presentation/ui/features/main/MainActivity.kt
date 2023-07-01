@@ -87,7 +87,6 @@ class MainActivity : AppCompatActivity() {
         val graph = navInflater.inflate(R.navigation.mobile_navigation)
         navHostFragment.navController.graph = graph
 
-
         val user = viewModel.user
         user?.let {
             firebaseAnalytics.setUserId(it.id.toString())
@@ -96,15 +95,23 @@ class MainActivity : AppCompatActivity() {
                     navView.menu.findItem(R.id.nav_dashboard).isVisible = false
                     navView.menu.findItem(R.id.nav_reports).isVisible = false
                     navView.menu.findItem(R.id.nav_see_plan_list).isVisible = false
+                    navView.menu.findItem(R.id.nav_reports).isVisible = false
                     FirebaseMessaging.getInstance()
                         .subscribeToTopic(FCM_TECHNICIAN_THEME)
-                    navHostFragment.navController.navigate(R.id.nav_register_subscription)
-                    navView.menu.findItem(R.id.nav_reports).isVisible = false
 
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(navController.graph.startDestinationId, true)
+                        .build()
+                    navController.navigate(
+                        R.id.nav_register_subscription,
+                        null,
+                        navOptions
+                    )
+                    navHostFragment.navController.navigate(R.id.nav_register_subscription)
                 }
 
                 User.UserType.SECRETARY -> {
-                    navView.menu.findItem(R.id.nav_dashboard).isVisible = false
+                    navView.menu.findItem(R.id.nav_dashboard).isVisible = true
                     navView.menu.findItem(R.id.nav_see_plan_list).isVisible = false
                     navView.menu.findItem(R.id.nav_mufa).isVisible = false
                     val navOptions = NavOptions.Builder()
