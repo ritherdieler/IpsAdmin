@@ -75,5 +75,4 @@ class DashBoardFragment : BaseFragment<DashBoardDataUiState, FragmentDashBoardBi
             .show()
     }
 
-
 }
