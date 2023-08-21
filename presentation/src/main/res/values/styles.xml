@@ -21,6 +21,7 @@
         </item>
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_dashboard_table_row</item>
 
     </style>
 
@@ -30,7 +31,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center</item>
-
+        <item name="android:background">@drawable/bg_dashboard_table_row</item>
     </style>
 
     <style name="dashboard_row_light">
