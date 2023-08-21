@@ -129,7 +129,7 @@ class TextField @JvmOverloads constructor(
         textField.binding.editText.text
 
         val observer = Observer<String?> { value ->
-            textField.inputText = value
+            textField.inputText = value?:""
         }
         livedata.observe(context as LifecycleOwner, observer)
 
