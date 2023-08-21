@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="dashboardDataResponse"
             type="com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse" />
@@ -17,211 +18,416 @@
         <import type="android.view.View" />
     </data>
 
-    <LinearLayout
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:fillViewport="true"
+        android:visibility="@{!viewModel.showDashBoardShimmerLiveData}"
+        tools:visibility="visible">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:visibility="@{!viewModel.showDashBoardShimmerLiveData}"
-            tools:visibility="visible">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/viewContainer"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:gravity="center"
+                android:text="@string/monetary_resume"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginHorizontal="30dp"
-                    android:layout_marginTop="32dp"
-                    android:backgroundTint="@color/purple_claro_fondo"
-                    android:elevation="20dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
+
+                <TableRow style="@style/dashboard_row_header">
 
                     <TextView
-                        android:id="@+id/tv_gross_revenue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
+                        android:id="@+id/category_table_header"
+                        style="@style/dashboard_row_header_child"
+                        android:text="Concepto" />
+
+
+                    <TextView
+                        android:id="@+id/value_table_header"
+                        style="@style/dashboard_row_header_child"
+                        android:text="S/." />
+
+                </TableRow>
+
+                <TableRow style="@style/dashboard_row_light">
+
+                    <TextView
+                        style="@style/dashboard_row_category"
+                        android:background="@drawable/bg_dashboard_table_row"
+                        android:text="@string/total_gross" />
+
+
+                    <TextView
+                        android:id="@+id/total_gross"
+                        style="@style/dashboard_row_value"
+                        android:background="@drawable/bg_dashboard_table_row"
                         android:text="@{dashboardDataResponse.grossRevenueAsString()}"
-                        android:textSize="20sp"
-                        tools:text="Total Cases" />
+                        tools:text="5022222" />
 
-                </androidx.cardview.widget.CardView>
+                </TableRow>
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginHorizontal="30dp"
-                    android:layout_marginTop="24dp"
-                    android:backgroundTint="@color/purple_claro_fondo"
-                    android:elevation="20dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
+                <TableRow style="@style/dashboard_row_dark">
 
                     <TextView
-                        android:id="@+id/tv_total_to_collect"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
+                        style="@style/dashboard_row_category"
+                        android:background="@drawable/bg_dashboard_table_row"
+                        android:text="@string/outstanding" />
+
+
+                    <TextView
+                        android:id="@+id/outstanding"
+                        style="@style/dashboard_row_value"
+                        android:background="@drawable/bg_dashboard_table_row"
                         android:text="@{dashboardDataResponse.totalToCollectAsString}"
-                        android:textSize="20sp"
-                        tools:text="Total Active Cases" />
-                </androidx.cardview.widget.CardView>
+                        tools:text="40" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginHorizontal="30dp"
-                    android:layout_marginTop="24dp"
-                    android:backgroundTint="@color/purple_claro_fondo"
-                    android:elevation="20dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
+                </TableRow>
+
+                <TableRow style="@style/dashboard_row_light"
+
+                    >
 
                     <TextView
-                        android:id="@+id/tv_total_raised"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
+                        style="@style/dashboard_row_category"
+                        android:background="@drawable/bg_dashboard_table_row"
+                        android:text="@string/collected" />
+
+
+                    <TextView
+                        android:id="@+id/collected"
+                        style="@style/dashboard_row_value"
+                        android:background="@drawable/bg_dashboard_table_row"
+
                         android:text="@{dashboardDataResponse.totalRaisedAsString()}"
-                        android:textSize="20sp"
-                        tools:text="Total Deaths" />
-                </androidx.cardview.widget.CardView>
+                        tools:text="20" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView4"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginHorizontal="30dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:backgroundTint="@color/purple_claro_fondo"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
+                </TableRow>
+
+                <TableRow style="@style/dashboard_row_dark">
 
                     <TextView
-                        android:id="@+id/tv_total_discount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
+                        style="@style/dashboard_row_category"
+                        android:background="@drawable/bg_dashboard_table_row"
+
+                        android:text="@string/discounted" />
+
+
+                    <TextView
+                        android:id="@+id/discounted"
+                        style="@style/dashboard_row_value"
+
+                        android:background="@drawable/bg_dashboard_table_row"
                         android:text="@{dashboardDataResponse.totalDiscountAsString}"
-                        android:textSize="20sp"
-                        tools:text="Total Recovered" />
-                </androidx.cardview.widget.CardView>
+                        tools:text="30" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView5"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginHorizontal="30dp"
-                    android:layout_marginBottom="24dp"
-                    android:backgroundTint="@color/purple_claro_fondo"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
+                </TableRow>
+            </TableLayout>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:text="Resumen de clientes"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
-                        <TextView
-                            android:id="@+id/tv_fiber_installations"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="@{dashboardDataResponse.installationResume.fiberResume}"
-                            android:textSize="20sp"
-                            tools:text="Total Recovered" />
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
 
-                        <TextView
-                            android:id="@+id/tv_wireless_installations"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="@{dashboardDataResponse.installationResume.wirelessResume}"
-                            android:textSize="20sp"
-                            tools:text="Total Recovered" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardView7"
-                    android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:layout_marginHorizontal="30dp"
-                    android:layout_marginBottom="24dp"
-                    android:backgroundTint="@color/purple_claro_fondo"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="5dp">
+                <TableRow style="@style/dashboard_row_header">
 
                     <TextView
-                        android:id="@+id/tv_cancelled_subscriptions"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
+                        android:id="@+id/customer_category_table_header"
+                        style="@style/dashboard_row_header_child"
+                        android:text="Concepto" />
+
+
+                    <TextView
+                        android:id="@+id/customer_value_table_header"
+                        style="@style/dashboard_row_header_child"
+                        android:text="Cantidad" />
+
+                </TableRow>
+
+                <TableRow style="@style/dashboard_row_light">
+
+                    <TextView
+                        style="@style/dashboard_row_category"
+                        android:background="@drawable/bg_dashboard_table_row"
+                        android:text="Fibra" />
+
+                    <TextView
+                        android:id="@+id/fiber_new_subscriptions"
+                        style="@style/dashboard_row_value"
+                        android:background="@drawable/bg_dashboard_table_row"
+                        android:text="@{dashboardDataResponse.installationResume.fiberResume}"
+                        tools:text="1" />
+
+                </TableRow>
+
+                <TableRow style="@style/dashboard_row_dark">
+
+                    <TextView
+                        style="@style/dashboard_row_category"
+                        android:background="@drawable/bg_dashboard_table_row"
+                        android:text="Inalambrico" />
+
+                    <TextView
+                        android:id="@+id/wireless_new_subscriptions"
+                        style="@style/dashboard_row_value"
+                        android:background="@drawable/bg_dashboard_table_row"
+                        android:text="@{dashboardDataResponse.installationResume.wirelessResume}"
+                        tools:text="2" />
+
+                </TableRow>
+
+                <TableRow style="@style/dashboard_row_light">
+
+                    <TextView
+                        style="@style/dashboard_row_category"
+                        android:background="@drawable/bg_dashboard_table_row"
+                        android:text="Cancelados" />
+
+                    <TextView
+                        android:id="@+id/cancelled"
+                        style="@style/dashboard_row_value"
+                        android:background="@drawable/bg_dashboard_table_row"
                         android:text="@{dashboardDataResponse.canceledSubscriptionsAsString()}"
-                        android:textSize="20sp"
-                        tools:text="Total Recovered" />
-                </androidx.cardview.widget.CardView>
+                        tools:text="0" />
 
-                <Button
-                    android:id="@+id/btnStartCut"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginHorizontal="30dp"
-                    android:layout_marginBottom="32dp"
-                    android:backgroundTint="@color/purple_base_app"
-                    android:elevation="20dp"
-                    android:text="Iniciar corte"
-                    android:textColor="@color/white"
-                    android:textSize="14dp"
-                    app:cornerRadius="20dp"
-                    app:iconPadding="10dp"
-                    app:iconSize="24dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                </TableRow>
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </TableLayout>
 
-        </ScrollView>
+            <Button
+                android:id="@+id/btnStartCut"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginBottom="32dp"
+                android:backgroundTint="@color/purple_base_app"
+                android:elevation="20dp"
+                android:text="Iniciar corte"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                android:visibility="gone"
+                app:cornerRadius="20dp"
+                android:layout_marginTop="24dp"
+                app:iconPadding="10dp"
+                app:iconSize="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/shimmerDashBoard"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="@{viewModel.showDashBoardShimmerLiveData}"
-            tools:visibility="gone">
+        </LinearLayout>
 
-            <include layout="@layout/shimmer_dash_board" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </LinearLayout>
+        <!--            <androidx.appcompat.widget.LinearLayoutCompat-->
+        <!--                android:id="@+id/viewContainer"-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:orientation="vertical">-->
+
+        <!--                <androidx.cardview.widget.CardView-->
+        <!--                    android:id="@+id/cardView"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="120dp"-->
+        <!--                    android:layout_marginHorizontal="30dp"-->
+        <!--                    android:layout_marginTop="32dp"-->
+        <!--                    android:backgroundTint="@color/purple_claro_fondo"-->
+        <!--                    android:elevation="20dp"-->
+        <!--                    app:cardCornerRadius="20dp"-->
+        <!--                    app:cardElevation="5dp">-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tv_gross_revenue"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_gravity="center"-->
+        <!--                        android:layout_marginStart="16dp"-->
+        <!--                        android:layout_marginEnd="16dp"-->
+        <!--                        android:text="@{dashboardDataResponse.grossRevenueAsString()}"-->
+        <!--                        android:textSize="20sp"-->
+        <!--                        tools:text="Total Cases" />-->
+
+        <!--                </androidx.cardview.widget.CardView>-->
+
+        <!--                <androidx.cardview.widget.CardView-->
+        <!--                    android:id="@+id/cardView2"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="120dp"-->
+        <!--                    android:layout_marginHorizontal="30dp"-->
+        <!--                    android:layout_marginTop="24dp"-->
+        <!--                    android:backgroundTint="@color/purple_claro_fondo"-->
+        <!--                    android:elevation="20dp"-->
+        <!--                    app:cardCornerRadius="20dp"-->
+        <!--                    app:cardElevation="5dp">-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tv_total_to_collect"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_gravity="center"-->
+        <!--                        android:layout_marginStart="16dp"-->
+        <!--                        android:layout_marginEnd="16dp"-->
+        <!--                        android:text="@{dashboardDataResponse.totalToCollectAsString}"-->
+        <!--                        android:textSize="20sp"-->
+        <!--                        tools:text="Total Active Cases" />-->
+        <!--                </androidx.cardview.widget.CardView>-->
+
+        <!--                <androidx.cardview.widget.CardView-->
+        <!--                    android:id="@+id/cardView3"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="120dp"-->
+        <!--                    android:layout_marginHorizontal="30dp"-->
+        <!--                    android:layout_marginTop="24dp"-->
+        <!--                    android:backgroundTint="@color/purple_claro_fondo"-->
+        <!--                    android:elevation="20dp"-->
+        <!--                    app:cardCornerRadius="20dp"-->
+        <!--                    app:cardElevation="5dp">-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tv_total_raised"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_gravity="center"-->
+        <!--                        android:layout_marginStart="16dp"-->
+        <!--                        android:layout_marginEnd="16dp"-->
+        <!--                        android:text="@{dashboardDataResponse.totalRaisedAsString()}"-->
+        <!--                        android:textSize="20sp"-->
+        <!--                        tools:text="Total Deaths" />-->
+        <!--                </androidx.cardview.widget.CardView>-->
+
+        <!--                <androidx.cardview.widget.CardView-->
+        <!--                    android:id="@+id/cardView4"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="120dp"-->
+        <!--                    android:layout_marginHorizontal="30dp"-->
+        <!--                    android:layout_marginTop="24dp"-->
+        <!--                    android:layout_marginBottom="24dp"-->
+        <!--                    android:backgroundTint="@color/purple_claro_fondo"-->
+        <!--                    app:cardCornerRadius="20dp"-->
+        <!--                    app:cardElevation="5dp">-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tv_total_discount"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_gravity="center"-->
+        <!--                        android:layout_marginStart="16dp"-->
+        <!--                        android:layout_marginEnd="16dp"-->
+        <!--                        android:text="@{dashboardDataResponse.totalDiscountAsString}"-->
+        <!--                        android:textSize="20sp"-->
+        <!--                        tools:text="Total Recovered" />-->
+        <!--                </androidx.cardview.widget.CardView>-->
+
+        <!--                <androidx.cardview.widget.CardView-->
+        <!--                    android:id="@+id/cardView5"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="120dp"-->
+        <!--                    android:layout_marginHorizontal="30dp"-->
+        <!--                    android:layout_marginBottom="24dp"-->
+        <!--                    android:backgroundTint="@color/purple_claro_fondo"-->
+        <!--                    app:cardCornerRadius="20dp"-->
+        <!--                    app:cardElevation="5dp">-->
+
+        <!--                    <androidx.appcompat.widget.LinearLayoutCompat-->
+        <!--                        android:layout_width="match_parent"-->
+        <!--                        android:layout_height="120dp"-->
+        <!--                        android:orientation="horizontal">-->
+
+        <!--                        <TextView-->
+        <!--                            android:id="@+id/tv_fiber_installations"-->
+        <!--                            android:layout_width="0dp"-->
+        <!--                            android:layout_height="match_parent"-->
+        <!--                            android:layout_weight="1"-->
+        <!--                            android:gravity="center"-->
+        <!--                            android:text="@{dashboardDataResponse.installationResume.fiberResume}"-->
+        <!--                            android:textSize="20sp"-->
+        <!--                            tools:text="Total Recovered" />-->
+
+        <!--                        <TextView-->
+        <!--                            android:id="@+id/tv_wireless_installations"-->
+        <!--                            android:layout_width="wrap_content"-->
+        <!--                            android:layout_height="match_parent"-->
+        <!--                            android:layout_weight="1"-->
+        <!--                            android:gravity="center"-->
+        <!--                            android:text="@{dashboardDataResponse.installationResume.wirelessResume}"-->
+        <!--                            android:textSize="20sp"-->
+        <!--                            tools:text="Total Recovered" />-->
+
+        <!--                    </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+
+        <!--                </androidx.cardview.widget.CardView>-->
+
+        <!--                <androidx.cardview.widget.CardView-->
+        <!--                    android:id="@+id/cardView7"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="120dp"-->
+        <!--                    android:layout_marginHorizontal="30dp"-->
+        <!--                    android:layout_marginBottom="24dp"-->
+        <!--                    android:backgroundTint="@color/purple_claro_fondo"-->
+        <!--                    app:cardCornerRadius="20dp"-->
+        <!--                    app:cardElevation="5dp">-->
+
+        <!--                    <TextView-->
+        <!--                        android:id="@+id/tv_cancelled_subscriptions"-->
+        <!--                        android:layout_width="wrap_content"-->
+        <!--                        android:layout_height="wrap_content"-->
+        <!--                        android:layout_gravity="center"-->
+        <!--                        android:layout_marginStart="16dp"-->
+        <!--                        android:layout_marginEnd="16dp"-->
+        <!--                        android:text="@{dashboardDataResponse.canceledSubscriptionsAsString()}"-->
+        <!--                        android:textSize="20sp"-->
+        <!--                        tools:text="Total Recovered" />-->
+        <!--                </androidx.cardview.widget.CardView>-->
+
+        <!--                <Button-->
+        <!--                    android:id="@+id/btnStartCut"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="50dp"-->
+        <!--                    android:layout_marginHorizontal="30dp"-->
+        <!--                    android:layout_marginBottom="32dp"-->
+        <!--                    android:backgroundTint="@color/purple_base_app"-->
+        <!--                    android:elevation="20dp"-->
+        <!--                    android:text="Iniciar corte"-->
+        <!--                    android:textColor="@color/white"-->
+        <!--                    android:textSize="14dp"-->
+        <!--                    android:visibility="gone"-->
+        <!--                    app:cornerRadius="20dp"-->
+        <!--                    app:iconPadding="10dp"-->
+        <!--                    app:iconSize="24dp"-->
+        <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                    app:layout_constraintStart_toStartOf="parent" />-->
+
+        <!--            </androidx.appcompat.widget.LinearLayoutCompat>-->
+
+    </ScrollView>
+
+    <!--        <androidx.appcompat.widget.LinearLayoutCompat-->
+    <!--            android:id="@+id/shimmerDashBoard"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:orientation="vertical"-->
+    <!--            android:visibility="@{viewModel.showDashBoardShimmerLiveData}"-->
+    <!--            tools:visibility="gone">-->
+
+    <!--            <include layout="@layout/shimmer_dash_board" />-->
+    <!--        </androidx.appcompat.widget.LinearLayoutCompat>-->
+    <!--    </LinearLayout>-->
 </layout>

@@ -31,6 +31,8 @@ class DashBoardFragment : BaseFragment<DashBoardDataUiState, FragmentDashBoardBi
                 showCutConfirmationDialog()
             }
         }
+
+
     }
 
     override fun handleState(state: DashBoardDataUiState) =

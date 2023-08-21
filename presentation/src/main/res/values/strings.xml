@@ -223,5 +223,10 @@
     <string name="error_invalid_data">Los datos no son validos.</string>
     <string name="get_current_mont_cancelled_subscription">Obtener suscripciones canceladas de este mes</string>
     <string name="get_past_month_cancelled_subscription">Obtener subscripciones canceladas del mes pasado</string>
+    <string name="total_gross">Total bruto</string>
+    <string name="outstanding">Por Cobrar</string>
+    <string name="collected">Recaudado</string>
+    <string name="discounted">Descontado</string>
+    <string name="monetary_resume">Resumen monetario</string>
 
 </resources>

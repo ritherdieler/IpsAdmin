@@ -5,10 +5,10 @@ data class InstallationResume(
     val WIRELESS: String
 ){
     fun getFiberResume(): String {
-        return "Fibra $FIBER"
+        return FIBER
     }
 
     fun getWirelessResume(): String {
-        return "Inalámbrico $WIRELESS"
+        return WIRELESS
     }
 }

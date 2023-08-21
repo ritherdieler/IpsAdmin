@@ -8,12 +8,12 @@ class DashBoardDataResponse(
     val installationResume: InstallationResume,
     val canceledSubscriptions: Int
 ) {
-    fun grossRevenueAsString() = "Total bruto S/.$grossRevenue"
+    fun grossRevenueAsString() = "$grossRevenue"
 
-    fun totalRaisedAsString() = " Recaudado S/.$totalRaised"
+    fun totalRaisedAsString() = "$totalRaised"
 
-    fun totalDiscountAsString() = "Descontado S/.$totalDiscount"
+    fun totalDiscountAsString() = "$totalDiscount"
 
-    fun totalToCollectAsString() = "Por cobrar S/.$totalToCollect"
-    fun canceledSubscriptionsAsString() = "Subs. canceladas $canceledSubscriptions"
+    fun totalToCollectAsString() = "$totalToCollect"
+    fun canceledSubscriptionsAsString() = "$canceledSubscriptions"
 }
