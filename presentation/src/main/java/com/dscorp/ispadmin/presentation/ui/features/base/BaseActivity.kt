@@ -31,11 +31,11 @@ abstract class BaseActivity<T, U : ViewDataBinding> : AppCompatActivity() {
     }
 
     protected open fun onLoading(isLoading: Boolean) {
-        if (isLoading) fullScreenProgressDialog.show(
-            supportFragmentManager,
-            "BaseFragmentFullScreenProgress"
-        )
-        else fullScreenProgressDialog.dismiss()
+        if (supportFragmentManager.isStateSaved)
+            if (isLoading) fullScreenProgressDialog.show(supportFragmentManager,
+                "BaseFragmentFullScreenProgress"
+            )
+            else fullScreenProgressDialog.dismiss()
     }
 
     protected open fun onViewReady(savedInstanceState: Bundle?) {}

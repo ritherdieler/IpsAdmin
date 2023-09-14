@@ -2,7 +2,7 @@
 
 
     <string name="digit_dni">Digite el DNI</string>
-    <string name="app_name">ispAdminAndroid</string>
+    <string name="app_name">IspAdmin</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     find_subscription
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -83,6 +83,7 @@
     <string name="only_pending">Solo pendientes</string>
     <string name="go_to_pay">Ir a pagar</string>
     <string name="reports">Reportes</string>
+    <string name="support_tickets">Tickets de soporte</string>
     <string name="get_active_debtors">Obtener deudores con servicio activo</string>
     <string name="get_cancelled_debtors">Obtener deudores con servicio cancelado</string>
     <string name="download_speed_in_mb">Velocidad de descarga en MB</string>
@@ -227,6 +228,19 @@
     <string name="outstanding">Por Cobrar</string>
     <string name="collected">Recaudado</string>
     <string name="discounted">Descontado</string>
-    <string name="monetary_resume">Resumen monetario</string>
+    <string name="monthly_monetary_resume">Resumen monetario mensual</string>
+    <string name="concept">Concepto</string>
+    <string name="pen_symbol">S/.</string>
+    <string name="electronic_payments_history">Historial de pagos electrónicos</string>
+    <string name="monthly_costumers_resume">Resumen mensual de clientes</string>
+    <string name="quantity">Cantidad</string>
+    <string name="Fiber">Fibra</string>
+    <string name="cancelled">Cancelados</string>
+    <string name="start_cut">Iniciar corte</string>
+    <string name="active_customers_history">Historial de clientes activos</string>
+    <string name="raised">Recaudado</string>
+    <string name="pending">Pendiente</string>
+    <string name="monthly_receipts_resume">Resumen de ingresos</string>
+    <string name="monthly_collects_history">Historial de recaudacion mensual</string>
 
 </resources>

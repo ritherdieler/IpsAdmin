@@ -27,7 +27,7 @@
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_get_with_payment_commitment_cusstomers"
+                android:id="@+id/btn_get_with_payment_commitment_customers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"

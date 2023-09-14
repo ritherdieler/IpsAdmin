@@ -3,69 +3,59 @@ package com.dscorp.ispadmin.presentation.ui.features.report
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.example.data2.data.repository.IRepository
-import kotlinx.coroutines.delay
 
 class ReportsViewModel(private val repository: IRepository) : BaseViewModel<ReportsUiState>() {
 
-    fun downloadDebtorWithActiveSubscriptionsDocument() = executeWithProgress {
-        val response = repository.downloadDebtorWithActiveSubscriptionsDocument()
+    fun downloadDebtorWithActiveSubscriptionsReport() = executeWithProgress {
+        val downloadedDocument = repository.downloadDebtorWithActiveSubscriptionsReport()
         uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(response))
-        delay(1000)
+            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
     }
 
-    fun downloadPaymentCommitmentSubscriptionsDocument() = executeWithProgress {
-        val response = repository.downloadWithPaymentCommitmentSubscriptionsDocument()
+    fun downloadPaymentCommitmentSubscriptionsReport() = executeWithProgress {
+        val downloadedDocument = repository.downloadPaymentCommitmentSubscriptionsReport()
         uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(response))
-        delay(1000)
+            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
     }
 
-    fun downloadSuspendedSubscriptionsDocument() = executeWithProgress {
-        val response = repository.downloadSuspendedSubscriptionsDocument()
-        uiState.value = BaseUiState(ReportsUiState.DocumentReady(response))
-        delay(1000)
+    fun downloadSuspendedSubscriptionsReport() = executeWithProgress {
+        val downloadedDocument = repository.downloadSuspendedSubscriptionsReport()
+        uiState.value = BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
     }
 
-    fun downloadCutOffSubscriptionsDocument() = executeWithProgress {
-        val response = repository.downloadCutOffSubscriptionsDocument()
+    fun downloadCutOffSubscriptionsReport() = executeWithProgress {
+        val downloadedDocument = repository.downloadCutOffSubscriptionsReport()
         uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(response))
-        delay(1000)
+            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
     }
 
-    fun downloadPastMonthDebtors() = executeWithProgress {
-        val response = repository.downloadPastMontSubscriptionsDocument()
+    fun downloadPastMonthDebtorsReport() = executeWithProgress {
+        val downloadedDocument = repository.downloadPastMonthDebtorsReport()
         uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(response))
-        delay(1000)
+            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
     }
 
-    fun downloadCancelledSubscriptionsFromCurrentMonth() = executeWithProgress {
-        val response = repository.downloadCancelledSubscriptionFromCurrentMonthDocument()
+    fun downloadCancelledSubscriptionsFromCurrentMonthReport() = executeWithProgress {
+        val downloadedDocument = repository.downloadCancelledSubscriptionsFromCurrentMonthReport()
         uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(response))
-        delay(1000)
+            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
     }
 
-    fun downloadCancelledSubscriptionsFromPastMonth() = executeWithProgress {
-        val response = repository.downloadCancelledSubscriptionsFromPastMonthDocument()
+    fun downloadCancelledSubscriptionsFromPastMonthReport() = executeWithProgress {
+        val downloadedDocument = repository.downloadCancelledSubscriptionsFromPastMonthReport()
         uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(response))
-        delay(1000)
+            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
     }
 
-    fun downloadDebtorsCutOffCandidatesSubscriptionsDocument() = executeWithProgress {
-        val response = repository.downloadDebtorsCutOffCandidatesSubscriptionsDocument()
+    fun downloadDebtorsCutOffCandidatesSubscriptionsReport() = executeWithProgress {
+        val downloadedDocument = repository.downloadDebtorsCutOffCandidatesSubscriptionsReport()
         uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(response))
-        delay(1000)
+            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
     }
 
-    fun downloadDebtorWithCancelledSubscriptionsDocument()= executeWithProgress {
-        val response = repository.downloadDebtorWithCancelledSubscriptionsDocument()
+    fun downloadDebtorWithCancelledSubscriptionsReport() = executeWithProgress {
+        val downloadedDocument = repository.downloadDebtorWithCancelledSubscriptionsReport()
         uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(response))
-        delay(1000)
+            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
     }
 }

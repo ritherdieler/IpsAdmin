@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.FragmentIpListBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment

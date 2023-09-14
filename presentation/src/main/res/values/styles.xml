@@ -60,5 +60,27 @@
 
     </style>
 
+    <style name="CardViewStyle" parent="CardView">
+        <item name="cardCornerRadius">6dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="android:layout_margin">5dip</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="CardViewTextStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:lineSpacingExtra">8dp</item>
+    </style>
+
+
+    <style name="CardViewDateStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:lineSpacingExtra">8dp</item>
+    </style>
+
+
 
 </resources>

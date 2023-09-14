@@ -4,6 +4,8 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
+import com.example.data2.data.response.AssistanceTicketResponse
+import com.example.data2.data.response.AssistanceTicketStatus
 import com.example.data2.data.response.BaseResponse
 import retrofit2.Response
 import retrofit2.http.*
@@ -186,5 +188,18 @@ interface RestApiServices {
 
     @GET("report/canceled-past-month")
     suspend fun downloadCancelledSubscriptionsFromLastMonth(): Response<DownloadDocumentResponse>
+
+    @GET("assistanceTicket/find")
+    suspend fun getTicket(@Query("ticketId") ticketId: String): Response<AssistanceTicketResponse>
+    @GET("assistanceTicket/findAll")
+    suspend fun getTicketsByStatus(@Query("status") status: AssistanceTicketStatus): Response<List<AssistanceTicketResponse>>
+
+    @PUT("assistanceTicket/updateStatus")
+    suspend fun updateTicketState(
+        @Query("ticketId") ticketId: Int,
+        @Query("status") newStatus: AssistanceTicketStatus,
+        @Query("userId") userId: Int
+    ):Response<AssistanceTicketResponse>
+
 }
 

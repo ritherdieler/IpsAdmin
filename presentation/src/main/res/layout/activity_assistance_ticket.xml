@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ticket"
+            type="com.example.data2.data.response.AssistanceTicketResponse" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        back="@color/PrimaryContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardBackgroundColor="@color/PrimaryContainer"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`Nombre: ` + ticket.name}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="@color/OnPrimary"
+                    android:textStyle="bold"
+                    tools:text="Nombre: " />
+
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewPriority"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`Prioridad: ` + ticket.priority}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/OnPrimary"
+                    tools:text="Prioridad: " />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`Categoría: ` + ticket.category}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/OnPrimary"
+                    tools:text="Categoría: " />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`Descripción: ` + ticket.description}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/OnPrimary"
+                    tools:text="Descripción: " />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewPlace"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`Lugar: ` + ticket.place}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/OnPrimary"
+                    tools:text="Lugar: " />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`Telefono: ` + ticket.phone}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/OnPrimary"
+                    tools:text="Telefono: " />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`Dirección: ` + ticket.address}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/OnPrimary"
+                    tools:text="Dirección: " />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textViewStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{`Estado: ` + ticket.getStatusAsString()}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    android:textColor="@color/OnPrimary"
+                    tools:text="Estado: " />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

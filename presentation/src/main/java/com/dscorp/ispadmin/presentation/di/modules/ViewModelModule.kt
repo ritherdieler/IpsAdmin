@@ -26,6 +26,7 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.Regist
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.technicianlist.TechnicianListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -45,14 +46,14 @@ val viewModelModule = module {
     viewModel { PlaceViewModel() }
     viewModel { PlanViewModel() }
     viewModel { RegisterViewModel(get(), get()) }
-    viewModel { RegisterSubscriptionViewModel(get(),get()) }
+    viewModel { RegisterSubscriptionViewModel(get(), get()) }
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel(get()) }
     viewModel { RegisterServiceOrderViewModel(get()) }
     viewModel { ServicesOrderListViewModel() }
     viewModel { NapBoxesListViewModel() }
     viewModel { PaymentHistoryViewModel(get()) }
-    viewModel { FindSubscriptionViewModel(get(),get()) }
+    viewModel { FindSubscriptionViewModel(get(), get()) }
     viewModel { RegisterPaymentViewModel(get()) }
     viewModel { IpPoolViewModel(get()) }
     viewModel { MyProfileViewModel() }
@@ -67,5 +68,6 @@ val viewModelModule = module {
     viewModel { MufaViewModel(get()) }
     viewModel { EditSubscriptionViewModel(get()) }
     viewModel { EditPlanViewModel(get()) }
-    viewModel{SubscriptionDetailViewModel(get(),get (),get())}
+    viewModel { SubscriptionDetailViewModel(get(), get(), get()) }
+    viewModel { SupportTicketViewModel(get()) }
 }

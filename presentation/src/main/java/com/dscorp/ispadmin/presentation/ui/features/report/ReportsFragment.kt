@@ -1,22 +1,21 @@
 package com.dscorp.ispadmin.presentation.ui.features.report
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
-import com.dscorp.ispadmin.R
+import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.databinding.FragmentReportsBinding
 import com.dscorp.ispadmin.presentation.extension.getDownloadedFileUri
+import com.dscorp.ispadmin.presentation.extension.openWithXlsxApp
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.report.ReportsFragment.DownloadDocumentType.*
+import com.dscorp.ispadmin.presentation.ui.features.report.DownloadDocumentType.*
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {
@@ -24,94 +23,63 @@ class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {
     override val binding by lazy { FragmentReportsBinding.inflate(layoutInflater) }
 
     override val viewModel: ReportsViewModel by viewModel()
-    override fun handleState(state: ReportsUiState) =
-        when (state) {
-            is ReportsUiState.DocumentReady -> downloadFile(state.document)
-        }
 
-    private var downloadDocumentType: DownloadDocumentType? = null
-    private val requestPermissionManager =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                downloadDocumentType?.let {
-                    downloadDocument(it)
-                }
-            } else {
-                showErrorDialog(getString(R.string.permission_denied))
-            }
+    override fun handleState(state: ReportsUiState) {
+        if (state is ReportsUiState.DocumentReady) {
+            downloadFile(state.document)
         }
+    }
 
     private fun downloadDocument(it: DownloadDocumentType) =
         when (it) {
-            WITH_PAYMENT_COMMITMENT -> viewModel.downloadPaymentCommitmentSubscriptionsDocument()
-            SUSPENDED -> viewModel.downloadSuspendedSubscriptionsDocument()
-            CUT_OFF -> viewModel.downloadCutOffSubscriptionsDocument()
-            DEBTORS_FROM_PAST_MONTH -> viewModel.downloadPastMonthDebtors()
-            DEBTORS_CUT_OFF_CANDIDATES -> viewModel.downloadDebtorsCutOffCandidatesSubscriptionsDocument()
-            DEBTORS_WITH_ACTIVE_SERVICE -> viewModel.downloadDebtorWithActiveSubscriptionsDocument()
-            DEBTORS_WITH_CANCELLED_SERVICE -> viewModel.downloadDebtorWithCancelledSubscriptionsDocument()
-            CANCELLED_SUBSCRIPTIONS_FROM_CURRENT_MONTH -> viewModel.downloadCancelledSubscriptionsFromCurrentMonth()
-            CANCELLED_SUBSCRIPTIONS_FROM_PAST_MONTH -> viewModel.downloadCancelledSubscriptionsFromPastMonth()
+            WITH_PAYMENT_COMMITMENT -> viewModel.downloadPaymentCommitmentSubscriptionsReport()
+            SUSPENDED -> viewModel.downloadSuspendedSubscriptionsReport()
+            CUT_OFF -> viewModel.downloadCutOffSubscriptionsReport()
+            DEBTORS_FROM_PAST_MONTH -> viewModel.downloadPastMonthDebtorsReport()
+            DEBTORS_CUT_OFF_CANDIDATES -> viewModel.downloadDebtorsCutOffCandidatesSubscriptionsReport()
+            DEBTORS_WITH_ACTIVE_SERVICE -> viewModel.downloadDebtorWithActiveSubscriptionsReport()
+            DEBTORS_WITH_CANCELLED_SERVICE -> viewModel.downloadDebtorWithCancelledSubscriptionsReport()
+            CANCELLED_SUBSCRIPTIONS_FROM_CURRENT_MONTH -> viewModel.downloadCancelledSubscriptionsFromCurrentMonthReport()
+            CANCELLED_SUBSCRIPTIONS_FROM_PAST_MONTH -> viewModel.downloadCancelledSubscriptionsFromPastMonthReport()
         }
 
     override fun onViewReady(savedInstanceState: Bundle?) {
-
-        binding.btnGetDebtorsCutOffCandidates.setOnClickListener {
-            downloadDocument(DEBTORS_CUT_OFF_CANDIDATES)
-        }
-
-        binding.btnGetDebtorsWithActiveServiceCustomers.setOnClickListener {
-//            downloadDocumentType = DownloadDocumentType.DEBTORS
-            downloadDocument(DEBTORS_WITH_ACTIVE_SERVICE)
-//            requestExternalStoragePermissionAndDownloadDocument()
-        }
-
-        binding.btnGetDebtorsWithCancelledServiceCustomers.setOnClickListener {
-//            downloadDocumentType = DownloadDocumentType.DEBTORS
-            downloadDocument(DEBTORS_WITH_CANCELLED_SERVICE)
-//            requestExternalStoragePermissionAndDownloadDocument()
-        }
-
-        binding.btnGetWithPaymentCommitmentCusstomers.setOnClickListener {
-//            downloadDocumentType = DownloadDocumentType.WITH_PAYMENT_COMMITMENT
-            downloadDocument(WITH_PAYMENT_COMMITMENT)
-//            requestExternalStoragePermissionAndDownloadDocument()
-        }
-
-        binding.btnSuspendedCustomers.setOnClickListener {
-//            downloadDocumentType = DownloadDocumentType.SUSPENDED
-//            requestExternalStoragePermissionAndDownloadDocument()
-            downloadDocument(SUSPENDED)
-
-        }
-
-        binding.btnGetCutoffCustomers.setOnClickListener {
-//            downloadDocumentType = DownloadDocumentType.CUT_OFF
-//            requestExternalStoragePermissionAndDownloadDocument()
-            downloadDocument(CUT_OFF)
-
-        }
-
-        binding.btnGetPastMonthDebtorCustomers.setOnClickListener {
-//            downloadDocumentType = DownloadDocumentType.DEBTORS_FROM_PAST_MONTH
-//            requestExternalStoragePermissionAndDownloadDocument()
-            downloadDocument(DEBTORS_FROM_PAST_MONTH)
-
-        }
-
-        binding.btnGetCancelledSubscriptionsCurrentMonth.setOnClickListener {
-            downloadDocument(CANCELLED_SUBSCRIPTIONS_FROM_CURRENT_MONTH)
-        }
-
-        binding.btnGetCancelledSubscriptionsFromPastMonth.setOnClickListener {
-            downloadDocument(CANCELLED_SUBSCRIPTIONS_FROM_PAST_MONTH)
-        }
-
+        setupButtonListeners()
     }
 
+    private fun setupButtonListeners() {
+        binding.apply {
+            btnGetDebtorsCutOffCandidates.setOnClickListener {
+                downloadDocument(DEBTORS_CUT_OFF_CANDIDATES)
+            }
+            btnGetDebtorsWithActiveServiceCustomers.setOnClickListener {
+                downloadDocument(DEBTORS_WITH_ACTIVE_SERVICE)
+            }
+            btnGetDebtorsWithCancelledServiceCustomers.setOnClickListener {
+                downloadDocument(DEBTORS_WITH_CANCELLED_SERVICE)
+            }
+            btnGetWithPaymentCommitmentCustomers.setOnClickListener {
+                downloadDocument(WITH_PAYMENT_COMMITMENT)
+            }
+            btnSuspendedCustomers.setOnClickListener {
+                downloadDocument(SUSPENDED)
+            }
+            btnGetCutoffCustomers.setOnClickListener {
+                downloadDocument(CUT_OFF)
+            }
+            btnGetPastMonthDebtorCustomers.setOnClickListener {
+                downloadDocument(DEBTORS_FROM_PAST_MONTH)
+            }
+            btnGetCancelledSubscriptionsCurrentMonth.setOnClickListener {
+                downloadDocument(CANCELLED_SUBSCRIPTIONS_FROM_CURRENT_MONTH)
+            }
+            btnGetCancelledSubscriptionsFromPastMonth.setOnClickListener {
+                downloadDocument(CANCELLED_SUBSCRIPTIONS_FROM_PAST_MONTH)
+            }
+        }
+    }
 
     private fun downloadFile(document: DownloadDocumentResponse) {
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             openDocument(document)
         } else {
@@ -129,42 +97,12 @@ class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {
                 openDocument(document)
             }
         }
-
-
     }
 
     private fun openDocument(document: DownloadDocumentResponse) {
-        lifecycleScope.launch {
-            val uri = requireActivity().getDownloadedFileUri(document)
-            val intent = openWithXlsxApp(uri)
-            try {
-                startActivity(intent)
-            } catch (e: Exception) {
-                showErrorDialog("No se pudo abrir el archivo, el archivo se encuentra en la carpeta de descargas")
-            }
-        }
-    }
-
-    private fun openWithXlsxApp(uri: Uri): Intent {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setDataAndType(
-            uri,
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        return intent
-    }
-
-    private enum class DownloadDocumentType {
-        DEBTORS_CUT_OFF_CANDIDATES,
-        DEBTORS_WITH_ACTIVE_SERVICE,
-        DEBTORS_WITH_CANCELLED_SERVICE,
-        WITH_PAYMENT_COMMITMENT,
-        SUSPENDED,
-        CUT_OFF,
-        DEBTORS_FROM_PAST_MONTH,
-        CANCELLED_SUBSCRIPTIONS_FROM_CURRENT_MONTH,
-        CANCELLED_SUBSCRIPTIONS_FROM_PAST_MONTH,
+        val uri = requireActivity().getDownloadedFileUri(document)
+        openWithXlsxApp(uri)
     }
 }
+
+

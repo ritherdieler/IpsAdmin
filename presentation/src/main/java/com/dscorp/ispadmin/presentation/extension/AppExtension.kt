@@ -103,21 +103,21 @@ fun Activity.showErrorDialog(error: String = "error desconocido") {
     errorDialog.show()
 }
 
+
+// Kotlin
+
 fun Activity.getDownloadedFileUri(document: DownloadDocumentResponse): Uri {
     val data = Base64.decode(document.base64, Base64.DEFAULT)
-    val downloadDir: File =
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-    val outputFile = File(downloadDir, document.getNameWithExtension())
+    val directory = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+    val outputFile = File(directory, document.getNameWithExtension())
     val outputStream = FileOutputStream(outputFile)
     outputStream.write(data)
     outputStream.close()
 
-    return FileProvider.getUriForFile(
-        this,
-        "${BuildConfig.APPLICATION_ID}.fileprovider",
-        outputFile
-    )
+    return FileProvider.getUriForFile(this, "com.dscorp.ispadmin.fileprovider", outputFile)
 }
+
+
 
 fun <T> MaterialAutoCompleteTextView.populate(data: List<T>, onItemSelected: (T) -> Unit) {
     val adapter = ArrayAdapter(context, R.layout.simple_spinner_item, data)

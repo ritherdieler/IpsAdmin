@@ -18,6 +18,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityMainBinding
+import com.dscorp.ispadmin.presentation.fcm.FcmTopics
 import com.dscorp.ispadmin.presentation.util.FCM_ALL_THEME
 import com.dscorp.ispadmin.presentation.util.FCM_CUSTOMER_THEME
 import com.dscorp.ispadmin.presentation.util.FCM_TECHNICIAN_THEME
@@ -51,15 +52,6 @@ class MainActivity : AppCompatActivity() {
 
         navView.setupWithNavController(navController)
 
-
-        // Crear el canal de notificación si la versión de Android es mayor o igual a Android Oreo
-        val channel = NotificationChannel(
-            "default",
-            "Canal de notificaciones",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
 
         // Verificar si ya se han otorgado permisos para las notificaciones
         if (ContextCompat.checkSelfPermission(
@@ -108,6 +100,8 @@ class MainActivity : AppCompatActivity() {
                         navOptions
                     )
                     navHostFragment.navController.navigate(R.id.nav_register_subscription)
+
+                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
                 }
 
                 User.UserType.SECRETARY -> {
@@ -123,15 +117,20 @@ class MainActivity : AppCompatActivity() {
                         navOptions
                     )
                     navHostFragment.navController.navigate(R.id.nav_find_subscriptions)
+                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
+                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
+
                 }
 
                 User.UserType.CLIENT -> {
-                    FirebaseMessaging.getInstance().subscribeToTopic(FCM_CUSTOMER_THEME)
+//                    FirebaseMessaging.getInstance().subscribeToTopic(FCM_CUSTOMER_THEME)
                 }
 
                 User.UserType.ADMIN -> {
-                    FirebaseMessaging.getInstance().subscribeToTopic(FCM_ALL_THEME)
+//                    FirebaseMessaging.getInstance().subscribeToTopic(FCM_ALL_THEME)
                     navHostFragment.navController.navigate(R.id.nav_dashboard)
+                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
+                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
 
                 }
 
@@ -140,8 +139,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
 
     override fun onBackPressed() {

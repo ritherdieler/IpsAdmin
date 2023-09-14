@@ -29,6 +29,8 @@ import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
+import com.example.data2.data.response.AssistanceTicketResponse
+import com.example.data2.data.response.AssistanceTicketStatus
 
 /**
  * Created by Sergio Carrillo Diestra on 25/12/2022.
@@ -69,15 +71,15 @@ interface IRepository {
     suspend fun getRecentPaymentsHistory(idSubscription: Int, itemsLimit: Int): List<Payment>
     suspend fun getCoreDevices(): List<NetworkDevice>
     suspend fun updateSubscriptionPlan(subscription: UpdateSubscriptionPlanBody): SubscriptionResponse
-    suspend fun downloadDebtorWithActiveSubscriptionsDocument(): DownloadDocumentResponse
+    suspend fun downloadDebtorWithActiveSubscriptionsReport(): DownloadDocumentResponse
 
-    suspend fun downloadWithPaymentCommitmentSubscriptionsDocument(): DownloadDocumentResponse
+    suspend fun downloadPaymentCommitmentSubscriptionsReport(): DownloadDocumentResponse
 
-    suspend fun downloadSuspendedSubscriptionsDocument(): DownloadDocumentResponse
+    suspend fun downloadSuspendedSubscriptionsReport(): DownloadDocumentResponse
 
-    suspend fun downloadCutOffSubscriptionsDocument(): DownloadDocumentResponse
+    suspend fun downloadCutOffSubscriptionsReport(): DownloadDocumentResponse
 
-    suspend fun downloadPastMontSubscriptionsDocument(): DownloadDocumentResponse
+    suspend fun downloadPastMonthDebtorsReport(): DownloadDocumentResponse
 
     suspend fun getDashBoardData(): DashBoardDataResponse
     suspend fun startServiceCut()
@@ -103,12 +105,15 @@ interface IRepository {
         lastName: String?
     ): List<SubscriptionResponse>
 
-    suspend fun downloadDebtorsCutOffCandidatesSubscriptionsDocument(): DownloadDocumentResponse
+    suspend fun downloadDebtorsCutOffCandidatesSubscriptionsReport(): DownloadDocumentResponse
     suspend fun cancelSubscription(subscription: SubscriptionResponse)
     suspend fun updateSubscriptionData(subscriptionData: UpdateSubscriptionDataBody)
-    suspend fun downloadDebtorWithCancelledSubscriptionsDocument(): DownloadDocumentResponse
-    suspend fun downloadCancelledSubscriptionFromCurrentMonthDocument(): DownloadDocumentResponse
-    suspend fun downloadCancelledSubscriptionsFromPastMonthDocument(): DownloadDocumentResponse
+    suspend fun downloadDebtorWithCancelledSubscriptionsReport(): DownloadDocumentResponse
+    suspend fun downloadCancelledSubscriptionsFromCurrentMonthReport(): DownloadDocumentResponse
+    suspend fun downloadCancelledSubscriptionsFromPastMonthReport(): DownloadDocumentResponse
 
+    suspend fun getTicket(ticketId: String): AssistanceTicketResponse
+  suspend  fun getTicketsByStatus(pending: AssistanceTicketStatus):List<AssistanceTicketResponse>
+    suspend fun updateTicketState(id: Int, newStatus: AssistanceTicketStatus, userId: Int): AssistanceTicketResponse
 
 }

@@ -88,4 +88,43 @@
 
     <color name="colorPrimary">#131d47</color>
 
+
+    <color name="Primary">#141D48</color>
+    <color name="OnPrimary">#FFFFFF</color>
+    <color name="PrimaryContainer">#002F6C</color>
+    <color name="OnPrimaryContainer">#FFFFFF</color>
+    <color name="InversePrimary">#FFFFFF</color>
+
+    <color name="Secondary">#FF5722</color>
+    <color name="OnSecondary">#000000</color>
+    <color name="SecondaryContainer">#FF7B47</color>
+    <color name="OnSecondaryContainer">#000000</color>
+
+    <color name="Tertiary">#009688</color>
+    <color name="OnTertiary">#000000</color>
+    <color name="TertiaryContainer">#00BFA5</color>
+    <color name="OnTertiaryContainer">#000000</color>
+
+    <color name="Background">#FFFFFF</color>
+    <color name="OnBackground">#000000</color>
+
+    <color name="Surface">#FFFFFF</color>
+    <color name="OnSurface">#000000</color>
+    <color name="SurfaceVariant">#E0E0E0</color>
+    <color name="OnSurfaceVariant">#000000</color>
+    <color name="SurfaceTint">#F5F5F5</color>
+
+    <color name="InverseSurface">#000000</color>
+    <color name="InverseOnSurface">#FFFFFF</color>
+
+    <color name="Error">#FF0000</color>
+    <color name="OnError">#FFFFFF</color>
+    <color name="ErrorContainer">#FF8888</color>
+    <color name="OnErrorContainer">#000000</color>
+
+    <color name="Outline">#CCCCCC</color>
+    <color name="OutlineVariant">#AAAAAA</color>
+
+    <color name="Scrim">#99000000</color>
+
 </resources>
