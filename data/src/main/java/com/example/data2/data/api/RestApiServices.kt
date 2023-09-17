@@ -1,6 +1,7 @@
 package com.example.data2.data.api
 
 import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
@@ -200,6 +201,12 @@ interface RestApiServices {
         @Query("status") newStatus: AssistanceTicketStatus,
         @Query("userId") userId: Int
     ):Response<AssistanceTicketResponse>
+
+    @POST("assistanceTicket")
+    suspend fun createTicket(@Body value: AssistanceTicketRequest): Response<AssistanceTicketResponse>
+
+    @GET("subscription/fastSearch")
+    suspend fun findSubscriptionByNames(@Query("keyword") keyword: String): Response<List<SubscriptionFastSearchResponse>>
 
 }
 

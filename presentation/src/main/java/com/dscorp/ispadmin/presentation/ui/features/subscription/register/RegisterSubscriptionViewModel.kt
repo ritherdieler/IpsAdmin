@@ -149,8 +149,8 @@ class RegisterSubscriptionViewModel(
     private fun createSubscription(): Subscription {
         with(subscriptionForm) {
             val subscription = Subscription(
-                firstName = firstNameField.getValue(),
-                lastName = lastNameField.getValue(),
+                firstName = firstNameField.getValue()!!.removeSpecialCharacters(),
+                lastName = lastNameField.getValue()!!.removeSpecialCharacters(),
                 dni = dniField.getValue(),
                 address = addressField.getValue(),
                 phone = phoneField.getValue(),
@@ -228,5 +228,8 @@ class RegisterSubscriptionViewModel(
     fun onIsMigrationCheckedChanged(button: CompoundButton, isChecked: Boolean) {
         subscriptionForm.migrationField.liveData.value = isChecked
     }
-
+    private fun String.removeSpecialCharacters(): String {
+        val pattern = "[^A-Za-z0-9ñÑ ]".toRegex()
+        return replace(pattern, "")
+    }
 }

@@ -22,9 +22,11 @@ import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
 import com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionFastSearchResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
@@ -115,5 +117,7 @@ interface IRepository {
     suspend fun getTicket(ticketId: String): AssistanceTicketResponse
   suspend  fun getTicketsByStatus(pending: AssistanceTicketStatus):List<AssistanceTicketResponse>
     suspend fun updateTicketState(id: Int, newStatus: AssistanceTicketStatus, userId: Int): AssistanceTicketResponse
+    suspend fun createTicket(value: AssistanceTicketRequest): AssistanceTicketResponse
+    suspend   fun findSubscriptionByNames(names: String): List<SubscriptionFastSearchResponse>
 
 }

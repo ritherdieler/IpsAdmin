@@ -84,6 +84,7 @@
     <string name="go_to_pay">Ir a pagar</string>
     <string name="reports">Reportes</string>
     <string name="support_tickets">Tickets de soporte</string>
+    <string name="create_support_tickets">Crear ticket de soporte</string>
     <string name="get_active_debtors">Obtener deudores con servicio activo</string>
     <string name="get_cancelled_debtors">Obtener deudores con servicio cancelado</string>
     <string name="download_speed_in_mb">Velocidad de descarga en MB</string>

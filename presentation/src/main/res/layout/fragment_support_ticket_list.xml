@@ -3,25 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <variable
-            name="ticket"
-            type="com.example.data2.data.response.AssistanceTicketResponse" />
-    </data>
+    <LinearLayout
 
-
-    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical">
 
-       >
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewSupportTicket"
+        <!-- TabLayout para las pestañas -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_support_ticket"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            style="@style/MyTabLayout"
+            app:tabGravity="fill"
+           />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        <!-- ViewPager para mostrar los fragmentos -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </androidx.viewpager2.widget.ViewPager2>
+    </LinearLayout>
+
 </layout>

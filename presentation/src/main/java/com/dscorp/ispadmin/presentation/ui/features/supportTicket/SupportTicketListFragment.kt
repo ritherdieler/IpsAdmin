@@ -12,6 +12,7 @@ import com.dscorp.ispadmin.databinding.ItemSupportTicketBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
+import com.google.android.material.tabs.TabLayoutMediator
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SupportTicketListFragment :
@@ -21,41 +22,21 @@ class SupportTicketListFragment :
 
     override val viewModel: SupportTicketViewModel by viewModel()
 
-    private val adapter by lazy {
-        SupportTicketAdapter(onTicketButtonClicked = {
-                viewModel.takeTicket(it.id)
-        }, onCloseTicketButtonClicked = {
-            viewModel.closeTicket(it.id)
-        })
-    }
-
     override fun handleState(state: SupportTicketState) {
 
-        when (state) {
-            SupportTicketState.Empty -> {}
-            is SupportTicketState.Success -> {}
-            is SupportTicketState.TicketList -> {
-                adapter.submitList(state.ticketList)
-            }
-
-            is SupportTicketState.TicketTaken -> {
-                val list =adapter.currentList.map {
-                    if (it.id == state.ticket.id) {
-                        state.ticket
-                    } else {
-                        it
-                    }
-                }
-                adapter.submitList(list)
-            }
-
-            else -> {}
-        }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding.recyclerViewSupportTicket.adapter = adapter
+    override fun onViewReady(savedInstanceState: Bundle?) {
+        val adapter = TicketsPagerAdapter(childFragmentManager, lifecycle)
+        binding.viewPager.adapter = adapter
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            when (position) {
+                0 -> tab.text = "Pendiente"
+                1 -> tab.text = "En Progreso"
+                2 -> tab.text = "Cerrado"
+            }
+        }.attach()
     }
 
 }
@@ -63,14 +44,14 @@ class SupportTicketListFragment :
 class SupportTicketAdapter(
     private val onTicketButtonClicked: (AssistanceTicketResponse) -> Unit = {},
     private val onCloseTicketButtonClicked: (AssistanceTicketResponse) -> Unit = {}
-    ) :
+) :
     ListAdapter<AssistanceTicketResponse, SupportTicketAdapter.SupportTicketViewHolder>(
         SupportTicketDiffUtil()
     ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SupportTicketViewHolder {
         val binding by lazy { ItemSupportTicketBinding.inflate(LayoutInflater.from(parent.context)) }
-        return SupportTicketViewHolder(binding, onTicketButtonClicked,onCloseTicketButtonClicked)
+        return SupportTicketViewHolder(binding, onTicketButtonClicked, onCloseTicketButtonClicked)
 
     }
 
@@ -86,7 +67,7 @@ class SupportTicketAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(subscription: AssistanceTicketResponse) {
             binding.ticket = subscription
-            binding.buttonVisibility = subscription.getButtonVisibilityByStatus()
+            binding.takeTicketButtonVisibility = subscription.getButtonVisibilityByStatus()
             binding.buttonTakeTicket.setOnClickListener {
                 onTicketButtonClicked(subscription)
             }
@@ -119,7 +100,7 @@ class SupportTicketAdapter(
             oldItem: AssistanceTicketResponse,
             newItem: AssistanceTicketResponse
         ): Boolean {
-            return oldItem==newItem
+            return oldItem == newItem
         }
 
     }

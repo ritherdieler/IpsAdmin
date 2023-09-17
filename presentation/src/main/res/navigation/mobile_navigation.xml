@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_support_ticket_list" />
 
     <fragment
+        android:id="@+id/nav_create_support_ticket"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.supportTicket.create.CreateSupportTicketFragment"
+        android:label="Registrar tickets de soporte"
+        tools:layout="@layout/fragment_create_support_ticket" />
+
+    <fragment
         android:id="@+id/nav_device"
         android:name="com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceFragment"
         android:label="NetworkDeviceFragment"

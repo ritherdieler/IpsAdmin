@@ -117,7 +117,8 @@ class MainActivity : AppCompatActivity() {
                         navOptions
                     )
                     navHostFragment.navController.navigate(R.id.nav_find_subscriptions)
-                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
+                    FirebaseMessaging.getInstance()
+                        .subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
                     FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
 
                 }
@@ -129,7 +130,8 @@ class MainActivity : AppCompatActivity() {
                 User.UserType.ADMIN -> {
 //                    FirebaseMessaging.getInstance().subscribeToTopic(FCM_ALL_THEME)
                     navHostFragment.navController.navigate(R.id.nav_dashboard)
-                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
+                    FirebaseMessaging.getInstance()
+                        .subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
                     FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
 
                 }
@@ -138,6 +140,23 @@ class MainActivity : AppCompatActivity() {
                     navHostFragment.navController.navigate(R.id.nav_find_subscriptions)
                 }
             }
+
+            manageSupportTicketVisibility(user, navView)
+        }
+    }
+
+    private fun manageSupportTicketVisibility(
+        user: User,
+        navView: NavigationView
+    ) {
+        when (user.type) {
+            User.UserType.ADMIN,
+            User.UserType.SECRETARY -> {
+                navView.menu.findItem(R.id.nav_create_support_ticket).isVisible = true
+                navView.menu.findItem(R.id.nav_support_assistance_tickets).isVisible = true
+            }
+
+            else -> {}
         }
     }
 

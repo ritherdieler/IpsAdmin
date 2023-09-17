@@ -5,6 +5,7 @@ import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
 import com.example.data2.data.api.RestApiServices
 import com.example.data2.data.api.SendMessagingCloudApi
+import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
@@ -591,6 +592,13 @@ class Repository : IRepository, KoinComponent {
         return restApiServices.updateTicketState(id, newStatus, userId).successOrThrow()
     }
 
+    override suspend fun createTicket(value: AssistanceTicketRequest): AssistanceTicketResponse {
+        return restApiServices.createTicket(value).successOrThrow()
+    }
+
+    override suspend fun findSubscriptionByNames(names: String): List<SubscriptionFastSearchResponse> {
+        return restApiServices.findSubscriptionByNames(names).successOrThrow()
+    }
 }
 
 private fun <T> Response<T>.successOrThrow(): T {

@@ -10,7 +10,7 @@
             type="com.example.data2.data.response.AssistanceTicketResponse" />
 
         <variable
-            name="buttonVisibility"
+            name="takeTicketButtonVisibility"
             type="Integer" />
         <import type="com.example.data2.data.response.AssistanceTicketStatus"/>
 
@@ -118,7 +118,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonTakeTicket"
-                    android:visibility="@{buttonVisibility}"
+                    android:visibility="@{takeTicketButtonVisibility}"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:backgroundTint="@color/Primary"
@@ -128,7 +128,7 @@
                    />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonCloseTicket"
-                    android:visibility="@{ticket.status != AssistanceTicketStatus.PENDING ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{ticket.status == AssistanceTicketStatus.ASSIGNED ? View.VISIBLE : View.GONE}"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:backgroundTint="@color/Primary"

@@ -21,10 +21,10 @@ android {
             buildConfigField 'String', "FIRE_BASE_URL", '"https://fcm.googleapis.com"'
 
             //DEVELOP
-            buildConfigField 'String', "BASE_URL", '"http://192.168.0.109:8080/api/"'
+//            buildConfigField 'String', "BASE_URL", '"http://192.168.0.109:8080/api/"'
 
 //            RELEASE
-//            buildConfigField 'String', "BASE_URL", '"http://191.101.234.130:8080/ispadmin/"'
+            buildConfigField 'String', "BASE_URL", '"http://191.101.234.130:8080/ispadmin/"'
 
             buildConfigField 'String', "OLT_SERVICE_API_KET", OLT_SERVICE_API_KEY
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", SEND_CLOUD_MESSAGING_API_KEY
