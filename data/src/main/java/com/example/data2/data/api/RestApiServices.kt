@@ -117,7 +117,6 @@ interface RestApiServices {
     @PUT("subscription/update-plan")
     suspend fun updateSubscriptionPlan(@Body subscription: UpdateSubscriptionPlanBody): Response<SubscriptionResponse>
 
-
     @GET("subscription/with-payment-commitment-report-document")
     suspend fun downloadWithPaymentCommitmentSubscriptionsReportDocument(): Response<DownloadDocumentResponse>
 

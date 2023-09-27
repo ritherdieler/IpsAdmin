@@ -119,5 +119,6 @@ interface IRepository {
     suspend fun updateTicketState(id: Int, newStatus: AssistanceTicketStatus, userId: Int): AssistanceTicketResponse
     suspend fun createTicket(value: AssistanceTicketRequest): AssistanceTicketResponse
     suspend   fun findSubscriptionByNames(names: String): List<SubscriptionFastSearchResponse>
+    suspend  fun doMigration(subscriptionId: Int, planId: Int): SubscriptionResponse
 
 }

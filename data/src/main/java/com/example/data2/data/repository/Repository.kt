@@ -599,6 +599,10 @@ class Repository : IRepository, KoinComponent {
     override suspend fun findSubscriptionByNames(names: String): List<SubscriptionFastSearchResponse> {
         return restApiServices.findSubscriptionByNames(names).successOrThrow()
     }
+
+    override suspend fun doMigration(subscriptionId: Int, planId: Int): SubscriptionResponse {
+        TODO("Not yet implemented")
+    }
 }
 
 private fun <T> Response<T>.successOrThrow(): T {

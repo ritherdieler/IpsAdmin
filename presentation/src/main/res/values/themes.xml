@@ -12,7 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-<!--        <item name="colorOne">@color/teal_700</item>-->
+        <!--        <item name="colorOne">@color/teal_700</item>-->
 
     </style>
 
@@ -37,5 +37,10 @@
         <item name="postSplashScreenTheme">@style/Theme.IspAdminAndroid</item>
 
 
+    </style>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.AppSplashScreen" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 </resources>

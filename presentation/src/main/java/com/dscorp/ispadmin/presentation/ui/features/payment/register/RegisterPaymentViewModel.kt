@@ -50,7 +50,6 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
                 discountReason = discountReasonField.getValue(),
                 method = paymentMethodField.getValue()!!,
                 responsibleId = user?.id!!
-
             )
             val response = repository.registerPayment(registerPayment)
             uiState.value = BaseUiState(RegisterPaymentUiState.OnPaymentRegistered(response))
