@@ -23,7 +23,8 @@
         android:title="@string/see_details" />
     <item
         android:id="@+id/btn_migrate_to_fiber"
-        android:title="@string/migrate_to_fiber" />
+        android:title="@string/migrate_to_fiber"
+        android:visible="false"/>
     <item
         android:id="@+id/btn_cancel_subscription"
         android:title="@string/cancel_subscription" />

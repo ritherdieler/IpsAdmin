@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
@@ -9,6 +10,7 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.dscorp.ispadmin.presentation.ui.features.migration.MigrationActivity
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.OnSubscriptionFound
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.PaymentCommitmentSuccess
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ReactivateServiceSuccess
@@ -61,6 +63,10 @@ class FindSubscriptionFragment :
             FindSubscriptionUiState.CancelSubscriptionSuccess -> {
                 adapter.submitList(emptyList())
                 showSuccessDialog(getString(R.string.service_cancelled_successfully))
+            }
+
+            FindSubscriptionUiState.ShowMigrationOption -> {
+                popupMenu.menu.findItem(R.id.btn_migrate_to_fiber).isVisible = true
             }
         }
     }
@@ -151,6 +157,8 @@ class FindSubscriptionFragment :
                 R.id.btn_see_details -> navigateToDetails(subscription)
                 R.id.btn_reactivate_service -> showReactivateServiceDialog(subscription)
                 R.id.btn_cancel_subscription -> showCancelSubscriptionDialog(subscription)
+                R.id.btn_migrate_to_fiber -> showMigrationActivity(subscription)
+
                 else -> false
             }
         }
@@ -158,6 +166,14 @@ class FindSubscriptionFragment :
         popupMenu.menu.findItem(R.id.btn_register_service_order).isVisible = false
         viewModel.filterMenuItems(subscription)
         popupMenu.show()
+    }
+
+    private fun showMigrationActivity(subscription: SubscriptionResponse): Boolean {
+        val intent = Intent(requireContext(), MigrationActivity::class.java)
+        intent.putExtra("subscriptionResponse", subscription)
+        startActivity(intent)
+
+        return true
     }
 
     private fun showCancelSubscriptionDialog(subscription: SubscriptionResponse): Boolean {

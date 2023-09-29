@@ -32,6 +32,7 @@ data class SubscriptionResponse(
     var reactivationDate: Long? = null,
     var cpeDeviceId: Int? = null,
     var note: String? = null,
+    var installationType:InstallationType
     ) : java.io.Serializable {
     fun getFullName() = "$firstName $lastName"
 
@@ -40,3 +41,5 @@ data class SubscriptionResponse(
     fun dateAsString() = subscriptionDate?.toFormattedDateString()
 
 }
+
+

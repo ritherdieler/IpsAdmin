@@ -7,6 +7,7 @@ import com.example.data2.data.api.RestApiServices
 import com.example.data2.data.api.SendMessagingCloudApi
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
+import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
@@ -600,8 +601,13 @@ class Repository : IRepository, KoinComponent {
         return restApiServices.findSubscriptionByNames(names).successOrThrow()
     }
 
-    override suspend fun doMigration(subscriptionId: Int, planId: Int): SubscriptionResponse {
-        TODO("Not yet implemented")
+    override suspend fun doMigration(migrationRequest: MigrationRequest): SubscriptionResponse {
+        val response = restApiServices.doMigration(migrationRequest)
+
+        return when (response.status) {
+            HttpCodes.OK -> response.data!!
+            else -> throw Exception(response.error)
+        }
     }
 }
 

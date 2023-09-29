@@ -5,6 +5,7 @@ import com.dscorp.ispadmin.presentation.ui.features.ippool.register.IpPoolViewMo
 import com.dscorp.ispadmin.presentation.ui.features.ippool.seeip.IpListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivityViewModel
+import com.dscorp.ispadmin.presentation.ui.features.migration.MigrationViewModel
 import com.dscorp.ispadmin.presentation.ui.features.mufas.MufaViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListViewModel
@@ -70,4 +71,5 @@ val viewModelModule = module {
     viewModel { EditPlanViewModel(get()) }
     viewModel { SubscriptionDetailViewModel(get(), get(), get()) }
     viewModel { SupportTicketViewModel(get()) }
+    viewModel{ MigrationViewModel(get()) }
 }

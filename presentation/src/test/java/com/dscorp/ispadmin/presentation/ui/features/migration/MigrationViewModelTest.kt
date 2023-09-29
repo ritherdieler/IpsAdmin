@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.migration
 
+import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.data2.data.repository.IRepository
@@ -41,17 +42,19 @@ class MigrationViewModelTest {
     @Test
     fun `when migration is done then should return Success state`() = runTest(dispatcher) {
         // Given
+        val onu = Mockito.mock(Onu::class.java)
         val subscription = Mockito.mock(SubscriptionResponse::class.java)
-        Mockito.`when`(repository.doMigration(1, 2)).thenAnswer {
+        Mockito.`when`(repository.doMigration(1, 2,onu)).thenAnswer {
             runBlocking { return@runBlocking subscription }
         }
+
         val collectedStates = mutableListOf<MigrationUiState>()
 
         // When
         backgroundScope.launch {
             migrationViewModel.uiState.onEach { collectedStates.add(it) }.collect {}
         }
-        migrationViewModel.doMigration(1, 2)
+        migrationViewModel.doMigration(1, 2,onu)
 
         // Then
         assertEquals(MigrationUiState.Empty, collectedStates[0])
@@ -63,10 +66,11 @@ class MigrationViewModelTest {
     fun `doMigration sets uiState to Loading and then Error when repository call fails`() =
         runTest {
             // Given
+            val onu = Mockito.mock(Onu::class.java)
             val subscriptionId = 1
             val planId = 2
             val exception = NullPointerException("error")
-            Mockito.`when`(repository.doMigration(subscriptionId, planId)).thenAnswer {
+            Mockito.`when`(repository.doMigration(subscriptionId, planId, onu)).thenAnswer {
                 runBlocking { return@runBlocking exception }
             }
             val collectedStates = mutableListOf<MigrationUiState>()
@@ -75,12 +79,12 @@ class MigrationViewModelTest {
             backgroundScope.launch(dispatcher) {
                 migrationViewModel.uiState.onEach { collectedStates.add(it) }.collect {}
             }
-            migrationViewModel.doMigration(subscriptionId, planId)
+            migrationViewModel.doMigration(subscriptionId, planId, onu)
 
             // Then
             assertEquals(MigrationUiState.Empty, collectedStates[0])
             assertEquals(MigrationUiState.Loading, collectedStates[1])
-            assertEquals(MigrationUiState.Error, collectedStates[2])
+            assertEquals(MigrationUiState.Error(exception), collectedStates[2])
 
         }
 
@@ -103,7 +107,7 @@ class MigrationViewModelTest {
         // Then
         assertEquals(MigrationUiState.Empty, collectedStates[0])
         assertEquals(MigrationUiState.Loading, collectedStates[1])
-        assertEquals(MigrationUiState.SuccessPlans(plans), collectedStates[2])
+        assertEquals(MigrationUiState.FormDataReady(plans, unconfirmedOnus), collectedStates[2])
     }
 
 }

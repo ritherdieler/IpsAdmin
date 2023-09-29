@@ -2,11 +2,12 @@ package com.dscorp.ispadmin.presentation.ui.features.migration
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.repository.IRepository
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -17,25 +18,33 @@ class MigrationViewModel(private val repository: IRepository) : ViewModel() {
     private val _uiState = MutableStateFlow<MigrationUiState>(MigrationUiState.Empty)
     val uiState = _uiState.stateIn(viewModelScope, SharingStarted.Lazily, MigrationUiState.Empty)
 
-    fun doMigration(subscriptionId: Int, planId: Int) = viewModelScope.launch {
+    fun doMigration(migrationRequest: MigrationRequest) = viewModelScope.launch {
 
-        try {
-            _uiState.emit(MigrationUiState.Loading)
-            val response = repository.doMigration(subscriptionId, planId)
-            _uiState.emit(MigrationUiState.Success(response))
-        } catch (e: Exception) {
-            _uiState.emit(MigrationUiState.Error)
+        if (migrationRequest.isValid().not()) {
+            _uiState.value = MigrationUiState.Error(Exception("Datos incorrectos"))
+            return@launch
+        } else {
+            try {
+                _uiState.emit(MigrationUiState.Loading)
+                val response =
+                    repository.doMigration(migrationRequest)
+                _uiState.emit(MigrationUiState.Success(response))
+            } catch (e: Exception) {
+                _uiState.emit(MigrationUiState.Error(e))
+            }
         }
 
     }
 
-    fun getPlans() = viewModelScope.launch {
+    fun getMigrationFormData() = viewModelScope.launch {
         try {
             _uiState.emit(MigrationUiState.Loading)
-            val response = repository.getPlans()
-            _uiState.emit(MigrationUiState.SuccessPlans(response))
+            val unconfirmedOnus = async { repository.getUnconfirmedOnus() }.await()
+            val plans = async { repository.getPlans() }.await()
+                .filter { it.type == PlanResponse.PlanType.FIBER }
+            _uiState.emit(MigrationUiState.FormDataReady(plans, unconfirmedOnus))
         } catch (e: Exception) {
-            _uiState.emit(MigrationUiState.Error)
+            _uiState.emit(MigrationUiState.Error(e))
         }
     }
 
@@ -46,6 +55,7 @@ sealed class MigrationUiState {
     object Empty : MigrationUiState()
     object Loading : MigrationUiState()
     data class Success(val subscriptionResponse: SubscriptionResponse) : MigrationUiState()
-    object Error : MigrationUiState()
-    data class SuccessPlans(val plans: List<PlanResponse>) : MigrationUiState()
+    data class Error(val error: Exception) : MigrationUiState()
+    data class FormDataReady(val plans: List<PlanResponse>, val unconfirmedOnus: List<Onu>) :
+        MigrationUiState()
 }

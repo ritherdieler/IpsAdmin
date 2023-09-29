@@ -17,6 +17,7 @@ import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubsc
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowEditPlanOption
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowPaymentCommitmentOption
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionUiState.ShowRegisterServiceOrder
+import com.example.cleanarchitecture.domain.domain.entity.InstallationType
 import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.User
@@ -153,6 +154,10 @@ class FindSubscriptionViewModel(
                 uiState.value = BaseUiState(ShowRegisterServiceOrder(false))
             }
         }
+
+        if(subscription.installationType == InstallationType.WIRELESS){
+            uiState.value = BaseUiState(FindSubscriptionUiState.ShowMigrationOption)
+        }
     }
 
     private fun handleCutOffUiState(
@@ -200,4 +205,6 @@ sealed interface FindSubscriptionUiState {
     class ShowEditPlanOption(val showOption: Boolean) : FindSubscriptionUiState
 
     class ShowRegisterServiceOrder(val showOption: Boolean) : FindSubscriptionUiState
+
+    object ShowMigrationOption:FindSubscriptionUiState
 }

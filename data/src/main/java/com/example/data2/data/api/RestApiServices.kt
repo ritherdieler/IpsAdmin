@@ -3,6 +3,7 @@ package com.example.data2.data.api
 import com.example.cleanarchitecture.domain.domain.entity.*
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
+import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.response.AssistanceTicketResponse
@@ -206,6 +207,9 @@ interface RestApiServices {
 
     @GET("subscription/fastSearch")
     suspend fun findSubscriptionByNames(@Query("keyword") keyword: String): Response<List<SubscriptionFastSearchResponse>>
+
+    @PUT("subscription/migration")
+   suspend fun doMigration(@Body migrationRequest: MigrationRequest): BaseResponse<SubscriptionResponse>
 
 }
 
