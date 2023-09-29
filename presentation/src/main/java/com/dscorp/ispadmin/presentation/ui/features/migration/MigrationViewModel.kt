@@ -19,7 +19,6 @@ class MigrationViewModel(private val repository: IRepository) : ViewModel() {
     val uiState = _uiState.stateIn(viewModelScope, SharingStarted.Lazily, MigrationUiState.Empty)
 
     fun doMigration(migrationRequest: MigrationRequest) = viewModelScope.launch {
-
         if (migrationRequest.isValid().not()) {
             _uiState.value = MigrationUiState.Error(Exception("Datos incorrectos"))
             return@launch

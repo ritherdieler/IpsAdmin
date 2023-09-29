@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.migration
 import com.example.cleanarchitecture.domain.domain.entity.Onu
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,9 +43,10 @@ class MigrationViewModelTest {
     @Test
     fun `when migration is done then should return Success state`() = runTest(dispatcher) {
         // Given
-        val onu = Mockito.mock(Onu::class.java)
+        val migrationRequest = Mockito.mock(MigrationRequest::class.java)
+        Mockito.`when`(migrationRequest.isValid()).thenReturn(true)
         val subscription = Mockito.mock(SubscriptionResponse::class.java)
-        Mockito.`when`(repository.doMigration(1, 2,onu)).thenAnswer {
+        Mockito.`when`(repository.doMigration(migrationRequest)).thenAnswer {
             runBlocking { return@runBlocking subscription }
         }
 
@@ -54,7 +56,7 @@ class MigrationViewModelTest {
         backgroundScope.launch {
             migrationViewModel.uiState.onEach { collectedStates.add(it) }.collect {}
         }
-        migrationViewModel.doMigration(1, 2,onu)
+        migrationViewModel.doMigration(migrationRequest)
 
         // Then
         assertEquals(MigrationUiState.Empty, collectedStates[0])
@@ -66,12 +68,12 @@ class MigrationViewModelTest {
     fun `doMigration sets uiState to Loading and then Error when repository call fails`() =
         runTest {
             // Given
-            val onu = Mockito.mock(Onu::class.java)
-            val subscriptionId = 1
-            val planId = 2
+            val migrationRequest = Mockito.mock(MigrationRequest::class.java)
             val exception = NullPointerException("error")
-            Mockito.`when`(repository.doMigration(subscriptionId, planId, onu)).thenAnswer {
-                runBlocking { return@runBlocking exception }
+            Mockito.`when`(migrationRequest.isValid()).thenReturn(true)
+
+            Mockito.`when`(repository.doMigration(migrationRequest)).thenAnswer {
+                runBlocking { throw exception }
             }
             val collectedStates = mutableListOf<MigrationUiState>()
 
@@ -79,7 +81,7 @@ class MigrationViewModelTest {
             backgroundScope.launch(dispatcher) {
                 migrationViewModel.uiState.onEach { collectedStates.add(it) }.collect {}
             }
-            migrationViewModel.doMigration(subscriptionId, planId, onu)
+            migrationViewModel.doMigration(migrationRequest)
 
             // Then
             assertEquals(MigrationUiState.Empty, collectedStates[0])
@@ -91,18 +93,22 @@ class MigrationViewModelTest {
     @Test
     fun `getPlans should return success`() = runTest {
         // Given
-        val plan = Mockito.mock(PlanResponse::class.java)
-        val plans = listOf(plan)
+        val plans = listOf<PlanResponse>()
+        val unconfirmedOnus = listOf<Onu>()
         Mockito.`when`(repository.getPlans()).thenAnswer {
             runBlocking { return@runBlocking plans }
         }
+        Mockito.`when`(repository.getUnconfirmedOnus()).thenAnswer {
+            runBlocking { return@runBlocking unconfirmedOnus }
+        }
+
         val collectedStates = mutableListOf<MigrationUiState>()
 
         // When
         backgroundScope.launch(dispatcher) {
             migrationViewModel.uiState.onEach {collectedStates.add(it)}.collect {}
         }
-        migrationViewModel.getPlans()
+        migrationViewModel.getMigrationFormData()
 
         // Then
         assertEquals(MigrationUiState.Empty, collectedStates[0])

@@ -18,6 +18,12 @@
             android:id="@+id/nav_find_subscriptions"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/find_subscription" />
+
+        <item
+            android:id="@+id/nav_deleteOnuFragment"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/delete_onu" />
+
         <item
             android:id="@+id/nav_create_support_ticket"
             android:icon="@drawable/ic_launcher_foreground"

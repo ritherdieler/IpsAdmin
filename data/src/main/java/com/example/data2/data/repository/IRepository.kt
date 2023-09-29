@@ -32,8 +32,10 @@ import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
+import com.example.data2.data.response.AdministrativeOnuResponse
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
+import com.example.data2.data.response.BaseResponse
 
 /**
  * Created by Sergio Carrillo Diestra on 25/12/2022.
@@ -116,10 +118,17 @@ interface IRepository {
     suspend fun downloadCancelledSubscriptionsFromPastMonthReport(): DownloadDocumentResponse
 
     suspend fun getTicket(ticketId: String): AssistanceTicketResponse
-  suspend  fun getTicketsByStatus(pending: AssistanceTicketStatus):List<AssistanceTicketResponse>
-    suspend fun updateTicketState(id: Int, newStatus: AssistanceTicketStatus, userId: Int): AssistanceTicketResponse
+    suspend fun getTicketsByStatus(pending: AssistanceTicketStatus): List<AssistanceTicketResponse>
+    suspend fun updateTicketState(
+        id: Int,
+        newStatus: AssistanceTicketStatus,
+        userId: Int
+    ): AssistanceTicketResponse
+
     suspend fun createTicket(value: AssistanceTicketRequest): AssistanceTicketResponse
-    suspend   fun findSubscriptionByNames(names: String): List<SubscriptionFastSearchResponse>
-    suspend  fun doMigration(migrationRequest: MigrationRequest): SubscriptionResponse
+    suspend fun findSubscriptionByNames(names: String): List<SubscriptionFastSearchResponse>
+    suspend fun doMigration(migrationRequest: MigrationRequest): SubscriptionResponse
+    suspend fun getOnuBySn(s: String): AdministrativeOnuResponse
+    suspend fun deleteOnuFromOlt(onuExternalId: String)
 
 }

@@ -11,6 +11,7 @@ import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.dscorp.ispadmin.presentation.ui.features.napboxeslist.NapBoxesListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceViewModel
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.networkdevicelist.NetworkDeviceListViewModel
+import com.dscorp.ispadmin.presentation.ui.features.oltadministrator.OltAdministrationViewModel
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryViewModel
 import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentViewModel
 import com.dscorp.ispadmin.presentation.ui.features.place.PlaceViewModel
@@ -72,4 +73,5 @@ val viewModelModule = module {
     viewModel { SubscriptionDetailViewModel(get(), get(), get()) }
     viewModel { SupportTicketViewModel(get()) }
     viewModel{ MigrationViewModel(get()) }
+    viewModel{OltAdministrationViewModel(get())}
 }

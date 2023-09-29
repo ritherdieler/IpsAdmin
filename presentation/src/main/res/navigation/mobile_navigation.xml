@@ -345,4 +345,8 @@
             app:destination="@id/napBoxDetailDialogFragment" />
 
     </fragment>
+    <fragment
+        android:id="@+id/nav_deleteOnuFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.oltadministrator.DeleteOnuFragment"
+        android:label="DeleteOnuFragment" />
 </navigation>

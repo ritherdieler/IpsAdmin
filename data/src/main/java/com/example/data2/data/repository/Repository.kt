@@ -2,7 +2,6 @@ package com.example.data2.data.repository
 
 import android.content.SharedPreferences
 import com.example.cleanarchitecture.domain.domain.entity.*
-import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
 import com.example.data2.data.api.RestApiServices
 import com.example.data2.data.api.SendMessagingCloudApi
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
@@ -11,6 +10,7 @@ import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
+import com.example.data2.data.response.AdministrativeOnuResponse
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
 import com.example.data2.data.utils.*
@@ -51,6 +51,7 @@ class Repository : IRepository, KoinComponent {
                 saveUserSession(userSession, login.checkBox)
                 response.body()!!
             }
+
             HttpCodes.NOT_FOUND -> throw Exception("Usuario o Contraseña Incorrecta")
             else -> throw Exception("Ocurrió un error inesperado, contacte con soporte técnico")
         }
@@ -133,7 +134,7 @@ class Repository : IRepository, KoinComponent {
 
         return when (response.status) {
             HttpCodes.OK -> response.data!!
-            else -> throw Exception("Ocurrion un error inesperado, contacte con soporte técnico")
+            else -> throw Exception(response.error)
         }
     }
 
@@ -335,7 +336,6 @@ class Repository : IRepository, KoinComponent {
     }
 
 
-
     override suspend fun downloadDebtorWithActiveSubscriptionsReport(): DownloadDocumentResponse {
         val response = restApiServices.downloadDebtorsWithActiveSubscriptionReportDocument()
         if (response.code() == 200) {
@@ -508,8 +508,8 @@ class Repository : IRepository, KoinComponent {
 
     override suspend fun reactivateService(subscription: SubscriptionResponse) {
         val response = restApiServices.reactivateService(subscription.id)
-        when(response.status){
-            HttpCodes.OK ->{}
+        when (response.status) {
+            HttpCodes.OK -> {}
             else -> throw Exception(response.error)
         }
     }
@@ -536,16 +536,16 @@ class Repository : IRepository, KoinComponent {
 
     override suspend fun cancelSubscription(subscription: SubscriptionResponse) {
         val response = restApiServices.cancelSubscription(subscription.id)
-        when(response.code()){
-            HttpCodes.OK ->{}
+        when (response.code()) {
+            HttpCodes.OK -> {}
             else -> throw Exception("No se pudo cancelar el servicio, vuelva a intentarlos mas tarde")
         }
     }
 
     override suspend fun updateSubscriptionData(subscriptionData: UpdateSubscriptionDataBody) {
         val response = restApiServices.updateSubscriptionData(subscriptionData)
-        when(response.code()){
-            HttpCodes.OK ->{}
+        when (response.code()) {
+            HttpCodes.OK -> {}
             else -> throw Exception("No se pudo actualizar los datos de la suscripcion")
         }
     }
@@ -609,6 +609,23 @@ class Repository : IRepository, KoinComponent {
             else -> throw Exception(response.error)
         }
     }
+
+    override suspend fun getOnuBySn(s: String): AdministrativeOnuResponse {
+        val response = restApiServices.getOnuBySn(s)
+
+        return when (response.status) {
+            HttpCodes.OK -> response.data!!
+            else -> throw Exception(response.error)
+        }
+    }
+
+    override suspend fun deleteOnuFromOlt(onuExternalId: String) {
+        val response = restApiServices.deleteOnuFromOlt(onuExternalId)
+        if (response.status != HttpCodes.OK) {
+            throw Exception(response.error)
+        }
+    }
+
 }
 
 private fun <T> Response<T>.successOrThrow(): T {

@@ -6,6 +6,7 @@ import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
+import com.example.data2.data.response.AdministrativeOnuResponse
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
 import com.example.data2.data.response.BaseResponse
@@ -210,6 +211,12 @@ interface RestApiServices {
 
     @PUT("subscription/migration")
    suspend fun doMigration(@Body migrationRequest: MigrationRequest): BaseResponse<SubscriptionResponse>
+
+    @GET("onu/getBySn")
+    suspend fun getOnuBySn(@Query("onuSn") onuSn: String): BaseResponse<AdministrativeOnuResponse>
+
+    @DELETE("onu")
+    suspend fun deleteOnuFromOlt(@Query("onuExternalId") onuExternalId: String): BaseResponse<String>
 
 }
 
