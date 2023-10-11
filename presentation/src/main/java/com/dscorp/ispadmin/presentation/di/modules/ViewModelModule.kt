@@ -22,17 +22,14 @@ import com.dscorp.ispadmin.presentation.ui.features.plan.planlist.PlanListViewMo
 import com.dscorp.ispadmin.presentation.ui.features.profile.MyProfileViewModel
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
-import com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListViewModel
-import com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.technicianlist.TechnicianListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.scope.get
 import org.koin.dsl.module
 
 /**
@@ -51,8 +48,6 @@ val viewModelModule = module {
     viewModel { RegisterSubscriptionViewModel(get(), get()) }
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel(get()) }
-    viewModel { RegisterServiceOrderViewModel(get()) }
-    viewModel { ServicesOrderListViewModel() }
     viewModel { NapBoxesListViewModel() }
     viewModel { PaymentHistoryViewModel(get()) }
     viewModel { FindSubscriptionViewModel(get(), get()) }
@@ -72,6 +67,6 @@ val viewModelModule = module {
     viewModel { EditPlanViewModel(get()) }
     viewModel { SubscriptionDetailViewModel(get(), get(), get()) }
     viewModel { SupportTicketViewModel(get()) }
-    viewModel{ MigrationViewModel(get()) }
-    viewModel{OltAdministrationViewModel(get())}
+    viewModel { MigrationViewModel(get()) }
+    viewModel { OltAdministrationViewModel(get()) }
 }

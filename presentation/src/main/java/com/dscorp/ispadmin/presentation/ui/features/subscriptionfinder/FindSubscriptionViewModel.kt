@@ -130,11 +130,13 @@ class FindSubscriptionViewModel(
     }
 
     fun filterMenuItems(subscription: SubscriptionResponse) {
-        val currentCal = Calendar.getInstance()
+//        val currentCal = Calendar.getInstance()
         if (!subscription.isPaymentCommitment && !subscription.isReactivation) {
             when (subscription.serviceStatus) {
                 ServiceStatus.CUT_OFF,ServiceStatus.ACTIVE -> {
-                    handleCutOffUiState(subscription, currentCal)
+
+                    //SE INHABILITA PORQUE DABA PROBLEMAS CON LAS FACTURACIONES DE LOS CLIENTES
+//                    handleCutOffUiState(subscription, currentCal)
                     // el servicio solo se puede reactivar si no tienes pagos pendientes
 //                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
                 }

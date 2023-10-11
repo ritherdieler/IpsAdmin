@@ -21,7 +21,7 @@ android {
             buildConfigField 'String', "FIRE_BASE_URL", '"https://fcm.googleapis.com"'
 
 //            DEVELOP
-            buildConfigField 'String', "BASE_URL", '"http://192.168.0.109:8080/api/"'
+            buildConfigField 'String', "BASE_URL", '"http://192.168.0.106:8080/api/"'
 
 //            RELEASE
 //            buildConfigField 'String', "BASE_URL", '"http://191.101.234.130:8080/ispadmin/"'

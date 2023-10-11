@@ -68,24 +68,11 @@
             android:id="@+id/action_nav_to_register_nap_box_to_mapDialog"
             app:destination="@id/mapDialog" />
     </fragment>
-    <fragment
-        android:id="@+id/register_service_order_fragment"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.register.RegisterServiceOrderFragment"
-        android:label="ServiceOrderFragment"
-        tools:layout="@layout/fragment_service_order">
-        <argument
-            android:name="subscription"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
 
-        <action
-            android:id="@+id/action_register_service_order_fragment_to_mapDialog"
-            app:destination="@id/mapDialog" />
-    </fragment>
     <fragment
         android:id="@+id/subscriptionDetail"
         android:name="com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailFragment"
         android:label="SubscriptionDetailFragment"
-
         tools:layout="@layout/fragment_subscription_detail">
         <argument
             android:name="subscription"
@@ -93,15 +80,6 @@
 
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_view_services_order_list"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.history.ServicesOrderListFragment"
-        android:label="ServicesOrderListFragment"
-        tools:layout="@layout/item_services_order">
-        <action
-            android:id="@+id/action_nav_view_services_order_list_to_editServiceOrderFragment"
-            app:destination="@id/editServiceOrderFragment" />
-    </fragment>
 
     <fragment
         android:id="@+id/nav_see_nap_boxes"
@@ -137,10 +115,6 @@
         <action
             android:id="@+id/findSubscription_to_paymentHistoryFragment"
             app:destination="@id/paymentHistoryFragment" />
-
-        <action
-            android:id="@+id/findSubscription_to_register_serviceOrder"
-            app:destination="@id/register_service_order_fragment" />
         <action
             android:id="@+id/action_nav_find_subscriptions_to_editSubscriptionFragment"
             app:destination="@id/editSubscriptionFragment" />
@@ -167,16 +141,17 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
         android:label="fragment_payment_history"
         tools:layout="@layout/fragment_payment_history">
-        <argument
-            android:name="subscription"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
-        <action
+    <action
             android:id="@+id/action_paymentHistoryFragment_to_paymentDetailFragment"
             app:destination="@id/paymentDetailFragment" />
 
         <action
             android:id="@+id/toRegisterPayment"
             app:destination="@id/register_payment" />
+
+        <argument
+            android:name="subscription"
+            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
 
     </fragment>
     <fragment
@@ -229,18 +204,6 @@
         <argument
             android:name="napBox"
             app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse" />
-    </fragment>
-    <fragment
-        android:id="@+id/editServiceOrderFragment"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.serviceorder.editar.EditServiceOrderFragment"
-        android:label="EditServiceOrderFragment"
-        tools:layout="@layout/fragment_edit_service_order">
-        <argument
-            android:name="serviceorder"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse" />
-        <action
-            android:id="@+id/action_editServiceOrderFragment_to_mapDialog"
-            app:destination="@id/mapDialog" />
     </fragment>
 
     <fragment
@@ -321,6 +284,7 @@
             android:id="@+id/editSubscriptionPlan_to_findSubscription"
             app:destination="@id/nav_find_subscriptions" />
     </fragment>
+
     <dialog
         android:id="@+id/napBoxDetailDialogFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.mufas.NapBoxDetailDialogFragment"
@@ -332,7 +296,6 @@
             android:name="showSelectionButton"
             app:argType="boolean"
             />
-
     </dialog>
 
     <fragment

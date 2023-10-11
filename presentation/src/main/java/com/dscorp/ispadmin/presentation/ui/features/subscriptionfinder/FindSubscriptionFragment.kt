@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentFindSubscriptionBinding
@@ -152,7 +153,6 @@ class FindSubscriptionFragment :
             when (it.itemId) {
                 R.id.btn_show_payment_history -> navigateToPaymentHistory(subscription)
                 R.id.btn_register_payment_commitment -> showPaymentCommitmentDialog(subscription)
-                R.id.btn_register_service_order -> navigateToRegisterServiceOrder(subscription)
                 R.id.btn_edit_plan_subscription -> navigateToEditSubscription(subscription)
                 R.id.btn_see_details -> navigateToDetails(subscription)
                 R.id.btn_reactivate_service -> showReactivateServiceDialog(subscription)
@@ -224,20 +224,11 @@ class FindSubscriptionFragment :
         return true
     }
 
-    private fun navigateToRegisterServiceOrder(subscription: SubscriptionResponse): Boolean {
-        findNavController().navigate(
-            FindSubscriptionFragmentDirections.findSubscriptionToRegisterServiceOrder(
-                subscription
-            )
-        )
-        return true
-    }
-
     private fun navigateToPaymentHistory(subscription: SubscriptionResponse): Boolean {
         val action = FindSubscriptionFragmentDirections.findSubscriptionToPaymentHistoryFragment(
             subscription
         )
-        findNavController().navigate(action)
+        Navigation.findNavController(requireView()).navigate(action)
         return true
     }
 
