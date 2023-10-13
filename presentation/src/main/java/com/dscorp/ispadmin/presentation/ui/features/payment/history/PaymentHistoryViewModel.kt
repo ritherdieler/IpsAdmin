@@ -11,7 +11,6 @@ import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.repository.IRepository
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -56,9 +55,8 @@ class PaymentHistoryViewModel(val repository: IRepository) :
         executeNoProgress(doBefore = { reactivationButtonIsLoading.value = true }, doFinally = {
             reactivationButtonIsLoading.value = false
         }) {
-delay(3000)
             subscription?.let {
-                repository.reactivateService(subscription!!)
+                repository.reactivateService(subscription!!, repository.getUserSession()!!.id!!)
                 uiState.value = BaseUiState(ServiceReactivated)
             }
         }

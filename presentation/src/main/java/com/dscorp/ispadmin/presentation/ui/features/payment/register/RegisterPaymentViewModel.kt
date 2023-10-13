@@ -15,16 +15,6 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
     BaseViewModel<RegisterPaymentUiState>(), KoinComponent {
 
     val user = repository.getUserSession()
-    var payment: Payment? = null
-
-    var registerButtonProgress = MutableLiveData(false)
-
-
-    val paymentMethodField = ReactiveFormField<String?>(
-        hintResourceId = R.string.payment_method,
-        errorResourceId = R.string.must_select_payment_method,
-        validator = { !it.isNullOrEmpty() }
-    )
 
     val discountAmountField = ReactiveFormField<String?>(
         hintResourceId = R.string.discount,
@@ -35,6 +25,25 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
     val discountReasonField = ReactiveFormField<String?>(
         hintResourceId = R.string.discount_reason,
         errorResourceId = R.string.must_select_payment_method,
+    )
+
+    var payment: Payment? = null
+        set(value) {
+            field = value
+            val showDiscountFields = value?.paid ?: false
+            discountAmountField.setValue(value?.discountAmount?.toString())
+            discountReasonField.setValue(value?.discountReason)
+            uiState.value = BaseUiState(RegisterPaymentUiState.ShowDiscountFields(showDiscountFields))
+        }
+
+
+    var registerButtonProgress = MutableLiveData(false)
+
+
+    val paymentMethodField = ReactiveFormField<String?>(
+        hintResourceId = R.string.payment_method,
+        errorResourceId = R.string.must_select_payment_method,
+        validator = { !it.isNullOrEmpty() }
     )
 
     fun registerPayment() = executeNoProgress(

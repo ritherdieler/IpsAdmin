@@ -190,6 +190,7 @@ class FindSubscriptionFragment :
     }
 
     private fun showReactivateServiceDialog(subscription: SubscriptionResponse): Boolean {
+
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.reactivate_service)
             .setMessage(R.string.reactivate_service_message)

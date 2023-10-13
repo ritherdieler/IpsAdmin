@@ -162,7 +162,7 @@ interface RestApiServices {
     suspend fun setPaymentCommitment(@Query("subscriptionId") id: Int): Response<Unit>
 
     @PUT("subscription/reactivate-service")
-    suspend fun reactivateService(@Query("subscriptionId") subscription: Int): BaseResponse<Unit>
+    suspend fun reactivateService(@Query("subscriptionId") subscription: Int, @Query("responsibleId") responsibleId: Int): BaseResponse<Unit>
 
     @GET("subscription/find/nameAndLastName")
     suspend fun findSubscriptionByNameAndLastName(

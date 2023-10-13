@@ -35,7 +35,6 @@ import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.response.AdministrativeOnuResponse
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
-import com.example.data2.data.response.BaseResponse
 
 /**
  * Created by Sergio Carrillo Diestra on 25/12/2022.
@@ -104,7 +103,7 @@ interface IRepository {
     suspend fun sendCloudMessaging(body: FirebaseBody?): FireBaseResponse
     suspend fun updatePlan(plan: Plan): PlanResponse
     suspend fun savePaymentCommitment(id: Int)
-    suspend fun reactivateService(subscription: SubscriptionResponse)
+    suspend fun reactivateService(subscription: SubscriptionResponse, responsibleId: Int)
     suspend fun findSubscriptionByNameAndLastName(
         name: String?,
         lastName: String?

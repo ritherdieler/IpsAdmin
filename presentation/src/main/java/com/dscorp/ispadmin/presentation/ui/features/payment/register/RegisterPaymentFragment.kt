@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.payment.register
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentRegisterPaymentBinding
 import com.dscorp.ispadmin.presentation.extension.populate
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
@@ -33,6 +34,18 @@ class RegisterPaymentFragment :
         when (state) {
             is RegisterPaymentUiState.OnPaymentRegistered -> showSuccessDialog("Pago registrado") {
                 findNavController().popBackStack()
+            }
+
+            is RegisterPaymentUiState.ShowDiscountFields -> {
+                if (!state.showDiscountFields) {
+                    binding.textView.text = getString(R.string.register_payment_is_by_reconnection)
+                    binding.tlPaymentDiscount.visibility = android.view.View.GONE
+                    binding.tlPaymentDiscountReason.visibility = android.view.View.GONE
+                } else {
+                    binding.tlPaymentDiscount.visibility = android.view.View.VISIBLE
+                    binding.tlPaymentDiscountReason.visibility = android.view.View.VISIBLE
+                }
+
             }
         }
 

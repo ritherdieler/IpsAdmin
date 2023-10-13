@@ -221,10 +221,10 @@
     <string name="service_cancelled_successfully">La suscripcion fue cancelada correctamente.</string>
     <string name="subscription_updated">Datos de suscripción actualizados correctamente.</string>
     <string name="must_digit_a_valid_ip">Debe digitar una direccion ip válida.</string>
-    <string name="edit_subscription_data">Editar datos de subscripcion</string>
+    <string name="edit_subscription_data">Editar datos de suscripcion</string>
     <string name="error_invalid_data">Los datos no son validos.</string>
     <string name="get_current_mont_cancelled_subscription">Obtener suscripciones canceladas de este mes</string>
-    <string name="get_past_month_cancelled_subscription">Obtener subscripciones canceladas del mes pasado</string>
+    <string name="get_past_month_cancelled_subscription">Obtener suscripciones canceladas del mes pasado</string>
     <string name="total_gross">Total bruto</string>
     <string name="outstanding">Por Cobrar</string>
     <string name="collected">Recaudado</string>
@@ -291,5 +291,6 @@
     <string name="error">Error</string>
     <string name="loading">Cargando...</string>
     <string name="delete_onu">Eliminar Onu</string>
+    <string name="register_payment_is_by_reconnection">Registrar Pago - (es factura por reconexión)</string>
 
 </resources>

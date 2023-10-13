@@ -4,9 +4,7 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.di.app.ResourceProvider
-import com.dscorp.ispadmin.presentation.extension.asCalendar
 import com.dscorp.ispadmin.presentation.extension.isLastDayOfMonth
-import com.dscorp.ispadmin.presentation.extension.isSameMonthAndYear
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
@@ -130,20 +128,15 @@ class FindSubscriptionViewModel(
     }
 
     fun filterMenuItems(subscription: SubscriptionResponse) {
-//        val currentCal = Calendar.getInstance()
+
         if (!subscription.isPaymentCommitment && !subscription.isReactivation) {
             when (subscription.serviceStatus) {
                 ServiceStatus.CUT_OFF,ServiceStatus.ACTIVE -> {
 
-                    //SE INHABILITA PORQUE DABA PROBLEMAS CON LAS FACTURACIONES DE LOS CLIENTES
-//                    handleCutOffUiState(subscription, currentCal)
-                    // el servicio solo se puede reactivar si no tienes pagos pendientes
-//                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
                 }
 
                 ServiceStatus.SUSPENDED -> {
-                    //                    uiState.value = BaseUiState(ShowReactivateServiceOption(true))
-                    // el servicio solo se puede reactivar si no tienes pagos pendientes
+
                 }
 
                 else -> {}
@@ -178,7 +171,7 @@ class FindSubscriptionViewModel(
     }
 
     fun reactivateService(subscription: SubscriptionResponse) = executeNoProgress() {
-        repository.reactivateService(subscription)
+        repository.reactivateService(subscription, repository.getUserSession()!!.id!!)
         uiState.value = BaseUiState(FindSubscriptionUiState.ReactivateServiceSuccess)
     }
 

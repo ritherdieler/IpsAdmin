@@ -4,4 +4,5 @@ import com.example.cleanarchitecture.domain.domain.entity.Payment
 
 sealed interface RegisterPaymentUiState {
     class OnPaymentRegistered(val payment: Payment) : RegisterPaymentUiState
+    class ShowDiscountFields(val showDiscountFields: Boolean) : RegisterPaymentUiState
 }
