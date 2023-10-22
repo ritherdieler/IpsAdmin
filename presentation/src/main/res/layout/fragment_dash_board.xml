@@ -256,24 +256,6 @@
                 android:layout_height="300dp"
                 android:layout_marginTop="24dp" />
 
-            <!--                            <Button-->
-            <!--                                android:id="@+id/btnStartCut"-->
-            <!--                                android:layout_width="match_parent"-->
-            <!--                                android:layout_height="50dp"-->
-            <!--                                android:layout_marginHorizontal="30dp"-->
-            <!--                                android:layout_marginTop="24dp"-->
-            <!--                                android:backgroundTint="@color/purple_base_app"-->
-            <!--                                android:elevation="20dp"-->
-            <!--                                android:text="@string/start_cut"-->
-            <!--                                android:textColor="@color/white"-->
-            <!--                                android:textSize="14sp"-->
-            <!--                                android:visibility="gone"-->
-            <!--                                app:cornerRadius="20dp"-->
-            <!--                                app:iconPadding="10dp"-->
-            <!--                                app:iconSize="24dp"-->
-            <!--                                app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                                app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                                app:layout_constraintStart_toStartOf="parent" />-->
 
         </LinearLayout>
 

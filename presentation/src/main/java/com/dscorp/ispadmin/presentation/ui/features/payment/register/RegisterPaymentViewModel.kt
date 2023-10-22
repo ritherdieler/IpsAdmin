@@ -30,10 +30,15 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
     var payment: Payment? = null
         set(value) {
             field = value
-            val showDiscountFields = value?.paid ?: false
-            discountAmountField.setValue(value?.discountAmount?.toString())
-            discountReasonField.setValue(value?.discountReason)
-            uiState.value = BaseUiState(RegisterPaymentUiState.ShowDiscountFields(showDiscountFields))
+            // no esta pagado y tienes un monto pagado entonces es una factura por reconexion
+            val showDiscountFields = (value?.amountPaid != null && value.amountPaid>0) && value.paid.not()
+            if (showDiscountFields) {
+                discountAmountField.setValue(value!!.discountAmount?.toString())
+                discountReasonField.setValue(value.discountReason)
+                uiState.value =
+                    BaseUiState(RegisterPaymentUiState.HideDiscountFields)
+            }
+
         }
 
 

@@ -36,16 +36,10 @@ class RegisterPaymentFragment :
                 findNavController().popBackStack()
             }
 
-            is RegisterPaymentUiState.ShowDiscountFields -> {
-                if (!state.showDiscountFields) {
+            is RegisterPaymentUiState.HideDiscountFields -> {
                     binding.textView.text = getString(R.string.register_payment_is_by_reconnection)
                     binding.tlPaymentDiscount.visibility = android.view.View.GONE
                     binding.tlPaymentDiscountReason.visibility = android.view.View.GONE
-                } else {
-                    binding.tlPaymentDiscount.visibility = android.view.View.VISIBLE
-                    binding.tlPaymentDiscountReason.visibility = android.view.View.VISIBLE
-                }
-
             }
         }
 
