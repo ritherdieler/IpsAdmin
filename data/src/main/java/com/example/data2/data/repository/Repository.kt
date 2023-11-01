@@ -626,6 +626,12 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun saveOutLay(apply: Outlay) {
+        val response = restApiServices.saveOutlay(apply)
+        if (response.status != HttpCodes.OK) {
+            throw Exception(response.error)
+        }
+    }
 }
 
 private fun <T> Response<T>.successOrThrow(): T {

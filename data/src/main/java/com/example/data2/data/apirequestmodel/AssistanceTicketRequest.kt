@@ -4,7 +4,8 @@ data class AssistanceTicketRequest(
     var phone: String ="",
     var category: String ="",
     var description: String ="",
-    var subscriptionId: Int = 0,
+    var subscriptionId: Int? = null,
+    var customerName: String = "",
 ){
     fun isValidPhone(): Boolean {
         return phone.isNotEmpty() && phone.length == 9 // Por ejemplo, aquí se verifica que tenga 10 dígitos
@@ -19,11 +20,11 @@ data class AssistanceTicketRequest(
         return description.isNotEmpty() && description.length <= 300 // Por ejemplo, aquí se verifica que no esté vacía y no sea demasiado larga
     }
 
-    fun isValidSubscriptionId(): Boolean {
-        return subscriptionId >= 0 // Por ejemplo, aquí se verifica que sea un número no negativo
-    }
+//    fun isValidSubscriptionId(): Boolean {
+//        return subscriptionId >= 0 // Por ejemplo, aquí se verifica que sea un número no negativo
+//    }
 
     fun isValid(): Boolean {
-        return isValidPhone() && isValidCategory() && isValidDescription() && isValidSubscriptionId()
+        return isValidPhone() && isValidCategory() && isValidDescription()
     }
 }

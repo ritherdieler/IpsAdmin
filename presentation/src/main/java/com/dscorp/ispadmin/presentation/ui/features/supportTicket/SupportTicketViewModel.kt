@@ -24,7 +24,9 @@ class SupportTicketViewModel(
         "Migración a fibra óptica",
         "Añadir Tv Cable",
         "Internet Lento",
-        "Otros"
+        "Otros",
+        "Instalación de Internet",
+        "Instalación de Tv Cable",
     )
 
     fun getTicket(ticketId: String) = executeWithProgress {

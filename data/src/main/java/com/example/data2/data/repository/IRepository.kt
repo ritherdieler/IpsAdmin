@@ -14,6 +14,7 @@ import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
 import com.example.cleanarchitecture.domain.domain.entity.NetworkDeviceResponse
 import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.cleanarchitecture.domain.domain.entity.Outlay
 import com.example.cleanarchitecture.domain.domain.entity.Payment
 import com.example.cleanarchitecture.domain.domain.entity.Place
 import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
@@ -129,5 +130,6 @@ interface IRepository {
     suspend fun doMigration(migrationRequest: MigrationRequest): SubscriptionResponse
     suspend fun getOnuBySn(s: String): AdministrativeOnuResponse
     suspend fun deleteOnuFromOlt(onuExternalId: String)
+    suspend fun saveOutLay(apply: Outlay)
 
 }

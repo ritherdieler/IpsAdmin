@@ -55,7 +55,7 @@ class DashBoardActiveSubscriptionsByMonthLinearChart(
             val entries = data.mapIndexed { index, entry ->
                 Entry(index.toFloat(), entry.totalActiveSubscriptions.toFloat(), null)
             }
-            xAxis.labelCount = data.size
+            xAxis.labelCount = data.size+1
             val yAxisLimit = data.maxOf { it.totalActiveSubscriptions }
             configureXAxisLabels(data)
 

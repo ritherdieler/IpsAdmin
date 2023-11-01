@@ -108,6 +108,8 @@ class MainActivity : AppCompatActivity() {
                     navView.menu.findItem(R.id.nav_dashboard).isVisible = true
                     navView.menu.findItem(R.id.nav_see_plan_list).isVisible = false
                     navView.menu.findItem(R.id.nav_mufa).isVisible = false
+                    navView.menu.findItem(R.id.nav_outlays).isVisible = true
+
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(navController.graph.startDestinationId, true)
                         .build()
@@ -133,6 +135,7 @@ class MainActivity : AppCompatActivity() {
                     FirebaseMessaging.getInstance()
                         .subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
                     FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
+                    navView.menu.findItem(R.id.nav_outlays).isVisible = true
 
                 }
 

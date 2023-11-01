@@ -141,7 +141,7 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
         android:label="fragment_payment_history"
         tools:layout="@layout/fragment_payment_history">
-    <action
+        <action
             android:id="@+id/action_paymentHistoryFragment_to_paymentDetailFragment"
             app:destination="@id/paymentDetailFragment" />
 
@@ -294,8 +294,7 @@
             app:argType="com.example.cleanarchitecture.domain.domain.entity.NapBox" />
         <argument
             android:name="showSelectionButton"
-            app:argType="boolean"
-            />
+            app:argType="boolean" />
     </dialog>
 
     <fragment
@@ -312,4 +311,10 @@
         android:id="@+id/nav_deleteOnuFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.oltadministrator.DeleteOnuFragment"
         android:label="DeleteOnuFragment" />
+
+    <fragment
+        android:id="@+id/nav_outlays"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.outlay.RegisterOutLaysFragment"
+        android:label="fragment_outlay"
+        tools:layout="@layout/fragment_register_outlay" />
 </navigation>

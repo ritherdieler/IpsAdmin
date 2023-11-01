@@ -218,5 +218,7 @@ interface RestApiServices {
     @DELETE("onu")
     suspend fun deleteOnuFromOlt(@Query("onuExternalId") onuExternalId: String): BaseResponse<String>
 
+    @POST("outlay")
+    suspend fun saveOutlay(@Body outlay: Outlay): BaseResponse<Unit>
 }
 

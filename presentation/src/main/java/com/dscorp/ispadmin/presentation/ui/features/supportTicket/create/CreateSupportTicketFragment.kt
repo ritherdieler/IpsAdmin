@@ -101,8 +101,8 @@ class CreateSupportTicketFragment :
         phone = binding.phoneEditText.text.toString(),
         category = binding.spnCategory.text.toString(),
         description = binding.descriptionEditText.text.toString(),
-        subscriptionId = selectedSubscription?.id ?: 0
+        subscriptionId = selectedSubscription?.id,
+        customerName = binding.subscriptionIdAutoCompleteTextView.text.toString()
     )
-
 
 }

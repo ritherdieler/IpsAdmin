@@ -292,5 +292,6 @@
     <string name="loading">Cargando...</string>
     <string name="delete_onu">Eliminar Onu</string>
     <string name="register_payment_is_by_reconnection">Registrar Pago - (es factura por reconexión)</string>
+    <string name="outlays">Egresos</string>
 
 </resources>
