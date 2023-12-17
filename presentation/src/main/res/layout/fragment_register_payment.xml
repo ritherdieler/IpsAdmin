@@ -81,22 +81,42 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tlPaymentDiscountReason"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:visibility="visible"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ems="10"
+                android:layout_marginTop="20dp"
                 android:hint="@{viewModel.discountReasonField.hint}"
-                android:error="@{viewModel.discountReasonField.errorLiveData}"
+                android:error="@{viewModel.discountReasonField.errorLiveData}">
 
-                android:inputType="textPersonName">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPaymentDiscountReason"
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acPaymentDiscountReason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@={viewModel.discountReasonField.liveData}" />
+                    android:inputType="textPersonName"
+                    android:text="@={viewModel.discountReasonField.liveData}"
+                    tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tlElectronicPayerName"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="Nombre del pagador">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/acElectronicPayerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    tools:ignore="LabelFor" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
 
             <View
                 android:layout_width="match_parent"

@@ -6,7 +6,7 @@ import java.util.Locale
 
 class Payment(
     var id: Int? = null,
-    var amountPaid: Double = 0.0,
+    var amountPaid: Double? = null,
     val discountAmount: Double? = 0.0,
     val discountReason: String? = null,
     var paymentDate: Long = 0,
@@ -17,12 +17,14 @@ class Payment(
     var responsibleId: Int = 0,
     var service: String? = null,
     var responsibleName: String? = null,
+    val subscriptionId: Int? = null,
+    var electronicPayerName: String? = null,
 ) : java.io.Serializable {
 
     //first letter of month in uppercase
 
 
-    private val format = SimpleDateFormat("MMMM yyyy", java.util.Locale("es", "ES"))
+    private val format = SimpleDateFormat("MMMM yyyy", Locale("es", "ES"))
 
 
     fun paymentDateStr(): String {

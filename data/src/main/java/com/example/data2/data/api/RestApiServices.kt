@@ -1,6 +1,30 @@
 package com.example.data2.data.api
 
-import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.cleanarchitecture.domain.domain.entity.Coupon
+import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
+import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
+import com.example.cleanarchitecture.domain.domain.entity.Ip
+import com.example.cleanarchitecture.domain.domain.entity.IpPool
+import com.example.cleanarchitecture.domain.domain.entity.Loging
+import com.example.cleanarchitecture.domain.domain.entity.Mufa
+import com.example.cleanarchitecture.domain.domain.entity.NapBox
+import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDeviceResponse
+import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.cleanarchitecture.domain.domain.entity.Outlay
+import com.example.cleanarchitecture.domain.domain.entity.Payment
+import com.example.cleanarchitecture.domain.domain.entity.Place
+import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.domain.entity.Plan
+import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
+import com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse
+import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionFastSearchResponse
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.Technician
+import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.MigrationRequest
@@ -11,7 +35,13 @@ import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
 import com.example.data2.data.response.BaseResponse
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -162,7 +192,10 @@ interface RestApiServices {
     suspend fun setPaymentCommitment(@Query("subscriptionId") id: Int): Response<Unit>
 
     @PUT("subscription/reactivate-service")
-    suspend fun reactivateService(@Query("subscriptionId") subscription: Int, @Query("responsibleId") responsibleId: Int): BaseResponse<Unit>
+    suspend fun reactivateService(
+        @Query("subscriptionId") subscription: Int,
+        @Query("responsibleId") responsibleId: Int
+    ): BaseResponse<Unit>
 
     @GET("subscription/find/nameAndLastName")
     suspend fun findSubscriptionByNameAndLastName(
@@ -193,6 +226,7 @@ interface RestApiServices {
 
     @GET("assistanceTicket/find")
     suspend fun getTicket(@Query("ticketId") ticketId: String): Response<AssistanceTicketResponse>
+
     @GET("assistanceTicket/findAll")
     suspend fun getTicketsByStatus(@Query("status") status: AssistanceTicketStatus): Response<List<AssistanceTicketResponse>>
 
@@ -201,7 +235,7 @@ interface RestApiServices {
         @Query("ticketId") ticketId: Int,
         @Query("status") newStatus: AssistanceTicketStatus,
         @Query("userId") userId: Int
-    ):Response<AssistanceTicketResponse>
+    ): Response<AssistanceTicketResponse>
 
     @POST("assistanceTicket")
     suspend fun createTicket(@Body value: AssistanceTicketRequest): Response<AssistanceTicketResponse>
@@ -210,7 +244,7 @@ interface RestApiServices {
     suspend fun findSubscriptionByNames(@Query("keyword") keyword: String): Response<List<SubscriptionFastSearchResponse>>
 
     @PUT("subscription/migration")
-   suspend fun doMigration(@Body migrationRequest: MigrationRequest): BaseResponse<SubscriptionResponse>
+    suspend fun doMigration(@Body migrationRequest: MigrationRequest): BaseResponse<SubscriptionResponse>
 
     @GET("onu/getBySn")
     suspend fun getOnuBySn(@Query("onuSn") onuSn: String): BaseResponse<AdministrativeOnuResponse>
@@ -220,5 +254,8 @@ interface RestApiServices {
 
     @POST("outlay")
     suspend fun saveOutlay(@Body outlay: Outlay): BaseResponse<Unit>
+
+    @GET("payment/getElectronicPayers")
+    suspend fun getElectronicPayers(@Query("subscriptionId") subscriptionId: Int): BaseResponse<List<String>>
 }
 

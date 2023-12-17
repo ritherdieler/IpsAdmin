@@ -131,5 +131,6 @@ interface IRepository {
     suspend fun getOnuBySn(s: String): AdministrativeOnuResponse
     suspend fun deleteOnuFromOlt(onuExternalId: String)
     suspend fun saveOutLay(apply: Outlay)
+    suspend fun getElectronicPayers(subscriptionId: Int): List<String>
 
 }

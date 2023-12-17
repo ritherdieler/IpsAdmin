@@ -632,6 +632,14 @@ class Repository : IRepository, KoinComponent {
             throw Exception(response.error)
         }
     }
+
+    override suspend fun getElectronicPayers(subscriptionId: Int): List<String> {
+        val response = restApiServices.getElectronicPayers(subscriptionId)
+        if (response.status != HttpCodes.OK) {
+            throw Exception(response.error)
+        }
+        return response.data!!
+    }
 }
 
 private fun <T> Response<T>.successOrThrow(): T {

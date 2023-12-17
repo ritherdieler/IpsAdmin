@@ -19,7 +19,7 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
     val discountAmountField = ReactiveFormField<String?>(
         hintResourceId = R.string.discount,
         errorResourceId = R.string.invalid_discount_amount,
-        validator = { it?.isValidDouble() ?: true }
+        validator = { it?.isValidDouble() ?: true && it!!.toDouble() <= payment!!.amountToPay  }
     )
 
     val discountReasonField = ReactiveFormField<String?>(
@@ -31,7 +31,8 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
         set(value) {
             field = value
             // no esta pagado y tienes un monto pagado entonces es una factura por reconexion
-            val showDiscountFields = (value?.amountPaid != null && value.amountPaid>0) && value.paid.not()
+            val showDiscountFields =
+                (value?.amountPaid != null && value.amountPaid!! > 0) && value.paid.not()
             if (showDiscountFields) {
                 discountAmountField.setValue(value!!.discountAmount?.toString())
                 discountReasonField.setValue(value.discountReason)
@@ -51,6 +52,11 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
         validator = { !it.isNullOrEmpty() }
     )
 
+    fun getElectronicPayers() = executeNoProgress {
+        val response = repository.getElectronicPayers(payment!!.subscriptionId!!)
+        uiState.value = BaseUiState(RegisterPaymentUiState.OnElectronicPayersLoaded(response))
+    }
+
     fun registerPayment() = executeNoProgress(
         doBefore = { registerButtonProgress.value = true },
         doFinally = { registerButtonProgress.value = false }
@@ -59,11 +65,11 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
         payment?.let {
             val registerPayment = Payment(
                 id = payment!!.id,
-                amountPaid = payment!!.amountToPay,
                 discountAmount = discountAmountField.getValue()?.toDouble(),
                 discountReason = discountReasonField.getValue(),
                 method = paymentMethodField.getValue()!!,
-                responsibleId = user?.id!!
+                responsibleId = user?.id!!,
+                electronicPayerName = payment!!.electronicPayerName
             )
             val response = repository.registerPayment(registerPayment)
             uiState.value = BaseUiState(RegisterPaymentUiState.OnPaymentRegistered(response))
