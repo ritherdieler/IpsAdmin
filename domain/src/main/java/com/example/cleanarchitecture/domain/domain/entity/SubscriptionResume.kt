@@ -11,4 +11,5 @@ data class SubscriptionResume(
     val lastPaymentDate: String,
     val pendingInvoicesQuantity: Int,
     val totalDebt: Double,
+    val customer:CustomerData
 )

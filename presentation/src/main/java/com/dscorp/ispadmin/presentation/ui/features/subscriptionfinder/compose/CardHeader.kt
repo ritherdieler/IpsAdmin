@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dscorp.ispadmin.R
@@ -27,11 +28,15 @@ fun CardHeader(
             textAlign = TextAlign.Center,
             text = title,
             color = Color.White,
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier.fillMaxWidth().align(Alignment.Center)
+            style = MaterialTheme.typography.h5,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth().align(Alignment.Center).padding(top = 12.dp)
         )
-        IconButton(onClick = { /*TODO*/ }, modifier = Modifier.align(Alignment.CenterEnd)) {
-            Icon(painter = painterResource(id = R.drawable.ic_more_dot), tint = Color.White, contentDescription = "")
-        }
+            Icon(
+                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 16.dp),
+                painter = painterResource(id = R.drawable.ic_more_dot),
+                tint = Color.White,
+                contentDescription = ""
+            )
     }
 }
