@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import androidx.core.content.ContextCompat
 import com.dscorp.ispadmin.R
-import com.example.cleanarchitecture.domain.domain.entity.MonthlySubscriptionResume
+import com.example.cleanarchitecture.domain.domain.entity.MonthlyGrossRevenueResume
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -18,7 +18,7 @@ import java.util.Calendar
 import java.util.Locale
 
 
-class DashBoardActiveSubscriptionsByMonthLinearChart(
+class DashBoardGrossRevenueByMonthLinearChart(
     private val chart: LineChart,
     val context: Context
 ) {
@@ -50,12 +50,12 @@ class DashBoardActiveSubscriptionsByMonthLinearChart(
         }
     }
 
-    fun setData(data: List<MonthlySubscriptionResume>) {
+    fun setData(data: List<MonthlyGrossRevenueResume>) {
         if (data.isNotEmpty()) {
             val entries = data.mapIndexed { index, entry ->
-                Entry(index.toFloat(), entry.totalActiveSubscriptions.toFloat(), null)
+                Entry(index.toFloat(), entry.totalCharged.toFloat(), null)
             }
-            val yAxisLimit = data.maxOf { it.totalActiveSubscriptions }
+            val yAxisLimit = data.maxOf { it.totalCharged }
             configureXAxisLabels(data)
 
             configureYAxis(yAxisLimit, data)
@@ -64,22 +64,21 @@ class DashBoardActiveSubscriptionsByMonthLinearChart(
         }
     }
 
-    private fun configureXAxisLabels(data: List<MonthlySubscriptionResume>) {
-        xAxis.labelCount = data.size+2
-
+    private fun configureXAxisLabels(data: List<MonthlyGrossRevenueResume>) {
+        xAxis.labelCount = data.size+5
         val xAxisLabels = data.map {
-            Calendar.getInstance().apply { timeInMillis = it.date.time }
+            (Calendar.getInstance().apply { timeInMillis = it.billingDate }
                 .getDisplayName(Calendar.MONTH, Calendar.LONG, Locale("es", "ES"))
-                ?.replaceFirstChar { it.titlecase(Locale.ROOT) }?.substring(0, 3) + "."
+                ?.replaceFirstChar { it.titlecase(Locale.ROOT) }?.substring(0, 3) + ".")
         }
         xAxis.valueFormatter = IndexAxisValueFormatter(xAxisLabels)
     }
 
-    private fun configureYAxis(yAxisLimit: Int, data: List<MonthlySubscriptionResume>) {
+    private fun configureYAxis(yAxisLimit: Double, data: List<MonthlyGrossRevenueResume>) {
         val yAxis = chart.axisLeft
         yAxis.axisMaximum = ((yAxisLimit * 0.05) + yAxisLimit).toFloat()
         yAxis.axisMinimum =
-            (data.minOf { it.totalActiveSubscriptions } - (yAxisLimit * 0.10)).toFloat()
+            (data.minOf { it.totalCharged } - (yAxisLimit * 0.10)).toFloat()
     }
 
     private fun setupChart(entries: List<Entry>) {

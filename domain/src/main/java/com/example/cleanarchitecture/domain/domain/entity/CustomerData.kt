@@ -1,11 +1,12 @@
 package com.example.cleanarchitecture.domain.domain.entity
 
 data class CustomerData(
-    val name: String,
-    val lastName: String,
-    val dni: String,
-    val place: String,
-    val address: String,
-    val phone: String,
-    val email: String,
+    val subscriptionId: Int,
+    var name: String,
+    var lastName: String,
+    var dni: String,
+    var place: String,
+    var address: String,
+    var phone: String,
+    var email: String,
 )

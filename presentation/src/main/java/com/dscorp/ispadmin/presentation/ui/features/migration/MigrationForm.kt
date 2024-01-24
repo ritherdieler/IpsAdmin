@@ -36,9 +36,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dscorp.ispadmin.R
+import com.example.cleanarchitecture.domain.domain.entity.InstallationType
 import com.example.cleanarchitecture.domain.domain.entity.Onu
-import com.example.cleanarchitecture.domain.domain.entity.Plan
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.data2.data.apirequestmodel.MigrationRequest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +48,8 @@ import com.example.data2.data.apirequestmodel.MigrationRequest
 fun MigrationForm(
     onus: List<Onu>,
     plans: List<PlanResponse>,
-    onMigrationRequest: (MigrationRequest) -> Unit
+    onMigrationRequest: (MigrationRequest) -> Unit,
+    subscription: SubscriptionResponse
 ) {
     var planDropDownExpanded by remember { mutableStateOf(false) }
     var onuDropDownExpanded by remember { mutableStateOf(false) }
@@ -60,7 +63,14 @@ fun MigrationForm(
     var note by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Migración a fibra óptica")
+        Text(text = "Migración a fibra óptica ")
+        Text(
+            text = "Cliente: ${subscription.firstName} ${subscription.lastName}",
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+        )
         Spacer(modifier = Modifier.size(16.dp))
 
         ExposedDropdownMenuBox(
@@ -221,7 +231,48 @@ fun Loader(modifier: Modifier = Modifier) {
 fun MigrationFormPreview() {
 
     MaterialTheme {
-        MigrationForm(onus = listOf(), plans = listOf(), onMigrationRequest = {})
+        MigrationForm(
+            onus = listOf(),
+            plans = listOf(),
+            onMigrationRequest = {},
+            subscription = SubscriptionResponse(
+                id = 3796,
+                address = null,
+                dni = null,
+                firstName = null,
+                lastName = null,
+                location = null,
+                napBox = null,
+                networkDevices = listOf(),
+                new = null,
+                password = null,
+                phone = null,
+                place = null,
+                plan = null,
+                ip = null,
+                serviceStatus = ServiceStatus.ACTIVE,
+                technician = null,
+                hostDevice = null,
+                subscriptionDate = null,
+                isMigration = false,
+                price = null,
+                paymentCommitmentDate = null,
+                isPaymentCommitment = false,
+                lastCutOffDate = null,
+                isReactivation = false,
+                reactivationDate = null,
+                cpeDeviceId = null,
+                note = null,
+                installationType = InstallationType.FIBER,
+                email = null,
+                pendingInvoiceQuantity = 2385,
+                antiquityInMonths = 1610,
+                qualification = 1,
+                ics = 5525,
+                totalDebt = 2.3,
+                lastPaymentDate = null
+            )
+        )
 
     }
 }

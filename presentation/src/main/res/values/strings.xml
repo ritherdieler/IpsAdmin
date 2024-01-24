@@ -111,7 +111,7 @@
     <string name="password">Contraseña</string>
     <string name="address">Direción</string>
     <string name="mustSelectLocation">Seleccione una ubicación</string>
-    <string name="phoneNumer">Número de teléfono</string>
+    <string name="phoneNumer">Teléfono</string>
     <string name="price">Precio</string>
     <string name="coupon">Cupón</string>
     <string name="invalidPhoneNumber">Número de teléfono no valido</string>
@@ -232,17 +232,17 @@
     <string name="monthly_monetary_resume">Resumen monetario mensual</string>
     <string name="concept">Concepto</string>
     <string name="pen_symbol">S/.</string>
-    <string name="electronic_payments_history">Historial de pagos electrónicos</string>
+    <string name="electronic_payments_history">Pagos electrónicos por mes</string>
     <string name="monthly_costumers_resume">Resumen mensual de clientes</string>
     <string name="quantity">Cantidad</string>
     <string name="Fiber">Fibra</string>
     <string name="cancelled">Cancelados</string>
     <string name="start_cut">Iniciar corte</string>
-    <string name="active_customers_history">Historial de clientes activos</string>
+    <string name="active_customers_history">Clientes activos por mes</string>
     <string name="raised">Recaudado</string>
     <string name="pending">Pendiente</string>
     <string name="monthly_receipts_resume">Resumen de ingresos</string>
-    <string name="monthly_collects_history">Historial de recaudacion mensual</string>
+    <string name="monthly_collects_history">Recaudacion por mes</string>
     <string name="migrate_to_fiber">Migrar a fibra óptica</string>
     <string name="title_activity_migration">MigrationActivity</string>
     <string name="title_activity_migration_acitivty">MigrationAcitivty</string>
@@ -293,5 +293,6 @@
     <string name="delete_onu">Eliminar Onu</string>
     <string name="register_payment_is_by_reconnection">Registrar Pago - (es factura por reconexión)</string>
     <string name="outlays">Egresos</string>
-
+    <string name="find_payer">Buscar pagador</string>
+<string name="gross_revenue_per_month">Ingresos brutos por mes</string>
 </resources>

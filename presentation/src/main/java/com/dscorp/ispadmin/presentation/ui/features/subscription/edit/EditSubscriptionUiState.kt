@@ -7,7 +7,8 @@ import com.example.cleanarchitecture.domain.domain.entity.Onu
 
 sealed class EditSubscriptionUiState {
     class EditFormDataFound(
-        val plans: List<PlanResponse>
+        val plans: List<PlanResponse>,
+        val subscription: SubscriptionResponse
     ) : EditSubscriptionUiState()
 
     class EditSubscriptionSuccess(val subscription: SubscriptionResponse) :

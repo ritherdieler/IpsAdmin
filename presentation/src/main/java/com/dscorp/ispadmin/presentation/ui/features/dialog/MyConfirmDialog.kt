@@ -43,6 +43,7 @@ fun MyConfirmDialog(
     @DrawableRes closeIcon: Int = R.drawable.ic_close,
     onDismissRequest: () -> Unit = {},
     body: @Composable () -> Unit,
+    onAccept: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -108,6 +109,7 @@ fun MyConfirmDialog(
 
                 Button(onClick = {
                     onDismissRequest()
+                    onAccept()
                 }) {
                     Text(text = "Aceptar")
                 }
@@ -128,17 +130,20 @@ fun MyCustomDialogPreview() {
             title = "Información de cereza",
             onDismissRequest = {
                 showDialog = false
-            }) {
-            Text(
-                text = "Nº de Cereza: 36253\nCampaña: CerezaCC-Ventas\nCanal: WhatsApp Meta Test Number",
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF000034),
-                    textAlign = TextAlign.Center,
+            },
+            onAccept = {},
+            body = {
+                Text(
+                    text = "Nº de Cereza: 36253\nCampaña: CerezaCC-Ventas\nCanal: WhatsApp Meta Test Number",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight(400),
+                        color = Color(0xFF000034),
+                        textAlign = TextAlign.Center,
+                    )
                 )
-            )
-        }
+            }
+        )
 
 }
 

@@ -35,13 +35,14 @@ class MigrationViewModel(private val repository: IRepository) : ViewModel() {
 
     }
 
-    fun getMigrationFormData() = viewModelScope.launch {
+    fun getMigrationFormData(subscriptionId: Int) = viewModelScope.launch {
         try {
+            val subscription = async { repository.subscriptionById(subscriptionId) }.await()
             _uiState.emit(MigrationUiState.Loading)
             val unconfirmedOnus = async { repository.getUnconfirmedOnus() }.await()
             val plans = async { repository.getPlans() }.await()
                 .filter { it.type == PlanResponse.PlanType.FIBER }
-            _uiState.emit(MigrationUiState.FormDataReady(plans, unconfirmedOnus))
+            _uiState.emit(MigrationUiState.FormDataReady(plans, unconfirmedOnus, subscription))
         } catch (e: Exception) {
             _uiState.emit(MigrationUiState.Error(e))
         }
@@ -55,6 +56,10 @@ sealed class MigrationUiState {
     object Loading : MigrationUiState()
     data class Success(val subscriptionResponse: SubscriptionResponse) : MigrationUiState()
     data class Error(val error: Exception) : MigrationUiState()
-    data class FormDataReady(val plans: List<PlanResponse>, val unconfirmedOnus: List<Onu>) :
+    data class FormDataReady(
+        val plans: List<PlanResponse>,
+        val unconfirmedOnus: List<Onu>,
+        val subscription: SubscriptionResponse
+    ) :
         MigrationUiState()
 }

@@ -54,7 +54,7 @@ class PaymentHistoryFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.subscription = args.subscription
+        viewModel.subscriptionId = args.subscriptionId
     }
 
     override fun onViewReady(savedInstanceState: Bundle?) {
@@ -91,7 +91,6 @@ class PaymentHistoryFragment :
 
     private fun getPayments() {
         viewModel.getLastPayments(
-            args.subscription.id,
             PaymentHistoryViewModel.LAST_PAYMENTS_ROW_LIMIT
         )
     }
@@ -153,7 +152,7 @@ class PaymentHistoryFragment :
             SearchPaymentsRequest().apply {
                 startDate = mStartDate
                 endDate = mEndDate
-                subscriptionId = args.subscription.id
+                subscriptionId = args.subscriptionId
             }
         )
     }

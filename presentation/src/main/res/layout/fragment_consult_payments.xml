@@ -117,6 +117,7 @@
             android:id="@+id/btn_reactivate_service"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:clickListener="@{() -> viewModel.reactivateService()}"
             app:isLoading="@{viewModel.reactivationButtonIsLoading}"
             app:layout_constraintBottom_toBottomOf="parent"

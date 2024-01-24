@@ -26,10 +26,16 @@ class Payment(
 
     private val format = SimpleDateFormat("MMMM yyyy", Locale("es", "ES"))
 
+    private val detailedFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale("es", "ES"))
 
     fun paymentDateStr(): String {
         val date = Date(paymentDate)
         return format.format(date).uppercase(Locale.ROOT)
+    }
+
+    fun detailPaymentDateStr(): String {
+        val date = Date(paymentDate)
+        return detailedFormat.format(date).uppercase(Locale.ROOT)
     }
 
     fun billingDateStr(): String {

@@ -8,7 +8,6 @@ import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHisto
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.OnPaymentHistoryFilteredResponse
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.ServiceReactivated
 import com.example.cleanarchitecture.domain.domain.entity.Payment
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.flow.first
@@ -28,7 +27,7 @@ class PaymentHistoryViewModel(val repository: IRepository) :
 
     val reactivationButtonIsLoading = MutableLiveData(false)
 
-    var subscription: SubscriptionResponse? = null
+    var subscriptionId: Int? = null
 
     fun getFilteredPaymentHistory(request: SearchPaymentsRequest) = executeWithProgress {
         val response = repository.getFilteredPaymentHistory(request)
@@ -36,8 +35,8 @@ class PaymentHistoryViewModel(val repository: IRepository) :
         uiState.value = BaseUiState(OnPaymentHistoryFilteredResponse(response))
     }
 
-    fun getLastPayments(idSubscription: Int, itemsLimit: Int) = executeWithProgress {
-        val response = repository.getRecentPaymentsHistory(idSubscription, itemsLimit)
+    fun getLastPayments(itemsLimit: Int) = executeWithProgress {
+        val response = repository.getRecentPaymentsHistory(subscriptionId!!, itemsLimit)
         payments.value = response
         uiState.value = BaseUiState(GetRecentPaymentsHistoryResponse(response))
 
@@ -55,8 +54,8 @@ class PaymentHistoryViewModel(val repository: IRepository) :
         executeNoProgress(doBefore = { reactivationButtonIsLoading.value = true }, doFinally = {
             reactivationButtonIsLoading.value = false
         }) {
-            subscription?.let {
-                repository.reactivateService(subscription!!, repository.getUserSession()!!.id!!)
+            subscriptionId?.let {
+                repository.reactivateService(subscriptionId!!, repository.getUserSession()!!.id!!)
                 uiState.value = BaseUiState(ServiceReactivated)
             }
         }

@@ -5,8 +5,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.databinding.ActivityMigrationActivityBinding
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
-import com.google.android.material.snackbar.Snackbar
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SUBSCRIPTION_ID
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -21,22 +20,24 @@ class MigrationActivity : AppCompatActivity() {
 
         binding = ActivityMigrationActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val subscriptionId = intent.getIntExtra(SUBSCRIPTION_ID, -1)
 
-        viewModel.getMigrationFormData()
-
-        val subscriptionResponse =
-            intent.getSerializableExtra("subscriptionResponse") as SubscriptionResponse
-
+        viewModel.getMigrationFormData(subscriptionId)
 
         lifecycleScope.launch {
+
             viewModel.uiState.collect {
                 when (it) {
                     MigrationUiState.Empty -> {}
-                    is MigrationUiState.Error -> showErrorDialog(it)
-                    is MigrationUiState.FormDataReady -> showMigrationForm(it, subscriptionResponse)
+                    is MigrationUiState.Error -> showErrorDialog(it, subscriptionId)
+                    is MigrationUiState.FormDataReady -> showMigrationForm(it)
                     MigrationUiState.Loading -> showLoader()
                     is MigrationUiState.Success -> {
-                        Toast.makeText(this@MigrationActivity, "Migración exitosa", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@MigrationActivity,
+                            "Migración exitosa",
+                            Toast.LENGTH_LONG
+                        ).show()
                         finish()
                     }
                 }
@@ -53,26 +54,26 @@ class MigrationActivity : AppCompatActivity() {
 
     private fun showMigrationForm(
         it: MigrationUiState.FormDataReady,
-        subscriptionResponse: SubscriptionResponse
     ) {
         binding.migrationComposeView.setContent {
             MigrationForm(
                 onus = it.unconfirmedOnus,
                 plans = it.plans,
+                subscription=it.subscription,
                 onMigrationRequest = { request ->
-                    request.apply { subscriptionId = subscriptionResponse.id }
+                    request.apply { subscriptionId = it.subscription.id }
                     viewModel.doMigration(request)
                 }
             )
         }
     }
 
-    private fun showErrorDialog(it: MigrationUiState.Error) {
+    private fun showErrorDialog(it: MigrationUiState.Error, subscriptionId: Int) {
         binding.migrationComposeView.setContent {
             ErrorDialog(
                 error = it.error.message ?: "",
                 onDismissRequest = {
-                    viewModel.getMigrationFormData()
+                    viewModel.getMigrationFormData(subscriptionId)
                 }
             )
         }

@@ -75,8 +75,8 @@
         android:label="SubscriptionDetailFragment"
         tools:layout="@layout/fragment_subscription_detail">
         <argument
-            android:name="subscription"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+            android:name="subscriptionId"
+            app:argType="java.lang.Integer" />
 
     </fragment>
 
@@ -99,26 +99,50 @@
         android:label="MapDialog"
         tools:layout="@layout/dialog_map" />
 
+
     <fragment
         android:id="@+id/nav_find_subscriptions"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.SubscriptionFinderFragment"
         android:label="FindSubscription"
-        tools:layout="@layout/fragment_find_subscription">
+        tools:layout="@layout/fragment_subscription_finder">
+
+        <action
+            android:id="@+id/findSubscription_to_paymentHistoryFragment"
+            app:destination="@id/paymentHistoryFragment" />
 
         <action
             android:id="@+id/findSubscription_to_subscription_detail"
             app:destination="@id/subscriptionDetail" />
 
         <action
-            android:id="@+id/findSubscription_to_registerPayment"
-            app:destination="@id/register_payment" />
-        <action
-            android:id="@+id/findSubscription_to_paymentHistoryFragment"
-            app:destination="@id/paymentHistoryFragment" />
-        <action
-            android:id="@+id/action_nav_find_subscriptions_to_editSubscriptionFragment"
+            android:id="@+id/findSubscription_to_editSubscriptionFragment"
             app:destination="@id/editSubscriptionFragment" />
+
+        <action android:id="@+id/findSubscription_to_registerPayment"
+            app:destination="@id/register_payment" />
+
     </fragment>
+
+    <!--    <fragment-->
+    <!--        android:id="@+id/nav_find_subscriptions"-->
+    <!--        android:name="com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionFragment"-->
+    <!--        android:label="FindSubscription"-->
+    <!--        tools:layout="@layout/fragment_find_subscription">-->
+
+    <!--        <action-->
+    <!--            android:id="@+id/findSubscription_to_subscription_detail"-->
+    <!--            app:destination="@id/subscriptionDetail" />-->
+
+    <!--        <action-->
+    <!--            android:id="@+id/findSubscription_to_registerPayment"-->
+    <!--            app:destination="@id/register_payment" />-->
+    <!--        <action-->
+    <!--            android:id="@+id/findSubscription_to_paymentHistoryFragment"-->
+    <!--            app:destination="@id/paymentHistoryFragment" />-->
+    <!--        <action-->
+    <!--            android:id="@+id/action_nav_find_subscriptions_to_editSubscriptionFragment"-->
+    <!--            app:destination="@id/editSubscriptionFragment" />-->
+    <!--    </fragment>-->
 
     <fragment
         android:id="@+id/register_payment"
@@ -136,6 +160,7 @@
         android:label="fragment_consut_payments"
         tools:layout="@layout/fragment_consult_payments" />
 
+
     <fragment
         android:id="@+id/paymentHistoryFragment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
@@ -150,8 +175,8 @@
             app:destination="@id/register_payment" />
 
         <argument
-            android:name="subscription"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+            android:name="subscriptionId"
+            app:argType="java.lang.Integer" />
 
     </fragment>
     <fragment
@@ -275,8 +300,8 @@
         android:label="EditSubscriptionFragment"
         tools:layout="@layout/fragment_edit_plan_subscription">
         <argument
-            android:name="subscription"
-            app:argType="com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse" />
+            android:name="subscriptionId"
+            app:argType="java.lang.Integer" />
         <action
             android:id="@+id/action_editSubscriptionFragment_to_nav_dashboard"
             app:destination="@id/nav_dashboard" />
@@ -317,4 +342,10 @@
         android:name="com.dscorp.ispadmin.presentation.ui.features.outlay.RegisterOutLaysFragment"
         android:label="fragment_outlay"
         tools:layout="@layout/fragment_register_outlay" />
+    <fragment
+        android:id="@+id/nav_find_payer"
+        android:name="com.dscorp.ispadmin.FindPayerFragment"
+        android:label="fragment_find_payer"
+        tools:layout="@layout/fragment_find_payer" />
+
 </navigation>

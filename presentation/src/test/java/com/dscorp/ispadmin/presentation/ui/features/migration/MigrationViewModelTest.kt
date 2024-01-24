@@ -113,7 +113,7 @@ class MigrationViewModelTest {
         // Then
         assertEquals(MigrationUiState.Empty, collectedStates[0])
         assertEquals(MigrationUiState.Loading, collectedStates[1])
-        assertEquals(MigrationUiState.FormDataReady(plans, unconfirmedOnus), collectedStates[2])
+        assertEquals(MigrationUiState.FormDataReady(plans, unconfirmedOnus, subscription), collectedStates[2])
     }
 
 }

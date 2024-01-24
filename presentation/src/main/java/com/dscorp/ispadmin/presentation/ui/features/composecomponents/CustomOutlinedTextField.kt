@@ -19,9 +19,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CustomOutlinedTextField(
     modifier: Modifier = Modifier,
-    value: String="",
+    value: String = "",
     onValueChange: (String) -> Unit,
     label: String,
+    maxLength: Int = 100,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     var text by remember { mutableStateOf(value) }
@@ -35,6 +36,7 @@ fun CustomOutlinedTextField(
         keyboardOptions = keyboardOptions,
         colors = TextFieldDefaults.outlinedTextFieldColors(backgroundColor = Color.White),
         onValueChange = {
+            if (it.length >= maxLength) return@OutlinedTextField
             text = it
             onValueChange(it)
         },

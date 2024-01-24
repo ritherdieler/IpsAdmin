@@ -1,6 +1,7 @@
 package com.example.data2.data.api
 
 import com.example.cleanarchitecture.domain.domain.entity.Coupon
+import com.example.cleanarchitecture.domain.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.cleanarchitecture.domain.domain.entity.Ip
@@ -118,8 +119,8 @@ interface RestApiServices {
 
     @GET("subscription/find/date")
     suspend fun findSubscriptionBySubscriptionDate(
-        @Query("startDate") startDate: Long,
-        @Query("endDate") endDate: Long
+        @Query("startDate") startDate: String,
+        @Query("endDate") endDate: String
     ): Response<List<SubscriptionResponse>>
 
     @PUT("payment")
@@ -257,5 +258,11 @@ interface RestApiServices {
 
     @GET("payment/getElectronicPayers")
     suspend fun getElectronicPayers(@Query("subscriptionId") subscriptionId: Int): BaseResponse<List<String>>
+
+    @PUT("subscription/update-customer-data")
+    suspend fun updateCustomerData(@Body customer: CustomerData): Response<Unit>
+
+    @GET("subscription/{subscriptionId}")
+    suspend fun subscriptionById(@Path("subscriptionId") subscriptionId: Int): Response<SubscriptionResponse>
 }
 

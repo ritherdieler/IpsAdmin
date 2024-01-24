@@ -9,12 +9,18 @@ import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.repository.IRepository
+import kotlinx.coroutines.async
+
+
+data class EditSubscriptionScreenData(
+    val plans: List<PlanResponse>,
+    val subscription: SubscriptionResponse
+)
 
 class EditSubscriptionViewModel(
     private val repository: IRepository,
 ) : BaseViewModel<EditSubscriptionUiState>() {
 
-    var subscription: SubscriptionResponse? = null
     val user = repository.getUserSession()
     val planField = FormField(
         hintResourceId = R.string.plan,
@@ -24,25 +30,32 @@ class EditSubscriptionViewModel(
         }
     )
 
-    fun getFormData() = executeWithProgress {
-        val response = repository.getPlans()
-        uiState.value = BaseUiState(EditSubscriptionUiState.EditFormDataFound(response))
+    fun getFormData(subscriptionId: Int) = executeWithProgress {
+        val jobSubscription = it.async { repository.subscriptionById(subscriptionId) }
+        val jobPlans = it.async { repository.getPlans() }
+
+        val subscriptionResponse = jobSubscription.await()
+        val plans = jobPlans.await()
+
+        uiState.value = BaseUiState(
+            EditSubscriptionUiState.EditFormDataFound(plans, subscriptionResponse)
+        )
     }
 
-    fun editSubscription() = executeWithProgress {
+    fun editSubscription(subscriptionId: Int) = executeWithProgress {
         if (!formIsValid()) return@executeWithProgress
-        val subscription = createSubscription()
+        val subscription = createSubscription(subscriptionId)
         val subscriptionFromRepository = repository.updateSubscriptionPlan(subscription)
         uiState.value =
             BaseUiState(EditSubscriptionUiState.EditSubscriptionSuccess(subscriptionFromRepository))
 
     }
 
-    private fun createSubscription(): UpdateSubscriptionPlanBody {
+    private fun createSubscription(subscriptionId: Int): UpdateSubscriptionPlanBody {
         if (!formIsValid()) throw Exception("Form is not valid")
 
         return UpdateSubscriptionPlanBody(
-            subscriptionId = subscription?.id!!,
+            subscriptionId = subscriptionId,
             planId = planField.value?.id!!,
         )
     }

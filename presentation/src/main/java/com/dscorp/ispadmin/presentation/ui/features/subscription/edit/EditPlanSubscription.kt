@@ -11,6 +11,7 @@ import com.dscorp.ispadmin.presentation.extension.populate
 import com.dscorp.ispadmin.presentation.extension.showCrossDialog
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.User
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,7 +23,7 @@ class EditPlanSubscription :
 
     override fun handleState(state: EditSubscriptionUiState) {
         when (state) {
-            is EditSubscriptionUiState.EditFormDataFound -> fillFormSpinners(state)
+            is EditSubscriptionUiState.EditFormDataFound -> fillForm(state)
             is EditSubscriptionUiState.EditSubscriptionSuccess -> showEditSuccessDialog()
             is EditSubscriptionUiState.FormDataError -> showErrorDialog(state.error)
             is EditSubscriptionUiState.EditSubscriptionError -> showErrorDialog(state.error)
@@ -30,49 +31,39 @@ class EditPlanSubscription :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel.subscription = args.subscription
-        fillFormWithSubscriptionData()
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()
-        viewModel.getFormData()
-
+        viewModel.getFormData(args.subscriptionId)
         binding.btnEditSubscription.setOnClickListener {
             firebaseAnalytics.sendTouchButtonEvent(AnalyticsConstants.REGISTER_SUBSCRIPTION)
-            viewModel.editSubscription()
+            viewModel.editSubscription(args.subscriptionId)
         }
         super.onCreate(savedInstanceState)
     }
 
-    private fun fillFormWithSubscriptionData() {
-        binding.etFirstName.setText(viewModel.subscription?.firstName)
-        binding.etLastName.setText(viewModel.subscription?.lastName)
-        binding.etDni.setText(viewModel.subscription?.dni)
+    private fun fillFormWithSubscriptionData(subscription: SubscriptionResponse) {
+        binding.etFirstName.setText(subscription.firstName)
+        binding.etLastName.setText(subscription.lastName)
+        binding.etDni.setText(subscription.dni)
     }
 
     private fun showEditSuccessDialog() {
         showCrossDialog(
             text = getString(R.string.editPlanSuccess), positiveButtonClickListener = {
-                if (viewModel.user!!.type == User.UserType.ADMIN) {
-                    val action =
-                        EditPlanSubscriptionDirections.actionEditSubscriptionFragmentToNavDashboard()
-                    findNavController().navigate(action)
-                } else {
-                    val action =
-                        EditPlanSubscriptionDirections.editSubscriptionPlanToFindSubscription()
-                    findNavController().navigate(action)
-                }
-
+                findNavController().navigateUp()
             }
         )
     }
 
-    private fun fillFormSpinners(response: EditSubscriptionUiState.EditFormDataFound) {
+    private fun fillForm(response: EditSubscriptionUiState.EditFormDataFound) {
         binding.acPlan.populate(response.plans) { plan ->
             viewModel.planField.value = plan
         }
 
-        val selectedPlanId = viewModel.subscription?.plan?.id
+        fillFormWithSubscriptionData(response.subscription)
+
+        val selectedPlanId = response.subscription.plan?.id
         val selectedPlan = response.plans.find { it.id == selectedPlanId }
         viewModel.planField.value = selectedPlan
         binding.acPlan.setText(selectedPlan.toString(), false)

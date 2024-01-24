@@ -12,7 +12,8 @@ class DashBoardDataResponse(
     val canceledSubscriptions: Int,
     val paymentResume: Map<String, Double>,
     val subscriptionsHistoryStatics: List<MonthlySubscriptionResume>,
-    val monthlyCollects: List<MonthlyCollectsResume>
+    val monthlyCollects: List<MonthlyCollectsResume>,
+    val grossRevenueHistoryStatics: List<MonthlyGrossRevenueResume>
 
 ) {
     fun grossRevenueAsString() = grossRevenue.toCurrencyString()
@@ -29,3 +30,10 @@ class DashBoardDataResponse(
         return numberFormat.format(this)
     }
 }
+
+data class MonthlyGrossRevenueResume(
+    val totalCharged: Double,
+    val billingDate: Long
+)
+
+

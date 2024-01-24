@@ -26,7 +26,7 @@ import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailViewModel
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionFinderViewModel
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.TechnicianViewModel
 import com.dscorp.ispadmin.presentation.ui.features.technician.technicianlist.TechnicianListViewModel
@@ -51,7 +51,7 @@ val viewModelModule = module {
     viewModel { NapBoxViewModel(get()) }
     viewModel { NapBoxesListViewModel() }
     viewModel { PaymentHistoryViewModel(get()) }
-    viewModel { FindSubscriptionViewModel(get(), get()) }
+//    viewModel { FindSubscriptionViewModel(get(), get()) }
     viewModel { RegisterPaymentViewModel(get()) }
     viewModel { IpPoolViewModel(get()) }
     viewModel { MyProfileViewModel() }
@@ -66,9 +66,10 @@ val viewModelModule = module {
     viewModel { MufaViewModel(get()) }
     viewModel { EditSubscriptionViewModel(get()) }
     viewModel { EditPlanViewModel(get()) }
-    viewModel { SubscriptionDetailViewModel(get(), get(), get()) }
+    viewModel { SubscriptionDetailViewModel(get(), get()) }
     viewModel { SupportTicketViewModel(get()) }
     viewModel { MigrationViewModel(get()) }
     viewModel { OltAdministrationViewModel(get()) }
     viewModel { OutLayViewModel(get()) }
+    viewModel { SubscriptionFinderViewModel(get()) }
 }

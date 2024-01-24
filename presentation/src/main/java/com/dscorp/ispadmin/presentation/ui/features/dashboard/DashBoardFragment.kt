@@ -66,6 +66,15 @@ class DashBoardFragment : BaseFragment<DashBoardDataUiState, FragmentDashBoardBi
             ).setData(subscriptionHistoryData)
 
 
+            val grossRevenueHistoryData = state.response.grossRevenueHistoryStatics
+
+            DashBoardGrossRevenueByMonthLinearChart(
+                binding.grossRevenueHistoryLinearChart,
+                requireContext()
+            ).setData(grossRevenueHistoryData.sortedBy { it.billingDate })
+
+
+
             val monthlyCollectsResume =
                 state.response.monthlyCollects.mapIndexed { index, monthlyCollectsResume ->
                     BarEntry(

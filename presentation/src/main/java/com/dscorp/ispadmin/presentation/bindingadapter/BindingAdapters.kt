@@ -82,7 +82,7 @@ fun com.google.android.material.textfield.MaterialAutoCompleteTextView.fillPlace
     setAdapter(adapter)
 
     val observer = Observer<List<PlaceResponse>> {
-        adapter.clear()
+//        adapter.clear()
         adapter.addAll(it)
     }
 
@@ -107,8 +107,8 @@ fun com.google.android.material.textfield.MaterialAutoCompleteTextView.fillPlace
 fun TextInputEditText.fillLocation(
     location: MutableLiveData<LatLng>
 ) {
-    val observer = Observer<LatLng> {
-        setText("${it.latitude}, ${it.longitude}")
+    val observer = Observer<LatLng?> {
+        setText("${it?.latitude}, ${it?.longitude}")
     }
 
     addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {

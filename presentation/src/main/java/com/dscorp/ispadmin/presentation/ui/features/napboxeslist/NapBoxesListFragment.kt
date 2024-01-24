@@ -11,12 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxesListBinding
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.napbox.register.NapBoxFragmentDirections
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.FindSubscriptionFragmentDirections
-import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -30,9 +25,10 @@ class NapBoxesListFragment : Fragment(), OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_nap_boxes_list, null,
-                true
-            )
+        binding = DataBindingUtil.inflate(
+            layoutInflater, R.layout.fragment_nap_boxes_list, null,
+            true
+        )
         observe()
         return binding.root
     }
@@ -56,11 +52,11 @@ class NapBoxesListFragment : Fragment(), OnItemClickListener {
 
     private fun
             navigateToEditSubscription(napBox: NapBoxResponse): Boolean {
-        findNavController().navigate(
-            NapBoxesListFragmentDirections.actionNavSeeNapBoxesToEditNapBoxFragment(
-                napBox
-            )
-        )
+//        findNavController().navigate(
+//            NapBoxesListFragmentDirections.actionNavSeeNapBoxesToEditNapBoxFragment(
+//                napBox
+//            )
+//        )
         return true
     }
 
@@ -91,5 +87,5 @@ class NapBoxesListFragment : Fragment(), OnItemClickListener {
 //                    napBox
 //                )
 //            findNavController().navigate(destination)
-        }
+    }
 }

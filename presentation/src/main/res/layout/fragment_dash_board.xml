@@ -218,6 +218,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
                 android:gravity="center"
+                android:text="@string/gross_revenue_per_month"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/gross_revenue_history_linear_chart"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginTop="24dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:gravity="center"
                 android:text="@string/active_customers_history"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 

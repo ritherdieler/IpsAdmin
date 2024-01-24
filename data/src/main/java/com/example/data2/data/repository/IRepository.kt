@@ -1,6 +1,7 @@
 package com.example.data2.data.repository
 
 import com.example.cleanarchitecture.domain.domain.entity.Coupon
+import com.example.cleanarchitecture.domain.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
@@ -25,6 +26,7 @@ import com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse
 import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionFastSearchResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
@@ -67,7 +69,7 @@ interface IRepository {
     suspend fun getTechnicians(): List<Technician>
     suspend fun getNapBoxes(): List<NapBoxResponse>
     suspend fun getFilteredPaymentHistory(request: SearchPaymentsRequest): List<Payment>
-    suspend fun findSubscriptionByDNI(id: String): List<SubscriptionResponse>
+    suspend fun findSubscriptionByDNI(id: String): List<SubscriptionResume>
     suspend fun registerPayment(payment: Payment): Payment
     suspend fun getNetworkDeviceTypes(): List<String>
     suspend fun getDebtors(): List<SubscriptionResponse>
@@ -97,21 +99,21 @@ interface IRepository {
     suspend fun getUnconfirmedOnus(): List<Onu>
     suspend fun applyCoupon(code: String): Coupon?
     suspend fun findSubscriptionBySubscriptionDate(
-        startDate: Long,
-        endDate: Long
-    ): List<SubscriptionResponse>
+        startDate: String,
+        endDate: String
+    ): List<SubscriptionResume>
 
     suspend fun sendCloudMessaging(body: FirebaseBody?): FireBaseResponse
     suspend fun updatePlan(plan: Plan): PlanResponse
     suspend fun savePaymentCommitment(id: Int)
-    suspend fun reactivateService(subscription: SubscriptionResponse, responsibleId: Int)
+    suspend fun reactivateService(subscription: Int, responsibleId: Int)
     suspend fun findSubscriptionByNameAndLastName(
         name: String?,
         lastName: String?
-    ): List<SubscriptionResponse>
+    ): List<SubscriptionResume>
 
     suspend fun downloadDebtorsCutOffCandidatesSubscriptionsReport(): DownloadDocumentResponse
-    suspend fun cancelSubscription(subscription: SubscriptionResponse)
+    suspend fun cancelSubscription(subscriptionId: Int)
     suspend fun updateSubscriptionData(subscriptionData: UpdateSubscriptionDataBody)
     suspend fun downloadDebtorWithCancelledSubscriptionsReport(): DownloadDocumentResponse
     suspend fun downloadCancelledSubscriptionsFromCurrentMonthReport(): DownloadDocumentResponse
@@ -132,5 +134,7 @@ interface IRepository {
     suspend fun deleteOnuFromOlt(onuExternalId: String)
     suspend fun saveOutLay(apply: Outlay)
     suspend fun getElectronicPayers(subscriptionId: Int): List<String>
+    suspend fun updateCustomerData(customer: CustomerData): Unit
+    suspend fun subscriptionById(subscriptionId: Int): SubscriptionResponse
 
 }

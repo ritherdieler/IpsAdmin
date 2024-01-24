@@ -14,6 +14,7 @@ import com.example.data2.data.response.AdministrativeOnuResponse
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
 import com.example.data2.data.utils.*
+import okhttp3.internal.http.HTTP_OK
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import retrofit2.Response
@@ -252,10 +253,10 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun findSubscriptionByDNI(id: String): List<SubscriptionResponse> {
+    override suspend fun findSubscriptionByDNI(id: String): List<SubscriptionResume> {
         val response = restApiServices.findSubscriptionByDNI(id)
         return when (response.code()) {
-            200 -> response.body()!!.ifEmpty { listOf() }
+            200 -> response.body()?.map { it.toDomain() } ?: emptyList()
             else -> throw Exception("Error")
         }
     }
@@ -470,12 +471,12 @@ class Repository : IRepository, KoinComponent {
     }
 
     override suspend fun findSubscriptionBySubscriptionDate(
-        startDate: Long,
-        endDate: Long
-    ): List<SubscriptionResponse> {
+        startDate: String,
+        endDate: String
+    ): List<SubscriptionResume> {
         val response = restApiServices.findSubscriptionBySubscriptionDate(startDate, endDate)
         return when (response.code()) {
-            200 -> response.body()!!.ifEmpty { listOf() }
+            200 -> response.body()?.map { it.toDomain() } ?: emptyList()
             else -> throw Exception("Error")
         }
     }
@@ -506,8 +507,8 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun reactivateService(subscription: SubscriptionResponse, responsibleId: Int) {
-        val response = restApiServices.reactivateService(subscription.id, responsibleId)
+    override suspend fun reactivateService(subscriptionId: Int, responsibleId: Int) {
+        val response = restApiServices.reactivateService(subscriptionId, responsibleId)
         when (response.status) {
             HttpCodes.OK -> {}
             else -> throw Exception(response.error)
@@ -517,10 +518,10 @@ class Repository : IRepository, KoinComponent {
     override suspend fun findSubscriptionByNameAndLastName(
         name: String?,
         lastName: String?
-    ): List<SubscriptionResponse> {
+    ): List<SubscriptionResume> {
         val response = restApiServices.findSubscriptionByNameAndLastName(name, lastName)
         return when (response.code()) {
-            200 -> response.body()!!.ifEmpty { listOf() }
+            200 -> response.body()?.map { it.toDomain() } ?: emptyList()
             else -> throw Exception("Error")
         }
     }
@@ -534,8 +535,8 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
-    override suspend fun cancelSubscription(subscription: SubscriptionResponse) {
-        val response = restApiServices.cancelSubscription(subscription.id)
+    override suspend fun cancelSubscription(subscriptionId: Int) {
+        val response = restApiServices.cancelSubscription(subscriptionId)
         when (response.code()) {
             HttpCodes.OK -> {}
             else -> throw Exception("No se pudo cancelar el servicio, vuelva a intentarlos mas tarde")
@@ -639,6 +640,19 @@ class Repository : IRepository, KoinComponent {
             throw Exception(response.error)
         }
         return response.data!!
+    }
+
+    override suspend fun updateCustomerData(customer: CustomerData) {
+        val response = restApiServices.updateCustomerData(customer)
+        if (response.code() != HTTP_OK)
+            throw Exception("No se pudo actualizar los datos del cliente")
+    }
+
+    override suspend fun subscriptionById(subscriptionId: Int): SubscriptionResponse {
+        val response = restApiServices.subscriptionById(subscriptionId)
+        if (response.code() != HTTP_OK)
+            throw Exception("No se pudo obtener la suscripcion")
+        return response.body()!!
     }
 }
 

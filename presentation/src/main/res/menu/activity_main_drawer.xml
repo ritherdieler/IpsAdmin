@@ -34,6 +34,11 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/support_tickets"
             android:visible="false" />
+        <item
+            android:id="@+id/nav_find_payer"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/find_payer"
+            android:visible="false"/>
 
         <item
             android:id="@+id/nav_outlays"

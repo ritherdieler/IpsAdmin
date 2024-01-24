@@ -17,16 +17,21 @@ class SupportTicketViewModel(
 
     val categories = listOf(
         "Sin Conexión a Internet",
-        "Cambio de Contraseña",
+        "Internet Lento",
+        "Migración a fibra óptica",
         "Cambio de Domicilio",
+        "Cambio de Contraseña",
         "Ruptura de cable última milla",
         "Alineamiento de antena CPE",
-        "Migración a fibra óptica",
-        "Añadir Tv Cable",
-        "Internet Lento",
-        "Otros",
-        "Instalación de Internet",
         "Instalación de Tv Cable",
+        "Añadir Tv Cable a su plan de internet",
+        "No tiene señal de Tv Cable",
+        "Cambio de Onu",
+        "Cambio de Router",
+        "Instalación de repetidor",
+        "Evaluar Factibilidad de Servicio",
+        "Instalación de Internet",
+        "Otros",
     )
 
     fun getTicket(ticketId: String) = executeWithProgress {

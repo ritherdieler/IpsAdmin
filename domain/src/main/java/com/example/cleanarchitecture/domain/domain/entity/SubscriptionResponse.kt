@@ -1,8 +1,6 @@
 package com.example.cleanarchitecture.domain.domain.entity
 
 import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
-import java.text.SimpleDateFormat
-import java.util.*
 
 data class SubscriptionResponse(
     var id: Int,
@@ -32,14 +30,44 @@ data class SubscriptionResponse(
     var reactivationDate: Long? = null,
     var cpeDeviceId: Int? = null,
     var note: String? = null,
-    var installationType:InstallationType
-    ) : java.io.Serializable {
+    var installationType: InstallationType,
+    val email: String?,
+    val pendingInvoiceQuantity: Int,
+    val antiquityInMonths: Int,
+    val qualification: Any,
+    val ics: Int,
+    val totalDebt: Double,
+    val lastPaymentDate: String?
+) : java.io.Serializable {
     fun getFullName() = "$firstName $lastName"
 
     fun migrationAsString() = if (isMigration) "Si" else "No"
 
     fun dateAsString() = subscriptionDate?.toFormattedDateString()
+    fun toDomain() = SubscriptionResume(
+        id = id,
+        planName = plan?.name ?: "",
+        customerName = getFullName(),
+        antiquity = antiquityInMonths.toString(),
+        qualification = qualification.toString(),
+        placeName = place?.name ?: "",
+        ics = ics.toString(),
+        lastPaymentDate = lastPaymentDate,
+        pendingInvoicesQuantity = pendingInvoiceQuantity,
+        totalDebt = totalDebt,
+        ipAddress = ip ?: "",
+        customer = CustomerData(
+            subscriptionId = id,
+            name = firstName ?: "",
+            lastName = lastName ?: "",
+            dni = dni ?: "",
+            place = place?.name ?: "",
+            address = address ?: "",
+            phone = phone ?: "",
+            email = email ?: "",
+        )
 
+    )
 }
 
 
