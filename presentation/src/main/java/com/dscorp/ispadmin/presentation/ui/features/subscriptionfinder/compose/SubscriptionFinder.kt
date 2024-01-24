@@ -81,35 +81,36 @@ fun SubscriptionFinderContent(
     onMenuItemSelected: (menuItem: SubscriptionMenu, subscriptionId: Int) -> Unit
 ) {
     var filtersVisible by remember { mutableStateOf(true) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = animatedScrollingUp)
-    ) {
-        AnimatedVisibility(visible = filtersVisible) {
-            SubscriptionFinderFilters(
-                onSearch = { onSearch(it) },
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = if (filtersVisible) 0.dp else -animatedScrollingUp)
-            )
-        }
-        SubscriptionList(
-            subscriptions = subscriptions,
-            scrollState = scrollState,
-            onMenuItemSelected = onMenuItemSelected,
+Column(
+    modifier = Modifier
+        .fillMaxSize()
+        .padding(top = animatedScrollingUp)
+) {
+    AnimatedVisibility(visible = filtersVisible) {
+        SubscriptionFinderFilters(
+            onSearch = { onSearch(it) },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .offset(y = if (filtersVisible) 0.dp else -animatedScrollingUp)
         )
     }
+    SubscriptionList(
+        subscriptions = subscriptions,
+        scrollState = scrollState,
+        onMenuItemSelected = onMenuItemSelected,
+    )
+}
 
-    LaunchedEffect(key1 = scrollState) {
-        snapshotFlow { scrollState.firstVisibleItemScrollOffset }.collect { offset ->
-            val newFiltersVisible = offset == 0
-            if (newFiltersVisible != filtersVisible) {
-                filtersVisible = newFiltersVisible
-            }
+  LaunchedEffect(key1 = scrollState) {
+    var lastScrollOffset = scrollState.firstVisibleItemScrollOffset
+    snapshotFlow { scrollState.firstVisibleItemScrollOffset }.collect { offset ->
+        val newFiltersVisible = offset <= lastScrollOffset
+        if (newFiltersVisible != filtersVisible) {
+            filtersVisible = newFiltersVisible
         }
+        lastScrollOffset = offset
     }
+}
 }
 
 

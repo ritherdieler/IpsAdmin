@@ -19,7 +19,9 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
     val discountAmountField = ReactiveFormField<String?>(
         hintResourceId = R.string.discount,
         errorResourceId = R.string.invalid_discount_amount,
-        validator = { it?.isValidDouble() ?: true && it!!.toDouble() <= payment!!.amountToPay  }
+        validator = {
+            it?.isValidDouble() ?: true && (it?.toDouble() ?: 0.0) <= (payment?.amountToPay ?: 0.0)
+        }
     )
 
     val discountReasonField = ReactiveFormField<String?>(
@@ -42,9 +44,7 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
 
         }
 
-
     var registerButtonProgress = MutableLiveData(false)
-
 
     val paymentMethodField = ReactiveFormField<String?>(
         hintResourceId = R.string.payment_method,
@@ -65,7 +65,8 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
         payment?.let {
             val registerPayment = Payment(
                 id = payment!!.id,
-                discountAmount = discountAmountField.getValue()?.toDouble(),
+                discountAmount = try {discountAmountField.getValue()?.toDouble()}
+                catch (e: Exception) { 0.0},
                 discountReason = discountReasonField.getValue(),
                 method = paymentMethodField.getValue()!!,
                 responsibleId = user?.id!!,
