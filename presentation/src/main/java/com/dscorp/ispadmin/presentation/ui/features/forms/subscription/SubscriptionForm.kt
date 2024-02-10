@@ -118,7 +118,10 @@ abstract class SubscriptionForm {
     val onuField = ReactiveFormField<Onu?>(
         hintResourceId = R.string.select_onu,
         errorResourceId = R.string.mustSelectOnu,
-        validator = { it != null }
+        validator = {
+            if(planField.getValue()?.name?.contains("cable") == true ) true
+            else (it != null)
+        }
     )
 
     val additionalDevicesField = ReactiveFormField<NetworkDevice?>(

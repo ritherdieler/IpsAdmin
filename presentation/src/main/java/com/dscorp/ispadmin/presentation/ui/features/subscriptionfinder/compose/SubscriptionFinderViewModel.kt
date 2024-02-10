@@ -11,6 +11,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.time.delay
 
@@ -21,7 +22,8 @@ class SubscriptionFinderViewModel(
 ) : ViewModel() {
 
 
-    val subscriptionsFlow = MutableStateFlow<List<SubscriptionResume>>(emptyList())
+     val subscriptionsFlow = MutableStateFlow<List<SubscriptionResume>>(emptyList())
+
 
     val documentNumberFlow = MutableSharedFlow<SubscriptionFilter>(extraBufferCapacity = 1)
 

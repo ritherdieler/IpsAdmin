@@ -94,7 +94,7 @@ Column(
                 .offset(y = if (filtersVisible) 0.dp else -animatedScrollingUp)
         )
     }
-    SubscriptionList(
+        SubscriptionList(
         subscriptions = subscriptions,
         scrollState = scrollState,
         onMenuItemSelected = onMenuItemSelected,

@@ -17,7 +17,7 @@ class TakenTicketsFragment : BaseFragment<SupportTicketState, FragmentListTicket
         SupportTicketAdapter(onTicketButtonClicked = {
             viewModel.takeTicket(it.id)
         }, onCloseTicketButtonClicked = {
-            viewModel.closeTicket(it.id)
+            viewModel.closeTicket(it)
         })
     }
 

@@ -84,6 +84,7 @@ class SupportTicketAdapter(
             return when (status) {
                 AssistanceTicketStatus.PENDING -> View.VISIBLE
                 AssistanceTicketStatus.ASSIGNED, AssistanceTicketStatus.IN_PROGRESS, AssistanceTicketStatus.RESOLVED, AssistanceTicketStatus.CLOSED -> View.GONE
+                AssistanceTicketStatus.CANCELLED -> View.GONE
             }
         }
     }

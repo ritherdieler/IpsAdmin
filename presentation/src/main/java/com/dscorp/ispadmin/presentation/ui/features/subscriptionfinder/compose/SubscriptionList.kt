@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -61,6 +62,7 @@ import com.example.cleanarchitecture.domain.domain.entity.createReminderMessage
 import org.koin.androidx.compose.koinViewModel
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SubscriptionList(
     subscriptions: List<SubscriptionResume>,
@@ -68,6 +70,17 @@ fun SubscriptionList(
     onMenuItemSelected: (menuItem: SubscriptionMenu, subscriptionId: Int) -> Unit = { _, _ -> }
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth(), state = scrollState) {
+
+        stickyHeader {
+            Text(
+                text = "Your Header",
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier
+                    .background(MaterialTheme.colors.surface)
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+        }
 
         items(items = subscriptions, key = {it.id}){ subscription->
             SubscriptionCard(

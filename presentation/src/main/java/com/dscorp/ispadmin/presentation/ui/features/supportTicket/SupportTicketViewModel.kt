@@ -44,8 +44,13 @@ class SupportTicketViewModel(
         uiState.postValue(BaseUiState(SupportTicketState.UpdatedTicket(response)))
     }
 
-    fun closeTicket(id: Int) = executeWithProgress {
-        val response = repository.updateTicketState(id, AssistanceTicketStatus.CLOSED, user.id!!)
+    fun closeTicket(ticket: AssistanceTicketResponse) = executeWithProgress {
+
+        val newTicketStatus =
+            if (ticket.status == AssistanceTicketStatus.PENDING) AssistanceTicketStatus.CANCELLED
+            else AssistanceTicketStatus.CLOSED
+        val response = repository.updateTicketState(ticket.id, newTicketStatus, user.id!!)
+
         uiState.postValue(BaseUiState(SupportTicketState.UpdatedTicket(response)))
     }
 

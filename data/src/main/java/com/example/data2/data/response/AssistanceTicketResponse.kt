@@ -36,6 +36,7 @@ data class AssistanceTicketResponse(
             AssistanceTicketStatus.IN_PROGRESS -> "En progreso"
             AssistanceTicketStatus.RESOLVED -> "Resuelto"
             AssistanceTicketStatus.CLOSED -> "Cerrado"
+            AssistanceTicketStatus.CANCELLED -> "Cancelado"
         }
     }
 }
@@ -45,5 +46,6 @@ enum class AssistanceTicketStatus {
     ASSIGNED,
     IN_PROGRESS,
     RESOLVED,
-    CLOSED
+    CLOSED,
+    CANCELLED
 }
