@@ -41,11 +41,12 @@ import java.util.TimeZone
 
 @Composable
 fun SubscriptionFinderFilters(
-    modifier :Modifier = Modifier,
+    modifier: Modifier = Modifier,
     onSearch: (SubscriptionFilter) -> Unit = {}
 ) {
     var selectedOption by remember { mutableStateOf(filters[0]) }
     val horizontalScrollState = rememberScrollState()
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -66,7 +67,7 @@ fun SubscriptionFinderFilters(
                     RadioButton(
                         selected = (it == selectedOption),
                         onClick = { selectedOption = it },
-                        colors =RadioButtonDefaults.colors(
+                        colors = RadioButtonDefaults.colors(
                             selectedColor = Color(0xFFFF9100)
                         )
                     )
@@ -77,13 +78,11 @@ fun SubscriptionFinderFilters(
 
         Crossfade(targetState = selectedOption, label = "") { filter ->
             when (filter) {
-                is SubscriptionFilter.BY_NAME -> NameAndLastNameFilterForm(onSearch = {
-                    onSearch(it)
-                })
-
+                is SubscriptionFilter.BY_NAME -> NameAndLastNameFilterForm(onSearch = { onSearch(it) })
                 is SubscriptionFilter.BY_DOCUMENT -> DocumentFilterForm(onSearch = { onSearch(it) })
                 is SubscriptionFilter.BY_DATE -> DateFilterForm(onSearch = { onSearch(it) })
             }
+
         }
     }
 }
