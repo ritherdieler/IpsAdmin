@@ -22,8 +22,10 @@ class SubscriptionFinderViewModel(
 ) : ViewModel() {
 
 
-     val subscriptionsFlow = MutableStateFlow<List<SubscriptionResume>>(emptyList())
+    private val subscriptionsFlow = MutableStateFlow<List<SubscriptionResume>>(emptyList())
 
+    val subscriptionFlowGrouped = subscriptionsFlow.map { list ->
+        list.groupBy { it.serviceStatus }}
 
     val documentNumberFlow = MutableSharedFlow<SubscriptionFilter>(extraBufferCapacity = 1)
 

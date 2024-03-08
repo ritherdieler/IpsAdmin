@@ -1,7 +1,15 @@
 package com.example.cleanarchitecture.domain.domain.entity
+
 enum class ServiceStatus {
     ACTIVE,
     CUT_OFF,
     SUSPENDED,
-    CANCELLED
+    CANCELLED;
+
+    fun getFormattedStatus(): String {
+        return when (this) {
+            CANCELLED -> "Cancelado"
+            else -> "Activo"
+        }
+    }
 }

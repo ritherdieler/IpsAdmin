@@ -30,7 +30,7 @@ fun SubscriptionFinderScreen(
     viewModel: SubscriptionFinderViewModel = koinViewModel(),
     ) {
 
-    val subscriptionsFlow by viewModel.subscriptionsFlow.collectAsState()
+    val subscriptionsFlow by viewModel.subscriptionFlowGrouped.collectAsState(emptyMap())
     val coroutinesScope = rememberCoroutineScope()
     var showCancelSubscriptionConfirmDialog by remember { mutableStateOf(false) }
     val cancelSubscriptionUiState by viewModel.cancelSubscriptionFlow.collectAsState()

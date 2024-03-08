@@ -12,7 +12,8 @@ data class SubscriptionResume(
     val pendingInvoicesQuantity: Int,
     val totalDebt: Double,
     val ipAddress: String,
-    val customer: CustomerData
+    val customer: CustomerData,
+    val serviceStatus: ServiceStatus
 )
 fun SubscriptionResume.createReminderMessage(): String {
         val message = """

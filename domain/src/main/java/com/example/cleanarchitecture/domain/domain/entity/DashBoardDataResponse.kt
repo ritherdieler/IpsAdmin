@@ -9,8 +9,8 @@ class DashBoardDataResponse(
     var totalDiscount: Double = 0.0,
     var totalToCollect: Double = 0.0,
     val installationResume: InstallationResume,
-    val canceledSubscriptions: Int,
     val paymentResume: Map<String, Double>,
+    val subscriptionsResume : SubscriptionsResumeStatics,
     val subscriptionsHistoryStatics: List<MonthlySubscriptionResume>,
     val monthlyCollects: List<MonthlyCollectsResume>,
     val grossRevenueHistoryStatics: List<MonthlyGrossRevenueResume>
@@ -23,7 +23,7 @@ class DashBoardDataResponse(
     fun totalDiscountAsString() = totalDiscount.toCurrencyString()
 
     fun totalToCollectAsString() = totalToCollect.toCurrencyString()
-    fun canceledSubscriptionsAsString() = "$canceledSubscriptions"
+    fun canceledSubscriptionsAsString() = "${subscriptionsResume.canceledSubscriptions}"
 
     fun Double.toCurrencyString(): String {
         val numberFormat = NumberFormat.getNumberInstance(Locale("es", "PE"))

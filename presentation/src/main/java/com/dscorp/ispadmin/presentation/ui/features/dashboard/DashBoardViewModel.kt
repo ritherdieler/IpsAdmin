@@ -22,7 +22,6 @@ class DashBoardViewModel : BaseViewModel<DashBoardDataUiState>(), KoinComponent 
         showDashBoardShimmerLiveData.value = false
     }) {
         val response = repository.getDashBoardData()
-        delay(500)
         uiState.value = BaseUiState(DashBoardDataUiState.DashBoardData(response))
     }
 

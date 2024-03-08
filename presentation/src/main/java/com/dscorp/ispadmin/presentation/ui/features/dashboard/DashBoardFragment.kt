@@ -43,6 +43,10 @@ class DashBoardFragment : BaseFragment<DashBoardDataUiState, FragmentDashBoardBi
         lifecycleScope.launch {
             binding.dashboardDataResponse = state.response
 
+            binding.fiberTvCableNewSubscriptions.text = state.response.subscriptionsResume.cableTvInstallations.toString()
+            binding.fiberNewSubscriptions.text = state.response.subscriptionsResume.fiberInternetInstallations.toString()
+            binding.wirelessNewSubscriptions.text = state.response.subscriptionsResume.wirelessInternetInstallations.toString()
+            binding.cancelled.text = state.response.subscriptionsResume.canceledSubscriptions.toString()
             //si no se hace esto no se muestra el grafico de barras
             binding.paymentMethodsBarChart.visibility = View.GONE
             binding.paymentMethodsBarChart.visibility = View.VISIBLE

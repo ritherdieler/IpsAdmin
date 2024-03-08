@@ -57,6 +57,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.CustomOutlinedTextField
+import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
 import com.example.cleanarchitecture.domain.domain.entity.createReminderMessage
 import org.koin.androidx.compose.koinViewModel
@@ -65,34 +66,36 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SubscriptionList(
-    subscriptions: List<SubscriptionResume>,
+    subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
     scrollState: LazyListState,
     onMenuItemSelected: (menuItem: SubscriptionMenu, subscriptionId: Int) -> Unit = { _, _ -> }
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth(), state = scrollState) {
-
-        stickyHeader {
-            Text(
-                text = "Your Header",
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier
-                    .background(MaterialTheme.colors.surface)
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            )
+        subscriptions.forEach { (status, subscriptionList) ->
+            stickyHeader {
+                Text(
+                    text = status.getFormattedStatus(),
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .background(MaterialTheme.colors.surface)
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                )
+            }
+            items(items = subscriptionList, key = { it.id }) { subscription ->
+                SubscriptionCard(
+                    backgroundColor =  if(status == ServiceStatus.ACTIVE) Color(0xFF140B4C )
+                    else Color(0x80140B4C),
+                    subscriptionResume = subscription,
+                    onMenuItemSelected = { onMenuItemSelected(it, subscription.id) })
+            }
         }
-
-        items(items = subscriptions, key = {it.id}){ subscription->
-            SubscriptionCard(
-                subscriptionResume = subscription,
-                onMenuItemSelected = { onMenuItemSelected(it, subscription.id) })
-        }
-
     }
 }
 
 @Composable
 fun SubscriptionCard(
+    backgroundColor: Color = Color(0xFF140B4C),
     subscriptionResume: SubscriptionResume,
     onMenuItemSelected: (SubscriptionMenu) -> Unit = {}
 ) {
@@ -103,7 +106,7 @@ fun SubscriptionCard(
             .fillMaxWidth()
             .padding(16.dp),
         shape = RoundedCornerShape(15.dp),
-        backgroundColor = Color(0xFF140B4C)
+        backgroundColor = backgroundColor
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             CardHeader(

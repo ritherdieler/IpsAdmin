@@ -173,12 +173,11 @@
 
                     <TextView
                         style="@style/dashboard_row_category"
-                        android:text="@string/Fiber" />
+                        android:text="@string/cableTv" />
 
                     <TextView
-                        android:id="@+id/fiber_new_subscriptions"
+                        android:id="@+id/fiber_tv_cable_new_subscriptions"
                         style="@style/dashboard_row_value"
-                        android:text="@{dashboardDataResponse.installationResume.fiberResume}"
                         tools:text="1" />
 
                 </TableRow>
@@ -187,17 +186,29 @@
 
                     <TextView
                         style="@style/dashboard_row_category"
+                        android:text="@string/Fiber" />
+
+                    <TextView
+                        android:id="@+id/fiber_new_subscriptions"
+                        style="@style/dashboard_row_value"
+                        tools:text="1" />
+
+                </TableRow>
+
+                <TableRow style="@style/dashboard_row_light">
+
+                    <TextView
+                        style="@style/dashboard_row_category"
                         android:text="@string/wireless" />
 
                     <TextView
                         android:id="@+id/wireless_new_subscriptions"
                         style="@style/dashboard_row_value"
-                        android:text="@{dashboardDataResponse.installationResume.wirelessResume}"
                         tools:text="2" />
 
                 </TableRow>
 
-                <TableRow style="@style/dashboard_row_light">
+                <TableRow style="@style/dashboard_row_dark">
 
                     <TextView
                         style="@style/dashboard_row_category"
@@ -206,7 +217,6 @@
                     <TextView
                         android:id="@+id/cancelled"
                         style="@style/dashboard_row_value"
-                        android:text="@{dashboardDataResponse.canceledSubscriptionsAsString()}"
                         tools:text="0" />
 
                 </TableRow>

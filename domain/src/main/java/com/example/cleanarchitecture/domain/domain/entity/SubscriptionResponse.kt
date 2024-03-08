@@ -56,6 +56,7 @@ data class SubscriptionResponse(
         pendingInvoicesQuantity = pendingInvoiceQuantity,
         totalDebt = totalDebt,
         ipAddress = ip ?: "",
+        serviceStatus = serviceStatus,
         customer = CustomerData(
             subscriptionId = id,
             name = firstName ?: "",
