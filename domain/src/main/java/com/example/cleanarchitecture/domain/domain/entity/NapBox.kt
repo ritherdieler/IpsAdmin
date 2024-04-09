@@ -7,7 +7,8 @@ data class NapBox(
     var latitude: Double? = null,
     var longitude: Double? = null,
     var threads: Int? = null,
-    var mufaId: Int? = null
+    var mufaId: Int? = null,
+    var ports_number: Int? = null,
 
 ) : java.io.Serializable {
     override fun toString(): String {

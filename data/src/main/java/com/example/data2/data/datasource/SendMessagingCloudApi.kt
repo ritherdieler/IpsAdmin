@@ -1,4 +1,4 @@
-package com.example.data2.data.api
+package com.example.data2.data.datasource
 
 import com.example.cleanarchitecture.domain.domain.entity.FirebaseBody
 import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse

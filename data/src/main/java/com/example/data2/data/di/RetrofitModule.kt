@@ -7,15 +7,18 @@ import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 const val BASE_URL = "BASE_URL"
+const val STORAGE_BASE_URL = "STORAGE_BASE_URL"
 
 val retrofitModule = module {
     single { provideRetrofit(getProperty(BASE_URL), provideHttpClient(get())) }
+    single(named("storageRetrofit")) { provideRetrofit(getProperty(STORAGE_BASE_URL), provideHttpClient(get())) }
     single { provideHttpClient(get()) }
 }
 
@@ -28,6 +31,17 @@ fun provideRetrofit(url: String, okHttpClient: OkHttpClient): Retrofit {
         .client(okHttpClient)
         .build()
 }
+
+fun provideStorageRetrofit(url: String, okHttpClient: OkHttpClient): Retrofit {
+    val gson = GsonBuilder().create()
+
+    return Retrofit.Builder()
+        .baseUrl(url)
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .client(okHttpClient)
+        .build()
+}
+
 
 fun provideHttpClient(context:Context): OkHttpClient {
     val httpClient = OkHttpClient.Builder()

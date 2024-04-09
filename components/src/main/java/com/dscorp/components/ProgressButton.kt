@@ -1,6 +1,7 @@
 package com.dscorp.components
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
@@ -17,7 +18,7 @@ class ProgressButton @JvmOverloads constructor(
     context: Context, private val attrs: AttributeSet? = null
 ) : ConstraintLayout(context, attrs) {
 
-    private val binding: FragmentProgressButtonBinding = FragmentProgressButtonBinding.inflate(
+     val binding: FragmentProgressButtonBinding = FragmentProgressButtonBinding.inflate(
         LayoutInflater.from(context), this, true
     )
 
@@ -27,7 +28,7 @@ class ProgressButton @JvmOverloads constructor(
             field = value
 
             binding.button.setOnClickListener {
-
+                if (isLoading) return@setOnClickListener
                 if (firstClick) {
                     field.invoke()
                 } else
@@ -70,6 +71,11 @@ class ProgressButton @JvmOverloads constructor(
 @BindingAdapter("app:clickListener")
 fun onClickListener(button: ProgressButton, listener: () -> Unit) {
     button.clickListener = listener
+}
+
+@BindingAdapter("app:backGroundTint")
+fun backGroundTint(button: ProgressButton, color: Int) {
+    button.binding.button.setBackgroundColor(color)
 }
 
 @BindingAdapter("app:isLoading")

@@ -1,12 +1,11 @@
 package com.dscorp.ispadmin.presentation.ui.features.composecomponents
 
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +33,10 @@ fun CustomOutlinedTextField(
         maxLines = 1,
         value = text,
         keyboardOptions = keyboardOptions,
-        colors = TextFieldDefaults.outlinedTextFieldColors(backgroundColor = Color.White),
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = Color.White,
+            focusedContainerColor = Color.White
+        ),
         onValueChange = {
             if (it.length >= maxLength) return@OutlinedTextField
             text = it

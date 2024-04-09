@@ -1,8 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.main
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -19,9 +17,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityMainBinding
 import com.dscorp.ispadmin.presentation.fcm.FcmTopics
-import com.dscorp.ispadmin.presentation.util.FCM_ALL_THEME
-import com.dscorp.ispadmin.presentation.util.FCM_CUSTOMER_THEME
-import com.dscorp.ispadmin.presentation.util.FCM_TECHNICIAN_THEME
 import com.example.cleanarchitecture.domain.domain.entity.User
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -78,7 +73,8 @@ class MainActivity : AppCompatActivity() {
         val navInflater = navHostFragment.navController.navInflater
         val graph = navInflater.inflate(R.navigation.mobile_navigation)
         navHostFragment.navController.graph = graph
-
+        FirebaseMessaging.getInstance()
+            .subscribeToTopic(FcmTopics.FCM_ALL_TOPIC)
         val user = viewModel.user
         user?.let {
             firebaseAnalytics.setUserId(it.id.toString())
@@ -89,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                     navView.menu.findItem(R.id.nav_see_plan_list).isVisible = false
                     navView.menu.findItem(R.id.nav_reports).isVisible = false
                     FirebaseMessaging.getInstance()
-                        .subscribeToTopic(FCM_TECHNICIAN_THEME)
+                        .subscribeToTopic(FcmTopics.FCM_TECHNICIAN_TOPIC)
 
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(navController.graph.startDestinationId, true)
@@ -120,23 +116,20 @@ class MainActivity : AppCompatActivity() {
                     )
                     navHostFragment.navController.navigate(R.id.nav_find_subscriptions)
                     FirebaseMessaging.getInstance()
-                        .subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
-                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
-
-                }
-
-                User.UserType.CLIENT -> {
-//                    FirebaseMessaging.getInstance().subscribeToTopic(FCM_CUSTOMER_THEME)
-                }
-
-                User.UserType.ADMIN -> {
-//                    FirebaseMessaging.getInstance().subscribeToTopic(FCM_ALL_THEME)
-                    navHostFragment.navController.navigate(R.id.nav_dashboard)
+                        .subscribeToTopic(FcmTopics.FCM_SECRETARY_TOPIC)
                     FirebaseMessaging.getInstance()
                         .subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
                     FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
-                    navView.menu.findItem(R.id.nav_outlays).isVisible = true
 
+                }
+
+                User.UserType.ADMIN -> {
+                    FirebaseMessaging.getInstance()
+                        .subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
+                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
+
+                    navHostFragment.navController.navigate(R.id.nav_dashboard)
+                    navView.menu.findItem(R.id.nav_outlays).isVisible = true
                 }
 
                 else -> {
@@ -156,6 +149,10 @@ class MainActivity : AppCompatActivity() {
             User.UserType.ADMIN,
             User.UserType.SECRETARY -> {
                 navView.menu.findItem(R.id.nav_create_support_ticket).isVisible = true
+                navView.menu.findItem(R.id.nav_support_assistance_tickets).isVisible = true
+            }
+
+            User.UserType.TECHNICIAN -> {
                 navView.menu.findItem(R.id.nav_support_assistance_tickets).isVisible = true
             }
 

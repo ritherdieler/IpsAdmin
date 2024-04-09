@@ -1,12 +1,5 @@
 package com.example.cleanarchitecture.domain.domain.entity
 
-/**
- * Created by Sergio Carrillo Diestra on 19/11/2022.
- * scarrillo.peruapps@gmail.com
- * Peru Apps
- * Huacho, Peru.
- *
- **/
 data class User(
     val id: Int? = null,
     val name: String,

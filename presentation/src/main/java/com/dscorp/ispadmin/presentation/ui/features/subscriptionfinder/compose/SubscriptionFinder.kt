@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,7 +25,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.cleanarchitecture.domain.domain.entity.CustomerData
+import com.example.cleanarchitecture.domain.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
 
 val filters = listOf(
@@ -38,7 +41,7 @@ val filters = listOf(
 fun SubscriptionFinderScreen(
     subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
     onSearch: (SubscriptionFilter) -> Unit = {},
-    onMenuItemSelected: (menuItem: SubscriptionMenu, subscriptionId: Int) -> Unit = { _, _ -> }
+    onMenuItemSelected: (menuItem: SubscriptionMenu, subscription: SubscriptionResume) -> Unit = { _, _ -> }
 ) {
     var lastScrollOffset by remember { mutableStateOf(1) }
     var scrollingUp by remember { mutableStateOf(0) }
@@ -72,7 +75,7 @@ fun SubscriptionFinderContent(
     onSearch: (SubscriptionFilter) -> Unit,
     subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
     scrollState: LazyListState,
-    onMenuItemSelected: (menuItem: SubscriptionMenu, subscriptionId: Int) -> Unit
+    onMenuItemSelected: (menuItem: SubscriptionMenu, subscription: SubscriptionResume) -> Unit
 ) {
     var filtersVisible by remember { mutableStateOf(true) }
 Column(
@@ -94,6 +97,8 @@ Column(
         onMenuItemSelected = onMenuItemSelected,
     )
 }
+
+
 
   LaunchedEffect(key1 = scrollState) {
     var lastScrollOffset = scrollState.firstVisibleItemScrollOffset
@@ -146,6 +151,8 @@ fun generateMockSubscriptions(): List<SubscriptionResume> {
                 subscriptionId = i
             ),
             serviceStatus = ServiceStatus.ACTIVE
+        , installationType = InstallationType.FIBER,
+            napBox = NapBox("NapBox $i", "Calle $i")
         )
         mockList.add(subscriptionResume)
     }

@@ -121,7 +121,7 @@ fun MyConfirmDialog(
 
 @Preview(showSystemUi = true)
 @Composable
-fun MyCustomDialogPreview() {
+fun MyConfirmCustomDialogPreview() {
 
     var showDialog by remember { mutableStateOf(true) }
 

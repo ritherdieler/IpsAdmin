@@ -4,16 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.example.cleanarchitecture.domain.domain.entity.CustomerData
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
+import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.time.delay
 
 const val REQUEST_DELAY = 500L
 
@@ -21,22 +23,28 @@ class SubscriptionFinderViewModel(
     private val repository: IRepository
 ) : ViewModel() {
 
-
     private val subscriptionsFlow = MutableStateFlow<List<SubscriptionResume>>(emptyList())
-
-    val subscriptionFlowGrouped = subscriptionsFlow.map { list ->
-        list.groupBy { it.serviceStatus }}
+    val subscriptionFlowGrouped: Flow<Map<ServiceStatus, List<SubscriptionResume>>> =
+        subscriptionsFlow.map { list ->
+            list.map {
+                if (it.serviceStatus != ServiceStatus.CANCELLED) it.copy(serviceStatus = ServiceStatus.ACTIVE)
+                else it.copy(serviceStatus = ServiceStatus.CANCELLED)
+            }.groupBy { it.serviceStatus }
+        }
 
     val documentNumberFlow = MutableSharedFlow<SubscriptionFilter>(extraBufferCapacity = 1)
-
     val updateCustomerDataFlow =
         MutableStateFlow<SaveSubscriptionState>(SaveSubscriptionState.Success)
-
     val cancelSubscriptionFlow =
         MutableStateFlow<CancelSubscriptionState>(CancelSubscriptionState.Empty)
 
+    val napBoxDialogDataFlow = MutableStateFlow<NapBoxesState>(NapBoxesState.Loading)
+
     init {
         findSubscription()
+    }
+    fun resetNapBoxFlow() {
+        napBoxDialogDataFlow.value = NapBoxesState.Loading
     }
 
     @OptIn(FlowPreview::class)
@@ -109,7 +117,31 @@ class SubscriptionFinderViewModel(
         cancelSubscriptionFlow.value = CancelSubscriptionState.Empty
     }
 
+    fun getNapBoxes() = viewModelScope.launch {
+        try {
+            napBoxDialogDataFlow.value = NapBoxesState.Loading
+            val response = repository.getNapBoxes()
+            napBoxDialogDataFlow.value = NapBoxesState.NapBoxListLoaded(response)
+
+        } catch (e: Exception) {
+            napBoxDialogDataFlow.value = NapBoxesState.Error
+            e.printStackTrace()
+        }
+    }
+
+    fun changeNapBox(request: MoveOnuRequest) = viewModelScope.launch {
+        try {
+            napBoxDialogDataFlow.value = NapBoxesState.Loading
+            repository.changeSubscriptionNapBox(request)
+            napBoxDialogDataFlow.value = NapBoxesState.NapBoxChanged
+        } catch (e: Exception) {
+            napBoxDialogDataFlow.value = NapBoxesState.Error
+            e.printStackTrace()
+        }
+    }
+
 }
+
 
 sealed class SaveSubscriptionState {
     object Loading : SaveSubscriptionState()
@@ -122,5 +154,12 @@ sealed class CancelSubscriptionState {
     object Loading : CancelSubscriptionState()
     object Success : CancelSubscriptionState()
     object Error : CancelSubscriptionState()
+}
+
+sealed class NapBoxesState {
+    object Loading : NapBoxesState()
+    data class NapBoxListLoaded(val items: List<NapBoxResponse>) : NapBoxesState()
+    object NapBoxChanged : NapBoxesState()
+    object Error : NapBoxesState()
 }
 

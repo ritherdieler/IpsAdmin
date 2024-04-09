@@ -1,16 +1,26 @@
 package com.dscorp.ispadmin.presentation.ui.features.supportTicket
 
+import android.content.Context
+import android.net.Uri
+import android.util.Base64
+import androidx.core.net.toUri
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
+import com.dscorp.ispadmin.presentation.util.compressImage
+import com.dscorp.ispadmin.presentation.util.rotateImageIfNeeded
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionFastSearchResponse
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.repository.IRepository
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 
 class SupportTicketViewModel(
     private val repository: IRepository,
+    private val context: Context
 ) : BaseViewModel<SupportTicketState>() {
 
     val user = repository.getUserSession()!!
@@ -39,17 +49,52 @@ class SupportTicketViewModel(
         uiState.postValue(BaseUiState(SupportTicketState.Success(response)))
     }
 
-    fun takeTicket(id: Int) = executeWithProgress {
-        val response = repository.updateTicketState(id, AssistanceTicketStatus.ASSIGNED, user.id!!)
+    suspend fun takeTicket(id: Int) {
+        val response =
+            repository.assignSupportTicketToUser(id, AssistanceTicketStatus.ASSIGNED, user.id!!)
         uiState.postValue(BaseUiState(SupportTicketState.UpdatedTicket(response)))
     }
 
-    fun closeTicket(ticket: AssistanceTicketResponse) = executeWithProgress {
+    fun getFileFromUri(context: Context, fileUri: Uri): File? {
+        var inputStream: InputStream? = null
+        var outputStream: FileOutputStream? = null
+        val tempFile: File
+        try {
+            tempFile = File.createTempFile("tempFile", null, context.cacheDir)
+            inputStream = context.contentResolver.openInputStream(fileUri)
+            outputStream = FileOutputStream(tempFile)
+            inputStream?.copyTo(outputStream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        } finally {
+            inputStream?.close()
+            outputStream?.close()
+        }
+        return tempFile
+    }
 
-        val newTicketStatus =
-            if (ticket.status == AssistanceTicketStatus.PENDING) AssistanceTicketStatus.CANCELLED
-            else AssistanceTicketStatus.CLOSED
-        val response = repository.updateTicketState(ticket.id, newTicketStatus, user.id!!)
+suspend fun closeTicket(ticket: AssistanceTicketResponse, installationSheetUri: Uri) {
+    val file = getFileFromUri(context, installationSheetUri)
+    file?.let {
+        rotateImageIfNeeded(context, it, installationSheetUri)?.compressImage(50)?.apply {
+                val response = repository.closeTicket(
+                    id = ticket.id,
+                    newStatus = AssistanceTicketStatus.CLOSED,
+                    userId = user.id!!,
+                    imageBase64 = this
+                )
+                uiState.postValue(BaseUiState(SupportTicketState.UpdatedTicket(response)))
+        }
+    }
+}
+   suspend fun closeUnattendedTicket(ticket: AssistanceTicketResponse) {
+
+        val response = repository.closeUnattendedTicket(
+            id = ticket.id,
+            newStatus = AssistanceTicketStatus.CANCELLED,
+            userId = user.id!!,
+        )
 
         uiState.postValue(BaseUiState(SupportTicketState.UpdatedTicket(response)))
     }
@@ -85,6 +130,11 @@ class SupportTicketViewModel(
 
 }
 
+private fun File.toBase64(context: Context): String {
+    val inputStream = context.contentResolver.openInputStream(this.toUri())
+    val bytes = inputStream?.readBytes()
+    return Base64.encodeToString(bytes, Base64.DEFAULT)
+}
 
 sealed class SupportTicketState {
     object Empty : SupportTicketState()

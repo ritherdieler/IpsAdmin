@@ -8,22 +8,25 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.presentation.ui.features.login.LoginActivity
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.TICKET_ID
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.TicketActivity
+import com.example.data2.data.repository.IRepository
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
+import org.koin.android.ext.android.inject
 
 private const val TAG = "FcmService"
 
-class FcmService : FirebaseMessagingService() {
+class CloudMessagingService : FirebaseMessagingService() {
+    private val repository: IRepository by inject()
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -33,9 +36,7 @@ class FcmService : FirebaseMessagingService() {
         val fcmMessage = getFcmMessage(remoteMessage)
 
         if (fcmMessage != null) {
-
             when (fcmMessage.type) {
-
                 FcmMessageType.ASSISTANCE_TICKET -> {
                     val intent = Intent(this, TicketActivity::class.java).apply {
                         putExtra(TICKET_ID, fcmMessage.id)
@@ -45,7 +46,6 @@ class FcmService : FirebaseMessagingService() {
                         this, 0, intent,
                         PendingIntent.FLAG_IMMUTABLE
                     )
-
                     createNotification(fcmMessage.title, fcmMessage.message, pendingIntent)
                 }
 
@@ -59,12 +59,29 @@ class FcmService : FirebaseMessagingService() {
                 FcmMessageType.PAYMENT_SUCCESS -> {
                     createNotification(fcmMessage.title, fcmMessage.message)
                 }
-            }
 
+                FcmMessageType.APP_MANAGEMENT -> {
+                    val map = fcmMessage.data as Map<String, String>
+                    val action = map[MANAGEMENT_ACTION]
+                    when (action) {
+                        FORCE_LOGOUT -> {
+                            repository.clearUserSession()
+                            val intent = Intent(this, LoginActivity::class.java).apply {
+                                flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            }
+                            startActivity(intent)
+                        }
+
+                        else -> {
+                            Log.d(TAG, "No se encontró ninguna acción")
+                        }
+                    }
+                }
+            }
 
             // Crear un canal de notificación si estás en Android 8.0 (Oreo) o superior
             createNotificationChannel()
-
         }
 
         remoteMessage.notification?.let {
@@ -96,7 +113,7 @@ class FcmService : FirebaseMessagingService() {
         // Mostrar la notificación
         with(NotificationManagerCompat.from(this)) {
             if (ActivityCompat.checkSelfPermission(
-                    this@FcmService,
+                    this@CloudMessagingService,
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
@@ -134,14 +151,20 @@ class FcmService : FirebaseMessagingService() {
 
 }
 
-
 data class FcmMessage(
     val title: String,
     val type: FcmMessageType,
     val message: String,
-    val id: String
+    val id: String,
+    val data: Any
 )
 
 enum class FcmMessageType {
-    PAYMENT, ADVERTISING, GENERAL, INFO, ASSISTANCE_TICKET, PAYMENT_CRITICAL, PAYMENT_WARNING, PAYMENT_INFO, PAYMENT_SUCCESS
+    PAYMENT, ADVERTISING, GENERAL, INFO, ASSISTANCE_TICKET, PAYMENT_CRITICAL, PAYMENT_WARNING, PAYMENT_INFO, PAYMENT_SUCCESS, APP_MANAGEMENT
 }
+
+//keys
+const val MANAGEMENT_ACTION = "action"
+
+//ACTIONS
+const val FORCE_LOGOUT = "force_logout"

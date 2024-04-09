@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.FragmentSupportTicketListBinding
 import com.dscorp.ispadmin.databinding.ItemSupportTicketBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
+import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
 import com.google.android.material.tabs.TabLayoutMediator
@@ -38,74 +40,96 @@ class SupportTicketListFragment :
             }
         }.attach()
     }
-
 }
 
 class SupportTicketAdapter(
-    private val onTicketButtonClicked: (AssistanceTicketResponse) -> Unit = {},
-    private val onCloseTicketButtonClicked: (AssistanceTicketResponse) -> Unit = {}
+    private val onTicketButtonClicked: (SupportTicketHelper) -> Unit = {},
+    private val onCloseTicketButtonClicked: (SupportTicketHelper) -> Unit = {},
+    private val user: User,
+    private val lifecycleOwner: LifecycleOwner
 ) :
-    ListAdapter<AssistanceTicketResponse, SupportTicketAdapter.SupportTicketViewHolder>(
+    ListAdapter<SupportTicketHelper, SupportTicketAdapter.SupportTicketViewHolder>(
         SupportTicketDiffUtil()
     ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SupportTicketViewHolder {
         val binding by lazy { ItemSupportTicketBinding.inflate(LayoutInflater.from(parent.context)) }
-        return SupportTicketViewHolder(binding, onTicketButtonClicked, onCloseTicketButtonClicked)
+        return SupportTicketViewHolder(
+            binding,
+            onTicketButtonClicked,
+            onCloseTicketButtonClicked,
+            lifecycleOwner
+        )
 
     }
 
     override fun onBindViewHolder(holder: SupportTicketViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), user)
     }
 
     class SupportTicketViewHolder(
         val binding: ItemSupportTicketBinding,
-        val onTicketButtonClicked: (AssistanceTicketResponse) -> Unit,
-        val onCloseTicketButtonClicked: (AssistanceTicketResponse) -> Unit
+        val onTicketButtonClicked: (SupportTicketHelper) -> Unit,
+        val onCloseTicketButtonClicked: (SupportTicketHelper) -> Unit,
+        val lifecycleOwner: LifecycleOwner
     ) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(subscription: AssistanceTicketResponse) {
-            binding.ticket = subscription
-            binding.takeTicketButtonVisibility = subscription.getButtonVisibilityByStatus()
-            binding.buttonTakeTicket.setOnClickListener {
-                onTicketButtonClicked(subscription)
+        fun bind(ticket: SupportTicketHelper, user: User) {
+            binding.ticket = ticket.ticket
+            ticket.isLoading.observe(lifecycleOwner) {
+                binding.buttonTakeTicket.isLoading = it
+                binding.buttonCloseTicket.isLoading = it
             }
 
-            binding.buttonCloseTicket.setOnClickListener {
-                onCloseTicketButtonClicked(subscription)
+            binding.takeTicketButtonVisibility = getTakeTicketVisibility(ticket.ticket, user)
+            binding.closeTicketVisivility = getCloseTicketVisibility(ticket.ticket, user)
+
+            binding.buttonTakeTicket.clickListener = {
+                onTicketButtonClicked(ticket)
             }
 
+            binding.buttonCloseTicket.clickListener = {
+                onCloseTicketButtonClicked(ticket)
+            }
             binding.executePendingBindings()
 
         }
 
-        private fun AssistanceTicketResponse.getButtonVisibilityByStatus(): Int {
-            return when (status) {
+        private fun getTakeTicketVisibility(ticket: AssistanceTicketResponse, user: User): Int {
+            if (user.type != User.UserType.TECHNICIAN && user.type != User.UserType.ADMIN) return View.GONE
+
+            return when (ticket.status) {
                 AssistanceTicketStatus.PENDING -> View.VISIBLE
                 AssistanceTicketStatus.ASSIGNED, AssistanceTicketStatus.IN_PROGRESS, AssistanceTicketStatus.RESOLVED, AssistanceTicketStatus.CLOSED -> View.GONE
                 AssistanceTicketStatus.CANCELLED -> View.GONE
             }
         }
+
+        private fun getCloseTicketVisibility(ticket: AssistanceTicketResponse, user: User): Int {
+
+            return when {
+                ticket.status == AssistanceTicketStatus.PENDING && user.type == User.UserType.SECRETARY -> View.VISIBLE
+                ticket.status == AssistanceTicketStatus.ASSIGNED && user.type == User.UserType.TECHNICIAN -> View.VISIBLE
+                else -> View.GONE
+            }
+        }
     }
 
-    class SupportTicketDiffUtil : DiffUtil.ItemCallback<AssistanceTicketResponse>() {
+    class SupportTicketDiffUtil : DiffUtil.ItemCallback<SupportTicketHelper>() {
         override fun areItemsTheSame(
-            oldItem: AssistanceTicketResponse,
-            newItem: AssistanceTicketResponse
+            oldItem: SupportTicketHelper,
+            newItem: SupportTicketHelper
         ): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.ticket.id == newItem.ticket.id
         }
 
         override fun areContentsTheSame(
-            oldItem: AssistanceTicketResponse,
-            newItem: AssistanceTicketResponse
+            oldItem: SupportTicketHelper,
+            newItem: SupportTicketHelper
         ): Boolean {
-            return oldItem == newItem
+            return oldItem.ticket.id == newItem.ticket.id
         }
-
     }
-
 
 }
 

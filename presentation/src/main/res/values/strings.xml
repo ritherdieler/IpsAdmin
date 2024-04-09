@@ -296,4 +296,5 @@
     <string name="find_payer">Buscar pagador</string>
 <string name="gross_revenue_per_month">Ingresos brutos por mes</string>
     <string name="cableTv">Tv Cable</string>
+    <string name="change_nap_box">Cambiar caja nap</string>
 </resources>

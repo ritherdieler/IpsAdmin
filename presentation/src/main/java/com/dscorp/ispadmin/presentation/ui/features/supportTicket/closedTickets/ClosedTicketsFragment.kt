@@ -1,12 +1,16 @@
 package com.dscorp.ispadmin.presentation.ui.features.supportTicket.closedTickets
 
 import android.os.Bundle
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.databinding.FragmentListTicketsBinding
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketAdapter
+import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketHelper
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketState
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketViewModel
 import com.example.data2.data.response.AssistanceTicketResponse
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -15,11 +19,18 @@ class ClosedTicketsFragment : BaseFragment<SupportTicketState, FragmentListTicke
     override val binding by lazy { FragmentListTicketsBinding.inflate(layoutInflater) }
 
     private val adapter by lazy {
-        SupportTicketAdapter(onTicketButtonClicked = {
-            viewModel.takeTicket(it.id)
-        }, onCloseTicketButtonClicked = {
-            viewModel.closeTicket(it)
-        })
+        SupportTicketAdapter(
+            onTicketButtonClicked = {
+                lifecycleScope.launch {
+                    viewModel.takeTicket(it.ticket.id)
+                }
+            },
+            onCloseTicketButtonClicked = {
+//            viewModel.closeTicket(it)
+            },
+            user = viewModel.user,
+            lifecycleOwner = this
+        )
     }
 
     override fun onViewReady(savedInstanceState: Bundle?) {
@@ -36,14 +47,14 @@ class ClosedTicketsFragment : BaseFragment<SupportTicketState, FragmentListTicke
 
         when (state) {
             is SupportTicketState.TicketList -> {
-                populateRecyclerView(state.ticketList)
+                populateRecyclerView(state.ticketList.map { SupportTicketHelper(MutableLiveData(false), it) })
             }
 
             else -> {}
         }
     }
 
-    private fun populateRecyclerView(tickets: List<AssistanceTicketResponse>) {
+    private fun populateRecyclerView(tickets: List<SupportTicketHelper>) {
         adapter.submitList(tickets)
     }
 

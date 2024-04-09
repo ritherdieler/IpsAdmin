@@ -42,6 +42,13 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.util.*
 
+fun Uri.getBase64FromUri(installationSheetUri: Uri,context: Context): String? {
+    val inputStream = context.contentResolver.openInputStream(installationSheetUri)
+    val bytes = inputStream?.readBytes()
+    val base64 = Base64.encodeToString(bytes, Base64.DEFAULT)
+    return base64
+}
+
 fun NavController.navigateSafe(destinationId: Int) {
     try {
         navigate(destinationId)

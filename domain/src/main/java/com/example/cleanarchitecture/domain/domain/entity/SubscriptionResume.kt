@@ -13,7 +13,9 @@ data class SubscriptionResume(
     val totalDebt: Double,
     val ipAddress: String,
     val customer: CustomerData,
-    val serviceStatus: ServiceStatus
+    val serviceStatus: ServiceStatus,
+    val installationType: InstallationType,
+    val napBox: NapBox?,
 )
 fun SubscriptionResume.createReminderMessage(): String {
         val message = """

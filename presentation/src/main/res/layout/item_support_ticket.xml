@@ -13,6 +13,10 @@
             name="takeTicketButtonVisibility"
             type="Integer" />
 
+        <variable
+            name="closeTicketVisivility"
+            type="Integer" />
+
         <import type="com.example.data2.data.response.AssistanceTicketStatus" />
 
         <import type="android.view.View" />
@@ -120,33 +124,27 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <com.google.android.material.button.MaterialButton
+                <com.dscorp.components.ProgressButton
                     android:id="@+id/buttonCloseTicket"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/Primary"
-                    android:text="Cerrar"
-                    android:visibility="@{(ticket.status == AssistanceTicketStatus.ASSIGNED || ticket.status == AssistanceTicketStatus.PENDING ) ? View.VISIBLE : View.GONE}"
-                    app:cornerRadius="20dp" />
+                    android:visibility="@{closeTicketVisivility}"
+                    app:backGroundTint="@{@color/Primary}"
+                    app:text="Cerrar" />
 
-                <View
-                    android:layout_width="10dp"
-                    android:layout_height="10dp" />
-
-                <com.google.android.material.button.MaterialButton
+                <com.dscorp.components.ProgressButton
                     android:id="@+id/buttonTakeTicket"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/Primary"
-                    android:text="Atender"
                     android:visibility="@{takeTicketButtonVisibility}"
-                    app:cornerRadius="20dp" />
+                    app:backGroundTint="@{@color/Primary}"
+                    app:text="Atender" />
             </LinearLayout>
         </LinearLayout>
 

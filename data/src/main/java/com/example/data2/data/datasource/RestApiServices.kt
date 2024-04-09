@@ -1,5 +1,6 @@
-package com.example.data2.data.api
+package com.example.data2.data.datasource
 
+import com.example.cleanarchitecture.domain.domain.entity.AppVersion
 import com.example.cleanarchitecture.domain.domain.entity.Coupon
 import com.example.cleanarchitecture.domain.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
@@ -29,18 +30,22 @@ import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.MigrationRequest
+import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.response.AdministrativeOnuResponse
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
 import com.example.data2.data.response.BaseResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -231,12 +236,28 @@ interface RestApiServices {
     @GET("assistanceTicket/findAll")
     suspend fun getTicketsByStatus(@Query("status") status: AssistanceTicketStatus): Response<List<AssistanceTicketResponse>>
 
-    @PUT("assistanceTicket/updateStatus")
-    suspend fun updateTicketState(
+
+    @PUT("assistanceTicket/assignTicketToUser")
+    suspend fun assignSupportTicket(
         @Query("ticketId") ticketId: Int,
-        @Query("status") newStatus: AssistanceTicketStatus,
-        @Query("userId") userId: Int
+        @Query("userId") userId: Int,
     ): Response<AssistanceTicketResponse>
+
+
+    @PUT("assistanceTicket/closeUnattendedTicket")
+    suspend fun closeUnattendedSupportTicket(
+        @Query("ticketId") ticketId: Int,
+        @Query("userId") userId: Int,
+    ): Response<AssistanceTicketResponse>
+
+    @Multipart
+    @PUT("assistanceTicket/closeAttendedTicket")
+    suspend fun closeAttendedTicket(
+        @Query("ticketId") ticketId: Int,
+        @Query("userId") userId: Int,
+        @Part image: MultipartBody.Part
+    ): Response<AssistanceTicketResponse>
+
 
     @POST("assistanceTicket")
     suspend fun createTicket(@Body value: AssistanceTicketRequest): Response<AssistanceTicketResponse>
@@ -264,5 +285,13 @@ interface RestApiServices {
 
     @GET("subscription/{subscriptionId}")
     suspend fun subscriptionById(@Path("subscriptionId") subscriptionId: Int): Response<SubscriptionResponse>
+
+    @PUT("subscription/changeNapBox")
+    suspend fun changeSubscriptionNapBox(
+        @Body request: MoveOnuRequest
+    ): Response<Unit>
+
+    @GET("app/check_version")
+    suspend fun getRemoteAppVersion(): Response<AppVersion>
 }
 

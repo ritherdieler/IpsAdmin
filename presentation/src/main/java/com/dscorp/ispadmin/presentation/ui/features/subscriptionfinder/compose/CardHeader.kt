@@ -1,21 +1,16 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose
 
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
@@ -30,13 +25,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dscorp.ispadmin.R
+import com.example.cleanarchitecture.domain.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
 
 
 enum class SubscriptionMenu(val menuId: Int) {
@@ -44,7 +40,8 @@ enum class SubscriptionMenu(val menuId: Int) {
     EDIT_PLAN_SUBSCRIPTION(R.string.edit_plan),
     SEE_DETAILS(R.string.see_details),
     MIGRATE_TO_FIBER(R.string.migrate_to_fiber),
-    CANCEL_SUBSCRIPTION(R.string.cancel_subscription);
+    CANCEL_SUBSCRIPTION(R.string.cancel_subscription),
+    CHANGE_NAP_BOX(R.string.change_nap_box);
 
     fun getTitle(context: Context): String {
         return context.getString(menuId)
@@ -53,8 +50,8 @@ enum class SubscriptionMenu(val menuId: Int) {
 
 @Composable
 fun CardHeader(
-    title: String,
-    onMenuItemSelected: (SubscriptionMenu) -> Unit = {}
+    onMenuItemSelected: (SubscriptionMenu) -> Unit = {},
+    subscription: SubscriptionResume
 ) {
 
     var dotMenuExpanded by remember { mutableStateOf(false) }
@@ -66,11 +63,11 @@ fun CardHeader(
                 .align(Alignment.Center)
                 .padding(top = 12.dp, start = 48.dp, end = 48.dp),
             textAlign = TextAlign.Center,
-            text = title.uppercase(),
+            text = subscription.customerName.uppercase(),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = Color.White,
-            style = MaterialTheme.typography.h5,
+            style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
         Column(modifier = Modifier.align(Alignment.CenterEnd)) {
@@ -89,7 +86,14 @@ fun CardHeader(
                 onDismissRequest = { dotMenuExpanded = false }
             ) {
 
-                SubscriptionMenu.values().forEach { item ->
+                var menus = SubscriptionMenu.values().toMutableList()
+                menus = when (subscription.installationType) {
+                    InstallationType.FIBER -> menus.filter { it != SubscriptionMenu.MIGRATE_TO_FIBER }.toMutableList()
+                    InstallationType.WIRELESS -> menus.filter { it != SubscriptionMenu.CHANGE_NAP_BOX }.toMutableList()
+                    else -> menus
+                }
+
+                menus.forEach { item ->
                     DropdownMenuItem(
                         text = {
                             Row {

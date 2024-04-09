@@ -22,6 +22,7 @@
         <item
             android:id="@+id/nav_deleteOnuFragment"
             android:icon="@drawable/ic_launcher_foreground"
+            android:visible="false"
             android:title="@string/delete_onu" />
 
         <item

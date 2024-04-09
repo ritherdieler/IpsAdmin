@@ -1,8 +1,8 @@
 package com.example.data2.data.di
 
 import com.example.data2.BuildConfig
-import com.example.data2.data.api.RestApiServices
-import com.example.data2.data.api.SendMessagingCloudApi
+import com.example.data2.data.datasource.RestApiServices
+import com.example.data2.data.datasource.SendMessagingCloudApi
 import org.koin.dsl.module
 import retrofit2.Retrofit
 

@@ -1,23 +1,74 @@
 package com.example.data2.data.repository
 
 import android.content.SharedPreferences
-import com.example.cleanarchitecture.domain.domain.entity.*
-import com.example.data2.data.api.RestApiServices
-import com.example.data2.data.api.SendMessagingCloudApi
+import com.example.cleanarchitecture.domain.domain.entity.AppVersion
+import com.example.cleanarchitecture.domain.domain.entity.Coupon
+import com.example.cleanarchitecture.domain.domain.entity.CustomerData
+import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
+import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
+import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
+import com.example.cleanarchitecture.domain.domain.entity.FirebaseBody
+import com.example.cleanarchitecture.domain.domain.entity.Ip
+import com.example.cleanarchitecture.domain.domain.entity.IpPool
+import com.example.cleanarchitecture.domain.domain.entity.Loging
+import com.example.cleanarchitecture.domain.domain.entity.Mufa
+import com.example.cleanarchitecture.domain.domain.entity.NapBox
+import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDeviceResponse
+import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.cleanarchitecture.domain.domain.entity.Outlay
+import com.example.cleanarchitecture.domain.domain.entity.Payment
+import com.example.cleanarchitecture.domain.domain.entity.Place
+import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.domain.entity.Plan
+import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.domain.entity.ServiceOrder
+import com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse
+import com.example.cleanarchitecture.domain.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionFastSearchResponse
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
+import com.example.cleanarchitecture.domain.domain.entity.Technician
+import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.MigrationRequest
+import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
+import com.example.data2.data.datasource.FileStoreDataSource
+import com.example.data2.data.datasource.RestApiServices
+import com.example.data2.data.datasource.SendMessagingCloudApi
 import com.example.data2.data.response.AdministrativeOnuResponse
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
-import com.example.data2.data.utils.*
+import com.example.data2.data.utils.HttpCodes
+import com.example.data2.data.utils.REMEMBER_CHECKBOX_STATUS
+import com.example.data2.data.utils.SESSION_DNI
+import com.example.data2.data.utils.SESSION_EMAIL
+import com.example.data2.data.utils.SESSION_ID
+import com.example.data2.data.utils.SESSION_LAST_NAME
+import com.example.data2.data.utils.SESSION_NAME
+import com.example.data2.data.utils.SESSION_PASSWORD
+import com.example.data2.data.utils.SESSION_PHONE
+import com.example.data2.data.utils.SESSION_TYPE
+import com.example.data2.data.utils.SESSION_USER_NAME
+import com.example.data2.data.utils.SESSION_VERIFIED
+import okhttp3.MediaType.Companion.parse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.http.HTTP_OK
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import retrofit2.Response
+import java.io.File
+import java.util.Date
+
 
 /**
  * Created by Sergio Carrillo Diestra on 19/11/2022.
@@ -26,12 +77,15 @@ import retrofit2.Response
  * Huacho, Peru.
  *
  **/
+
+const val MEDIA_TYPE = "multipart/form-data"
+
 class Repository : IRepository, KoinComponent {
 
     private val restApiServices: RestApiServices by inject()
     private val sendMessagingCloudApi: SendMessagingCloudApi by inject()
     private val prefs: SharedPreferences by inject()
-
+    private val fileStoreDataSource: FileStoreDataSource by inject()
 
     override suspend fun registerUser(user: User): User {
         val response = restApiServices.registerUser(user)
@@ -101,7 +155,7 @@ class Repository : IRepository, KoinComponent {
         return prefs.getBoolean(REMEMBER_CHECKBOX_STATUS, false)
     }
 
-    override suspend fun clearUserSession() {
+    override fun clearUserSession() {
         val editor = prefs.edit()
         editor.clear()
         editor.apply()
@@ -586,12 +640,41 @@ class Repository : IRepository, KoinComponent {
         return restApiServices.getTicketsByStatus(pending).successOrThrow()
     }
 
-    override suspend fun updateTicketState(
+    override suspend fun assignSupportTicketToUser(
+        id: Int,
+        newStatus: AssistanceTicketStatus,
+        userId: Int,
+    ): AssistanceTicketResponse {
+        return restApiServices.assignSupportTicket(id, userId).successOrThrow()
+    }
+
+    override suspend fun closeTicket(
+        id: Int,
+        newStatus: AssistanceTicketStatus,
+        userId: Int,
+        file: File
+    ): AssistanceTicketResponse {
+        val imagePart = createImagePart(file)
+        return restApiServices.closeAttendedTicket(id, userId, imagePart)
+            .successOrThrow()
+    }
+
+
+    fun createImagePart(file: File): MultipartBody.Part {
+        val requestFile: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        return MultipartBody.Part.Companion.createFormData(
+            "image",
+            "${Date().time}.jpg",
+            requestFile
+        )
+    }
+
+    override suspend fun closeUnattendedTicket(
         id: Int,
         newStatus: AssistanceTicketStatus,
         userId: Int
     ): AssistanceTicketResponse {
-        return restApiServices.updateTicketState(id, newStatus, userId).successOrThrow()
+        return restApiServices.closeUnattendedSupportTicket(id, userId).successOrThrow()
     }
 
     override suspend fun createTicket(value: AssistanceTicketRequest): AssistanceTicketResponse {
@@ -653,6 +736,21 @@ class Repository : IRepository, KoinComponent {
         if (response.code() != HTTP_OK)
             throw Exception("No se pudo obtener la suscripcion")
         return response.body()!!
+    }
+
+    override suspend fun changeSubscriptionNapBox(request: MoveOnuRequest) {
+        val response = restApiServices.changeSubscriptionNapBox(request)
+        if (response.code() != HTTP_OK)
+            throw Exception("No se pudo cambiar la caja nap de la suscripcion")
+
+    }
+
+    override suspend fun getRemoteAppVersion(): AppVersion {
+        val response = restApiServices.getRemoteAppVersion()
+        if (response.code() != HTTP_OK)
+            throw Exception("No se pudo obtener la version de la aplicacion")
+        return response.body()!!
+
     }
 }
 

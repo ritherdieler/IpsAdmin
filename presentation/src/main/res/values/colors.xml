@@ -11,6 +11,9 @@
     <color name="green">#0C9F13</color>
     <color name="azul">#2572E6</color>
     <color name="rosa">#C54BF1</color>
+    <color name="primary">#FF141D48</color>
+
+
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
     <color name="light_blue_A200">#FF40C4FF</color>

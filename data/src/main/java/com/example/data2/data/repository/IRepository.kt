@@ -1,5 +1,6 @@
 package com.example.data2.data.repository
 
+import com.example.cleanarchitecture.domain.domain.entity.AppVersion
 import com.example.cleanarchitecture.domain.domain.entity.Coupon
 import com.example.cleanarchitecture.domain.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
@@ -32,12 +33,14 @@ import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.MigrationRequest
+import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionDataBody
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.response.AdministrativeOnuResponse
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
+import java.io.File
 
 /**
  * Created by Sergio Carrillo Diestra on 25/12/2022.
@@ -52,7 +55,7 @@ interface IRepository {
     suspend fun saveUserSession(user: User, rememberSessionCheckBoxStatus: Boolean?)
     fun getUserSession(): User?
     fun getRememberSessionCheckBoxStatus(): Boolean
-    suspend fun clearUserSession()
+    fun clearUserSession()
     suspend fun registerPlan(plan: Plan): Plan
     suspend fun registerNetworkDevice(registerNetworkDevice: NetworkDevice): NetworkDevice
     suspend fun getGenericDevices(): List<NetworkDevice>
@@ -121,12 +124,24 @@ interface IRepository {
 
     suspend fun getTicket(ticketId: String): AssistanceTicketResponse
     suspend fun getTicketsByStatus(pending: AssistanceTicketStatus): List<AssistanceTicketResponse>
-    suspend fun updateTicketState(
+    suspend fun assignSupportTicketToUser(
         id: Int,
         newStatus: AssistanceTicketStatus,
-        userId: Int
+        userId: Int,
     ): AssistanceTicketResponse
 
+    suspend fun closeTicket(
+        id: Int,
+        newStatus: AssistanceTicketStatus,
+        userId: Int,
+        imageBase64: File
+    ): AssistanceTicketResponse
+
+    suspend fun closeUnattendedTicket(
+        id: Int,
+        newStatus: AssistanceTicketStatus,
+        userId: Int,
+    ): AssistanceTicketResponse
     suspend fun createTicket(value: AssistanceTicketRequest): AssistanceTicketResponse
     suspend fun findSubscriptionByNames(names: String): List<SubscriptionFastSearchResponse>
     suspend fun doMigration(migrationRequest: MigrationRequest): SubscriptionResponse
@@ -136,5 +151,7 @@ interface IRepository {
     suspend fun getElectronicPayers(subscriptionId: Int): List<String>
     suspend fun updateCustomerData(customer: CustomerData): Unit
     suspend fun subscriptionById(subscriptionId: Int): SubscriptionResponse
+    suspend fun changeSubscriptionNapBox(request:MoveOnuRequest)
+    suspend fun getRemoteAppVersion():AppVersion
 
 }

@@ -15,7 +15,6 @@ class PermissionManager(
     private var multiplePermissionLauncher: ActivityResultLauncher<Array<String>>? = null
     private var permissions = ""
 
-
     init {
         init()
     }

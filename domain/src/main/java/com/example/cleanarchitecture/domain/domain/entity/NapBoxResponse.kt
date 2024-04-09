@@ -13,4 +13,16 @@ data class NapBoxResponse(
     override fun toString(): String {
         return "$code - $address"
     }
+
+    fun toDomain(): NapBox {
+        return NapBox(
+            id = id ?: "",
+            code = code,
+            address = address,
+            mufaId = mufaId ?: 0,
+            latitude = latitude ?: 0.0,
+            longitude = longitude ?: 0.0,
+            ports_number = ports_number ?: 0
+        )
+    }
 }

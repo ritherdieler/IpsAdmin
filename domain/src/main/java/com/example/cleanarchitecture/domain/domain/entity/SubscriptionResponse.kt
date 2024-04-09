@@ -66,8 +66,9 @@ data class SubscriptionResponse(
             address = address ?: "",
             phone = phone ?: "",
             email = email ?: "",
-        )
-
+        ),
+        installationType = installationType,
+        napBox = napBox?.toDomain()
     )
 }
 

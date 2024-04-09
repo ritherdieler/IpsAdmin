@@ -8,6 +8,8 @@ import com.dscorp.ispadmin.presentation.di.modules.formFieldModule
 import com.example.data2.data.di.repositoryModule
 import com.dscorp.ispadmin.presentation.di.modules.viewModelModule
 import com.example.data2.data.di.BASE_URL
+import com.example.data2.data.di.STORAGE_BASE_URL
+import com.example.data2.data.di.fileStorageModule
 import com.example.data2.data.di.localDataModule
 import com.example.data2.data.di.retrofitModule
 import com.facebook.stetho.Stetho
@@ -49,13 +51,15 @@ class KoinApplication : Application() {
                 formFieldModule,
                 module {
                     single { firebaseAnalytics }
-                }
+                },
+                fileStorageModule,
 
             )
         }
 
         getKoin().run {
             setProperty(BASE_URL, com.example.data2.BuildConfig.BASE_URL)
+            setProperty(STORAGE_BASE_URL, com.example.data2.BuildConfig.FIREBASE_STORAGE_BUCKET)
         }
     }
 }
