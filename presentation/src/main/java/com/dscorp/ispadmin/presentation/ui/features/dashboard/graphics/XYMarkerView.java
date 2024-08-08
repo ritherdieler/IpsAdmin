@@ -1,5 +1,5 @@
 
-package com.dscorp.ispadmin.presentation.ui.features.dashboard;
+package com.dscorp.ispadmin.presentation.ui.features.dashboard.graphics;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

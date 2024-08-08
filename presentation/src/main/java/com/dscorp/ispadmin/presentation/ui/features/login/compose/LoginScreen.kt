@@ -22,6 +22,7 @@ fun LoginScreen(
     onCreatedAccountClicked: () -> Unit = {},
     onLoginSuccess: (User) -> Unit = {},
     onAcceptUpdate: () -> Unit = {},
+    onNoUpdate: () -> Unit = {},
     viewModel: LoginViewModel = koinViewModel()
 ) {
 
@@ -36,6 +37,7 @@ fun LoginScreen(
     when (val response = checkVersionState) {
         is CheckVersionSuccess -> {
             if (!response.forceUpdate) {
+                onNoUpdate()
                 Login(loginState = loginState,
                     onLoginClicked = { loginData ->
                         viewModel.doLogin(loginData)

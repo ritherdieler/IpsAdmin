@@ -7,6 +7,7 @@ import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
 import com.example.cleanarchitecture.domain.domain.entity.FirebaseBody
+import com.example.cleanarchitecture.domain.domain.entity.FixedCost
 import com.example.cleanarchitecture.domain.domain.entity.Ip
 import com.example.cleanarchitecture.domain.domain.entity.IpPool
 import com.example.cleanarchitecture.domain.domain.entity.Loging
@@ -30,7 +31,9 @@ import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.domain.entity.extensions.PayerFinderResult
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
+import com.example.data2.data.apirequestmodel.FixedCostRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
@@ -142,6 +145,7 @@ interface IRepository {
         newStatus: AssistanceTicketStatus,
         userId: Int,
     ): AssistanceTicketResponse
+
     suspend fun createTicket(value: AssistanceTicketRequest): AssistanceTicketResponse
     suspend fun findSubscriptionByNames(names: String): List<SubscriptionFastSearchResponse>
     suspend fun doMigration(migrationRequest: MigrationRequest): SubscriptionResponse
@@ -151,7 +155,14 @@ interface IRepository {
     suspend fun getElectronicPayers(subscriptionId: Int): List<String>
     suspend fun updateCustomerData(customer: CustomerData): Unit
     suspend fun subscriptionById(subscriptionId: Int): SubscriptionResponse
-    suspend fun changeSubscriptionNapBox(request:MoveOnuRequest)
-    suspend fun getRemoteAppVersion():AppVersion
-
+    suspend fun changeSubscriptionNapBox(request: MoveOnuRequest)
+    suspend fun getRemoteAppVersion(): AppVersion
+    suspend fun getTicketsByDateRange(
+        closed: AssistanceTicketStatus,
+        firstDayOfMonth: Long,
+        lastDayOfMonth: Long
+    ): List<AssistanceTicketResponse>
+    suspend fun saveFixedCost(fixedCostRequest: FixedCostRequest)
+    suspend fun getAllFixedCosts(): List<FixedCost>
+    suspend fun findPaymentByElectronicPayerName(electronicPayerName: String): List<PayerFinderResult>
 }

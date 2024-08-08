@@ -268,11 +268,10 @@ class RegisterSubscriptionFragment :
     }
 
     private fun showConfirmationDialog(response: RegisterSubscriptionSuccess) {
-        val action = saveSubscriptionToDashboard()
         showCrossDialog(
             getString(R.string.subscription_register_success, response.subscription.ip.toString()),
-            closeButtonClickListener = { findNavController().navigate(action) },
-            positiveButtonClickListener = { findNavController().navigate(action) }
+            closeButtonClickListener = { findNavController().navigate(R.id.register_payment) },
+            positiveButtonClickListener = { findNavController().navigate(R.id.register_payment) }
         )
     }
 

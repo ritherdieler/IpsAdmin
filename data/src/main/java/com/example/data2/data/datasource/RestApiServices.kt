@@ -5,6 +5,7 @@ import com.example.cleanarchitecture.domain.domain.entity.Coupon
 import com.example.cleanarchitecture.domain.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
+import com.example.cleanarchitecture.domain.domain.entity.FixedCost
 import com.example.cleanarchitecture.domain.domain.entity.Ip
 import com.example.cleanarchitecture.domain.domain.entity.IpPool
 import com.example.cleanarchitecture.domain.domain.entity.Loging
@@ -27,7 +28,9 @@ import com.example.cleanarchitecture.domain.domain.entity.SubscriptionFastSearch
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.domain.entity.extensions.PayerFinderResult
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
+import com.example.data2.data.apirequestmodel.FixedCostRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
@@ -236,7 +239,6 @@ interface RestApiServices {
     @GET("assistanceTicket/findAll")
     suspend fun getTicketsByStatus(@Query("status") status: AssistanceTicketStatus): Response<List<AssistanceTicketResponse>>
 
-
     @PUT("assistanceTicket/assignTicketToUser")
     suspend fun assignSupportTicket(
         @Query("ticketId") ticketId: Int,
@@ -293,5 +295,22 @@ interface RestApiServices {
 
     @GET("app/check_version")
     suspend fun getRemoteAppVersion(): Response<AppVersion>
+
+    @GET("assistanceTicket/byDateRange")
+    suspend fun getTicketsByDateAndStatusRange(
+        @Query("status") status: AssistanceTicketStatus,
+        @Query("startDate") startDate: Long,
+        @Query("endDate") endDate: Long
+    ): Response<List<AssistanceTicketResponse>>
+
+    @POST("fixed_cost/")
+    suspend fun saveFixedCost(@Body fixedCostRequest: FixedCostRequest): Response<Unit>
+
+    @GET("fixed_cost/")
+    suspend fun getAllFixedCosts(): Response<List<FixedCost>>
+
+    @GET("subscription/findByElectronicPayerName")
+    suspend fun findPaymentByElectronicPayerName(@Query("electronicPayerName") electronicPayerName: String): BaseResponse<List<PayerFinderResult>>
+
 }
 

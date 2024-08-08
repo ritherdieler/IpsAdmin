@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.presentation.di.modules
 
 import com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardViewModel
+import com.dscorp.ispadmin.presentation.ui.features.fixedCost.FixedCostViewModel
 import com.dscorp.ispadmin.presentation.ui.features.ippool.register.IpPoolViewModel
 import com.dscorp.ispadmin.presentation.ui.features.ippool.seeip.IpListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel
@@ -67,9 +68,10 @@ val viewModelModule = module {
     viewModel { EditSubscriptionViewModel(get()) }
     viewModel { EditPlanViewModel(get()) }
     viewModel { SubscriptionDetailViewModel(get(), get()) }
-    viewModel { SupportTicketViewModel(get(),get()) }
+    viewModel { SupportTicketViewModel(get(), get()) }
     viewModel { MigrationViewModel(get()) }
     viewModel { OltAdministrationViewModel(get()) }
     viewModel { OutLayViewModel(get()) }
     viewModel { SubscriptionFinderViewModel(get()) }
+    viewModel { FixedCostViewModel(get()) }
 }

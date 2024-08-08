@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity() {
                     navView.menu.findItem(R.id.nav_dashboard).isVisible = true
                     navView.menu.findItem(R.id.nav_see_plan_list).isVisible = false
                     navView.menu.findItem(R.id.nav_mufa).isVisible = false
-                    navView.menu.findItem(R.id.nav_outlays).isVisible = true
 
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(navController.graph.startDestinationId, true)
@@ -122,6 +121,18 @@ class MainActivity : AppCompatActivity() {
                     FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
 
                 }
+                User.UserType.ACCOUNTANT->{
+                    navView.menu.findItem(R.id.nav_dashboard).isVisible = true
+                    navView.menu.findItem(R.id.nav_outlays).isVisible = true
+                    navView.menu.findItem(R.id.nav_fixed_cost).isVisible = true
+                    navView.menu.findItem(R.id.nav_see_plan_list).isVisible = false
+                    navView.menu.findItem(R.id.nav_mufa).isVisible = false
+                    FirebaseMessaging.getInstance()
+                        .subscribeToTopic(FcmTopics.FCM_SECRETARY_TOPIC)
+                    FirebaseMessaging.getInstance()
+                        .subscribeToTopic(FcmTopics.ASSISTANCE_TICKET_ADMINS)
+                    FirebaseMessaging.getInstance().subscribeToTopic(FcmTopics.ASSISTANCE_TICKET)
+                }
 
                 User.UserType.ADMIN -> {
                     FirebaseMessaging.getInstance()
@@ -130,6 +141,7 @@ class MainActivity : AppCompatActivity() {
 
                     navHostFragment.navController.navigate(R.id.nav_dashboard)
                     navView.menu.findItem(R.id.nav_outlays).isVisible = true
+                    navView.menu.findItem(R.id.nav_fixed_cost).isVisible = true
                 }
 
                 else -> {

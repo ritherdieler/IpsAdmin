@@ -18,7 +18,8 @@ data class User(
         CLIENT("Cliente"),
         LOGISTIC("Logistica"),
         SALES("Ventas"),
-        SECRETARY("Secretario")
+        SECRETARY("Secretario"),
+        ACCOUNTANT("Contador"),
     }
 
     fun typeAsString() = type.value

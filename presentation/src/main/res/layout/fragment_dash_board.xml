@@ -26,267 +26,319 @@
         tools:visibility="visible">
 
         <com.facebook.shimmer.ShimmerFrameLayout
-            android:layout_width="match_parent"
             android:id="@+id/shimmerFrameLayout"
-            app:shimmer_auto_start="true"
-            android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:id="@+id/dashboardContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="48dp">
+            app:shimmer_auto_start="true">
 
-            <TextView
-
+            <LinearLayout
+                android:id="@+id/dashboardContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/monthly_monetary_resume"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingVertical="48dp">
 
-            <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/chart1"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginTop="24dp"
+                <TextView
 
-                />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/monthly_monetary_resume"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-            <TableLayout
-                android:id="@+id/tableLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp">
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/chart1"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="24dp"
 
-                <TableRow style="@style/dashboard_row_header">
+                    />
 
-                    <TextView
-                        android:id="@+id/category_table_header"
-                        style="@style/dashboard_row_header_child"
-                        android:text="@string/concept" />
+                <TableLayout
+                    android:id="@+id/tableLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp">
 
+                    <TableRow style="@style/dashboard_row_header">
 
-                    <TextView
-                        android:id="@+id/value_table_header"
-                        style="@style/dashboard_row_header_child"
-                        android:text="@string/pen_symbol" />
+                        <TextView
+                            android:id="@+id/category_table_header"
+                            style="@style/dashboard_row_header_child"
+                            android:text="@string/concept" />
 
-                </TableRow>
 
-                <TableRow style="@style/dashboard_row_light">
+                        <TextView
+                            android:id="@+id/value_table_header"
+                            style="@style/dashboard_row_header_child"
+                            android:text="@string/pen_symbol" />
 
-                    <TextView
-                        style="@style/dashboard_row_category"
-                        android:text="@string/total_gross" />
+                    </TableRow>
 
-                    <TextView
-                        android:id="@+id/total_gross"
-                        style="@style/dashboard_row_value"
-                        android:text="@{dashboardDataResponse.grossRevenueAsString()}"
-                        tools:text="5022222" />
+                    <TableRow style="@style/dashboard_row_light">
 
-                </TableRow>
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/total_gross" />
 
-                <TableRow style="@style/dashboard_row_dark">
+                        <TextView
+                            android:id="@+id/total_gross"
+                            style="@style/dashboard_row_value"
+                            android:text="@{dashboardDataResponse.grossRevenueAsString()}"
+                            tools:text="5022222" />
 
-                    <TextView
-                        style="@style/dashboard_row_category"
-                        android:text="@string/outstanding" />
+                    </TableRow>
 
+                    <TableRow style="@style/dashboard_row_dark">
 
-                    <TextView
-                        android:id="@+id/outstanding"
-                        style="@style/dashboard_row_value"
-                        android:text="@{dashboardDataResponse.totalToCollectAsString}"
-                        tools:text="40" />
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/outstanding" />
 
-                </TableRow>
 
-                <TableRow style="@style/dashboard_row_light"
+                        <TextView
+                            android:id="@+id/outstanding"
+                            style="@style/dashboard_row_value"
+                            android:text="@{dashboardDataResponse.totalToCollectAsString}"
+                            tools:text="40" />
 
-                    >
+                    </TableRow>
 
-                    <TextView
-                        style="@style/dashboard_row_category"
-                        android:text="@string/collected" />
+                    <TableRow style="@style/dashboard_row_dark">
 
+                        <TextView
+                            style="@style/dashboard_row_category"
 
-                    <TextView
-                        android:id="@+id/collected"
-                        style="@style/dashboard_row_value"
-                        android:text="@{dashboardDataResponse.totalRaisedAsString()}"
-                        tools:text="20" />
+                            android:text="@string/discounted" />
 
-                </TableRow>
 
-                <TableRow style="@style/dashboard_row_dark">
+                        <TextView
+                            android:id="@+id/discounted"
+                            style="@style/dashboard_row_value"
+                            android:text="@{dashboardDataResponse.totalDiscountAsString}"
+                            tools:text="30" />
 
-                    <TextView
-                        style="@style/dashboard_row_category"
+                    </TableRow>
 
-                        android:text="@string/discounted" />
+                    <TableRow style="@style/dashboard_row_light">
 
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/collected" />
 
-                    <TextView
-                        android:id="@+id/discounted"
-                        style="@style/dashboard_row_value"
-                        android:text="@{dashboardDataResponse.totalDiscountAsString}"
-                        tools:text="30" />
+                        <TextView
+                            android:id="@+id/collected"
+                            style="@style/dashboard_row_value"
+                            android:text="@{dashboardDataResponse.totalRaisedAsString()}"
+                            tools:text="20" />
+                    </TableRow>
 
-                </TableRow>
-            </TableLayout>
+                    <TableRow style="@style/dashboard_row_dark">
 
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/fixed_costs" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                android:gravity="center"
-                android:text="@string/monthly_costumers_resume"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                        <TextView
+                            android:id="@+id/fixed_costs"
+                            style="@style/dashboard_row_value"
+                            android:text="@{dashboardDataResponse.fixedCostsAsString()}"
+                            tools:text="30" />
+                    </TableRow>
 
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp">
+                    <TableRow style="@style/dashboard_row_dark">
 
-                <TableRow style="@style/dashboard_row_header">
+                        <TextView
+                            style="@style/dashboard_row_category"
 
-                    <TextView
-                        android:id="@+id/customer_category_table_header"
-                        style="@style/dashboard_row_header_child"
-                        android:text="@string/concept" />
+                            android:text="@string/variable_costs" />
 
+                        <TextView
+                            android:id="@+id/variable_costs"
+                            style="@style/dashboard_row_value"
+                            android:text="@{dashboardDataResponse.variableCostsAsString()}"
+                            tools:text="30" />
 
-                    <TextView
-                        android:id="@+id/customer_value_table_header"
-                        style="@style/dashboard_row_header_child"
-                        android:text="@string/quantity" />
+                    </TableRow>
 
-                </TableRow>
+                    <TableRow style="@style/dashboard_row_dark">
 
-                <TableRow style="@style/dashboard_row_light">
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/utilities" />
 
-                    <TextView
-                        style="@style/dashboard_row_category"
-                        android:text="@string/cableTv" />
-
-                    <TextView
-                        android:id="@+id/fiber_tv_cable_new_subscriptions"
-                        style="@style/dashboard_row_value"
-                        tools:text="1" />
-
-                </TableRow>
+                        <TextView
+                            android:id="@+id/utilities"
+                            style="@style/dashboard_row_value"
+                            android:text="@{dashboardDataResponse.marginAsString()}"
+                            tools:text="30" />
 
-                <TableRow style="@style/dashboard_row_dark">
+                    </TableRow>
 
-                    <TextView
-                        style="@style/dashboard_row_category"
-                        android:text="@string/Fiber" />
+                    <TableRow style="@style/dashboard_row_dark">
 
-                    <TextView
-                        android:id="@+id/fiber_new_subscriptions"
-                        style="@style/dashboard_row_value"
-                        tools:text="1" />
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/freeCash" />
 
-                </TableRow>
+                        <TextView
+                            android:id="@+id/freeCash"
+                            style="@style/dashboard_row_value"
+                            android:text="@{dashboardDataResponse.freeCashAsString()}"
+                            tools:text="30" />
 
-                <TableRow style="@style/dashboard_row_light">
+                    </TableRow>
+                </TableLayout>
 
-                    <TextView
-                        style="@style/dashboard_row_category"
-                        android:text="@string/wireless" />
 
-                    <TextView
-                        android:id="@+id/wireless_new_subscriptions"
-                        style="@style/dashboard_row_value"
-                        tools:text="2" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:gravity="center"
+                    android:text="@string/monthly_costumers_resume"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-                </TableRow>
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp">
 
-                <TableRow style="@style/dashboard_row_dark">
+                    <TableRow style="@style/dashboard_row_header">
 
-                    <TextView
-                        style="@style/dashboard_row_category"
-                        android:text="@string/cancelled" />
+                        <TextView
+                            android:id="@+id/customer_category_table_header"
+                            style="@style/dashboard_row_header_child"
+                            android:text="@string/concept" />
 
-                    <TextView
-                        android:id="@+id/cancelled"
-                        style="@style/dashboard_row_value"
-                        tools:text="0" />
 
-                </TableRow>
+                        <TextView
+                            android:id="@+id/customer_value_table_header"
+                            style="@style/dashboard_row_header_child"
+                            android:text="@string/quantity" />
 
-            </TableLayout>
+                    </TableRow>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                android:gravity="center"
-                android:text="@string/gross_revenue_per_month"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                    <TableRow style="@style/dashboard_row_light">
 
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/cableTv" />
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/gross_revenue_history_linear_chart"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginTop="24dp" />
+                        <TextView
+                            android:id="@+id/fiber_tv_cable_new_subscriptions"
+                            style="@style/dashboard_row_value"
+                            tools:text="1" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                android:gravity="center"
-                android:text="@string/active_customers_history"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                    </TableRow>
 
+                    <TableRow style="@style/dashboard_row_dark">
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/active_subscription_history_linear_chart"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginTop="24dp" />
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/Fiber" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                android:gravity="center"
-                android:text="@string/electronic_payments_history"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                        <TextView
+                            android:id="@+id/fiber_new_subscriptions"
+                            style="@style/dashboard_row_value"
+                            tools:text="1" />
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/payment_methods_bar_chart"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginTop="24dp" />
+                    </TableRow>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
-                android:gravity="center"
-                android:text="@string/monthly_collects_history"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+                    <TableRow style="@style/dashboard_row_light">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/monthly_collects_bar_chart"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginTop="24dp" />
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/wireless" />
 
+                        <TextView
+                            android:id="@+id/wireless_new_subscriptions"
+                            style="@style/dashboard_row_value"
+                            tools:text="2" />
 
-        </LinearLayout>
+                    </TableRow>
 
-    </com.facebook.shimmer.ShimmerFrameLayout>
+                    <TableRow style="@style/dashboard_row_dark">
 
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/cancelled" />
 
-</ScrollView>
+                        <TextView
+                            android:id="@+id/cancelled"
+                            style="@style/dashboard_row_value"
+                            tools:text="0" />
 
-    </layout>
+                    </TableRow>
+
+                </TableLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:gravity="center"
+                    android:text="@string/gross_revenue_per_month"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/gross_revenue_history_linear_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="24dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:gravity="center"
+                    android:text="@string/active_customers_history"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/active_subscription_history_linear_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="24dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:gravity="center"
+                    android:text="@string/electronic_payments_history"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/payment_methods_bar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="24dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:gravity="center"
+                    android:text="@string/monthly_collects_history"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/monthly_collects_bar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="24dp" />
+
+
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+    </ScrollView>
+
+</layout>

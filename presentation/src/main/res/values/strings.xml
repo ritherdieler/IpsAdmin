@@ -294,7 +294,13 @@
     <string name="register_payment_is_by_reconnection">Registrar Pago - (es factura por reconexión)</string>
     <string name="outlays">Egresos</string>
     <string name="find_payer">Buscar pagador</string>
-<string name="gross_revenue_per_month">Ingresos brutos por mes</string>
+    <string name="gross_revenue_per_month">Ingresos brutos por mes</string>
     <string name="cableTv">Tv Cable</string>
     <string name="change_nap_box">Cambiar caja nap</string>
+    <string name="fixed_costs">Gastos fijos</string>
+    <string name="variable_costs">Gastos variables</string>
+    <string name="utilities">Margen</string>
+    <string name="freeCash">Libre</string>
+    <string name="es_cliente">Es cliente</string>
+    <string name="no_es_cliente">No es cliente</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.supportTicket.closedTickets
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -22,11 +23,18 @@ class ClosedTicketsFragment : BaseFragment<SupportTicketState, FragmentListTicke
         SupportTicketAdapter(
             onTicketButtonClicked = {
                 lifecycleScope.launch {
-                    viewModel.takeTicket(it.ticket.id)
+//                    viewModel.takeTicket(it.ticket.id)
                 }
             },
             onCloseTicketButtonClicked = {
 //            viewModel.closeTicket(it)
+            },
+            onCardClicked = {
+                Intent(requireContext(), PhotoViewer::class.java).apply {
+                    putExtra("ticket", it)
+                }.also {
+                    startActivity(it)
+                }
             },
             user = viewModel.user,
             lifecycleOwner = this
@@ -47,7 +55,13 @@ class ClosedTicketsFragment : BaseFragment<SupportTicketState, FragmentListTicke
 
         when (state) {
             is SupportTicketState.TicketList -> {
-                populateRecyclerView(state.ticketList.map { SupportTicketHelper(MutableLiveData(false), it) })
+                populateRecyclerView(state.ticketList.map {
+                    SupportTicketHelper(
+                        MutableLiveData(
+                            false
+                        ), it
+                    )
+                })
             }
 
             else -> {}

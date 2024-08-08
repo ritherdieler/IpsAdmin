@@ -1,18 +1,31 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment.register
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.extension.formIsValid
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.REQUEST_DELAY
 import com.example.cleanarchitecture.domain.domain.entity.Payment
+import com.example.cleanarchitecture.domain.domain.entity.extensions.PayerFinderResult
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDouble
 import com.example.data2.data.repository.IRepository
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+
 
 class RegisterPaymentViewModel(private val repository: IRepository) :
     BaseViewModel<RegisterPaymentUiState>(), KoinComponent {
+
+
+    val subscriptionFlow = MutableStateFlow<List<PayerFinderResult>>(emptyList())
+
+    val paymentSearchFlow = MutableStateFlow("")
 
     val user = repository.getUserSession()
 
@@ -52,6 +65,21 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
         validator = { !it.isNullOrEmpty() }
     )
 
+
+    init {
+        observeFinderField()
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun observeFinderField() = viewModelScope.launch {
+        paymentSearchFlow.debounce(REQUEST_DELAY).collect {
+            if (it.isEmpty().or(it.length < 3)) return@collect
+            val response = repository.findPaymentByElectronicPayerName(it)
+            subscriptionFlow.value = response
+        }
+    }
+
+
     fun getElectronicPayers() = executeNoProgress {
         val response = repository.getElectronicPayers(payment!!.subscriptionId!!)
         uiState.value = BaseUiState(RegisterPaymentUiState.OnElectronicPayersLoaded(response))
@@ -65,8 +93,11 @@ class RegisterPaymentViewModel(private val repository: IRepository) :
         payment?.let {
             val registerPayment = Payment(
                 id = payment!!.id,
-                discountAmount = try {discountAmountField.getValue()?.toDouble()}
-                catch (e: Exception) { 0.0},
+                discountAmount = try {
+                    discountAmountField.getValue()?.toDouble()
+                } catch (e: Exception) {
+                    0.0
+                },
                 discountReason = discountReasonField.getValue(),
                 method = paymentMethodField.getValue()!!,
                 responsibleId = user?.id!!,

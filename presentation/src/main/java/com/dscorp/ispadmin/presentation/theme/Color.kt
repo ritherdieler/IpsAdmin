@@ -1,4 +1,4 @@
-package com.dscorp.gigafiberperu.ui.theme
+package com.dscorp.ispadmin.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

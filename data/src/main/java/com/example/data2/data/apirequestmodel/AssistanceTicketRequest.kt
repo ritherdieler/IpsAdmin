@@ -1,21 +1,22 @@
 package com.example.data2.data.apirequestmodel
 
 data class AssistanceTicketRequest(
-    var phone: String ="",
-    var category: String ="",
-    var description: String ="",
+    var phone: String = "",
+    var category: String = "",
+    var description: String = "",
     var subscriptionId: Int? = null,
+    var placeName: String?,
     var customerName: String = "",
-){
-    fun isValidPhone(): Boolean {
+) {
+    private fun isValidPhone(): Boolean {
         return phone.isNotEmpty() && phone.length == 9 // Por ejemplo, aquí se verifica que tenga 10 dígitos
     }
 
-    fun isValidCategory(): Boolean {
+    private fun isValidCategory(): Boolean {
         return category.isNotEmpty() && category.length <= 255 // Por ejemplo, aquí se verifica que no esté vacía y no sea demasiado larga
     }
 
-    fun isValidDescription(): Boolean {
+    private fun isValidDescription(): Boolean {
 
         return description.isNotEmpty() && description.length <= 300 // Por ejemplo, aquí se verifica que no esté vacía y no sea demasiado larga
     }
@@ -25,6 +26,6 @@ data class AssistanceTicketRequest(
 //    }
 
     fun isValid(): Boolean {
-        return isValidPhone() && isValidCategory() && isValidDescription()
+        return isValidPhone() && isValidCategory() && isValidDescription() && (subscriptionId != null || placeName != null)
     }
 }

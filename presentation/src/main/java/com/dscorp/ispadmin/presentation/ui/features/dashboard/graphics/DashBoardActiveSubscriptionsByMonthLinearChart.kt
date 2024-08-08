@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.dashboard
+package com.dscorp.ispadmin.presentation.ui.features.dashboard.graphics
 
 import android.content.Context
 import android.graphics.Color

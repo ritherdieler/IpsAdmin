@@ -8,6 +8,7 @@ import com.example.cleanarchitecture.domain.domain.entity.DashBoardDataResponse
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.cleanarchitecture.domain.domain.entity.FireBaseResponse
 import com.example.cleanarchitecture.domain.domain.entity.FirebaseBody
+import com.example.cleanarchitecture.domain.domain.entity.FixedCost
 import com.example.cleanarchitecture.domain.domain.entity.Ip
 import com.example.cleanarchitecture.domain.domain.entity.IpPool
 import com.example.cleanarchitecture.domain.domain.entity.Loging
@@ -31,7 +32,9 @@ import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
 import com.example.cleanarchitecture.domain.domain.entity.Technician
 import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.domain.entity.extensions.PayerFinderResult
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
+import com.example.data2.data.apirequestmodel.FixedCostRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
 import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
@@ -56,12 +59,10 @@ import com.example.data2.data.utils.SESSION_PHONE
 import com.example.data2.data.utils.SESSION_TYPE
 import com.example.data2.data.utils.SESSION_USER_NAME
 import com.example.data2.data.utils.SESSION_VERIFIED
-import okhttp3.MediaType.Companion.parse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.http.HTTP_OK
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -751,6 +752,39 @@ class Repository : IRepository, KoinComponent {
             throw Exception("No se pudo obtener la version de la aplicacion")
         return response.body()!!
 
+    }
+
+    override suspend fun getTicketsByDateRange(
+        closed: AssistanceTicketStatus,
+        firstDayOfMonth: Long,
+        lastDayOfMonth: Long
+    ): List<AssistanceTicketResponse> {
+        val response =
+            restApiServices.getTicketsByDateAndStatusRange(closed, firstDayOfMonth, lastDayOfMonth)
+        if (response.code() != HTTP_OK)
+            throw Exception("No se pudieron obtener los tickets")
+        return response.body()!!
+
+    }
+
+    override suspend fun saveFixedCost(fixedCostRequest: FixedCostRequest) {
+        val response = restApiServices.saveFixedCost(fixedCostRequest)
+        if (response.code() != HTTP_OK)
+            throw Exception("No se pudo guardar el costo fijo")
+    }
+
+    override suspend fun getAllFixedCosts(): List<FixedCost> {
+        val response = restApiServices.getAllFixedCosts()
+        if (response.code() != HTTP_OK)
+            throw Exception("No se pudieron obtener los costos fijos")
+        return response.body()!!
+    }
+
+    override suspend fun findPaymentByElectronicPayerName(electronicPayerName: String): List<PayerFinderResult> {
+        val response = restApiServices.findPaymentByElectronicPayerName(electronicPayerName)
+        if (response.status != HttpCodes.OK)
+            throw Exception("No se pudieron obtener los pagos")
+        return response.data!!
     }
 }
 

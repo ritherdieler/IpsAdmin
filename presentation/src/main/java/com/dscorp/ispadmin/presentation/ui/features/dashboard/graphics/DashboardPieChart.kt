@@ -1,4 +1,4 @@
-package com.dscorp.ispadmin.presentation.ui.features.dashboard
+package com.dscorp.ispadmin.presentation.ui.features.dashboard.graphics
 
 import android.graphics.Color
 import com.dscorp.ispadmin.R
@@ -31,9 +31,9 @@ class DashboardPieChart(private val chart: PieChart) {
     fun setData(response: DashBoardDataResponse) {
 
         val entries = ArrayList<PieEntry>().apply {
-            add(PieEntry(response.totalDiscount.toFloat(), chart.context.getString(R.string.discount)))
-            add(PieEntry(response.totalRaised.toFloat(), chart.context.getString(R.string.raised)))
-            add(PieEntry(response.totalToCollect.toFloat(), chart.context.getString(R.string.pending)))
+            add(PieEntry(response.economicResume.totalDiscount.toFloat(), chart.context.getString(R.string.discount)))
+            add(PieEntry(response.economicResume.totalRaised.toFloat(), chart.context.getString(R.string.raised)))
+            add(PieEntry(response.economicResume.totalToCollect.toFloat(), chart.context.getString(R.string.pending)))
         }
 
         val dataSet = createPieDataSet(entries)

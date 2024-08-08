@@ -45,6 +45,7 @@ class SupportTicketListFragment :
 class SupportTicketAdapter(
     private val onTicketButtonClicked: (SupportTicketHelper) -> Unit = {},
     private val onCloseTicketButtonClicked: (SupportTicketHelper) -> Unit = {},
+    private val onCardClicked: (AssistanceTicketResponse) -> Unit = {},
     private val user: User,
     private val lifecycleOwner: LifecycleOwner
 ) :
@@ -58,9 +59,9 @@ class SupportTicketAdapter(
             binding,
             onTicketButtonClicked,
             onCloseTicketButtonClicked,
+            onCardClicked =  onCardClicked,
             lifecycleOwner
         )
-
     }
 
     override fun onBindViewHolder(holder: SupportTicketViewHolder, position: Int) {
@@ -71,11 +72,18 @@ class SupportTicketAdapter(
         val binding: ItemSupportTicketBinding,
         val onTicketButtonClicked: (SupportTicketHelper) -> Unit,
         val onCloseTicketButtonClicked: (SupportTicketHelper) -> Unit,
+        val onCardClicked: (AssistanceTicketResponse) -> Unit,
         val lifecycleOwner: LifecycleOwner
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(ticket: SupportTicketHelper, user: User) {
+
+            binding.root.setOnClickListener {
+                onCardClicked(ticket.ticket)
+            }
+
             binding.ticket = ticket.ticket
+
             ticket.isLoading.observe(lifecycleOwner) {
                 binding.buttonTakeTicket.isLoading = it
                 binding.buttonCloseTicket.isLoading = it
@@ -91,6 +99,7 @@ class SupportTicketAdapter(
             binding.buttonCloseTicket.clickListener = {
                 onCloseTicketButtonClicked(ticket)
             }
+
             binding.executePendingBindings()
 
         }

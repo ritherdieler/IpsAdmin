@@ -1,5 +1,7 @@
 package com.example.data2.data.response
 
+import java.io.Serial
+import java.io.Serializable
 import java.util.Date
 
 data class AssistanceTicketResponse(
@@ -16,7 +18,8 @@ data class AssistanceTicketResponse(
     val assignedTo: String? = null,
     val place: String? = null,
     val address: String? = null,
-) {
+    val sheetImageUrl:String,
+):Serializable {
     fun getCreatedAtDateAsString(): String {
         val dateFormatter =
             java.text.SimpleDateFormat("dd MMMM yyyy - hh:mm", java.util.Locale.getDefault())

@@ -91,7 +91,7 @@ fun ZoomableImage(
                         .onGloballyPositioned {
                             imageSize = Offset(it.size.width.toFloat(), it.size.height.toFloat())
                         },
-                    contentScale = ContentScale.None,
+                    contentScale = ContentScale.Inside,
                 )
             }
             is AsyncImagePainter.State.Error -> {

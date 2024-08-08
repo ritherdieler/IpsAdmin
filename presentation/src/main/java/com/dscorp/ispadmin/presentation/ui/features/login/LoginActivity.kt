@@ -34,22 +34,24 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         Thread.sleep(1000)
-        val (status, user) = viewModel.checkSessionStatus()
-        if (status) {
-            handleLoginResponse(user!!)
-        } else {
-            binding.composeView.setContent {
-                MyTheme {
-                    LoginScreen(
-                        onCreatedAccountClicked = ::navigateToRegister,
-                        onLoginSuccess = ::handleLoginResponse,
-                        onAcceptUpdate = {
-                            finish()
-                        }
-                    )
-                }
+
+        binding.composeView.setContent {
+            MyTheme {
+                LoginScreen(
+                    onCreatedAccountClicked = ::navigateToRegister,
+                    onLoginSuccess = ::handleLoginResponse,
+                    onAcceptUpdate = {
+                        finish()
+                    },
+                    onNoUpdate = {
+                        val (status, user) = viewModel.checkSessionStatus()
+                        if (status)
+                            handleLoginResponse(user!!)
+                    }
+                )
             }
         }
+
         setContentView(binding.root)
     }
 

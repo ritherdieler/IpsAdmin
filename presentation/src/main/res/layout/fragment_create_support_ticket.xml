@@ -69,12 +69,37 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <RadioGroup
+            android:id="@+id/ticketTypeRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioButtonIsClient"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/es_cliente" />
+
+            <RadioButton
+                android:id="@+id/radioButtonIsNotClient"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/no_es_cliente" />
+        </RadioGroup>
+
         <!-- Campo de ID de Suscripción (AutoCompleteTextView) -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/subscriptionIdTextInputLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginBottom="16dp"
             android:hint="Cliente">
 
@@ -85,6 +110,24 @@
                 android:layout_height="wrap_content"
                 android:inputType="text" />
 
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/locationTextInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+
+            android:layout_marginBottom="16dp"
+            android:hint="Selecciona un lugar">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/spnLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Botón de Registro -->

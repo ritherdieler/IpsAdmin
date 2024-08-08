@@ -22,8 +22,8 @@
         <item
             android:id="@+id/nav_deleteOnuFragment"
             android:icon="@drawable/ic_launcher_foreground"
-            android:visible="false"
-            android:title="@string/delete_onu" />
+            android:title="@string/delete_onu"
+            android:visible="false" />
 
         <item
             android:id="@+id/nav_create_support_ticket"
@@ -39,13 +39,19 @@
             android:id="@+id/nav_find_payer"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/find_payer"
-            android:visible="false"/>
+            android:visible="true" />
 
         <item
             android:id="@+id/nav_outlays"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/outlays"
+            android:visible="false" />
+        <item
+            android:id="@+id/nav_fixed_cost"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/fixed_costs"
             android:visible="false"/>
+
         <item
             android:id="@+id/nav_reports"
             android:icon="@drawable/ic_launcher_foreground"

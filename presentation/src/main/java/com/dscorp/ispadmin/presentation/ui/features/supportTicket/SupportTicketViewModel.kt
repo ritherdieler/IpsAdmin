@@ -4,24 +4,31 @@ import android.content.Context
 import android.net.Uri
 import android.util.Base64
 import androidx.core.net.toUri
+import com.dscorp.ispadmin.presentation.extension.firstDayFromCurrentMonth
+import com.dscorp.ispadmin.presentation.extension.lastDayFromCurrentMonth
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.util.compressImage
 import com.dscorp.ispadmin.presentation.util.rotateImageIfNeeded
+import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionFastSearchResponse
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.repository.IRepository
 import com.example.data2.data.response.AssistanceTicketResponse
 import com.example.data2.data.response.AssistanceTicketStatus
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.util.Calendar
 
 
 class SupportTicketViewModel(
     private val repository: IRepository,
     private val context: Context
 ) : BaseViewModel<SupportTicketState>() {
+
+    val placesFlow = MutableStateFlow<List<PlaceResponse>>(value = emptyList())
 
     val user = repository.getUserSession()!!
 
@@ -43,6 +50,15 @@ class SupportTicketViewModel(
         "Instalación de Internet",
         "Otros",
     )
+
+    init {
+        getPlaces()
+    }
+
+    private fun getPlaces() = executeNoProgress {
+        val response = repository.getPlaces()
+        placesFlow.value = response
+    }
 
     fun getTicket(ticketId: String) = executeWithProgress {
         val response = repository.getTicket(ticketId)
@@ -74,10 +90,10 @@ class SupportTicketViewModel(
         return tempFile
     }
 
-suspend fun closeTicket(ticket: AssistanceTicketResponse, installationSheetUri: Uri) {
-    val file = getFileFromUri(context, installationSheetUri)
-    file?.let {
-        rotateImageIfNeeded(context, it, installationSheetUri)?.compressImage(50)?.apply {
+    suspend fun closeTicket(ticket: AssistanceTicketResponse, installationSheetUri: Uri) {
+        val file = getFileFromUri(context, installationSheetUri)
+        file?.let {
+            rotateImageIfNeeded(context, it, installationSheetUri)?.compressImage(50)?.apply {
                 val response = repository.closeTicket(
                     id = ticket.id,
                     newStatus = AssistanceTicketStatus.CLOSED,
@@ -85,10 +101,11 @@ suspend fun closeTicket(ticket: AssistanceTicketResponse, installationSheetUri: 
                     imageBase64 = this
                 )
                 uiState.postValue(BaseUiState(SupportTicketState.UpdatedTicket(response)))
+            }
         }
     }
-}
-   suspend fun closeUnattendedTicket(ticket: AssistanceTicketResponse) {
+
+    suspend fun closeUnattendedTicket(ticket: AssistanceTicketResponse) {
 
         val response = repository.closeUnattendedTicket(
             id = ticket.id,
@@ -100,7 +117,13 @@ suspend fun closeTicket(ticket: AssistanceTicketResponse, installationSheetUri: 
     }
 
     fun getClosedTickets() = executeWithProgress {
-        val response = repository.getTicketsByStatus(AssistanceTicketStatus.CLOSED)
+        val firstDayOfMonth = Calendar.getInstance().firstDayFromCurrentMonth()
+        val lastDayOfMonth = Calendar.getInstance().lastDayFromCurrentMonth()
+        val response = repository.getTicketsByDateRange(
+            AssistanceTicketStatus.CLOSED,
+            firstDayOfMonth,
+            lastDayOfMonth
+        )
         uiState.postValue(BaseUiState(SupportTicketState.TicketList(response)))
     }
 
