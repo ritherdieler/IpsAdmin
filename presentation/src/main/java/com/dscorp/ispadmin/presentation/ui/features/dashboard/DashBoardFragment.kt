@@ -2,7 +2,6 @@ package com.dscorp.ispadmin.presentation.ui.features.dashboard
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.ui.text.capitalize
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import com.dscorp.ispadmin.R
@@ -54,8 +53,10 @@ class DashBoardFragment : BaseFragment<DashBoardDataUiState, FragmentDashBoardBi
                 state.response.subscriptionsResume.fiberInternetInstallations.toString()
             binding.wirelessNewSubscriptions.text =
                 state.response.subscriptionsResume.wirelessInternetInstallations.toString()
-            binding.cancelled.text =
-                state.response.subscriptionsResume.canceledSubscriptions.toString()
+            binding.cancelledByUser.text =
+                state.response.cancellationsResume.cancelledByUsers.toString()
+            binding.cancelledBySystem.text =
+                state.response.cancellationsResume.cancelledBySystem.toString()
             //si no se hace esto no se muestra el grafico de barras
             binding.paymentMethodsBarChart.visibility = View.GONE
             binding.paymentMethodsBarChart.visibility = View.VISIBLE

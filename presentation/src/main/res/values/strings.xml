@@ -236,7 +236,9 @@
     <string name="monthly_costumers_resume">Resumen mensual de clientes</string>
     <string name="quantity">Cantidad</string>
     <string name="Fiber">Int. Fibra</string>
-    <string name="cancelled">Cancelados</string>
+    <string name="cancelledByUser">Cancel. manual</string>
+    <string name="cancelledBySystem">Cancel. sistema</string>
+
     <string name="start_cut">Iniciar corte</string>
     <string name="active_customers_history">Clientes activos por mes</string>
     <string name="raised">Recaudado</string>

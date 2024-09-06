@@ -5,12 +5,12 @@ import java.util.Locale
 
 class DashBoardDataResponse(
     val economicResume: EconomicResume,
-    val installationResume: InstallationResume,
-    val paymentResume: Map<String, Double>,
     val subscriptionsResume: SubscriptionsResumeStatics,
+    val cancellationsResume: CancellationResumeDto,
+    val paymentResume: Map<String, Double>,
     val subscriptionsHistoryStatics: List<MonthlySubscriptionResume>,
-    val monthlyCollects: List<MonthlyCollectsResume>,
-    val grossRevenueHistoryStatics: List<MonthlyGrossRevenueResume>
+    val grossRevenueHistoryStatics: List<MonthlyGrossRevenueResume>,
+    val monthlyCollects: List<MonthlyCollectsResume>
 ) {
     fun grossRevenueAsString() = economicResume.grossRevenue.toCurrencyString()
     fun totalRaisedAsString() = economicResume.totalRaised.toCurrencyString()
@@ -21,7 +21,10 @@ class DashBoardDataResponse(
     fun marginAsString() = economicResume.margin.toCurrencyString()
     fun freeCashAsString() = economicResume.freeCash.toCurrencyString()
 }
-
+data class CancellationResumeDto(
+    val cancelledByUsers: Int,
+    val cancelledBySystem: Int
+)
 fun Double.toCurrencyString(): String {
     val numberFormat = NumberFormat.getNumberInstance(Locale("es", "PE"))
     return numberFormat.format(this)

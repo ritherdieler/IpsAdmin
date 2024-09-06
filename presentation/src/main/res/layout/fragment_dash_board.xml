@@ -264,10 +264,23 @@
 
                         <TextView
                             style="@style/dashboard_row_category"
-                            android:text="@string/cancelled" />
+                            android:text="@string/cancelledByUser" />
 
                         <TextView
-                            android:id="@+id/cancelled"
+                            android:id="@+id/cancelledByUser"
+                            style="@style/dashboard_row_value"
+                            tools:text="0" />
+
+                    </TableRow>
+
+                    <TableRow style="@style/dashboard_row_light">
+
+                        <TextView
+                            style="@style/dashboard_row_category"
+                            android:text="@string/cancelledBySystem" />
+
+                        <TextView
+                            android:id="@+id/cancelledBySystem"
                             style="@style/dashboard_row_value"
                             tools:text="0" />
 

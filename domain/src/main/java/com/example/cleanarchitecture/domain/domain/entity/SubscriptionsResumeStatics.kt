@@ -4,5 +4,5 @@ data class SubscriptionsResumeStatics(
     val cableTvInstallations: Int,
     val fiberInternetInstallations: Int,
     val wirelessInternetInstallations: Int,
-    val canceledSubscriptions: Int,
 )
+
