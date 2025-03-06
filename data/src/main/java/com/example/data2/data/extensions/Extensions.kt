@@ -11,8 +11,3 @@ fun String.encryptWithSHA384(): String {
 
     return bytes.fold("") { str, it -> str + "%02x".format(it) }
 }
-
-fun main() {
-    val text = "gigafiber2025"
-    println(text.encryptWithSHA384())
-}

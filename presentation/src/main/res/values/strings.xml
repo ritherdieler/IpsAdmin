@@ -102,7 +102,7 @@
     <string name="installing_additionals">Se instalaran adicionales</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="fieldMustNotBeEmpty">Este campo no puede estar vacio</string>
+    <string name="fieldMustNotBeEmpty">Este campo no puede estar vacio o contener caracteres especiales</string>
     <string name="name">Nombres</string>
     <string name="fullName">Nombre</string>
     <string name="lastName">Apellidos</string>

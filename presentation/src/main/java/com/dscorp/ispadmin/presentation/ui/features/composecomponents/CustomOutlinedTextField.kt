@@ -38,7 +38,7 @@ fun CustomOutlinedTextField(
             focusedContainerColor = Color.White
         ),
         onValueChange = {
-            if (it.length >= maxLength) return@OutlinedTextField
+            if (it.length > maxLength) return@OutlinedTextField
             text = it
             onValueChange(it)
         },

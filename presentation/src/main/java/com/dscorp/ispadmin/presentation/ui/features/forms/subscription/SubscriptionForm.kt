@@ -22,13 +22,13 @@ abstract class SubscriptionForm {
     val firstNameField = ReactiveFormField<String?>(
         hintResourceId = R.string.name,
         errorResourceId = R.string.fieldMustNotBeEmpty,
-        validator = { !it.isNullOrEmpty() }
+        validator = { !it.isNullOrEmpty() && it.matches(Regex("^[a-zA-Z\\s]+$")) }
     )
 
     val lastNameField = ReactiveFormField<String?>(
         hintResourceId = R.string.lastName,
         errorResourceId = R.string.fieldMustNotBeEmpty,
-        validator = { !it.isNullOrEmpty() }
+        validator = { !it.isNullOrEmpty() && it.matches(Regex("^[a-zA-Z\\s]+$")) }
     )
 
     val dniField = ReactiveFormField<String?>(
@@ -40,7 +40,7 @@ abstract class SubscriptionForm {
     val addressField = ReactiveFormField<String?>(
         hintResourceId = R.string.address,
         errorResourceId = R.string.fieldMustNotBeEmpty,
-        validator = { !it.isNullOrEmpty() }
+        validator = { !it.isNullOrEmpty() && it.matches(Regex("^[a-zA-Z0-9\\s]+$")) }
     )
 
     val phoneField = ReactiveFormField<String?>(
@@ -119,7 +119,7 @@ abstract class SubscriptionForm {
         hintResourceId = R.string.select_onu,
         errorResourceId = R.string.mustSelectOnu,
         validator = {
-            if(planField.getValue()?.name?.contains("cable") == true ) true
+            if (planField.getValue()?.name?.contains("cable") == true) true
             else (it != null)
         }
     )
