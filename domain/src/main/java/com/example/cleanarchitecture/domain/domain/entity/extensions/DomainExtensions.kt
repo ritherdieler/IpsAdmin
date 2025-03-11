@@ -4,6 +4,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 
+fun String.isAValidName(): Boolean {
+    return this.isNotEmpty() && matches(Regex("^[a-zA-Z\\s]+$"))
+}
+fun String.isAValidAddress(): Boolean {
+    return !isNullOrEmpty() && matches(Regex("^[a-zA-Z0-9\\s]+$"))
+}
+
 fun String.isValidIpv4(): Boolean {
     val pattern =
         "^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$"

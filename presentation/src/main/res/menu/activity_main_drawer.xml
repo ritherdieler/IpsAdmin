@@ -11,7 +11,7 @@
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/dashboard" />
         <item
-            android:id="@+id/nav_register_subscription"
+            android:id="@+id/registerSubscriptionComposeFragment"
             android:icon="@drawable/ic_launcher_foreground"
             android:title="@string/menu_subscription" />
         <item

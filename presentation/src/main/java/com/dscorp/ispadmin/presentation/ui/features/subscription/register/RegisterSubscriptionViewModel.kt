@@ -8,7 +8,6 @@ import com.dscorp.ispadmin.presentation.extension.formIsValid
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.forms.subscription.RegisterSubscriptionForm
-import com.dscorp.ispadmin.presentation.ui.features.forms.subscription.SubscriptionForm
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.CouponIsValid
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.FiberDevicesFound
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.FormDataFound
@@ -35,6 +34,7 @@ class RegisterSubscriptionViewModel(
     private val repository: IRepository,
     val subscriptionForm: RegisterSubscriptionForm
 ) : BaseViewModel<RegisterSubscriptionUiState>() {
+
 
     var subscription: SubscriptionResponse? = null
     var installationType = MutableLiveData(InstallationType.FIBER)
@@ -228,8 +228,15 @@ class RegisterSubscriptionViewModel(
     fun onIsMigrationCheckedChanged(button: CompoundButton, isChecked: Boolean) {
         subscriptionForm.migrationField.liveData.value = isChecked
     }
+
     private fun String.removeSpecialCharacters(): String {
         val pattern = "[^A-Za-z0-9ñÑ ]".toRegex()
         return replace(pattern, "")
     }
+
+
+
 }
+
+
+

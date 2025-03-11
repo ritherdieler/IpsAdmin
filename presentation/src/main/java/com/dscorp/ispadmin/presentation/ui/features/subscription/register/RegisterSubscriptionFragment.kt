@@ -11,21 +11,43 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentRegisterSubscriptionBinding
-import com.dscorp.ispadmin.presentation.extension.*
 import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
+import com.dscorp.ispadmin.presentation.extension.animateRotate360InLoop
+import com.dscorp.ispadmin.presentation.extension.getCurrentLocation
+import com.dscorp.ispadmin.presentation.extension.openLocationSetting
+import com.dscorp.ispadmin.presentation.extension.populate
+import com.dscorp.ispadmin.presentation.extension.showCrossDialog
+import com.dscorp.ispadmin.presentation.extension.showLocationRationaleDialog
+import com.dscorp.ispadmin.presentation.extension.withGpsEnabled
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFormErrorUiState.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFragmentDirections.*
-import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFragmentDirections.actionNavSubscriptionToMapDialog
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionFragmentDirections.saveSubscriptionToNapBoxMapFragment
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.CouponIsValid
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.FiberDevicesFound
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.FormDataFound
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.OnOnuDataFound
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.PlansFound
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.RefreshingOnus
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.RegisterSubscriptionSuccess
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.ShimmerVisibility
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.WirelessDevicesFound
 import com.dscorp.ispadmin.presentation.util.PermissionManager
-import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.cleanarchitecture.domain.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.datepicker.*
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.CompositeDateValidator
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
+import java.util.Calendar
+import java.util.TimeZone
 import kotlin.time.Duration.Companion.days
 import kotlin.time.DurationUnit
 
@@ -78,6 +100,9 @@ class RegisterSubscriptionFragment :
 
 
     override fun onViewReady(savedInstanceState: Bundle?) {
+
+
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()

@@ -26,6 +26,7 @@ import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterViewMod
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose.RegisterSubscriptionComposeViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionFinderViewModel
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketViewModel
@@ -48,6 +49,9 @@ val viewModelModule = module {
     viewModel { PlanViewModel() }
     viewModel { RegisterViewModel(get(), get()) }
     viewModel { RegisterSubscriptionViewModel(get(), get()) }
+
+    viewModel { RegisterSubscriptionComposeViewModel(get(), get()) }
+
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel(get()) }
     viewModel { NapBoxesListViewModel() }

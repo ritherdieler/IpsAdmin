@@ -45,6 +45,7 @@
             android:id="@+id/save_subscription_to_napBoxMapFragment"
             app:destination="@+id/napBoxMapDialogFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/nav_register_place"
         android:name="com.dscorp.ispadmin.presentation.ui.features.place.PlaceFragment"
@@ -352,5 +353,9 @@
         android:name="com.dscorp.ispadmin.FixedCostFragment"
         android:label="fragment_fixed_cost"
         tools:layout="@layout/fragment_fixed_cost" />
+    <fragment
+        android:id="@+id/registerSubscriptionComposeFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose.RegisterSubscriptionComposeFragment"
+        android:label="RegisterSubscriptionComposeFragment" />
 
 </navigation>

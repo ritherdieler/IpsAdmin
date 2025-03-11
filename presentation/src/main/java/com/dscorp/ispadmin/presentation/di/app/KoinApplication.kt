@@ -2,15 +2,16 @@ package com.dscorp.ispadmin.presentation.di.app
 
 import android.app.Application
 import com.dscorp.ispadmin.presentation.di.modules.applicationModule
-import com.example.data2.data.di.apiModule
 import com.dscorp.ispadmin.presentation.di.modules.dialogFactoryModule
 import com.dscorp.ispadmin.presentation.di.modules.formFieldModule
-import com.example.data2.data.di.repositoryModule
+import com.dscorp.ispadmin.presentation.di.modules.useCaseModule
 import com.dscorp.ispadmin.presentation.di.modules.viewModelModule
 import com.example.data2.data.di.BASE_URL
 import com.example.data2.data.di.STORAGE_BASE_URL
+import com.example.data2.data.di.apiModule
 import com.example.data2.data.di.fileStorageModule
 import com.example.data2.data.di.localDataModule
+import com.example.data2.data.di.repositoryModule
 import com.example.data2.data.di.retrofitModule
 import com.facebook.stetho.Stetho
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -49,12 +50,13 @@ class KoinApplication : Application() {
                 localDataModule,
                 applicationModule,
                 formFieldModule,
+                useCaseModule,
                 module {
                     single { firebaseAnalytics }
                 },
                 fileStorageModule,
 
-            )
+                )
         }
 
         getKoin().run {

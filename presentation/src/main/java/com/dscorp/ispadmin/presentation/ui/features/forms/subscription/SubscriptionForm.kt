@@ -13,6 +13,7 @@ import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidIpv4
 import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
 import com.google.android.gms.maps.model.LatLng
 
+
 abstract class SubscriptionForm {
 
     val idField = ReactiveFormField<String>(
@@ -73,6 +74,15 @@ abstract class SubscriptionForm {
         validator = { it != null }
     )
 
+    val onuField = ReactiveFormField<Onu?>(
+        hintResourceId = R.string.select_onu,
+        errorResourceId = R.string.mustSelectOnu,
+        validator = {
+            if (planField.getValue()?.name?.contains("cable") == true) true
+            else (it != null)
+        }
+    )
+
     val placeField = ReactiveFormField<PlaceResponse?>(
         hintResourceId = R.string.place,
         errorResourceId = R.string.mustSelectPlace,
@@ -115,14 +125,7 @@ abstract class SubscriptionForm {
         validator = { it != null }
     )
 
-    val onuField = ReactiveFormField<Onu?>(
-        hintResourceId = R.string.select_onu,
-        errorResourceId = R.string.mustSelectOnu,
-        validator = {
-            if (planField.getValue()?.name?.contains("cable") == true) true
-            else (it != null)
-        }
-    )
+
 
     val additionalDevicesField = ReactiveFormField<NetworkDevice?>(
         hintResourceId = R.string.additionalDevices,

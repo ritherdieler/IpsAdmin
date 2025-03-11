@@ -24,25 +24,31 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.navigation.NavController
-import com.dscorp.ispadmin.BuildConfig
 import com.dscorp.ispadmin.CrossDialogFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
 import com.dscorp.ispadmin.presentation.util.IDialogFactory
 import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.location.LocationSettingsStatusCodes
+import com.google.android.gms.location.Priority
+import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import org.koin.android.ext.android.inject
 import java.io.File
 import java.io.FileOutputStream
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
-import java.util.*
+import java.util.Calendar
 
-fun Uri.getBase64FromUri(installationSheetUri: Uri,context: Context): String? {
+fun Uri.getBase64FromUri(installationSheetUri: Uri, context: Context): String? {
     val inputStream = context.contentResolver.openInputStream(installationSheetUri)
     val bytes = inputStream?.readBytes()
     val base64 = Base64.encodeToString(bytes, Base64.DEFAULT)
@@ -125,7 +131,6 @@ fun Activity.getDownloadedFileUri(document: DownloadDocumentResponse): Uri {
 }
 
 
-
 fun <T> MaterialAutoCompleteTextView.populate(data: List<T>, onItemSelected: (T) -> Unit) {
     val adapter = ArrayAdapter(context, R.layout.simple_spinner_item, data)
     setAdapter(adapter)
@@ -179,7 +184,6 @@ fun AppCompatActivity.showCrossDialog(
         CrossDialogFragment::class.simpleName
     )
 }
-
 
 
 @SuppressLint("MissingPermission")
@@ -287,7 +291,7 @@ fun List<ReactiveFormField<*>>.formIsValid(): Boolean {
 //    }
 //}
 
-fun Fragment.openLocationSetting(){
+fun Fragment.openLocationSetting() {
     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
 
 }
