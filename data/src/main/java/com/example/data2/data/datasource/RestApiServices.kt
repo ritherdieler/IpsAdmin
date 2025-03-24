@@ -97,6 +97,12 @@ interface RestApiServices {
     @GET("place")
     suspend fun getPlaces(): Response<List<PlaceResponse>>
 
+    @GET("place/findByLocation")
+    suspend fun findPlaceByLatLng(
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double
+    ): Response<PlaceResponse>
+
     @POST("technician")
     suspend fun registerTechnician(@Body technician: Technician): Response<Technician>
 

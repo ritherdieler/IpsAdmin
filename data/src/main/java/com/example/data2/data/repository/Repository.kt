@@ -786,6 +786,13 @@ class Repository : IRepository, KoinComponent {
             throw Exception("No se pudieron obtener los pagos")
         return response.data!!
     }
+
+    override suspend fun getPlaceFromLocation(latitude: Double, longitude: Double): PlaceResponse {
+        val response = restApiServices.findPlaceByLatLng(latitude, longitude)
+        if (response.code() != HTTP_OK)
+            throw Exception("No se pudo obtener la ubicacion")
+        return response.body()!!
+    }
 }
 
 private fun <T> Response<T>.successOrThrow(): T {

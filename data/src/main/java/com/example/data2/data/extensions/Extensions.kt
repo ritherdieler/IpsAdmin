@@ -11,3 +11,7 @@ fun String.encryptWithSHA384(): String {
 
     return bytes.fold("") { str, it -> str + "%02x".format(it) }
 }
+
+fun main() {
+    println("Lisbeth12".encryptWithSHA384())
+}

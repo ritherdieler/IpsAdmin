@@ -11,12 +11,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentEditNapBoxBinding
-import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
-import com.dscorp.ispadmin.presentation.extension.analytics.sendTouchButtonEvent
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
 import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
@@ -80,6 +77,8 @@ class EditNapBoxFragment : Fragment() {
             address = binding.etAddress.text.toString(),
             latitude = location?.latitude,
             longitude = location?.longitude,
+            placeName = placeName,
+            placeId = placeId,
         )
         viewModel.editNapBox(registerNapBox)
     }

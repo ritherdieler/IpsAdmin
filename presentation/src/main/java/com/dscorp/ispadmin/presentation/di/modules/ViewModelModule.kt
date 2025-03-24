@@ -50,7 +50,7 @@ val viewModelModule = module {
     viewModel { RegisterViewModel(get(), get()) }
     viewModel { RegisterSubscriptionViewModel(get(), get()) }
 
-    viewModel { RegisterSubscriptionComposeViewModel(get(), get()) }
+    viewModel { RegisterSubscriptionComposeViewModel(get(), get(), get(), get(), get()) }
 
     viewModel { TechnicianViewModel() }
     viewModel { NapBoxViewModel(get()) }

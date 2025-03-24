@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,12 +23,17 @@ import androidx.compose.ui.Modifier
 fun <T> MyOutLinedDropDown(
     modifier: Modifier = Modifier,
     items: List<T>,
+    selected: T? = null,
     label: String? = null,
     onItemSelected: (T) -> Unit
 ) {
 
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf<T?>(null) }
+
+    LaunchedEffect(selected) {
+        selectedOption = selected
+    }
 
     ExposedDropdownMenuBox(
         modifier = modifier,

@@ -28,7 +28,6 @@ import com.example.cleanarchitecture.domain.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.domain.entity.InstallationType
 import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
 
 val filters = listOf(
@@ -152,7 +151,7 @@ fun generateMockSubscriptions(): List<SubscriptionResume> {
             ),
             serviceStatus = ServiceStatus.ACTIVE
         , installationType = InstallationType.FIBER,
-            napBox = NapBox("NapBox $i", "Calle $i")
+            napBox = NapBox("NapBox $i", "Calle $i", placeName = placeName, placeId = placeId)
         )
         mockList.add(subscriptionResume)
     }

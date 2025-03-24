@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutLinedDropDown
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutlinedTextField
+import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
 import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
 
 
@@ -32,7 +34,9 @@ fun RegisterSubscriptionForm(
     onPhoneChanged: (String) -> Unit,
     onPriceChanged: (String) -> Unit,
     onPlanSelected: (PlanResponse) -> Unit,
-    onOnuSelected: (Onu) -> Unit
+    onOnuSelected: (Onu) -> Unit,
+    onPlaceSelected: (PlaceResponse) -> Unit,
+    onNapBoxSelected: (NapBoxResponse) -> Unit
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
         Column {
@@ -98,11 +102,30 @@ fun RegisterSubscriptionForm(
                 )
 
                 MyOutLinedDropDown(
+                    label = "Lugar",
+                    modifier = Modifier.weight(1f),
+                    items = formState.registerSubscriptionForm.placeList,
+                    selected = formState.registerSubscriptionForm.selectedPlace,
+                    onItemSelected = onPlaceSelected
+                )
+
+            }
+
+            MyFormRow {
+                MyOutLinedDropDown(
                     label = "Onu",
                     modifier = Modifier.weight(1f),
                     items = formState.registerSubscriptionForm.onuList,
                     onItemSelected = onOnuSelected
                 )
+
+                MyOutLinedDropDown(
+                    label = "Caja Nap",
+                    modifier = Modifier.weight(1f),
+                    items = formState.registerSubscriptionForm.napBoxList,
+                    onItemSelected = onNapBoxSelected
+                )
+
 
             }
         }
@@ -129,7 +152,8 @@ fun MyFormRow(
 @Composable
 private fun RegisterSubscriptionPreview() {
     MyTheme {
-        RegisterSubscriptionForm(modifier = Modifier.statusBarsPadding(),
+        RegisterSubscriptionForm(
+            modifier = Modifier.statusBarsPadding(),
             formState = RegisterSubscriptionState(
                 isLoading = false,
                 error = "leo",
@@ -143,12 +167,12 @@ private fun RegisterSubscriptionPreview() {
                     price = "",
                     subscriptionDate = 5666,
                     additionalDevices = listOf(),
-                    place = null,
+                    selectedPlace = null,
                     technician = null,
                     hostDevice = null,
                     location = null,
                     cpeDevice = null,
-                    napBox = null,
+                    selectedNapBox = null,
                     coupon = "mazim",
                     isMigration = false,
                     note = "persequeris"
@@ -159,6 +183,11 @@ private fun RegisterSubscriptionPreview() {
             onDniChanged = {},
             onAddressChanged = {},
             onPhoneChanged = {},
-            onPriceChanged = {}, onPlanSelected = {}, onOnuSelected = {})
+            onPriceChanged = {},
+            onPlanSelected = {},
+            onOnuSelected = {},
+            onPlaceSelected = {},
+            onNapBoxSelected = {}
+        )
     }
 }

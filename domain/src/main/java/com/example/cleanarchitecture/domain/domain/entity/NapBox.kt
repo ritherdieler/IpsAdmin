@@ -9,8 +9,10 @@ data class NapBox(
     var threads: Int? = null,
     var mufaId: Int? = null,
     var ports_number: Int? = null,
+    val placeName: String,
+    val placeId: Int,
 
-) : java.io.Serializable {
+    ) : java.io.Serializable {
     override fun toString(): String {
         return "$id - $code"
     }

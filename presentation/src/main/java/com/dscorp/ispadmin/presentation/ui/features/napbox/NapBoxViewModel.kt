@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxFormErrorUiState
 import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxUiState
-import com.dscorp.ispadmin.presentation.ui.features.napbox.register.CleanFormErrors
-import com.dscorp.ispadmin.presentation.ui.features.napbox.register.NapBoxFormError
 import com.dscorp.ispadmin.presentation.ui.features.napbox.register.RegisterNapBoxUiState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
@@ -17,7 +15,6 @@ import com.example.cleanarchitecture.domain.domain.entity.NapBox
 import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent
 
 class NapBoxViewModel(val repository :IRepository) : ViewModel() {
 
@@ -69,7 +66,9 @@ class NapBoxViewModel(val repository :IRepository) : ViewModel() {
                 address = addressField.value!!,
                 latitude = locationField.value?.latitude!!,
                 longitude= locationField.value?.longitude!!,
-                mufaId = mufaField.value!!.id
+                mufaId = mufaField.value!!.id,
+                placeName = placeName,
+                placeId = placeId
             )
             val response = repository.registerNapBox(registerNapBox)
             uiState.postValue(RegisterNapBoxUiState.OnRegisterNapBoxSealedClassRegister(response))
