@@ -14,7 +14,6 @@ fun MyOutlinedTextField(
     errorMessage: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit,
-
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -23,9 +22,6 @@ fun MyOutlinedTextField(
         onValueChange = onValueChange,
         keyboardOptions = keyboardOptions,
         isError = !errorMessage.isNullOrEmpty(),
-        supportingText = {
-            if (errorMessage.isNullOrEmpty().not())
-                Text(errorMessage!!)
-        },
+        supportingText = errorMessage?.let { { Text(it) } },
     )
 }

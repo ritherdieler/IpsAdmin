@@ -29,6 +29,12 @@ class RegisterSubscriptionComposeViewModel(
 
     val myUiState = MutableStateFlow(RegisterSubscriptionState())
 
+    var myNapBoxList: List<NapBoxResponse> = emptyList()
+        private set
+
+    var myPlanList: List<PlanResponse> = emptyList()
+        private set
+
     fun getFormData() = viewModelScope.launch {
         myUiState.update {
             it.copy(isLoading = true)
@@ -45,16 +51,18 @@ class RegisterSubscriptionComposeViewModel(
             val placeList = placeListDeferred.await()
             val napBoxList = napBoxListDeferred.await()
 
+            myNapBoxList = napBoxList.getOrNull() ?: emptyList()
+            myPlanList = planList.getOrNull() ?: emptyList()
+
             myUiState.update {
                 it.copy(
                     isLoading = false,
                     registerSubscriptionForm = it.registerSubscriptionForm.copy(
                         onuList = onuList.getOrNull() ?: emptyList(),
-                        planList = planList.getOrNull() ?: emptyList(),
+                        planList = myPlanList.filter { it.type == PlanResponse.PlanType.FIBER },
                         placeList = placeList.getOrNull() ?: emptyList(),
-                        napBoxList = napBoxList.getOrNull() ?: emptyList(),
-
-                        )
+                        napBoxList = myNapBoxList,
+                    )
                 )
             }
         } catch (e: Exception) {
@@ -199,32 +207,6 @@ class RegisterSubscriptionComposeViewModel(
         )
     }
 
-    fun onPriceChanged(value: String) {
-        updateFormField(
-            value = value,
-            isValid = { value.isNotEmpty() && (value.toDouble() >= 0) },
-            errorMessage = "Precio inválido",
-            updateState = { validPrice ->
-                myUiState.update {
-                    it.copy(
-                        registerSubscriptionForm = it.registerSubscriptionForm.copy(
-                            price = validPrice
-                        )
-                    )
-                }
-            },
-            updateError = { error ->
-                myUiState.update {
-                    it.copy(
-                        registerSubscriptionForm = it.registerSubscriptionForm.copy(
-                            priceError = error
-                        )
-                    )
-                }
-            }
-        )
-    }
-
     fun onPlanSelected(value: PlanResponse) {
         updateFormField(
             value = value,
@@ -287,7 +269,8 @@ class RegisterSubscriptionComposeViewModel(
                 myUiState.update {
                     it.copy(
                         registerSubscriptionForm = it.registerSubscriptionForm.copy(
-                            selectedPlace = place
+                            selectedPlace = place,
+                            napBoxList = myNapBoxList.filter { it.placeId == place.id!!.toInt() },
                         )
                     )
                 }
@@ -376,6 +359,47 @@ class RegisterSubscriptionComposeViewModel(
         }
     }
 
+    fun onNapBoxSelectionCleared() {
+        myUiState.update {
+            it.copy(
+                registerSubscriptionForm = it.registerSubscriptionForm.copy(
+                    selectedNapBox = null,
+                    napBoxError = null
+                )
+            )
+        }
+    }
+
+    fun onInstallationTypeSelected(type: String) {
+        val filteredPlans = when (type) {
+            FIBER_OPTIC -> myPlanList.filter { it.type == PlanResponse.PlanType.FIBER }
+            else -> myPlanList.filter { it.type == PlanResponse.PlanType.WIRELESS }
+        }
+
+        myUiState.update {
+            it.copy(
+                registerSubscriptionForm = it.registerSubscriptionForm.copy(
+                    planList = filteredPlans,
+                    selectedPlan = null,
+                    planError = null
+                )
+            )
+        }
+    }
+
+    fun saveSubscription() {
+        if(!myUiState.value.registerSubscriptionForm.isValid()) {
+            myUiState.update {
+                it.copy(
+                    error = "Formulario inválido"
+                )
+            }
+            return
+        }
+
+
+    }
+
 }
 
 data class RegisterSubscriptionState(
@@ -421,4 +445,7 @@ data class RegisterSubscriptionFormState(
     val isMigration: Boolean = false,
     val note: String = "",
 ) {
+    fun isValid(): Boolean {
+        return false
+    }
 }
