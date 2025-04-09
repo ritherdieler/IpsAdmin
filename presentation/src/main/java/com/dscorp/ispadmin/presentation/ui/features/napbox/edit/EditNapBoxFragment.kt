@@ -77,8 +77,8 @@ class EditNapBoxFragment : Fragment() {
             address = binding.etAddress.text.toString(),
             latitude = location?.latitude,
             longitude = location?.longitude,
-            placeName = placeName,
-            placeId = placeId,
+            placeName = "placeName",
+            placeId = -1,
         )
         viewModel.editNapBox(registerNapBox)
     }

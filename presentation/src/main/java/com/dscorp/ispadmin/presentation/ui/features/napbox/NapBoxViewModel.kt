@@ -67,8 +67,8 @@ class NapBoxViewModel(val repository :IRepository) : ViewModel() {
                 latitude = locationField.value?.latitude!!,
                 longitude= locationField.value?.longitude!!,
                 mufaId = mufaField.value!!.id,
-                placeName = placeName,
-                placeId = placeId
+                placeName = "placeName",
+                placeId = -1
             )
             val response = repository.registerNapBox(registerNapBox)
             uiState.postValue(RegisterNapBoxUiState.OnRegisterNapBoxSealedClassRegister(response))
