@@ -1,19 +1,24 @@
 package com.example.cleanarchitecture.domain.domain.entity
 
 data class PlanResponse(
-    var id: String? =null,
-    var name:String?=null,
-    var price: Double?=null,
-    var downloadSpeed: String?=null,
-    var uploadSpeed: String?=null,
+    var id: String? = null,
+    var name: String? = null,
+    var price: Double? = null,
+    var downloadSpeed: String? = null,
+    var uploadSpeed: String? = null,
     var type: PlanType
-    ):java.io.Serializable
-{
+) : java.io.Serializable {
     override fun toString(): String {
-        return name!!
+        return "${name?.capitalize()}, Precio: ${priceToString()}"
     }
+
     override fun equals(other: Any?): Boolean {
         return id == (other as PlanResponse).id
+    }
+
+    fun getPlanType() = when (type) {
+        PlanType.WIRELESS -> "W"
+        PlanType.FIBER -> "F"
     }
 
     fun priceToString(): String {
@@ -27,6 +32,7 @@ data class PlanResponse(
     fun uploadSpeedToString(): String {
         return "${uploadSpeed}Mbps"
     }
+
     enum class PlanType {
         WIRELESS, FIBER
     }

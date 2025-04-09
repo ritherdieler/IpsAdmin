@@ -216,7 +216,8 @@ class RegisterSubscriptionComposeViewModel(
                 myUiState.update {
                     it.copy(
                         registerSubscriptionForm = it.registerSubscriptionForm.copy(
-                            selectedPlan = plan
+                            selectedPlan = plan,
+                            planError = null
                         )
                     )
                 }
@@ -380,8 +381,7 @@ class RegisterSubscriptionComposeViewModel(
             it.copy(
                 registerSubscriptionForm = it.registerSubscriptionForm.copy(
                     planList = filteredPlans,
-                    selectedPlan = null,
-                    planError = null
+                    selectedPlan = null, // Importante: establecer selectedPlan a null cuando cambia el tipo
                 )
             )
         }
@@ -446,6 +446,17 @@ data class RegisterSubscriptionFormState(
     val note: String = "",
 ) {
     fun isValid(): Boolean {
-        return false
+        // Implementación básica de validación
+        val requiredFieldsValid = firstName.isNotBlank() && lastName.isNotBlank() && 
+                dni.isNotBlank() && address.isNotBlank() && phone.isNotBlank()
+        val noErrors = firstNameError == null && lastNameError == null && 
+                dniError == null && addressError == null && phoneError == null && 
+                planError == null
+        
+        // Verificar también que se haya seleccionado un plan
+        val planSelected = selectedPlan != null
+        
+        return requiredFieldsValid && noErrors && planSelected
     }
 }
+

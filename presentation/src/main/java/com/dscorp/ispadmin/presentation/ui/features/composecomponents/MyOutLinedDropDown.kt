@@ -11,7 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,25 +22,21 @@ import androidx.compose.ui.Modifier
 fun <T> MyOutLinedDropDown(
     modifier: Modifier = Modifier,
     items: List<T>,
-    selected: T? = null,
+    selected: Any? = null,
     label: String? = null,
-    onItemSelected: (T) -> Unit
+    onItemSelected: (T) -> Unit,
+    hasError: Boolean = false,
+    enabled: Boolean = true,
 ) {
-
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf<T?>(null) }
-
-    LaunchedEffect(selected) {
-        selectedOption = selected
-    }
 
     ExposedDropdownMenuBox(
         modifier = modifier,
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
+        onExpandedChange = { if (enabled) expanded = !expanded }
     ) {
         OutlinedTextField(
-            value = selectedOption?.toString() ?: "",
+            value = if (selected == null) "" else selected.toString(),
             onValueChange = { },
             label = { label?.let { Text(text = it) } },
             readOnly = true,
@@ -51,20 +46,22 @@ fun <T> MyOutLinedDropDown(
                     contentDescription = "Dropdown Icon"
                 )
             },
+            isError = hasError,
+            enabled = enabled,
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor()
-                .clickable { expanded = true }
+                .clickable(enabled = enabled) { expanded = true }
         )
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
             items.forEach { option ->
+                // Evitamos el NPE asegurándonos que option sea no nulo
                 DropdownMenuItem(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        selectedOption = option
                         expanded = false
                         onItemSelected(option)
                     },

@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,7 +47,8 @@ fun <T> MyAutoCompleteTextViewCompose(
     onSelectionCleared: () -> Unit,
     hint: String = "",
     errorMessage: String? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    hasError: Boolean= false
 ) {
     val context = LocalContext.current
     var internalSelectedItem by remember { mutableStateOf(selectedItem) }
@@ -62,12 +62,13 @@ fun <T> MyAutoCompleteTextViewCompose(
     val fontSize = MaterialTheme.typography.bodyLarge.fontSize.value
 
     AndroidView(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         factory = { originalContext ->
             // Creamos el TextInputLayout con estilo outline
             val textInputLayout = TextInputLayout(originalContext).apply {
                 setHint(label)
                 isEnabled = enabled
+                isErrorEnabled = hasError
                 errorMessage?.let { error = errorMessage }
                 // Modo de caja Outline
                 boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
@@ -161,9 +162,13 @@ fun <T> MyAutoCompleteTextViewCompose(
             errorMessage?.let { textInputLayout.error = errorMessage }
             val autoCompleteTextView =
                 textInputLayout.findViewById<MaterialAutoCompleteTextView>(android.R.id.text1)
-
+            textInputLayout.isErrorEnabled = hasError
             // Configurar un adaptador personalizado que nos permita acceder a los elementos filtrados
-            val adapter = CustomItemAdapter(context, android.R.layout.simple_dropdown_item_1line, currentItems)
+            val adapter = CustomItemAdapter(
+                context,
+                android.R.layout.simple_dropdown_item_1line,
+                currentItems
+            )
             autoCompleteTextView.setAdapter(adapter)
 
             // Listener para selección de ítem del dropdown
@@ -228,7 +233,7 @@ private fun AtoCompletePreview() {
                 label = "Seleccione una opción",
                 selectedItem = selected,
                 onItemSelected = { selected = it },
-                onSelectionCleared = { selected = null }
+                onSelectionCleared = { selected = null },
             )
             Text("Elemento seleccionado: ${selected ?: "Ninguno"}")
         }

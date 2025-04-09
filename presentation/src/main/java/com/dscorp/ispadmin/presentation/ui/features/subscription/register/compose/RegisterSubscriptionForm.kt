@@ -6,9 +6,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,6 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -50,22 +58,31 @@ fun RegisterSubscriptionForm(
     onInstallationTypeSelected: (String) -> Unit = {},
     onRegisterClick: () -> Unit = {}
 ) {
-    Surface(modifier = modifier.fillMaxSize()) {
-        Column {
+    Surface(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
+        val scrollState = rememberScrollState()
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.verticalScroll(scrollState)
+        ) {
             FormRow {
                 MyOutlinedTextField(
                     modifier = Modifier.weight(1f),
                     onValueChange = onFirstNameChanged,
                     value = formState.registerSubscriptionForm.firstName,
                     label = FIRST_NAME_LABEL,
-                    errorMessage = formState.registerSubscriptionForm.firstNameError
+                    hasError = formState.registerSubscriptionForm.firstNameError != null
                 )
                 MyOutlinedTextField(
                     modifier = Modifier.weight(1f),
                     onValueChange = onLastNameChanged,
                     value = formState.registerSubscriptionForm.lastName,
                     label = LAST_NAME_LABEL,
-                    errorMessage = formState.registerSubscriptionForm.lastNameError
+                    hasError = formState.registerSubscriptionForm.lastNameError != null
                 )
             }
 
@@ -75,37 +92,42 @@ fun RegisterSubscriptionForm(
                     onValueChange = onDniChanged,
                     value = formState.registerSubscriptionForm.dni,
                     label = DNI_LABEL,
-                    errorMessage = formState.registerSubscriptionForm.dniError
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    hasError = formState.registerSubscriptionForm.dniError != null
                 )
-                MyOutlinedTextField(
-                    modifier = Modifier.weight(1f),
-                    onValueChange = onAddressChanged,
-                    value = formState.registerSubscriptionForm.address,
-                    label = ADDRESS_LABEL,
-                    errorMessage = formState.registerSubscriptionForm.addressError
-                )
-            }
-
-            FormRow {
-
                 MyOutlinedTextField(
                     modifier = Modifier.weight(1f),
                     onValueChange = onPhoneChanged,
                     value = formState.registerSubscriptionForm.phone,
                     label = PHONE_LABEL,
-                    errorMessage = formState.registerSubscriptionForm.phoneError
-                )
-
-                MyAutoCompleteTextViewCompose(
-                    modifier = Modifier.weight(1f),
-                    items = formState.registerSubscriptionForm.placeList,
-                    label = PLACE_LABEL,
-                    selectedItem = formState.registerSubscriptionForm.selectedPlace,
-                    onItemSelected = onPlaceSelected,
-                    onSelectionCleared = onPLaceSelectionCleared,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Done
+                    ),
+                    hasError = formState.registerSubscriptionForm.phoneError != null
                 )
             }
 
+            MyAutoCompleteTextViewCompose(
+                modifier = Modifier.fillMaxWidth(),
+                items = formState.registerSubscriptionForm.placeList,
+                label = PLACE_LABEL,
+                selectedItem = formState.registerSubscriptionForm.selectedPlace,
+                onItemSelected = onPlaceSelected,
+                onSelectionCleared = onPLaceSelectionCleared,
+                hasError = formState.registerSubscriptionForm.placeError != null,
+            )
+
+            MyOutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = onAddressChanged,
+                value = formState.registerSubscriptionForm.address,
+                label = ADDRESS_LABEL,
+                hasError = formState.registerSubscriptionForm.addressError != null
+            )
             var installationType by remember { mutableStateOf(FIBER_OPTIC) }
 
             InstallationTypeSelector(
@@ -119,7 +141,10 @@ fun RegisterSubscriptionForm(
             MyOutLinedDropDown(
                 label = PLAN_LABEL,
                 items = formState.registerSubscriptionForm.planList,
-                onItemSelected = onPlanSelected
+                selected = formState.registerSubscriptionForm.selectedPlan,
+                onItemSelected = onPlanSelected,
+                hasError = formState.registerSubscriptionForm.planError != null,
+                enabled = formState.registerSubscriptionForm.planList.isNotEmpty(),
             )
 
             if (installationType == FIBER_OPTIC) {
@@ -130,8 +155,14 @@ fun RegisterSubscriptionForm(
                     onNapBoxSelectionCleared = onNapBoxSelectionCleared
                 )
             }
+            Spacer(modifier = Modifier.height(16.dp))
 
-            MyButton(text = "Registrar", onClick = onRegisterClick, enabled = formState.registerSubscriptionForm.isValid())
+            MyButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Registrar",
+                onClick = onRegisterClick,
+                enabled = formState.registerSubscriptionForm.isValid()
+            )
 
         }
     }
@@ -186,17 +217,20 @@ fun FiberOpticForm(
     onNapBoxSelectionCleared: () -> Unit
 ) {
     MyOutLinedDropDown(
-        label = ONU_LABEL,
         items = formState.registerSubscriptionForm.onuList,
-        onItemSelected = onOnuSelected
+        selected = formState.registerSubscriptionForm.selectedOnu,
+        label = ONU_LABEL,
+        onItemSelected = onOnuSelected,
+        hasError = formState.registerSubscriptionForm.onuError != null
     )
     MyAutoCompleteTextViewCompose(
-        label = NAP_BOX_LABEL,
         items = formState.registerSubscriptionForm.napBoxList,
-        onItemSelected = onNapBoxSelected,
+        label = NAP_BOX_LABEL,
         selectedItem = formState.registerSubscriptionForm.selectedNapBox,
+        onItemSelected = onNapBoxSelected,
         onSelectionCleared = onNapBoxSelectionCleared,
-        enabled = formState.registerSubscriptionForm.selectedPlace != null
+        enabled = formState.registerSubscriptionForm.selectedPlace != null,
+        hasError = formState.registerSubscriptionForm.placeError != null
     )
 }
 
