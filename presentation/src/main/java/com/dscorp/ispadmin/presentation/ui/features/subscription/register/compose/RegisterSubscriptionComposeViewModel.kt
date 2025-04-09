@@ -365,6 +365,17 @@ class RegisterSubscriptionComposeViewModel(
         )
     }
 
+    fun onPlaceSelectionCleared() {
+        myUiState.update {
+            it.copy(
+                registerSubscriptionForm = it.registerSubscriptionForm.copy(
+                    selectedPlace = null,
+                    placeError = null
+                )
+            )
+        }
+    }
+
 }
 
 data class RegisterSubscriptionState(

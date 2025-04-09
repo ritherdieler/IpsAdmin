@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.dscorp.ispadmin.presentation.composeComponents.MyAutoCompleteTextViewCompose
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutLinedDropDown
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutlinedTextField
 import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
@@ -36,7 +37,8 @@ fun RegisterSubscriptionForm(
     onPlanSelected: (PlanResponse) -> Unit,
     onOnuSelected: (Onu) -> Unit,
     onPlaceSelected: (PlaceResponse) -> Unit,
-    onNapBoxSelected: (NapBoxResponse) -> Unit
+    onNapBoxSelected: (NapBoxResponse) -> Unit,
+    onPLaceSelectionCleared: () -> Unit,
 ) {
     Surface(modifier = modifier.fillMaxSize()) {
         Column {
@@ -101,12 +103,13 @@ fun RegisterSubscriptionForm(
                     onItemSelected = onPlanSelected
                 )
 
-                MyOutLinedDropDown(
+                MyAutoCompleteTextViewCompose(
                     label = "Lugar",
                     modifier = Modifier.weight(1f),
                     items = formState.registerSubscriptionForm.placeList,
-                    selected = formState.registerSubscriptionForm.selectedPlace,
-                    onItemSelected = onPlaceSelected
+                    selectedItem = formState.registerSubscriptionForm.selectedPlace,
+                    onItemSelected = onPlaceSelected,
+                    onSelectionCleared = onPLaceSelectionCleared,
                 )
 
             }
@@ -187,7 +190,8 @@ private fun RegisterSubscriptionPreview() {
             onPlanSelected = {},
             onOnuSelected = {},
             onPlaceSelected = {},
-            onNapBoxSelected = {}
+            onNapBoxSelected = {},
+            onPLaceSelectionCleared = {}
         )
     }
 }

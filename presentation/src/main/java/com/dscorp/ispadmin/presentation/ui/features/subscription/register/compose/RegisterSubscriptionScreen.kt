@@ -87,7 +87,8 @@ fun RegisterSubscriptionFormScreen(
                 onPlanSelected = { registerSubscriptionViewModel.onPlanSelected(it) },
                 onOnuSelected = { registerSubscriptionViewModel.onOnuSelected(it) },
                 onPlaceSelected = { registerSubscriptionViewModel.onPlaceSelected(it) },
-                onNapBoxSelected = { registerSubscriptionViewModel.onNapBoxSelected(it) }
+                onNapBoxSelected = { registerSubscriptionViewModel.onNapBoxSelected(it) },
+                onPLaceSelectionCleared = { registerSubscriptionViewModel.onPlaceSelectionCleared() }
             )
         }
 
