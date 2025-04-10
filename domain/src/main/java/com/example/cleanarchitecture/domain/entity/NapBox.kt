@@ -14,7 +14,7 @@ data class NapBox(
 
     ) : java.io.Serializable {
     override fun toString(): String {
-        return "$id - $code"
+        return "$id / $code"
     }
 
     override fun equals(other: Any?): Boolean {

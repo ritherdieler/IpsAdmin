@@ -100,9 +100,6 @@ class RegisterSubscriptionFragment :
 
 
     override fun onViewReady(savedInstanceState: Bundle?) {
-
-
-
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         binding.executePendingBindings()

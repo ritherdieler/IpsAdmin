@@ -13,7 +13,7 @@ data class NapBoxResponse(
 ):java.io.Serializable
 {
     override fun toString(): String {
-        return "$code - $address"
+        return "$code / ${address.capitalize()}"
     }
 
     fun toDomain(): NapBox {

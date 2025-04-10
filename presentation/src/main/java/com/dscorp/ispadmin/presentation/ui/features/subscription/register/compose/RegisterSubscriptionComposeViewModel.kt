@@ -2,8 +2,19 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register.compo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.extension.removeSpecialCharacters
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUseCase
-import com.example.cleanarchitecture.domain.entity.*
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.FormFieldKey
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionFormState
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionState
+import com.example.cleanarchitecture.domain.entity.GeoLocation
+import com.example.cleanarchitecture.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.Onu
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.entity.User
 import com.example.cleanarchitecture.domain.entity.extensions.isAValidAddress
 import com.example.cleanarchitecture.domain.entity.extensions.isAValidName
 import com.example.cleanarchitecture.domain.entity.extensions.isValidDni
@@ -14,20 +25,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel responsable de manejar toda la lógica relacionada con el
- * registro de suscripciones. Se encarga de cargar datos iniciales,
- * validar los campos del formulario y finalmente registrar la suscripción.
- *
- * @property getAvailableOnuListUseCase Caso de uso para obtener los ONUs disponibles.
- * @property getPlanListUseCase Caso de uso para obtener el listado de planes.
- * @property getPlaceListUseCase Caso de uso para obtener el listado de lugares.
- * @property getPlaceFromLocationUseCase Caso de uso para obtener un lugar dada una ubicación.
- * @property getNapBoxListUseCase Caso de uso para obtener el listado de cajas Nap.
- * @property registerSubscriptionUseCase Caso de uso para registrar la suscripción.
- * @property getUserSessionUseCase Caso de uso para obtener la información de usuario en sesión.
- * @property getCoreDevicesUseCase Caso de uso para obtener dispositivos de red principales.
- */
 class RegisterSubscriptionComposeViewModel(
     private val getAvailableOnuListUseCase: GetAvailableOnuListUseCase,
     private val getPlanListUseCase: GetPlanListUseCase,
@@ -39,37 +36,16 @@ class RegisterSubscriptionComposeViewModel(
     private val getCoreDevicesUseCase: GetCoreDevicesUseCase
 ) : ViewModel() {
 
-    /**
-     * Flujo de estado principal que notifica a la UI
-     * acerca de los cambios en el proceso de registro de suscripciones.
-     */
     val uiState = MutableStateFlow(RegisterSubscriptionState())
 
-    /**
-     * Listado en caché de NapBoxes. Se actualiza una vez cargados los datos.
-     */
     private var cachedNapBoxList: List<NapBoxResponse> = emptyList()
-
-    /**
-     * Listado en caché de planes. Se actualiza una vez cargados los datos.
-     */
     private var cachedPlanList: List<PlanResponse> = emptyList()
-
-    /**
-     * Usuario actual en sesión. Se actualiza al cargar los datos.
-     */
     private var currentUser: User? = null
 
-    /**
-     * Carga la información inicial del formulario de registro.
-     * Obtiene planes, lugares, ONUs disponibles, cajas Nap, usuario en sesión
-     * y dispositivos de red principales en paralelo.
-     */
     fun loadInitialFormData() = viewModelScope.launch {
         uiState.update { it.copy(isLoading = true) }
 
         try {
-            // Lanzamos corrutinas en paralelo para mejorar el rendimiento
             val onuListDeferred = async { getAvailableOnuListUseCase() }
             val planListDeferred = async { getPlanListUseCase() }
             val placeListDeferred = async { getPlaceListUseCase() }
@@ -110,10 +86,30 @@ class RegisterSubscriptionComposeViewModel(
         }
     }
 
-    /**
-     * Manejador genérico para actualizar campos del formulario.
-     * Utiliza un mapa de claves para identificar los campos y sus validaciones.
-     */
+    fun refreshOnuList() = viewModelScope.launch {
+        uiState.update { it.copy(isRefreshingOnuList = true) }
+
+        try {
+            val onuList = getAvailableOnuListUseCase()
+
+            uiState.update { current ->
+                current.copy(
+                    isRefreshingOnuList = false,
+                    registerSubscriptionForm = current.registerSubscriptionForm.copy(
+                        onuList = onuList.getOrNull() ?: emptyList()
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            uiState.update { current ->
+                current.copy(
+                    isRefreshingOnuList = false,
+                    error = e.message ?: "Error al actualizar la lista de ONUs"
+                )
+            }
+        }
+    }
+
     fun <T> updateField(
         fieldKey: FormFieldKey,
         value: T,
@@ -127,83 +123,90 @@ class RegisterSubscriptionComposeViewModel(
                     firstName = value as String,
                     firstNameError = if (isValid(value)) null else errorMessage
                 )
+
                 FormFieldKey.LAST_NAME -> form.copy(
                     lastName = value as String,
                     lastNameError = if (isValid(value)) null else errorMessage
                 )
+
                 FormFieldKey.DNI -> form.copy(
                     dni = value as String,
                     dniError = if (isValid(value)) null else errorMessage
                 )
+
                 FormFieldKey.ADDRESS -> form.copy(
                     address = value as String,
                     addressError = if (isValid(value)) null else errorMessage
                 )
+
                 FormFieldKey.PHONE -> form.copy(
                     phone = value as String,
                     phoneError = if (isValid(value)) null else errorMessage
                 )
+
                 FormFieldKey.PLAN -> form.copy(
                     selectedPlan = value as PlanResponse,
                     planError = if (isValid(value)) null else errorMessage
                 )
+
                 FormFieldKey.PLACE -> form.copy(
                     selectedPlace = value as PlaceResponse,
                     placeError = if (isValid(value)) null else errorMessage,
                     napBoxList = cachedNapBoxList.filter { it.placeId == value.id?.toInt() }
                 )
+
                 FormFieldKey.ONU -> form.copy(
                     selectedOnu = value as Onu,
                     onuError = if (isValid(value)) null else errorMessage
                 )
+
                 FormFieldKey.NAP_BOX -> form.copy(
                     selectedNapBox = value as NapBoxResponse,
                     napBoxError = if (isValid(value)) null else errorMessage
+                )
+
+                FormFieldKey.NOTE -> form.copy(
+                    note = value as String
                 )
             }
             currentState.copy(registerSubscriptionForm = updatedForm)
         }
     }
 
-    // Enum para identificar los campos del formulario
-    enum class FormFieldKey {
-        FIRST_NAME,
-        LAST_NAME,
-        DNI,
-        ADDRESS,
-        PHONE,
-        PLAN,
-        PLACE,
-        ONU,
-        NAP_BOX
-    }
-
-    // Ejemplo de uso para actualizar campos
     fun onFirstNameChanged(value: String) {
-        updateField(
-            fieldKey = FormFieldKey.FIRST_NAME,
-            value = value,
-            isValid = { it.isAValidName() },
-            errorMessage = "Nombre inválido"
-        )
+        // Limitar a 50 caracteres
+        if (value.length <= 50) {
+            updateField(
+                fieldKey = FormFieldKey.FIRST_NAME,
+                value = value,
+                isValid = { it.isAValidName() },
+                errorMessage = "Nombre inválido"
+            )
+        }
     }
 
     fun onLastNameChanged(value: String) {
-        updateField(
-            fieldKey = FormFieldKey.LAST_NAME,
-            value = value,
-            isValid = { it.isAValidName() },
-            errorMessage = "Apellido inválido"
-        )
+        // Limitar a 50 caracteres
+        if (value.length <= 50) {
+            updateField(
+                fieldKey = FormFieldKey.LAST_NAME,
+                value = value,
+                isValid = { it.isAValidName() },
+                errorMessage = "Apellido inválido"
+            )
+        }
     }
 
     fun onDniChanged(value: String) {
-        updateField(
-            fieldKey = FormFieldKey.DNI,
-            value = value,
-            isValid = { it.isValidDni() },
-            errorMessage = "DNI inválido"
-        )
+        // Limitar a 8 dígitos
+        if (value.length <= 8) {
+            updateField(
+                fieldKey = FormFieldKey.DNI,
+                value = value,
+                isValid = { it.isValidDni() },
+                errorMessage = "DNI inválido"
+            )
+        }
     }
 
     fun onAddressChanged(value: String) {
@@ -216,12 +219,15 @@ class RegisterSubscriptionComposeViewModel(
     }
 
     fun onPhoneChanged(value: String) {
-        updateField(
-            fieldKey = FormFieldKey.PHONE,
-            value = value,
-            isValid = { it.isValidPhone() },
-            errorMessage = "Número de teléfono inválido"
-        )
+        // Limitar a 9 dígitos
+        if (value.length <= 9) {
+            updateField(
+                fieldKey = FormFieldKey.PHONE,
+                value = value,
+                isValid = { it.isValidPhone() },
+                errorMessage = "Número de teléfono inválido"
+            )
+        }
     }
 
     fun onPlanSelected(value: PlanResponse) {
@@ -260,6 +266,17 @@ class RegisterSubscriptionComposeViewModel(
         )
     }
 
+    fun onNoteChanged(value: String) {
+        // Limitar la entrada a 180 caracteres
+        if (value.length <= 180) {
+            updateField(
+                fieldKey = FormFieldKey.NOTE,
+                value = value,
+                isValid = { true }
+            )
+        }
+    }
+
     fun onPlaceSelectionCleared() {
         uiState.update {
             it.copy(
@@ -282,9 +299,6 @@ class RegisterSubscriptionComposeViewModel(
         }
     }
 
-    /**
-     * Cambia el tipo de instalación y filtra la lista de planes según el tipo seleccionado.
-     */
     fun onInstallationTypeSelected(type: InstallationType) {
         val filteredPlans = when (type) {
             InstallationType.FIBER -> cachedPlanList.filter { it.type == PlanResponse.PlanType.FIBER }
@@ -294,16 +308,16 @@ class RegisterSubscriptionComposeViewModel(
         uiState.update {
             it.copy(
                 registerSubscriptionForm = it.registerSubscriptionForm.copy(
+                    installationType = type,
                     planList = filteredPlans,
-                    selectedPlan = null // Se limpia la selección de plan si cambia el tipo
+                    selectedPlan = null,
+                    selectedOnu = null,
+                    selectedNapBox = null,
                 )
             )
         }
     }
 
-    /**
-     * Obtiene un lugar a partir de coordenadas de ubicación.
-     */
     fun getPlaceFromCurrentLocation(latitude: Double, longitude: Double) = viewModelScope.launch {
         getPlaceFromLocationUseCase(latitude, longitude).fold(
             onSuccess = { place ->
@@ -325,28 +339,19 @@ class RegisterSubscriptionComposeViewModel(
         )
     }
 
-    /**
-     * Inicia el proceso de guardado de la suscripción.
-     * Primero se valida el formulario, luego se construye un objeto Subscription
-     * y se realiza el registro a través del caso de uso [registerSubscriptionUseCase].
-     */
     fun saveSubscription() {
         val form = uiState.value.registerSubscriptionForm
 
-        // Validar el formulario con isValid()
         if (!form.isValid()) {
             return
         }
 
-        // Mostrar indicador de carga
         uiState.update {
             it.copy(isLoading = true)
         }
 
-        // Construir el objeto Subscription
         val subscription = createSubscriptionFromForm(form)
 
-        // Registrar la suscripción
         viewModelScope.launch {
             registerSubscriptionUseCase(subscription).fold(
                 onSuccess = { registeredSubscription ->
@@ -370,15 +375,12 @@ class RegisterSubscriptionComposeViewModel(
         }
     }
 
-    /**
-     * Crea una instancia de [Subscription] a partir de los datos del formulario.
-     */
     private fun createSubscriptionFromForm(
         form: RegisterSubscriptionFormState
     ): Subscription {
         return Subscription(
-            firstName = form.firstName,
-            lastName = form.lastName,
+            firstName = form.firstName.removeSpecialCharacters(),
+            lastName = form.lastName.removeSpecialCharacters(),
             dni = form.dni,
             address = form.address,
             phone = form.phone,
@@ -392,91 +394,38 @@ class RegisterSubscriptionComposeViewModel(
                 form.location?.longitude ?: 0.0
             ),
             installationType = form.installationType,
-            note = form.note
+            note = form.note,
+            napBoxId = form.selectedNapBox?.id,
+            onu = form.selectedOnu
         )
     }
-}
 
-/**
- * Estado principal del ViewModel, que encapsula la información
- * sobre la carga de datos, errores y el estado actual del formulario.
- */
-data class RegisterSubscriptionState(
-    val isLoading: Boolean = false,
-    val error: String = "",
-    val registeredSubscription: Subscription? = null,
-    val registerSubscriptionForm: RegisterSubscriptionFormState = RegisterSubscriptionFormState()
-)
+    fun clearRegisteredSubscription() {
+        uiState.update {
+            it.copy(
+                registeredSubscription = null,
+                error = null
+            )
+        }
+    }
 
-/**
- * Representa el estado del formulario de registro y
- * provee la lógica de validación central.
- */
-data class RegisterSubscriptionFormState(
-    val firstName: String = "",
-    val firstNameError: String? = null,
-    val lastName: String = "",
-    val lastNameError: String? = null,
-    val dni: String = "",
-    val dniError: String? = null,
-    val address: String = "",
-    val addressError: String? = null,
-    val phone: String = "",
-    val phoneError: String? = null,
-    val price: String = "",
-    val priceError: String? = null,
-    val subscriptionDate: Long = 0,
-    val planList: List<PlanResponse> = emptyList(),
-    val selectedPlan: PlanResponse? = null,
-    val planError: String? = null,
-    val placeList: List<PlaceResponse> = emptyList(),
-    val selectedPlace: PlaceResponse? = null,
-    val placeError: String? = null,
-    val selectedHostDevice: NetworkDevice? = null,
-    val location: LatLng? = null,
-    val cpeDevice: NetworkDevice? = null,
-    val napBoxError: String? = null,
-    val napBoxList: List<NapBoxResponse> = emptyList(),
-    val selectedNapBox: NapBoxResponse? = null,
-    val onuList: List<Onu> = emptyList(),
-    val selectedOnu: Onu? = null,
-    val onuError: String? = null,
-    val coupon: String = "",
-    val note: String = "",
-    val installationType: InstallationType = InstallationType.FIBER,
-) {
-    /**
-     * Valida todos los campos obligatorios y retorna true si
-     * el formulario está listo para ser enviado.
-     */
-    fun isValid(): Boolean {
-        val isFirstNameValid = firstName.isNotBlank() && firstName.isAValidName()
-        val isLastNameValid = lastName.isNotBlank() && lastName.isAValidName()
-        val isDniValid = dni.isNotBlank() && dni.isValidDni()
-        val isAddressValid = address.isNotBlank() && address.isAValidAddress()
-        val isPhoneValid = phone.isNotBlank() && phone.isValidPhone()
+    fun clearError() {
+        uiState.update {
+            it.copy(
+                error = null
+            )
+        }
+    }
 
-        val isPlanSelected = selectedPlan != null
-        val isPlaceSelected = selectedPlace != null
-
-        // Si es fibra, ONU y NapBox son obligatorios
-        val isFiberPlan = selectedPlan?.type == PlanResponse.PlanType.FIBER
-        val fiberRequirementsValid = if (isFiberPlan) {
-            selectedOnu != null && selectedNapBox != null
-        } else {
-            true
+    fun onLocationChanged(currentLocation:LatLng) {
+        uiState.update {
+            it.copy(
+                registerSubscriptionForm = it.registerSubscriptionForm.copy(
+                    location = currentLocation
+                )
+            )
         }
 
-        val noErrors = firstNameError == null &&
-                lastNameError == null &&
-                dniError == null &&
-                addressError == null &&
-                phoneError == null &&
-                planError == null &&
-                placeError == null
-
-        return isFirstNameValid && isLastNameValid && isDniValid &&
-                isAddressValid && isPhoneValid && isPlanSelected &&
-                isPlaceSelected && fiberRequirementsValid && noErrors
     }
 }
+

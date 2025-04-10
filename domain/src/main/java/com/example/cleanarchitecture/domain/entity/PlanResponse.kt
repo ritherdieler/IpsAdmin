@@ -9,7 +9,7 @@ data class PlanResponse(
     var type: PlanType
 ) : java.io.Serializable {
     override fun toString(): String {
-        return "${name?.capitalize()}, Precio: ${priceToString()}"
+        return "${name?.capitalize()} / Precio: ${priceToString()}"
     }
 
     override fun equals(other: Any?): Boolean {

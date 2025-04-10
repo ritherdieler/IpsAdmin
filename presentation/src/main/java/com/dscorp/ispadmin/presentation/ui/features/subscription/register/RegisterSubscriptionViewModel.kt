@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.extension.formIsValid
+import com.dscorp.ispadmin.presentation.extension.removeSpecialCharacters
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.forms.subscription.RegisterSubscriptionForm
@@ -228,12 +229,6 @@ class RegisterSubscriptionViewModel(
     fun onIsMigrationCheckedChanged(button: CompoundButton, isChecked: Boolean) {
         subscriptionForm.migrationField.liveData.value = isChecked
     }
-
-    private fun String.removeSpecialCharacters(): String {
-        val pattern = "[^A-Za-z0-9ñÑ ]".toRegex()
-        return replace(pattern, "")
-    }
-
 
 }
 

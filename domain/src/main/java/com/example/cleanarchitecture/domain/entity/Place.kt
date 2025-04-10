@@ -14,7 +14,7 @@ data class Place(
     val location: GeoLocation? = null,
 ):java.io.Serializable {
     override fun toString(): String {
-        return name
+        return name.capitalize()
     }
     override fun equals(other: Any?): Boolean {
         return id == (other as Place).id

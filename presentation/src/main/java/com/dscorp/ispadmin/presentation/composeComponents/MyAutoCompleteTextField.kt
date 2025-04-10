@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import androidx.compose.foundation.layout.Column
@@ -182,6 +183,9 @@ fun <T> MyAutoCompleteTextViewCompose(
                     autoCompleteTextView.setText(selectedText, false)
                     autoCompleteTextView.setSelection(selectedText.length)
                     onItemSelected(selectedValue)
+                    
+                    // Ocultar el teclado después de la selección
+                    hideKeyboard(context, autoCompleteTextView)
                 }
             }
 
@@ -222,6 +226,12 @@ private fun <T> MaterialAutoCompleteTextView.setupAdapter(context: Context, item
     setAdapter(adapter)
 }
 
+// Función para ocultar el teclado
+private fun hideKeyboard(context: Context, view: android.view.View) {
+    val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
 @Preview
 @Composable
 private fun AtoCompletePreview() {
@@ -239,4 +249,3 @@ private fun AtoCompletePreview() {
         }
     }
 }
-
