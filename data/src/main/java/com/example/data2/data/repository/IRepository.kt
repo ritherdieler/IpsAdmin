@@ -29,7 +29,7 @@ import com.example.cleanarchitecture.domain.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionFastSearchResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
 import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
-import com.example.cleanarchitecture.domain.domain.entity.Technician
+import com.example.cleanarchitecture.domain.entity.Technician
 import com.example.cleanarchitecture.domain.domain.entity.User
 import com.example.cleanarchitecture.domain.domain.entity.extensions.PayerFinderResult
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
