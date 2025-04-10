@@ -142,7 +142,7 @@ fun RegisterSubscriptionForm(
                 enabled = formState.registerSubscriptionForm.planList.isNotEmpty(),
             )
 
-            if (installationType == FIBER_OPTIC) {
+            if (formState.registerSubscriptionForm.installationType == InstallationType.FIBER) {
                 FiberOpticForm(
                     formState = formState,
                     onOnuSelected = onOnuSelected,
@@ -158,7 +158,6 @@ fun RegisterSubscriptionForm(
                 onClick = onRegisterClick,
                 enabled = formState.registerSubscriptionForm.isValid()
             )
-
         }
     }
 }
@@ -275,15 +274,12 @@ private fun RegisterSubscriptionPreview() {
                     phone = "",
                     price = "",
                     subscriptionDate = 5666,
-                    additionalDevices = listOf(),
                     selectedPlace = null,
-                    technician = null,
                     selectedHostDevice = null,
                     location = null,
                     cpeDevice = null,
                     selectedNapBox = null,
                     coupon = "mazim",
-                    isMigration = false,
                     note = "persequeris"
                 )
             )

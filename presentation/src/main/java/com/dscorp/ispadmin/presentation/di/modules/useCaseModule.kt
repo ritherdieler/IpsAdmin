@@ -5,6 +5,9 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.compos
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose.GetPlaceFromLocationUseCase
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose.GetPlaceListUseCase
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose.GetPlanListUseCase
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUseCase
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose.GetCoreDevicesUseCase
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose.GetUserSessionUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -13,4 +16,7 @@ val useCaseModule = module {
     single { GetPlaceListUseCase(get()) }
     single { GetPlaceFromLocationUseCase(get()) }
     single { GetNapBoxListUseCase(get()) }
+    single { RegisterSubscriptionUseCase(get()) }
+    single { GetUserSessionUseCase(get()) }
+    single { GetCoreDevicesUseCase(get()) }
 }

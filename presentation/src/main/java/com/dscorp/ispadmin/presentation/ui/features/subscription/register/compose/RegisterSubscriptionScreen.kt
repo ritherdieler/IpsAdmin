@@ -40,7 +40,7 @@ fun RegisterSubscriptionFormScreen(
     val locationPermissionState =
         rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
-    val uiState by registerSubscriptionViewModel.myUiState.collectAsStateWithLifecycle()
+    val uiState by registerSubscriptionViewModel.uiState.collectAsStateWithLifecycle()
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
     LaunchedEffect(locationPermissionState.status.isGranted) {
@@ -71,7 +71,7 @@ fun RegisterSubscriptionFormScreen(
     }
 
     LaunchedEffect(Unit) {
-        registerSubscriptionViewModel.getFormData()
+        registerSubscriptionViewModel.loadInitialFormData()
     }
     LaunchedEffect(uiState.registerSubscriptionForm.selectedPlace) {
         println(uiState.registerSubscriptionForm.selectedPlace)
