@@ -1,7 +1,7 @@
 package com.dscorp.ispadmin.presentation.ui.features.ippool.register
 
-import com.example.cleanarchitecture.domain.domain.entity.IpPool
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.entity.IpPool
+import com.example.cleanarchitecture.domain.entity.NetworkDevice
 
 sealed class IpPoolUiState(val error: String? = null) {
 

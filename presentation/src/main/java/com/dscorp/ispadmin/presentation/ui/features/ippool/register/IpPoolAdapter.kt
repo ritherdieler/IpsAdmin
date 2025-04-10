@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemIpPoolBinding
-import com.example.cleanarchitecture.domain.domain.entity.IpPool
+import com.example.cleanarchitecture.domain.entity.IpPool
 
 class IpPoolAdapter(private val listener: IpPoolSelectionListener) :
     ListAdapter<IpPool, IpPoolAdapter.IpPoolAdapterViewHolder>(

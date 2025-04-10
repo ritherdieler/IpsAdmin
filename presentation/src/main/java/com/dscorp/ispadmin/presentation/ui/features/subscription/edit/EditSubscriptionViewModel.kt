@@ -5,8 +5,8 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.FormField
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.SubscriptionResponse
 import com.example.data2.data.apirequestmodel.UpdateSubscriptionPlanBody
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.async

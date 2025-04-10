@@ -5,7 +5,7 @@
 
         <variable
             name="payment"
-            type="com.example.cleanarchitecture.domain.domain.entity.Payment" />
+            type="com.example.cleanarchitecture.domain.entity.Payment" />
     </data>
 
     <LinearLayout

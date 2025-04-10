@@ -3,10 +3,10 @@ package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
-import com.example.cleanarchitecture.domain.domain.entity.CustomerData
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
-import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
+import com.example.cleanarchitecture.domain.entity.CustomerData
+import com.example.cleanarchitecture.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.ServiceStatus
+import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.FlowPreview

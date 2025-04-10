@@ -36,11 +36,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dscorp.ispadmin.R
-import com.example.cleanarchitecture.domain.domain.entity.InstallationType
-import com.example.cleanarchitecture.domain.domain.entity.Onu
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
-import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.entity.Onu
+import com.example.cleanarchitecture.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.ServiceStatus
+import com.example.cleanarchitecture.domain.entity.SubscriptionResponse
 import com.example.data2.data.apirequestmodel.MigrationRequest
 
 @OptIn(ExperimentalMaterial3Api::class)

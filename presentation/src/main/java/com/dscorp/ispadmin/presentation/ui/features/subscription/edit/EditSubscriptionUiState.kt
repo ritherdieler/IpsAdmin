@@ -1,8 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.edit
 
-import com.dscorp.ispadmin.presentation.ui.features.dashboard.DashBoardDataUiState
-import com.example.cleanarchitecture.domain.domain.entity.*
-import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.cleanarchitecture.domain.entity.*
 
 
 sealed class EditSubscriptionUiState {

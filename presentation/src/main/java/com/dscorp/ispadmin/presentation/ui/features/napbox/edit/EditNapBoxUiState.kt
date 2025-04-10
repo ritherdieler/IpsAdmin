@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.napbox.edit
 
-import com.example.cleanarchitecture.domain.domain.entity.*
+import com.example.cleanarchitecture.domain.entity.*
 
 /**
  * Created by Sergio Carrillo Diestra on 13/12/2022.

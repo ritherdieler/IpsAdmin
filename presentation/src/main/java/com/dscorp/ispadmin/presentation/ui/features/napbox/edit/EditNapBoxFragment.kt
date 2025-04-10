@@ -15,8 +15,8 @@ import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
-import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
-import com.example.cleanarchitecture.domain.domain.entity.NapBox
+import com.example.cleanarchitecture.domain.entity.GeoLocation
+import com.example.cleanarchitecture.domain.entity.NapBox
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

@@ -17,7 +17,7 @@ import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHisto
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.OnError
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.OnPaymentHistoryFilteredResponse
 import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.ServiceReactivated
-import com.example.cleanarchitecture.domain.domain.entity.Payment
+import com.example.cleanarchitecture.domain.entity.Payment
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker

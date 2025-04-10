@@ -11,7 +11,7 @@ import com.dscorp.ispadmin.databinding.FragmentTechnicianBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.example.cleanarchitecture.domain.domain.entity.Technician
+import com.example.cleanarchitecture.domain.entity.Technician
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -8,9 +8,9 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.REQUEST_DELAY
-import com.example.cleanarchitecture.domain.domain.entity.Payment
-import com.example.cleanarchitecture.domain.domain.entity.extensions.PayerFinderResult
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDouble
+import com.example.cleanarchitecture.domain.entity.Payment
+import com.example.cleanarchitecture.domain.entity.extensions.PayerFinderResult
+import com.example.cleanarchitecture.domain.entity.extensions.isValidDouble
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow

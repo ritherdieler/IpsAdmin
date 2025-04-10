@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.fragment.navArgs
 import com.dscorp.ispadmin.databinding.DialogNapboxDetailBinding
-import com.example.cleanarchitecture.domain.domain.entity.NapBox
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.NapBoxResponse
 
 class NapBoxDetailDialogFragment(
     private val napBox: NapBoxResponse? = null,
@@ -37,7 +35,7 @@ class NapBoxDetailDialogFragment(
     }
 
     interface NapBoxSelectionListener {
-        fun onNapBoxSelected(napBox:NapBoxResponse)
+        fun onNapBoxSelected(napBox: NapBoxResponse)
     }
 
 

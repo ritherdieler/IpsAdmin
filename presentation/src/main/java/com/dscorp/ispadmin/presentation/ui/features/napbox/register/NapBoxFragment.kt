@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
@@ -15,11 +14,9 @@ import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.populate
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.napbox.NapBoxViewModel
-import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
-import com.example.cleanarchitecture.domain.domain.entity.Mufa
-import com.example.cleanarchitecture.domain.domain.entity.NapBox
+import com.example.cleanarchitecture.domain.entity.GeoLocation
+import com.example.cleanarchitecture.domain.entity.Mufa
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -71,7 +68,7 @@ class NapBoxFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun onLocationSelected(it: LatLng) {
-       viewModel.locationField.value= GeoLocation(it.latitude,it.longitude)
+        viewModel.locationField.value = GeoLocation(it.latitude, it.longitude)
         binding.etLocationNapBox.setText("${it.latitude}, ${it.longitude}")
     }
 
@@ -82,6 +79,7 @@ class NapBoxFragment : Fragment() {
                 is RegisterNapBoxUiState.OnRegisterNapBoxSealedClassRegister -> showSuccessDialog(
                     response
                 )
+
                 is RegisterNapBoxUiState.MufasReady -> fillNapSpinner(response.mufas)
             }
         }

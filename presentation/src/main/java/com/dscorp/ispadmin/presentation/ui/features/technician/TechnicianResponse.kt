@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.technician
 
-import com.example.cleanarchitecture.domain.domain.entity.Technician
+import com.example.cleanarchitecture.domain.entity.Technician
 
 /**
  * Created by Sergio Carrillo Diestra on 26/12/2022.

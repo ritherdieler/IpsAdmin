@@ -24,11 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.cleanarchitecture.domain.domain.entity.CustomerData
-import com.example.cleanarchitecture.domain.domain.entity.InstallationType
-import com.example.cleanarchitecture.domain.domain.entity.NapBox
-import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
+import com.example.cleanarchitecture.domain.entity.CustomerData
+import com.example.cleanarchitecture.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.entity.NapBox
+import com.example.cleanarchitecture.domain.entity.ServiceStatus
+import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 
 val filters = listOf(
     SubscriptionFilter.BY_NAME(),

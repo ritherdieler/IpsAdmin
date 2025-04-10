@@ -17,9 +17,8 @@ import com.dscorp.ispadmin.databinding.FragmentPlaceBinding
 import com.dscorp.ispadmin.presentation.extension.navigateSafe
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
-import com.example.cleanarchitecture.domain.domain.entity.Place
+import com.example.cleanarchitecture.domain.entity.GeoLocation
+import com.example.cleanarchitecture.domain.entity.Place
 import com.google.android.gms.maps.model.LatLng
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -80,18 +79,23 @@ class PlaceFragment() : Fragment() {
     private fun observeFormError() {
         viewModel.formErrorLiveData.observe(viewLifecycleOwner) { formError ->
             when (formError) {
-                is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error = formError.message
+                is FormError.OnEtAbbreviationError -> binding.tlAbbreviation.error =
+                    formError.message
+
                 is FormError.OnEtNameError -> binding.tlNamePlace.error = formError.message
                 is FormError.OnEtLocationError -> binding.tlLocation.error = formError.message
                 is FormError.OnEtNameIsInvalidError -> binding.tlNamePlace.error = formError.message
             }
         }
     }
+
     private fun observeCleanErrorForm() {
         viewModel.cleanErrorFormLiveData.observe(viewLifecycleOwner) { errorCleanForm ->
             when (errorCleanForm) {
 
-                CleanFormErrorsPlace.OnEtAbbreviationCleanError -> binding.tlAbbreviation.error = null
+                CleanFormErrorsPlace.OnEtAbbreviationCleanError -> binding.tlAbbreviation.error =
+                    null
+
                 CleanFormErrorsPlace.OnEtNamePlaceCleanError -> binding.tlNamePlace.error = null
             }
         }

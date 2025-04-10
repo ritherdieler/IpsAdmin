@@ -31,7 +31,7 @@ import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.S
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.MIGRATE_TO_FIBER
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SEE_DETAILS
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SHOW_PAYMENT_HISTORY
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
+import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel

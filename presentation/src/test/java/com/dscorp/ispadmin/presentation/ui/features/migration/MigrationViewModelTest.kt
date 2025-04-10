@@ -1,8 +1,8 @@
 package com.dscorp.ispadmin.presentation.ui.features.migration
 
-import com.example.cleanarchitecture.domain.domain.entity.Onu
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.entity.Onu
+import com.example.cleanarchitecture.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.SubscriptionResponse
 import com.example.data2.data.apirequestmodel.MigrationRequest
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.Dispatchers

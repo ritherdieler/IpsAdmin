@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemNapBoxesListBinding
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.NapBoxResponse
 
 class NapBoxeAdapter(val listener: OnItemClickListener) : ListAdapter<NapBoxResponse, NapBoxeAdapter.NapBoxAdapterViewHolder>(
     NapBoxDiffCallback()

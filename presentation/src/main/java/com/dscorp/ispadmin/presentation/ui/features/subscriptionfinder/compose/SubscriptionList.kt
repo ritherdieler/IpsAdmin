@@ -30,9 +30,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.example.cleanarchitecture.domain.domain.entity.ServiceStatus
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
-import com.example.cleanarchitecture.domain.domain.entity.createReminderMessage
+import com.example.cleanarchitecture.domain.entity.ServiceStatus
+import com.example.cleanarchitecture.domain.entity.SubscriptionResume
+import com.example.cleanarchitecture.domain.entity.createReminderMessage
 
 
 @OptIn(ExperimentalFoundationApi::class)

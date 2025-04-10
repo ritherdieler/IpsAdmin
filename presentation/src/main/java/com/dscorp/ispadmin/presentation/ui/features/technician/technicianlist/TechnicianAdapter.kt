@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dscorp.ispadmin.databinding.ItemTechnicianListBinding
-import com.example.cleanarchitecture.domain.domain.entity.Technician
+import com.example.cleanarchitecture.domain.entity.Technician
 
 class TechnicianAdapter : ListAdapter<Technician, TechnicianAdapter.TechnicianListAdapterViewHolder>(
     TechnicianListDiffCallback()

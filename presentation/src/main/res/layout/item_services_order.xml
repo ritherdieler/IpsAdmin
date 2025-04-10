@@ -6,7 +6,7 @@
     <data>
 <variable
     name="serviceOrderList"
-    type="com.example.cleanarchitecture.domain.domain.entity.ServiceOrderResponse" />
+    type="com.example.cleanarchitecture.domain.entity.ServiceOrderResponse" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

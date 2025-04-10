@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentMyProfileBinding
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginActivity
-import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.entity.User
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MyProfileFragment : Fragment() {

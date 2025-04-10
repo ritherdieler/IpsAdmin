@@ -15,7 +15,7 @@ import com.dscorp.ispadmin.presentation.extension.openWithXlsxApp
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.report.DownloadDocumentType.*
-import com.example.cleanarchitecture.domain.domain.entity.DownloadDocumentResponse
+import com.example.cleanarchitecture.domain.entity.DownloadDocumentResponse
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReportsFragment : BaseFragment<ReportsUiState, FragmentReportsBinding>() {

@@ -19,8 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dscorp.ispadmin.presentation.ui.features.fixedCost.GetAllFixedCostsState
 import com.dscorp.ispadmin.presentation.ui.features.migration.Loader
-import com.example.cleanarchitecture.domain.domain.entity.FixedCost
-import com.example.cleanarchitecture.domain.domain.entity.FixedCostType
+import com.example.cleanarchitecture.domain.entity.FixedCost
+import com.example.cleanarchitecture.domain.entity.FixedCostType
 import myTypography
 
 @Composable

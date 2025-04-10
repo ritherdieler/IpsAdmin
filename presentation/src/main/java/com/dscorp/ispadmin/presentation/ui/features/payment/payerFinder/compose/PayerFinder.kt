@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dscorp.ispadmin.presentation.theme.Primary
 import com.dscorp.ispadmin.presentation.theme.Secondary
-import com.example.cleanarchitecture.domain.domain.entity.extensions.PayerFinderResult
+import com.example.cleanarchitecture.domain.entity.extensions.PayerFinderResult
 import myTypography
 
 @Composable

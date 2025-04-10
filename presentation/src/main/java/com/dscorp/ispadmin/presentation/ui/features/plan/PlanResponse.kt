@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.plan
 
-import com.example.cleanarchitecture.domain.domain.entity.Plan
+import com.example.cleanarchitecture.domain.entity.Plan
 
 /**
  * Created by Sergio Carrillo Diestra on 14/12/2022.

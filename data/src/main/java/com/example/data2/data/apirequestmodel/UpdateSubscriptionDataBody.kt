@@ -1,7 +1,6 @@
 package com.example.data2.data.apirequestmodel
 
-import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
-import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.entity.GeoLocation
 
 data class UpdateSubscriptionDataBody(
     val subscriptionId: Int,

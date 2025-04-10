@@ -9,9 +9,8 @@ import com.dscorp.ispadmin.databinding.FragmentNetworkDeviceBinding
 import com.dscorp.ispadmin.presentation.extension.fillWithList
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.networkdevice.NetworkDeviceFormError.*
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.entity.NetworkDevice
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NetworkDeviceFragment : Fragment() {
@@ -69,6 +68,7 @@ class NetworkDeviceFragment : Fragment() {
             }
         }
     }
+
     private fun observeCleanNetworkDeviceErrorForm() {
         viewModel.cleanNetworkDeviceErrorFormLiveData.observe(viewLifecycleOwner) { cleanForm ->
             when (cleanForm) {

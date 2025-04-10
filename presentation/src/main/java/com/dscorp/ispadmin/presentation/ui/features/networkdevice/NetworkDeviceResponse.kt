@@ -1,6 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.networkdevice
 
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.entity.NetworkDevice
 
 /**
  * Created by Sergio Carrillo Diestra on 16/12/2022.

@@ -1,12 +1,12 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.register
 
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
-import com.example.cleanarchitecture.domain.domain.entity.Onu
-import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
-import com.example.cleanarchitecture.domain.domain.entity.Technician
+import com.example.cleanarchitecture.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.entity.Onu
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.entity.Technician
 
 /**
  * Created by Sergio Carrillo Diestra on 13/12/2022.

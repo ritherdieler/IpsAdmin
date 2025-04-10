@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.asFlow
 import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailViewModel
-import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
+import com.example.cleanarchitecture.domain.entity.extensions.toFormattedDateString
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

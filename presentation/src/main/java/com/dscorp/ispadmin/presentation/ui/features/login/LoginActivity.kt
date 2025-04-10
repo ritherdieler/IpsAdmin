@@ -19,7 +19,7 @@ import com.dscorp.ispadmin.presentation.ui.features.login.compose.Login
 import com.dscorp.ispadmin.presentation.ui.features.login.compose.LoginScreen
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterActivity
-import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.entity.User
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

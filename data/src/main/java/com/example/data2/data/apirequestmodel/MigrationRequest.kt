@@ -1,6 +1,6 @@
 package com.example.data2.data.apirequestmodel
 
-import com.example.cleanarchitecture.domain.domain.entity.Onu
+import com.example.cleanarchitecture.domain.entity.Onu
 
 data class MigrationRequest(
     val onu: Onu?,

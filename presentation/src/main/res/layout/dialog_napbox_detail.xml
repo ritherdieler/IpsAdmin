@@ -6,7 +6,7 @@
     <data>
         <variable
             name="napBox"
-            type="com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse" />
+            type="com.example.cleanarchitecture.domain.entity.NapBoxResponse" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

@@ -33,11 +33,11 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.Regist
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.ShimmerVisibility
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.WirelessDevicesFound
 import com.dscorp.ispadmin.presentation.util.PermissionManager
-import com.example.cleanarchitecture.domain.domain.entity.InstallationType
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
-import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
+import com.example.cleanarchitecture.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.extensions.toFormattedDateString
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.datepicker.CalendarConstraints

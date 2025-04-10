@@ -14,7 +14,7 @@ import com.dscorp.ispadmin.presentation.ui.features.login.CheckVersionState.*
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginState
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginViewModel
 import com.dscorp.ispadmin.presentation.ui.features.migration.Loader
-import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.entity.User
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

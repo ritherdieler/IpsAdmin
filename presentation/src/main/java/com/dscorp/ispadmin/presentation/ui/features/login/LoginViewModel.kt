@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.BuildConfig
 import com.dscorp.ispadmin.presentation.ui.features.login.compose.LoginForm
-import com.example.cleanarchitecture.domain.domain.entity.Loging
-import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.entity.Loging
+import com.example.cleanarchitecture.domain.entity.User
 import com.example.data2.data.extensions.encryptWithSHA384
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.flow.MutableStateFlow

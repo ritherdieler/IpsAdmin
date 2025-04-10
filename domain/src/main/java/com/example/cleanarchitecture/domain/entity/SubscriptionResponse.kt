@@ -1,6 +1,6 @@
 package com.example.cleanarchitecture.domain.entity
 
-import com.example.cleanarchitecture.domain.domain.entity.extensions.toFormattedDateString
+import com.example.cleanarchitecture.domain.entity.extensions.toFormattedDateString
 
 data class SubscriptionResponse(
     var id: Int,

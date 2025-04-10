@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentNapBoxesListBinding
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.NapBoxResponse
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

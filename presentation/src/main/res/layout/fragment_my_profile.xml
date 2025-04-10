@@ -7,7 +7,7 @@
 
         <variable
             name="user"
-            type="com.example.cleanarchitecture.domain.domain.entity.User" />
+            type="com.example.cleanarchitecture.domain.entity.User" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

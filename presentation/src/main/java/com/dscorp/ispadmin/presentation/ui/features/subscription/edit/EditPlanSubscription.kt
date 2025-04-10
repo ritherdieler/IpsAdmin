@@ -11,8 +11,7 @@ import com.dscorp.ispadmin.presentation.extension.populate
 import com.dscorp.ispadmin.presentation.extension.showCrossDialog
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
-import com.example.cleanarchitecture.domain.domain.entity.User
+import com.example.cleanarchitecture.domain.entity.SubscriptionResponse
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditPlanSubscription :

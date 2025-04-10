@@ -2,15 +2,15 @@ package com.dscorp.ispadmin.presentation.ui.features.forms.subscription
 
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
-import com.example.cleanarchitecture.domain.domain.entity.Onu
-import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
-import com.example.cleanarchitecture.domain.domain.entity.Technician
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidIpv4
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
+import com.example.cleanarchitecture.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.entity.Onu
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.Technician
+import com.example.cleanarchitecture.domain.entity.extensions.isValidDni
+import com.example.cleanarchitecture.domain.entity.extensions.isValidIpv4
+import com.example.cleanarchitecture.domain.entity.extensions.isValidPhone
 import com.google.android.gms.maps.model.LatLng
 
 

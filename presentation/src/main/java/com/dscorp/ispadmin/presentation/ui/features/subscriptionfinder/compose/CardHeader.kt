@@ -31,8 +31,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dscorp.ispadmin.R
-import com.example.cleanarchitecture.domain.domain.entity.InstallationType
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
+import com.example.cleanarchitecture.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 
 
 enum class SubscriptionMenu(val menuId: Int) {

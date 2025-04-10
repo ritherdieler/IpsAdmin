@@ -42,7 +42,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.CustomOutlinedTextField
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResume
+import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

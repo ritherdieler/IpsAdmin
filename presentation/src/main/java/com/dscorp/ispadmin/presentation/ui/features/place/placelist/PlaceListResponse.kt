@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.place.placelist
 
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDeviceResponse
-import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
 
 /**
  * Created by Sergio Carrillo Diestra on 19/12/2022.

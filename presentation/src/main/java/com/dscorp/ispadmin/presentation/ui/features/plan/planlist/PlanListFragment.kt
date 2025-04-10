@@ -11,7 +11,7 @@ import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.FragmentPlanListBinding
 import com.dscorp.ispadmin.presentation.extension.showCrossDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.PlanResponse
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlanListFragment : Fragment(), OnPlanSelectedListener {

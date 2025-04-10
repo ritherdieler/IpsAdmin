@@ -19,10 +19,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -35,10 +31,11 @@ import com.dscorp.ispadmin.presentation.composeComponents.MyAutoCompleteTextView
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyButton
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutLinedDropDown
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutlinedTextField
-import com.example.cleanarchitecture.domain.domain.entity.NapBoxResponse
-import com.example.cleanarchitecture.domain.domain.entity.Onu
-import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.Onu
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.entity.PlanResponse
 
 @Composable
 fun RegisterSubscriptionForm(
@@ -55,7 +52,7 @@ fun RegisterSubscriptionForm(
     onNapBoxSelected: (NapBoxResponse) -> Unit = {},
     onPLaceSelectionCleared: () -> Unit = {},
     onNapBoxSelectionCleared: () -> Unit = {},
-    onInstallationTypeSelected: (String) -> Unit = {},
+    onInstallationTypeSelected: (InstallationType) -> Unit = {},
     onRegisterClick: () -> Unit = {}
 ) {
     Surface(
@@ -128,12 +125,10 @@ fun RegisterSubscriptionForm(
                 label = ADDRESS_LABEL,
                 hasError = formState.registerSubscriptionForm.addressError != null
             )
-            var installationType by remember { mutableStateOf(FIBER_OPTIC) }
 
             InstallationTypeSelector(
-                installationType = installationType,
+                installationType = formState.registerSubscriptionForm.installationType,
                 onTypeSelected = {
-                    installationType = it
                     onInstallationTypeSelected(it)
                 }
             )
@@ -170,21 +165,21 @@ fun RegisterSubscriptionForm(
 
 @Composable
 fun InstallationTypeSelector(
-    installationType: String,
-    onTypeSelected: (String) -> Unit
+    installationType: InstallationType,
+    onTypeSelected: (InstallationType) -> Unit
 ) {
     Row {
         RadioButtonWithLabel(
             modifier = Modifier.weight(1f),
             label = FIBER_OPTIC,
-            selected = installationType == FIBER_OPTIC,
-            onClick = { onTypeSelected(FIBER_OPTIC) }
+            selected = installationType == InstallationType.FIBER,
+            onClick = { onTypeSelected(InstallationType.FIBER ) }
         )
         RadioButtonWithLabel(
             modifier = Modifier.weight(1f),
             label = WIRELESS,
-            selected = installationType == WIRELESS,
-            onClick = { onTypeSelected(WIRELESS) }
+            selected = installationType == InstallationType.WIRELESS,
+            onClick = { onTypeSelected(InstallationType.WIRELESS) }
         )
     }
 }
@@ -283,7 +278,7 @@ private fun RegisterSubscriptionPreview() {
                     additionalDevices = listOf(),
                     selectedPlace = null,
                     technician = null,
-                    hostDevice = null,
+                    selectedHostDevice = null,
                     location = null,
                     cpeDevice = null,
                     selectedNapBox = null,

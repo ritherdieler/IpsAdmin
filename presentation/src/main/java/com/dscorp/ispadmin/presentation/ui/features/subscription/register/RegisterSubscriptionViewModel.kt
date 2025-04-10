@@ -17,12 +17,12 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.Regist
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.RegisterSubscriptionSuccess
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.ShimmerVisibility
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.RegisterSubscriptionUiState.WirelessDevicesFound
-import com.example.cleanarchitecture.domain.domain.entity.GeoLocation
-import com.example.cleanarchitecture.domain.domain.entity.InstallationType
-import com.example.cleanarchitecture.domain.domain.entity.NetworkDevice
-import com.example.cleanarchitecture.domain.domain.entity.PlanResponse
-import com.example.cleanarchitecture.domain.domain.entity.Subscription
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.entity.GeoLocation
+import com.example.cleanarchitecture.domain.entity.InstallationType
+import com.example.cleanarchitecture.domain.entity.NetworkDevice
+import com.example.cleanarchitecture.domain.entity.PlanResponse
+import com.example.cleanarchitecture.domain.entity.Subscription
+import com.example.cleanarchitecture.domain.entity.SubscriptionResponse
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -233,7 +233,6 @@ class RegisterSubscriptionViewModel(
         val pattern = "[^A-Za-z0-9ñÑ ]".toRegex()
         return replace(pattern, "")
     }
-
 
 
 }

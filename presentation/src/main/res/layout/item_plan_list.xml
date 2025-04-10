@@ -7,7 +7,7 @@
 
         <variable
             name="planList"
-            type="com.example.cleanarchitecture.domain.domain.entity.PlanResponse" />
+            type="com.example.cleanarchitecture.domain.entity.PlanResponse" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

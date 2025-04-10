@@ -16,8 +16,8 @@ import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.MyAutoCompleteAdapter
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketState
 import com.dscorp.ispadmin.presentation.ui.features.supportTicket.SupportTicketViewModel
-import com.example.cleanarchitecture.domain.domain.entity.PlaceResponse
-import com.example.cleanarchitecture.domain.domain.entity.SubscriptionFastSearchResponse
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.entity.SubscriptionFastSearchResponse
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel

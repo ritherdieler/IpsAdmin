@@ -6,10 +6,10 @@ import com.dscorp.ispadmin.presentation.extension.analytics.sendSignUpEvent
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.formvalidation.ReactiveFormField
-import com.example.cleanarchitecture.domain.domain.entity.User
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidDni
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidEmail
-import com.example.cleanarchitecture.domain.domain.entity.extensions.isValidPhone
+import com.example.cleanarchitecture.domain.entity.User
+import com.example.cleanarchitecture.domain.entity.extensions.isValidDni
+import com.example.cleanarchitecture.domain.entity.extensions.isValidEmail
+import com.example.cleanarchitecture.domain.entity.extensions.isValidPhone
 import com.example.data2.data.extensions.encryptWithSHA384
 import com.example.data2.data.repository.IRepository
 import com.google.firebase.analytics.FirebaseAnalytics
