@@ -5,14 +5,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,20 +28,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.dscorp.ispadmin.R
 import com.example.cleanarchitecture.domain.entity.InstallationType
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
+import androidx.compose.material3.HorizontalDivider
 
-
+/**
+ * Enum representing the menu options available for a subscription
+ */
 enum class SubscriptionMenu(val menuId: Int) {
     SHOW_PAYMENT_HISTORY(R.string.show_payment_history),
     EDIT_PLAN_SUBSCRIPTION(R.string.edit_plan),
@@ -48,73 +55,127 @@ enum class SubscriptionMenu(val menuId: Int) {
     }
 }
 
+/**
+ * Header component for the subscription card displaying customer name and menu options
+ * 
+ * @param subscription The subscription data to display
+ * @param onMenuItemSelected Callback for when a menu item is selected
+ * @param modifier Optional modifier for customizing the component
+ */
 @Composable
 fun CardHeader(
-    onMenuItemSelected: (SubscriptionMenu) -> Unit = {},
-    subscription: SubscriptionResume
+    subscription: SubscriptionResume,
+    onMenuItemSelected: (SubscriptionMenu) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
-    var dotMenuExpanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    Box(modifier = Modifier.fillMaxWidth()) {
+    var menuExpanded by remember { mutableStateOf(false) }
+    
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Customer name (takes most of the space)
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center)
-                .padding(top = 12.dp, start = 48.dp, end = 48.dp),
-            textAlign = TextAlign.Center,
-            text = subscription.customerName.uppercase(),
+            text = subscription.customerName,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            fontWeight = FontWeight.Bold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            color = Color.White,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            textAlign = TextAlign.Start
         )
-        Column(modifier = Modifier.align(Alignment.CenterEnd)) {
-            Icon(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .padding(end = 16.dp)
-                    .clickable { dotMenuExpanded = true },
-                painter = painterResource(id = R.drawable.ic_more_dot),
-                tint = Color.White,
-                contentDescription = ""
-            )
-
-            DropdownMenu(
-                expanded = dotMenuExpanded,
-                onDismissRequest = { dotMenuExpanded = false }
+        
+        // More options menu
+        Box {
+            IconButton(
+                onClick = { menuExpanded = true },
+                modifier = Modifier.size(40.dp)
             ) {
-
-                var menus = SubscriptionMenu.values().toMutableList()
-                menus = when (subscription.installationType) {
-                    InstallationType.FIBER -> menus.filter { it != SubscriptionMenu.MIGRATE_TO_FIBER }.toMutableList()
-                    InstallationType.WIRELESS -> menus.filter { it != SubscriptionMenu.CHANGE_NAP_BOX }.toMutableList()
-                    else -> menus
-                }
-
-                menus.forEach { item ->
-                    DropdownMenuItem(
-                        text = {
-                            Row {
-                                Text(
-                                    text = item.getTitle(context),
-                                    style = TextStyle(
-                                        fontSize = 14.sp,
-                                        lineHeight = 17.92.sp,
-                                        fontWeight = FontWeight(400),
-                                        color = Color(0xFF000034),
-                                    )
-                                )
-                            }
-                        },
-                        onClick = {
-                            dotMenuExpanded = false
-                            onMenuItemSelected(item)
-                        },
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "Ver opciones",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             }
+            
+            SubscriptionDropdownMenu(
+                expanded = menuExpanded,
+                onDismissRequest = { menuExpanded = false },
+                subscription = subscription,
+                onMenuItemSelected = { 
+                    menuExpanded = false
+                    onMenuItemSelected(it)
+                }
+            )
+        }
+    }
+}
+
+/**
+ * Dropdown menu for subscription actions
+ */
+@Composable
+private fun SubscriptionDropdownMenu(
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    subscription: SubscriptionResume,
+    onMenuItemSelected: (SubscriptionMenu) -> Unit
+) {
+    val context = LocalContext.current
+    
+    // Filter menu items based on installation type
+    val menuItems = SubscriptionMenu.values().toMutableList().filter { menuItem ->
+        when (subscription.installationType) {
+            InstallationType.FIBER -> menuItem != SubscriptionMenu.MIGRATE_TO_FIBER
+            InstallationType.WIRELESS -> menuItem != SubscriptionMenu.CHANGE_NAP_BOX
+            else -> true
+        }
+    }
+    
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismissRequest,
+        modifier = Modifier.width(220.dp)
+    ) {
+        // Title section
+        Text(
+            text = "Opciones de suscripción",
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            color = MaterialTheme.colorScheme.primary
+        )
+        
+        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+        
+        // Menu items
+        menuItems.forEach { menuItem ->
+            DropdownMenuItem(
+                text = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        // Icon based on menu item type
+                        Icon(
+                            painter = painterResource(
+                                id = R.drawable.ic_more_dot
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        
+                        Spacer(modifier = Modifier.width(12.dp))
+                        
+                        Text(
+                            text = menuItem.getTitle(context),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                },
+                onClick = { onMenuItemSelected(menuItem) }
+            )
         }
     }
 }
