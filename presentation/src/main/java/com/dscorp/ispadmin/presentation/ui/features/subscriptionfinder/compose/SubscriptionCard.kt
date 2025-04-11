@@ -194,6 +194,7 @@ fun CustomerDataForm(
             Spacer(modifier = Modifier.height(16.dp))
 
             SaveButton(
+                enabled = formData.isValid() && saveState !is SaveSubscriptionState.Loading,
                 saveState = saveState,
                 onSaveClick = onSaveClick
             )
@@ -211,7 +212,10 @@ private fun CustomerFormFields(
     modifier: Modifier = Modifier
 ) {
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
-        val (name, lastName, phone, dni, address, email, place) = createRefs()
+        val (
+            name, lastName, phone, dni, address, email, place,
+            nameError, lastNameError, phoneError, dniError, addressError, emailError
+        ) = createRefs()
 
         // Name and Last Name row
         CustomOutlinedTextField(
@@ -223,8 +227,21 @@ private fun CustomerFormFields(
             },
             value = formData.name,
             onValueChange = { onFieldChange("name", it) },
-            label = "Nombre"
+            label = "Nombre",
+            isError = formData.nameError != null
         )
+        
+        if (formData.nameError != null) {
+            Text(
+                text = formData.nameError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.constrainAs(nameError) {
+                    top.linkTo(name.bottom, margin = 2.dp)
+                    start.linkTo(name.start, margin = 16.dp)
+                }
+            )
+        }
 
         CustomOutlinedTextField(
             modifier = Modifier.constrainAs(lastName) {
@@ -235,13 +252,43 @@ private fun CustomerFormFields(
             },
             value = formData.lastName,
             onValueChange = { onFieldChange("lastName", it) },
-            label = "Apellido"
+            label = "Apellido",
+            isError = formData.lastNameError != null
         )
+        
+        if (formData.lastNameError != null) {
+            Text(
+                text = formData.lastNameError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.constrainAs(lastNameError) {
+                    top.linkTo(lastName.bottom, margin = 2.dp)
+                    start.linkTo(lastName.start, margin = 16.dp)
+                }
+            )
+        }
+
+        // Reference point for the next row, considering possible error messages
+        val nameRowBottom = if (formData.nameError != null || formData.lastNameError != null) {
+            if (formData.nameError != null && formData.lastNameError != null) {
+                // Both have errors, use the bottom of both error texts
+                nameError
+            } else if (formData.nameError != null) {
+                // Only name has error
+                nameError
+            } else {
+                // Only lastName has error
+                lastNameError
+            }
+        } else {
+            // No errors, use bottom of fields
+            name
+        }
 
         // Phone and DNI row
         CustomOutlinedTextField(
             modifier = Modifier.constrainAs(phone) {
-                top.linkTo(name.bottom, margin = 12.dp)
+                top.linkTo(nameRowBottom.bottom, margin = 12.dp)
                 start.linkTo(parent.start)
                 end.linkTo(dni.start, margin = 8.dp)
                 width = Dimension.fillToConstraints
@@ -250,8 +297,21 @@ private fun CustomerFormFields(
             onValueChange = { onFieldChange("phone", it) },
             label = "Teléfono",
             maxLength = 9,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            isError = formData.phoneError != null
         )
+        
+        if (formData.phoneError != null) {
+            Text(
+                text = formData.phoneError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.constrainAs(phoneError) {
+                    top.linkTo(phone.bottom, margin = 2.dp)
+                    start.linkTo(phone.start, margin = 16.dp)
+                }
+            )
+        }
 
         CustomOutlinedTextField(
             modifier = Modifier.constrainAs(dni) {
@@ -264,13 +324,39 @@ private fun CustomerFormFields(
             onValueChange = { onFieldChange("dni", it) },
             label = "DNI",
             maxLength = 8,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            isError = formData.dniError != null
         )
+        
+        if (formData.dniError != null) {
+            Text(
+                text = formData.dniError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.constrainAs(dniError) {
+                    top.linkTo(dni.bottom, margin = 2.dp)
+                    start.linkTo(dni.start, margin = 16.dp)
+                }
+            )
+        }
+
+        // Reference point for the next row
+        val phoneRowBottom = if (formData.phoneError != null || formData.dniError != null) {
+            if (formData.phoneError != null && formData.dniError != null) {
+                phoneError
+            } else if (formData.phoneError != null) {
+                phoneError
+            } else {
+                dniError
+            }
+        } else {
+            phone
+        }
 
         // Place dropdown with loading states
         PlaceSelector(
             modifier = Modifier.constrainAs(place) {
-                top.linkTo(dni.bottom, margin = 12.dp)
+                top.linkTo(phoneRowBottom.bottom, margin = 12.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
@@ -279,7 +365,8 @@ private fun CustomerFormFields(
             currentPlace = formData.place,
             currentPlaceId = formData.placeId,
             onPlaceSelected = onPlaceSelected,
-            onUpdatePlace = onUpdatePlace
+            onUpdatePlace = onUpdatePlace,
+            isError = formData.placeError != null
         )
 
         // Address and Email fields
@@ -292,12 +379,31 @@ private fun CustomerFormFields(
             },
             value = formData.address,
             onValueChange = { onFieldChange("address", it) },
-            label = "Dirección"
+            label = "Dirección",
+            isError = formData.addressError != null
         )
+        
+        if (formData.addressError != null) {
+            Text(
+                text = formData.addressError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.constrainAs(addressError) {
+                    top.linkTo(address.bottom, margin = 2.dp)
+                    start.linkTo(address.start, margin = 16.dp)
+                }
+            )
+        }
+
+        val addressRowBottom = if (formData.addressError != null) {
+            addressError
+        } else {
+            address
+        }
 
         CustomOutlinedTextField(
             modifier = Modifier.constrainAs(email) {
-                top.linkTo(address.bottom, margin = 12.dp)
+                top.linkTo(addressRowBottom.bottom, margin = 12.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
@@ -305,8 +411,21 @@ private fun CustomerFormFields(
             value = formData.email,
             onValueChange = { onFieldChange("email", it) },
             label = "Email",
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            isError = formData.emailError != null
         )
+        
+        if (formData.emailError != null) {
+            Text(
+                text = formData.emailError,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.constrainAs(emailError) {
+                    top.linkTo(email.bottom, margin = 2.dp)
+                    start.linkTo(email.start, margin = 16.dp)
+                }
+            )
+        }
     }
 }
 
@@ -317,6 +436,7 @@ private fun PlaceSelector(
     currentPlaceId: Int,
     onPlaceSelected: (PlaceResponse) -> Unit,
     onUpdatePlace: (Int, String) -> Unit,
+    isError: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     when {
@@ -341,7 +461,8 @@ private fun PlaceSelector(
                     if (id != null && name != null) {
                         onUpdatePlace(id.toInt(), name)
                     }
-                }
+                },
+                hasError = isError
             )
         }
         placesState.isLoading -> {
@@ -362,7 +483,8 @@ private fun PlaceSelector(
                 enabled = false,
                 value = currentPlace,
                 onValueChange = { },
-                label = "Lugar"
+                label = "Lugar",
+                isError = isError
             )
         }
     }
@@ -529,8 +651,10 @@ fun SubscriptionInfoItem(
 private fun SaveButton(
     saveState: SaveSubscriptionState,
     onSaveClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean
 ) {
+
     Button(
         modifier = modifier
             .fillMaxWidth()
@@ -542,7 +666,7 @@ private fun SaveButton(
             disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
             disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
         ),
-        enabled = saveState !is SaveSubscriptionState.Loading,
+        enabled = enabled,
         onClick = onSaveClick
     ) {
         if (saveState is SaveSubscriptionState.Loading) {

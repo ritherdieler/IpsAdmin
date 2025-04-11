@@ -2,11 +2,17 @@ package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dscorp.ispadmin.presentation.extension.removeAccents
 import com.example.cleanarchitecture.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.entity.NapBoxResponse
 import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
+import com.example.cleanarchitecture.domain.entity.extensions.isAValidAddress
+import com.example.cleanarchitecture.domain.entity.extensions.isAValidName
+import com.example.cleanarchitecture.domain.entity.extensions.isValidDni
+import com.example.cleanarchitecture.domain.entity.extensions.isValidEmail
+import com.example.cleanarchitecture.domain.entity.extensions.isValidPhone
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.FlowPreview
@@ -33,16 +39,40 @@ data class SubscriptionFinderUiState(
 
 data class CustomerFormData(
     val name: String = "",
+    val nameError: String? = null,
     val lastName: String = "",
+    val lastNameError: String? = null,
     val phone: String = "",
+    val phoneError: String? = null,
     val dni: String = "",
+    val dniError: String? = null,
     val address: String = "",
+    val addressError: String? = null,
     val email: String = "",
+    val emailError: String? = null,
     val place: String = "",
+    val placeError: String? = null,
     val placeId: Int = 0,
     val subscriptionId: Int = 0,
-    val customerId: Int = 0
-)
+) {
+
+    private fun isValidEmail() = email.isEmpty() || email.isValidEmail()
+
+    fun isValid(): Boolean {
+        return nameError == null &&
+                lastNameError == null &&
+                phoneError == null &&
+                dniError == null &&
+                addressError == null &&
+                emailError == null &&
+                name.isNotBlank() &&
+                lastName.isNotBlank() &&
+                phone.isNotBlank() &&
+                dni.isNotBlank() &&
+                address.isNotBlank() &&
+                isValidEmail()
+    }
+}
 
 class SubscriptionFinderViewModel(
     private val repository: IRepository
@@ -117,16 +147,6 @@ class SubscriptionFinderViewModel(
             }
     }
 
-    fun updateCustomerData(customer: CustomerData) = viewModelScope.launch {
-        try {
-            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Loading) }
-            repository.updateCustomerData(customer)
-            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Success) }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Error) }
-        }
-    }
 
     fun setSelectedSubscription(subscription: SubscriptionResume?) {
         _uiState.update { it.copy(selectedSubscription = subscription) }
@@ -204,7 +224,11 @@ class SubscriptionFinderViewModel(
     }
 
     fun initCustomerFormData(subscription: SubscriptionResume) {
-        val customer = subscription.customer
+        val customer = subscription.customer.apply {
+            name = name.removeAccents()
+            lastName = lastName.removeAccents()
+            address = address.removeAccents()
+        }
 
         // First, find and select the current place in placesState
         val currentPlace = _uiState.value.placesState.places.find { place ->
@@ -216,34 +240,61 @@ class SubscriptionFinderViewModel(
             onPlaceSelected(currentPlace)
         }
 
+        // Validate the initial data
+        val nameError = validateCustomerFormField("name", customer.name)
+        val lastNameError = validateCustomerFormField("lastName", customer.lastName)
+        val phoneError = validateCustomerFormField("phone", customer.phone)
+        val dniError = validateCustomerFormField("dni", customer.dni)
+        val addressError = validateCustomerFormField("address", customer.address)
+        val emailError = validateCustomerFormField("email", customer.email)
+
         // Then update the form data
         _uiState.update { currentState ->
             currentState.copy(
                 customerFormData = CustomerFormData(
                     name = customer.name,
+                    nameError = nameError,
                     lastName = customer.lastName,
+                    lastNameError = lastNameError,
                     phone = customer.phone,
+                    phoneError = phoneError,
                     dni = customer.dni,
+                    dniError = dniError,
                     address = customer.address,
+                    addressError = addressError,
                     email = customer.email,
+                    emailError = emailError,
                     place = customer.place,
-                    placeId = customer.placeId ?: 0,
+                    placeId = subscription.placeId.toInt(),
                     subscriptionId = subscription.id,
-                    customerId = customer.subscriptionId // Using subscriptionId as customerId
                 )
             )
         }
     }
 
+    fun validateCustomerFormField(field: String, value: String): String? {
+        return when (field) {
+            "name" -> if (!value.isAValidName()) "Nombre inválido" else null
+            "lastName" -> if (!value.isAValidName()) "Apellido inválido" else null
+            "phone" -> if (!value.isValidPhone()) "Teléfono requiere 9 dígitos" else null
+            "dni" -> if (!value.isValidDni()) "DNI requiere 8 dígitos" else null
+            "address" -> if (!value.isAValidAddress()) "Dirección inválida" else null
+            "email" -> if (value.isNotEmpty() && !value.isValidEmail()) "Email inválido" else null
+            else -> null
+        }
+    }
+
     fun updateCustomerFormField(field: String, value: String) {
         _uiState.value.customerFormData?.let { formData ->
+            val errorMessage = validateCustomerFormField(field, value)
+
             val updatedFormData = when (field) {
-                "name" -> formData.copy(name = value)
-                "lastName" -> formData.copy(lastName = value)
-                "phone" -> formData.copy(phone = value)
-                "dni" -> formData.copy(dni = value)
-                "address" -> formData.copy(address = value)
-                "email" -> formData.copy(email = value)
+                "name" -> formData.copy(name = value, nameError = errorMessage)
+                "lastName" -> formData.copy(lastName = value, lastNameError = errorMessage)
+                "phone" -> formData.copy(phone = value, phoneError = errorMessage)
+                "dni" -> formData.copy(dni = value, dniError = errorMessage)
+                "address" -> formData.copy(address = value, addressError = errorMessage)
+                "email" -> formData.copy(email = value, emailError = errorMessage)
                 "place" -> formData.copy(place = value)
                 else -> formData
             }
@@ -263,9 +314,34 @@ class SubscriptionFinderViewModel(
 
     fun saveCustomerData() = viewModelScope.launch {
         try {
-            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Loading) }
-
             val formData = _uiState.value.customerFormData ?: return@launch
+
+            // Validate all fields before saving
+            val nameError = validateCustomerFormField("name", formData.name)
+            val lastNameError = validateCustomerFormField("lastName", formData.lastName)
+            val phoneError = validateCustomerFormField("phone", formData.phone)
+            val dniError = validateCustomerFormField("dni", formData.dni)
+            val addressError = validateCustomerFormField("address", formData.address)
+            val emailError = validateCustomerFormField("email", formData.email)
+
+            // Update form data with any validation errors
+            val updatedFormData = formData.copy(
+                nameError = nameError,
+                lastNameError = lastNameError,
+                phoneError = phoneError,
+                dniError = dniError,
+                addressError = addressError,
+                emailError = emailError
+            )
+
+            _uiState.update { it.copy(customerFormData = updatedFormData) }
+
+            // Only proceed if all validations pass
+            if (!updatedFormData.isValid()) {
+                return@launch
+            }
+
+            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Loading) }
 
             val customerData = CustomerData(
                 subscriptionId = formData.subscriptionId,

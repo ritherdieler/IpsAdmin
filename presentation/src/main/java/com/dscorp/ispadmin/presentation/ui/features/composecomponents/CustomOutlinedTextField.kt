@@ -20,12 +20,13 @@ fun CustomOutlinedTextField(
     maxLength: Int = 100,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     enabled: Boolean = true,
+    isError: Boolean = false,
 ) {
     var text by remember { mutableStateOf(value) }
     OutlinedTextField(
         modifier = modifier
             .fillMaxWidth(),
-
+        isError = isError,
         singleLine = true,
         maxLines = 1,
         value = text,
