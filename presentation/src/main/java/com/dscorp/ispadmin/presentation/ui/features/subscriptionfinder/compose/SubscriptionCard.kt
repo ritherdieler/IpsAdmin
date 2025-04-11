@@ -31,12 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,24 +47,40 @@ import androidx.constraintlayout.compose.Dimension
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.CustomOutlinedTextField
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutLinedDropDown
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
-import org.koin.androidx.compose.koinViewModel
 
 /**
  * Card component displaying a subscription with expandable details.
  * 
  * @param subscriptionResume Data for the subscription to display
  * @param onMenuItemSelected Callback when a menu item is selected
+ * @param onExpandChange Callback when the expanded state changes 
+ * @param expanded Whether the card is expanded
+ * @param customerFormData Form data for the customer, if this card is expanded
+ * @param placesState State for places dropdown
+ * @param saveState State for save operation
+ * @param onFieldChange Callback when a field is changed
+ * @param onPlaceSelected Callback when a place is selected
+ * @param onUpdatePlace Callback to update place ID and name
+ * @param onSaveClick Callback when save button is clicked
  * @param modifier Optional modifier for customizing the component
  */
 @Composable
 fun SubscriptionCard(
     subscriptionResume: SubscriptionResume,
     onMenuItemSelected: (SubscriptionMenu) -> Unit,
+    onExpandChange: (SubscriptionResume, Boolean) -> Unit,
+    expanded: Boolean,
+    customerFormData: CustomerFormData? = null,
+    placesState: PlacesState = PlacesState(),
+    saveState: SaveSubscriptionState = SaveSubscriptionState.Success,
+    onFieldChange: (String, String) -> Unit = { _, _ -> },
+    onPlaceSelected: (PlaceResponse) -> Unit = {},
+    onUpdatePlace: (Int, String) -> Unit = { _, _ -> },
+    onSaveClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    
     // Calculate primary background color from Material3 theme
     val cardBackgroundColor = MaterialTheme.colorScheme.primaryContainer
     val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -103,7 +114,7 @@ fun SubscriptionCard(
 
             ExpandableCardFooter(
                 expanded = expanded,
-                onClick = { expanded = !expanded }
+                onClick = { onExpandChange(subscriptionResume, !expanded) }
             )
 
             AnimatedVisibility(
@@ -111,8 +122,248 @@ fun SubscriptionCard(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                CustomerDataForm(subscriptionResume = subscriptionResume)
+                // Show CustomerDataForm if this card is expanded and we have form data
+                if (customerFormData != null && customerFormData.subscriptionId == subscriptionResume.id) {
+                    CustomerDataForm(
+                        formData = customerFormData,
+                        placesState = placesState,
+                        saveState = saveState,
+                        onFieldChange = onFieldChange,
+                        onPlaceSelected = onPlaceSelected,
+                        onUpdatePlace = onUpdatePlace,
+                        onSaveClick = onSaveClick
+                    )
+                } else {
+                    // Show a loading placeholder while waiting for data
+                    Surface(
+                        color = MaterialTheme.colorScheme.surface,
+                        shadowElevation = 2.dp,
+                        tonalElevation = 2.dp
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(300.dp), // Approximate height to avoid layout shifts
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(36.dp),
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
             }
+        }
+    }
+}
+
+/**
+ * Form for editing customer data inside a subscription card
+ */
+@Composable
+fun CustomerDataForm(
+    formData: CustomerFormData,
+    placesState: PlacesState,
+    saveState: SaveSubscriptionState,
+    onFieldChange: (String, String) -> Unit,
+    onPlaceSelected: (PlaceResponse) -> Unit,
+    onUpdatePlace: (Int, String) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 2.dp,
+        tonalElevation = 2.dp,
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            CustomerFormFields(
+                formData = formData,
+                placesState = placesState,
+                onFieldChange = onFieldChange,
+                onPlaceSelected = onPlaceSelected,
+                onUpdatePlace = onUpdatePlace
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            SaveButton(
+                saveState = saveState,
+                onSaveClick = onSaveClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun CustomerFormFields(
+    formData: CustomerFormData,
+    placesState: PlacesState,
+    onFieldChange: (String, String) -> Unit,
+    onPlaceSelected: (PlaceResponse) -> Unit,
+    onUpdatePlace: (Int, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    ConstraintLayout(modifier = modifier.fillMaxWidth()) {
+        val (name, lastName, phone, dni, address, email, place) = createRefs()
+
+        // Name and Last Name row
+        CustomOutlinedTextField(
+            modifier = Modifier.constrainAs(name) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(lastName.start, margin = 8.dp)
+                width = Dimension.fillToConstraints
+            },
+            value = formData.name,
+            onValueChange = { onFieldChange("name", it) },
+            label = "Nombre"
+        )
+
+        CustomOutlinedTextField(
+            modifier = Modifier.constrainAs(lastName) {
+                top.linkTo(name.top)
+                start.linkTo(name.end, margin = 8.dp)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
+            value = formData.lastName,
+            onValueChange = { onFieldChange("lastName", it) },
+            label = "Apellido"
+        )
+
+        // Phone and DNI row
+        CustomOutlinedTextField(
+            modifier = Modifier.constrainAs(phone) {
+                top.linkTo(name.bottom, margin = 12.dp)
+                start.linkTo(parent.start)
+                end.linkTo(dni.start, margin = 8.dp)
+                width = Dimension.fillToConstraints
+            },
+            value = formData.phone,
+            onValueChange = { onFieldChange("phone", it) },
+            label = "Teléfono",
+            maxLength = 9,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+        )
+
+        CustomOutlinedTextField(
+            modifier = Modifier.constrainAs(dni) {
+                top.linkTo(phone.top)
+                start.linkTo(phone.end, margin = 8.dp)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
+            value = formData.dni,
+            onValueChange = { onFieldChange("dni", it) },
+            label = "DNI",
+            maxLength = 8,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        // Place dropdown with loading states
+        PlaceSelector(
+            modifier = Modifier.constrainAs(place) {
+                top.linkTo(dni.bottom, margin = 12.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
+            placesState = placesState,
+            currentPlace = formData.place,
+            currentPlaceId = formData.placeId,
+            onPlaceSelected = onPlaceSelected,
+            onUpdatePlace = onUpdatePlace
+        )
+
+        // Address and Email fields
+        CustomOutlinedTextField(
+            modifier = Modifier.constrainAs(address) {
+                top.linkTo(place.bottom, margin = 12.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
+            value = formData.address,
+            onValueChange = { onFieldChange("address", it) },
+            label = "Dirección"
+        )
+
+        CustomOutlinedTextField(
+            modifier = Modifier.constrainAs(email) {
+                top.linkTo(address.bottom, margin = 12.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
+            value = formData.email,
+            onValueChange = { onFieldChange("email", it) },
+            label = "Email",
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+        )
+    }
+}
+
+@Composable
+private fun PlaceSelector(
+    placesState: PlacesState,
+    currentPlace: String,
+    currentPlaceId: Int,
+    onPlaceSelected: (PlaceResponse) -> Unit,
+    onUpdatePlace: (Int, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when {
+        placesState.places.isNotEmpty() -> {
+            // If there's no explicit selection in placesState but we have currentPlaceId,
+            // find the matching place to display
+            val selectedPlace = placesState.selectedPlace ?: if (currentPlaceId > 0) {
+                placesState.places.find { place -> 
+                    place.id?.toIntOrNull() == currentPlaceId 
+                }
+            } else null
+            
+            MyOutLinedDropDown(
+                modifier = modifier,
+                items = placesState.places,
+                selected = selectedPlace,
+                label = "Lugar",
+                onItemSelected = { selectedPlace ->
+                    onPlaceSelected(selectedPlace)
+                    val id = selectedPlace.id
+                    val name = selectedPlace.name
+                    if (id != null && name != null) {
+                        onUpdatePlace(id.toInt(), name)
+                    }
+                }
+            )
+        }
+        placesState.isLoading -> {
+            Box(
+                modifier = modifier,
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+        placesState.error != null -> {
+            CustomOutlinedTextField(
+                modifier = modifier,
+                enabled = false,
+                value = currentPlace,
+                onValueChange = { },
+                label = "Lugar"
+            )
         }
     }
 }
@@ -146,238 +397,6 @@ fun ExpandableCardFooter(
                 .rotate(rotationDegree),
             tint = MaterialTheme.colorScheme.onPrimaryContainer
         )
-    }
-}
-
-/**
- * Form for editing customer data inside a subscription card
- */
-@Composable
-fun CustomerDataForm(
-    subscriptionResume: SubscriptionResume,
-    viewModel: SubscriptionFinderViewModel = koinViewModel(),
-    modifier: Modifier = Modifier
-) {
-    val uiState by viewModel.uiState.collectAsState()
-    
-    LaunchedEffect(Unit) {
-        val currentPlace = uiState.placesState.places.find {
-            it.id == subscriptionResume.placeId
-        }
-        currentPlace?.let { viewModel.onPlaceSelected(it) }
-    }
-
-    Surface(
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp,
-        tonalElevation = 2.dp,
-        modifier = modifier
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            CustomerFormFields(
-                subscriptionResume = subscriptionResume,
-                placesState = uiState.placesState,
-                onPlaceSelected = viewModel::onPlaceSelected
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SaveButton(
-                saveState = uiState.saveSubscriptionState,
-                onSaveClick = { viewModel.updateCustomerData(subscriptionResume.customer) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun CustomerFormFields(
-    subscriptionResume: SubscriptionResume,
-    placesState: PlacesState,
-    onPlaceSelected: (com.example.cleanarchitecture.domain.entity.PlaceResponse) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    ConstraintLayout(modifier = modifier.fillMaxWidth()) {
-        val (name, lastName, phone, dni, address, email, place) = createRefs()
-
-        // Name and Last Name row
-        CustomOutlinedTextField(
-            modifier = Modifier.constrainAs(name) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                end.linkTo(lastName.start, margin = 8.dp)
-                width = Dimension.fillToConstraints
-            },
-            value = subscriptionResume.customer.name,
-            onValueChange = { subscriptionResume.customer.name = it },
-            label = "Nombre"
-        )
-
-        CustomOutlinedTextField(
-            modifier = Modifier.constrainAs(lastName) {
-                top.linkTo(name.top)
-                start.linkTo(name.end, margin = 8.dp)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-            },
-            value = subscriptionResume.customer.lastName,
-            onValueChange = { subscriptionResume.customer.lastName = it },
-            label = "Apellido"
-        )
-
-        // Phone and DNI row
-        CustomOutlinedTextField(
-            modifier = Modifier.constrainAs(phone) {
-                top.linkTo(name.bottom, margin = 12.dp)
-                start.linkTo(parent.start)
-                end.linkTo(dni.start, margin = 8.dp)
-                width = Dimension.fillToConstraints
-            },
-            value = subscriptionResume.customer.phone,
-            onValueChange = { subscriptionResume.customer.phone = it },
-            label = "Teléfono",
-            maxLength = 9,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-        )
-
-        CustomOutlinedTextField(
-            modifier = Modifier.constrainAs(dni) {
-                top.linkTo(phone.top)
-                start.linkTo(phone.end, margin = 8.dp)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-            },
-            value = subscriptionResume.customer.dni,
-            onValueChange = { subscriptionResume.customer.dni = it },
-            label = "DNI",
-            maxLength = 8,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-
-        // Place dropdown with loading states
-        PlaceSelector(
-            modifier = Modifier.constrainAs(place) {
-                top.linkTo(dni.bottom, margin = 12.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-            },
-            placesState = placesState,
-            subscriptionResume = subscriptionResume,
-            onPlaceSelected = onPlaceSelected
-        )
-
-        // Address and Email fields
-        CustomOutlinedTextField(
-            modifier = Modifier.constrainAs(address) {
-                top.linkTo(place.bottom, margin = 12.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-            },
-            value = subscriptionResume.customer.address,
-            onValueChange = { subscriptionResume.customer.address = it },
-            label = "Dirección"
-        )
-
-        CustomOutlinedTextField(
-            modifier = Modifier.constrainAs(email) {
-                top.linkTo(address.bottom, margin = 12.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                width = Dimension.fillToConstraints
-            },
-            value = subscriptionResume.customer.email,
-            onValueChange = { subscriptionResume.customer.email = it },
-            label = "Email",
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
-        )
-    }
-}
-
-@Composable
-private fun PlaceSelector(
-    placesState: PlacesState,
-    subscriptionResume: SubscriptionResume,
-    onPlaceSelected: (com.example.cleanarchitecture.domain.entity.PlaceResponse) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    when {
-        placesState.places.isNotEmpty() -> {
-            MyOutLinedDropDown(
-                modifier = modifier,
-                items = placesState.places,
-                selected = placesState.selectedPlace,
-                label = "Lugar",
-                onItemSelected = { selectedPlace ->
-                    subscriptionResume.customer.place = selectedPlace.name!!
-                    subscriptionResume.customer.placeId = selectedPlace.id!!.toInt()
-                    onPlaceSelected(selectedPlace)
-                }
-            )
-        }
-        placesState.isLoading -> {
-            Box(
-                modifier = modifier,
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    strokeWidth = 2.dp,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-        placesState.error != null -> {
-            CustomOutlinedTextField(
-                modifier = modifier,
-                enabled = false,
-                value = subscriptionResume.customer.place,
-                onValueChange = { subscriptionResume.customer.place = it },
-                label = "Lugar"
-            )
-        }
-    }
-}
-
-@Composable
-private fun SaveButton(
-    saveState: SaveSubscriptionState,
-    onSaveClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Button(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
-            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
-        ),
-        enabled = saveState !is SaveSubscriptionState.Loading,
-        onClick = onSaveClick
-    ) {
-        if (saveState is SaveSubscriptionState.Loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
-                strokeWidth = 2.dp
-            )
-        } else {
-            Text(
-                text = "Guardar",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold
-                )
-            )
-        }
     }
 }
 
@@ -503,5 +522,51 @@ fun SubscriptionInfoItem(
                 color = if (isClickable) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
+    }
+}
+
+@Composable
+private fun SaveButton(
+    saveState: SaveSubscriptionState,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
+        ),
+        enabled = saveState !is SaveSubscriptionState.Loading,
+        onClick = onSaveClick
+    ) {
+        if (saveState is SaveSubscriptionState.Loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                strokeWidth = 2.dp
+            )
+        } else {
+            Text(
+                text = "Guardar",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+    }
+}
+
+// Extension function to safely convert String to Int
+private fun String.toIntOrNull(): Int? {
+    return try {
+        this.toInt()
+    } catch (e: NumberFormatException) {
+        null
     }
 }

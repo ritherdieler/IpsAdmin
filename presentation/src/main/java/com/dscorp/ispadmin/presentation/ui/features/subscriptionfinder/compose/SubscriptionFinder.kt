@@ -27,8 +27,12 @@ import androidx.compose.ui.unit.dp
 import com.example.cleanarchitecture.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.entity.InstallationType
 import com.example.cleanarchitecture.domain.entity.NapBox
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.CustomerFormData
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.PlacesState
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SaveSubscriptionState
 
 val filters = listOf(
     SubscriptionFilter.BY_NAME(),
@@ -40,7 +44,16 @@ val filters = listOf(
 fun SubscriptionFinder(
     subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
     onSearch: (SubscriptionFilter) -> Unit = {},
-    onMenuItemSelected: (menuItem: SubscriptionMenu, subscription: SubscriptionResume) -> Unit = { _, _ -> }
+    onMenuItemSelected: (menuItem: SubscriptionMenu, subscription: SubscriptionResume) -> Unit = { _, _ -> },
+    onSubscriptionExpanded: (SubscriptionResume, Boolean) -> Unit = { _, _ -> },
+    expandedSubscriptionId: Int? = null,
+    customerFormData: CustomerFormData? = null,
+    placesState: PlacesState = PlacesState(),
+    saveState: SaveSubscriptionState = SaveSubscriptionState.Success,
+    onFieldChange: (String, String) -> Unit = { _, _ -> },
+    onPlaceSelected: (PlaceResponse) -> Unit = {},
+    onUpdatePlaceId: (Int, String) -> Unit = { _, _ -> },
+    onSaveCustomer: () -> Unit = {}
 ) {
     var lastScrollOffset by remember { mutableStateOf(1) }
     var scrollingUp by remember { mutableStateOf(0) }
@@ -64,7 +77,16 @@ fun SubscriptionFinder(
         onSearch = onSearch,
         subscriptions = subscriptions,
         scrollState = scrollState,
-        onMenuItemSelected = onMenuItemSelected
+        onMenuItemSelected = onMenuItemSelected,
+        onSubscriptionExpanded = onSubscriptionExpanded,
+        expandedSubscriptionId = expandedSubscriptionId,
+        customerFormData = customerFormData,
+        placesState = placesState,
+        saveState = saveState,
+        onFieldChange = onFieldChange,
+        onPlaceSelected = onPlaceSelected,
+        onUpdatePlaceId = onUpdatePlaceId,
+        onSaveCustomer = onSaveCustomer
     )
 }
 
@@ -74,43 +96,58 @@ fun SubscriptionFinderContent(
     onSearch: (SubscriptionFilter) -> Unit,
     subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
     scrollState: LazyListState,
-    onMenuItemSelected: (menuItem: SubscriptionMenu, subscription: SubscriptionResume) -> Unit
+    onMenuItemSelected: (menuItem: SubscriptionMenu, subscription: SubscriptionResume) -> Unit,
+    onSubscriptionExpanded: (SubscriptionResume, Boolean) -> Unit,
+    expandedSubscriptionId: Int? = null,
+    customerFormData: CustomerFormData? = null,
+    placesState: PlacesState = PlacesState(),
+    saveState: SaveSubscriptionState = SaveSubscriptionState.Success,
+    onFieldChange: (String, String) -> Unit = { _, _ -> },
+    onPlaceSelected: (PlaceResponse) -> Unit = {},
+    onUpdatePlaceId: (Int, String) -> Unit = { _, _ -> },
+    onSaveCustomer: () -> Unit = {}
 ) {
     var filtersVisible by remember { mutableStateOf(true) }
-Column(
-    modifier = Modifier
-        .fillMaxSize()
-        .padding(top = animatedScrollingUp)
-) {
-    AnimatedVisibility(visible = filtersVisible) {
-        SubscriptionFinderFilters(
-            onSearch = { onSearch(it) },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .offset(y = if (filtersVisible) 0.dp else -animatedScrollingUp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = animatedScrollingUp)
+    ) {
+        AnimatedVisibility(visible = filtersVisible) {
+            SubscriptionFinderFilters(
+                onSearch = { onSearch(it) },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .offset(y = if (filtersVisible) 0.dp else -animatedScrollingUp)
+            )
+        }
+        SubscriptionList(
+            subscriptions = subscriptions,
+            scrollState = scrollState,
+            onMenuItemSelected = onMenuItemSelected,
+            onSubscriptionExpanded = onSubscriptionExpanded,
+            expandedSubscriptionId = expandedSubscriptionId,
+            customerFormData = customerFormData,
+            placesState = placesState,
+            saveState = saveState,
+            onFieldChange = onFieldChange,
+            onPlaceSelected = onPlaceSelected,
+            onUpdatePlaceId = onUpdatePlaceId,
+            onSaveCustomer = onSaveCustomer
         )
     }
-        SubscriptionList(
-        subscriptions = subscriptions,
-        scrollState = scrollState,
-        onMenuItemSelected = onMenuItemSelected,
-    )
-}
 
-
-
-  LaunchedEffect(key1 = scrollState) {
-    var lastScrollOffset = scrollState.firstVisibleItemScrollOffset
-    snapshotFlow { scrollState.firstVisibleItemScrollOffset }.collect { offset ->
-        val newFiltersVisible = offset <= lastScrollOffset
-        if (newFiltersVisible != filtersVisible) {
-            filtersVisible = newFiltersVisible
+    LaunchedEffect(key1 = scrollState) {
+        var lastScrollOffset = scrollState.firstVisibleItemScrollOffset
+        snapshotFlow { scrollState.firstVisibleItemScrollOffset }.collect { offset ->
+            val newFiltersVisible = offset <= lastScrollOffset
+            if (newFiltersVisible != filtersVisible) {
+                filtersVisible = newFiltersVisible
+            }
+            lastScrollOffset = offset
         }
-        lastScrollOffset = offset
     }
 }
-}
-
 
 fun Int.toDp(context: Context): Dp {
     return this.dp / context.resources.displayMetrics.density

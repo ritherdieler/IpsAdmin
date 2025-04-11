@@ -10,7 +10,6 @@ import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import com.example.data2.data.repository.IRepository
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +27,21 @@ data class SubscriptionFinderUiState(
     val saveSubscriptionState: SaveSubscriptionState = SaveSubscriptionState.Success,
     val napBoxesState: NapBoxesState = NapBoxesState.Loading,
     val placesState: PlacesState = PlacesState(),
-    val selectedSubscription: SubscriptionResume? = null
+    val selectedSubscription: SubscriptionResume? = null,
+    val customerFormData: CustomerFormData? = null
+)
+
+data class CustomerFormData(
+    val name: String = "",
+    val lastName: String = "",
+    val phone: String = "",
+    val dni: String = "",
+    val address: String = "",
+    val email: String = "",
+    val place: String = "",
+    val placeId: Int = 0,
+    val subscriptionId: Int = 0,
+    val customerId: Int = 0
 )
 
 class SubscriptionFinderViewModel(
@@ -45,7 +58,7 @@ class SubscriptionFinderViewModel(
     init {
         findSubscription()
         getPlaces()
-        
+
         // Observe subscriptionsFlow and update the UI state
         viewModelScope.launch {
             subscriptionsFlow.map { list ->
@@ -161,7 +174,7 @@ class SubscriptionFinderViewModel(
         try {
             _uiState.update { it.copy(placesState = it.placesState.copy(isLoading = true)) }
             val places = repository.getPlaces()
-            _uiState.update { 
+            _uiState.update {
                 it.copy(
                     placesState = it.placesState.copy(
                         places = places,
@@ -171,7 +184,7 @@ class SubscriptionFinderViewModel(
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            _uiState.update { 
+            _uiState.update {
                 it.copy(
                     placesState = it.placesState.copy(
                         isLoading = false,
@@ -183,10 +196,108 @@ class SubscriptionFinderViewModel(
     }
 
     fun onPlaceSelected(place: PlaceResponse) {
-        _uiState.update { 
+        _uiState.update {
             it.copy(
                 placesState = it.placesState.copy(selectedPlace = place)
             )
+        }
+    }
+
+    fun initCustomerFormData(subscription: SubscriptionResume) {
+        val customer = subscription.customer
+
+        // First, find and select the current place in placesState
+        val currentPlace = _uiState.value.placesState.places.find { place ->
+            place.id?.toIntOrNull() == subscription.placeId.toInt()
+        }
+
+        // Update place selection first
+        if (currentPlace != null) {
+            onPlaceSelected(currentPlace)
+        }
+
+        // Then update the form data
+        _uiState.update { currentState ->
+            currentState.copy(
+                customerFormData = CustomerFormData(
+                    name = customer.name,
+                    lastName = customer.lastName,
+                    phone = customer.phone,
+                    dni = customer.dni,
+                    address = customer.address,
+                    email = customer.email,
+                    place = customer.place,
+                    placeId = customer.placeId ?: 0,
+                    subscriptionId = subscription.id,
+                    customerId = customer.subscriptionId // Using subscriptionId as customerId
+                )
+            )
+        }
+    }
+
+    fun updateCustomerFormField(field: String, value: String) {
+        _uiState.value.customerFormData?.let { formData ->
+            val updatedFormData = when (field) {
+                "name" -> formData.copy(name = value)
+                "lastName" -> formData.copy(lastName = value)
+                "phone" -> formData.copy(phone = value)
+                "dni" -> formData.copy(dni = value)
+                "address" -> formData.copy(address = value)
+                "email" -> formData.copy(email = value)
+                "place" -> formData.copy(place = value)
+                else -> formData
+            }
+            _uiState.update { it.copy(customerFormData = updatedFormData) }
+        }
+    }
+
+    fun updateCustomerPlaceId(placeId: Int, placeName: String) {
+        _uiState.value.customerFormData?.let { formData ->
+            val updatedFormData = formData.copy(
+                placeId = placeId,
+                place = placeName
+            )
+            _uiState.update { it.copy(customerFormData = updatedFormData) }
+        }
+    }
+
+    fun saveCustomerData() = viewModelScope.launch {
+        try {
+            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Loading) }
+
+            val formData = _uiState.value.customerFormData ?: return@launch
+
+            val customerData = CustomerData(
+                subscriptionId = formData.subscriptionId,
+                name = formData.name,
+                lastName = formData.lastName,
+                phone = formData.phone,
+                dni = formData.dni,
+                address = formData.address,
+                email = formData.email,
+                place = formData.place,
+                placeId = formData.placeId
+            )
+
+            repository.updateCustomerData(customerData)
+            _uiState.update {
+
+                subscriptionsFlow.value = subscriptionsFlow.value.map { subscription ->
+                    if (subscription.id == formData.subscriptionId) {
+                        subscription.copy(
+                            customer = customerData,
+                            placeId = formData.placeId.toString()
+                        )
+                    } else {
+                        subscription
+                    }
+                }
+
+                it.copy(saveSubscriptionState = SaveSubscriptionState.Success)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Error) }
         }
     }
 }

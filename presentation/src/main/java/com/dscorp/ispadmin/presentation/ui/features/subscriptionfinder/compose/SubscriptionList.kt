@@ -21,9 +21,13 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import com.example.cleanarchitecture.domain.entity.createReminderMessage
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.CustomerFormData
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.PlacesState
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SaveSubscriptionState
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -31,7 +35,16 @@ import com.example.cleanarchitecture.domain.entity.createReminderMessage
 fun SubscriptionList(
     subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
     scrollState: LazyListState,
-    onMenuItemSelected: (menuItem: SubscriptionMenu, subscriptionResponse: SubscriptionResume) -> Unit = { _, _ -> }
+    onMenuItemSelected: (menuItem: SubscriptionMenu, subscriptionResponse: SubscriptionResume) -> Unit = { _, _ -> },
+    onSubscriptionExpanded: (SubscriptionResume, Boolean) -> Unit = { _, _ -> },
+    expandedSubscriptionId: Int? = null,
+    customerFormData: CustomerFormData? = null,
+    placesState: PlacesState = PlacesState(),
+    saveState: SaveSubscriptionState = SaveSubscriptionState.Success,
+    onFieldChange: (String, String) -> Unit = { _, _ -> },
+    onPlaceSelected: (PlaceResponse) -> Unit = {},
+    onUpdatePlaceId: (Int, String) -> Unit = { _, _ -> },
+    onSaveCustomer: () -> Unit = {}
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth(), state = scrollState) {
         subscriptions.forEach { (status, subscriptionList) ->
@@ -46,9 +59,21 @@ fun SubscriptionList(
                 )
             }
             items(items = subscriptionList, key = { it.id }) { subscription ->
+                val isExpanded = expandedSubscriptionId == subscription.id
+                
                 SubscriptionCard(
                     subscriptionResume = subscription,
-                    onMenuItemSelected = { onMenuItemSelected(it, subscription) })
+                    onMenuItemSelected = { onMenuItemSelected(it, subscription) },
+                    onExpandChange = onSubscriptionExpanded,
+                    expanded = isExpanded,
+                    customerFormData = customerFormData,
+                    placesState = placesState,
+                    saveState = saveState,
+                    onFieldChange = onFieldChange,
+                    onPlaceSelected = onPlaceSelected,
+                    onUpdatePlace = onUpdatePlaceId,
+                    onSaveClick = onSaveCustomer
+                )
             }
         }
     }

@@ -36,7 +36,6 @@ import com.dscorp.ispadmin.presentation.ui.features.dialog.MyCustomDialog
 import com.dscorp.ispadmin.presentation.ui.features.migration.Loader
 import com.dscorp.ispadmin.presentation.ui.features.migration.MigrationActivity
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.SubscriptionFinderFragmentDirections
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.changeNapBox.ChangeNapBoxComp
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.CANCEL_SUBSCRIPTION
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.CHANGE_NAP_BOX
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.EDIT_PLAN_SUBSCRIPTION
@@ -44,6 +43,7 @@ import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.S
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SEE_DETAILS
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SHOW_PAYMENT_HISTORY
 import com.example.cleanarchitecture.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import kotlinx.coroutines.launch
@@ -64,6 +64,9 @@ fun SubscriptionFinderScreen(
     var showCancelSubscriptionConfirmDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     var showChangeNapBoxDialog by remember { mutableStateOf(false) }
+    
+    // Track which subscription card is expanded
+    var expandedSubscriptionId by remember { mutableStateOf<Int?>(null) }
 
     // Main subscription finder content
     SubscriptionFinder(
@@ -83,7 +86,28 @@ fun SubscriptionFinderScreen(
                 onShowCancelDialog = { showCancelSubscriptionConfirmDialog = true },
                 onShowChangeNapBoxDialog = { showChangeNapBoxDialog = true }
             )
-        }
+        },
+        onSubscriptionExpanded = { subscription, expanded ->
+            // Handle the expanded state change
+            expandedSubscriptionId = if (expanded) subscription.id else null
+            
+            // Initialize customer form data when expanding
+            if (expanded) {
+                // Set the selected subscription first
+                viewModel.setSelectedSubscription(subscription)
+                
+                // Then initialize the form data for this subscription
+                viewModel.initCustomerFormData(subscription)
+            }
+        },
+        expandedSubscriptionId = expandedSubscriptionId,
+        customerFormData = uiState.customerFormData,
+        placesState = uiState.placesState,
+        saveState = uiState.saveSubscriptionState,
+        onFieldChange = viewModel::updateCustomerFormField,
+        onPlaceSelected = viewModel::onPlaceSelected,
+        onUpdatePlaceId = viewModel::updateCustomerPlaceId,
+        onSaveCustomer = viewModel::saveCustomerData
     )
 
     // Handle cancel subscription state
