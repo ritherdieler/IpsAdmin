@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionFinderBinding
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionFinder
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionFinderScreen
 
 class SubscriptionFinderFragment : Fragment() {
 
@@ -21,7 +21,7 @@ class SubscriptionFinderFragment : Fragment() {
         val navController = findNavController()
 
         binding.root.setContent {
-            SubscriptionFinder(navController)
+            SubscriptionFinderScreen(navController)
         }
         return binding.root
     }

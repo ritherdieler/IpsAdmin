@@ -151,7 +151,8 @@ fun generateMockSubscriptions(): List<SubscriptionResume> {
             ),
             serviceStatus = ServiceStatus.ACTIVE
         , installationType = InstallationType.FIBER,
-            napBox = NapBox("NapBox $i", "Calle $i", placeName = "placeName", placeId = -1)
+            napBox = NapBox("NapBox $i", "Calle $i", placeName = "placeName", placeId = -1),
+            placeId = ""
         )
         mockList.add(subscriptionResume)
     }

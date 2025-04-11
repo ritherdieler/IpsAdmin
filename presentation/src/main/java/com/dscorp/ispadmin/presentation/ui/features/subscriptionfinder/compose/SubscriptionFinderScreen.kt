@@ -36,7 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 const val SUBSCRIPTION_ID = "subscriptionId"
 
 @Composable
-fun SubscriptionFinder(
+fun SubscriptionFinderScreen(
     navController: NavController,
     viewModel: SubscriptionFinderViewModel = koinViewModel(),
 ) {

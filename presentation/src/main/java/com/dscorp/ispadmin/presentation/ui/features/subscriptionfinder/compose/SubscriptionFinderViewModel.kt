@@ -2,9 +2,9 @@ package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.example.cleanarchitecture.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.entity.NapBoxResponse
+import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 const val REQUEST_DELAY = 500L
@@ -39,10 +40,13 @@ class SubscriptionFinderViewModel(
         MutableStateFlow<CancelSubscriptionState>(CancelSubscriptionState.Empty)
 
     val napBoxDialogDataFlow = MutableStateFlow<NapBoxesState>(NapBoxesState.Loading)
+    val placesFlow = MutableStateFlow(PlacesState())
 
     init {
         findSubscription()
+        getPlaces()
     }
+
     fun resetNapBoxFlow() {
         napBoxDialogDataFlow.value = NapBoxesState.Loading
     }
@@ -140,6 +144,31 @@ class SubscriptionFinderViewModel(
         }
     }
 
+    private fun getPlaces() = viewModelScope.launch {
+        try {
+            placesFlow.update { it.copy(isLoading = true) }
+            val places = repository.getPlaces()
+            placesFlow.update {
+                it.copy(
+                    places = places,
+                    isLoading = false
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            placesFlow.update {
+                it.copy(
+                    isLoading = false,
+                    error = e.message
+                )
+            }
+        }
+    }
+
+    fun onPlaceSelected(place: PlaceResponse) {
+        placesFlow.update { it.copy(selectedPlace = place) }
+    }
+
 }
 
 
@@ -163,3 +192,9 @@ sealed class NapBoxesState {
     object Error : NapBoxesState()
 }
 
+data class PlacesState(
+    val places: List<PlaceResponse> = emptyList(),
+    val selectedPlace: PlaceResponse? = null,
+    val isLoading: Boolean = false,
+    val error: String? = null
+)

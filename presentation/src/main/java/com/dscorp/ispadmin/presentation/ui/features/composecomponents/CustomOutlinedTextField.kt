@@ -18,7 +18,8 @@ fun CustomOutlinedTextField(
     onValueChange: (String) -> Unit,
     label: String,
     maxLength: Int = 100,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    enabled: Boolean = true,
 ) {
     var text by remember { mutableStateOf(value) }
     OutlinedTextField(
@@ -28,6 +29,7 @@ fun CustomOutlinedTextField(
         singleLine = true,
         maxLines = 1,
         value = text,
+        enabled = enabled,
         keyboardOptions = keyboardOptions,
         onValueChange = {
             if (it.length > maxLength) return@OutlinedTextField

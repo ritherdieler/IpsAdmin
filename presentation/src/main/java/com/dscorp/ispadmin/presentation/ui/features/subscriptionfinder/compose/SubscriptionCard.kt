@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.CustomOutlinedTextField
+import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutLinedDropDown
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import org.koin.androidx.compose.koinViewModel
 
@@ -75,20 +77,20 @@ fun SubscriptionCard(
                 subscription = subscriptionResume,
                 onMenuItemSelected = onMenuItemSelected
             )
-            
+
             Divider(
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.1f),
                 thickness = 1.dp,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            
+
             CardBody(subscriptionResume)
-            
+
             CardFooter(
                 icon = if (visible) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 onClick = { visible = !visible }
             )
-            
+
             AnimatedVisibility(
                 visible = visible,
                 enter = fadeIn() + expandVertically(),
@@ -106,7 +108,15 @@ fun CustomerDataForm(
     viewModel: SubscriptionFinderViewModel = koinViewModel()
 ) {
     val updateCustomerState by viewModel.updateCustomerDataFlow.collectAsState()
-    
+    val placesState by viewModel.placesFlow.collectAsState()
+
+    LaunchedEffect(Unit) {
+        val currentPlace = placesState.places.find {
+            it.id == subscriptionResume.placeId
+        }
+        currentPlace?.let { viewModel.onPlaceSelected(it) }
+    }
+
     Surface(
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 1.dp
@@ -147,8 +157,6 @@ fun CustomerDataForm(
                     label = "Apellido"
                 )
 
-                // ... existing code for the other fields ...
-                
                 CustomOutlinedTextField(
                     modifier = Modifier.constrainAs(phone) {
                         top.linkTo(name.bottom, margin = 8.dp)
@@ -181,19 +189,60 @@ fun CustomerDataForm(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
-                CustomOutlinedTextField(
-                    modifier = Modifier.constrainAs(place) {
-                        top.linkTo(dni.bottom, margin = 8.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                        width = Dimension.fillToConstraints
-                    },
-                    value = subscriptionResume.customer.place,
-                    onValueChange = {
-                        subscriptionResume.customer.place = it
-                    },
-                    label = "Lugar"
-                )
+                when {
+                    placesState.places.isNotEmpty() -> {
+                        MyOutLinedDropDown(
+                            modifier = Modifier.constrainAs(place) {
+                                top.linkTo(dni.bottom, margin = 8.dp)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                width = Dimension.fillToConstraints
+                            },
+                            items = placesState.places,
+                            selected = placesState.selectedPlace,
+                            label = "Lugar",
+                            onItemSelected = { selectedPlace ->
+                                subscriptionResume.customer.place = selectedPlace.name!!
+                                subscriptionResume.customer.placeId = selectedPlace.id!!.toInt()
+                                viewModel.onPlaceSelected(selectedPlace)
+                            }
+                        )
+                    }
+
+                    placesState.isLoading -> {
+                        Box(
+                            modifier = Modifier.constrainAs(place) {
+                                top.linkTo(dni.bottom, margin = 8.dp)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                width = Dimension.fillToConstraints
+                            },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp
+                            )
+                        }
+                    }
+
+                    placesState.error != null -> {
+                        CustomOutlinedTextField(
+                            modifier = Modifier.constrainAs(place) {
+                                top.linkTo(dni.bottom, margin = 8.dp)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                                width = Dimension.fillToConstraints
+                            },
+                            enabled = false,
+                            value = subscriptionResume.customer.place,
+                            onValueChange = {
+                                subscriptionResume.customer.place = it
+                            },
+                            label = "Lugar"
+                        )
+                    }
+                }
 
                 CustomOutlinedTextField(
                     modifier = Modifier.constrainAs(address) {
@@ -251,7 +300,7 @@ fun CustomerDataForm(
                     )
                 } else {
                     Text(
-                        text = "Guardar", 
+                        text = "Guardar",
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold
                         )

@@ -9,4 +9,5 @@ data class CustomerData(
     var address: String,
     var phone: String,
     var email: String,
+    var placeId: Int?=null,
 )

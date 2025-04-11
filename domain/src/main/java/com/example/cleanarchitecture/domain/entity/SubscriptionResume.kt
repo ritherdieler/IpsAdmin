@@ -16,6 +16,7 @@ data class SubscriptionResume(
     val serviceStatus: ServiceStatus,
     val installationType: InstallationType,
     val napBox: NapBox?,
+    val placeId: String,
 )
 fun SubscriptionResume.createReminderMessage(): String {
         val message = """

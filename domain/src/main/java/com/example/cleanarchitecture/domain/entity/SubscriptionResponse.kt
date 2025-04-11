@@ -51,6 +51,7 @@ data class SubscriptionResponse(
         antiquity = antiquityInMonths.toString(),
         qualification = qualification.toString(),
         placeName = place?.name ?: "",
+        placeId = place?.id ?: "",
         ics = ics.toString(),
         lastPaymentDate = lastPaymentDate,
         pendingInvoicesQuantity = pendingInvoiceQuantity,
