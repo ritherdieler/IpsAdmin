@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -579,21 +580,45 @@ fun CardBody(subscriptionResume: SubscriptionResume, modifier: Modifier = Modifi
                     totalDebt = subscriptionResume.totalDebt
                 )
                 
-                // WhatsApp button
-                Box(
+                // WhatsApp and Map buttons in a row
+                Row(
                     modifier = Modifier
                         .padding(vertical = 8.dp)
-                        .clip(CircleShape)
-                        .clickable { sendWhatsapp(subscriptionResume, context) }
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
+                        .align(Alignment.End)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_whatsapp),
-                        contentDescription = "Enviar mensaje por WhatsApp",
-                        modifier = Modifier.size(28.dp),
-                        tint = Color(0xFF25D366)
-                    )
+                    // Map button
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .clickable { openMap(subscriptionResume, context) }
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector =  Icons.Default.Place,
+                            contentDescription = "Ver ubicación en mapa",
+                            modifier = Modifier.size(28.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.size(8.dp))
+                    
+                    // WhatsApp button
+                    Box(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .clickable { sendWhatsapp(subscriptionResume, context) }
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_whatsapp),
+                            contentDescription = "Enviar mensaje por WhatsApp",
+                            modifier = Modifier.size(28.dp),
+                            tint = Color(0xFF25D366)
+                        )
+                    }
                 }
                 
                 // Last payment info

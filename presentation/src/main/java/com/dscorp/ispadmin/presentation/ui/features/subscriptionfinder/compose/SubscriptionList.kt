@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -112,6 +113,35 @@ fun sendWhatsapp(subscriptionResume: SubscriptionResume, context: Context) {
 fun openInBrowser(ipAddress: String, context: Context) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("http://$ipAddress"))
     context.startActivity(intent)
+}
+
+fun openMap(subscriptionResume: SubscriptionResume, context: Context) {
+    // Get the customer address for the map query
+    val address = subscriptionResume.customer.address
+    val place = subscriptionResume.placeName
+    
+    // Combine address and place for a more accurate location
+    val locationQuery = "$address, $place, Peru"
+    
+    try {
+        // Create an intent to view the location in Google Maps
+        val gmmIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(locationQuery)}")
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+        mapIntent.setPackage("com.google.android.apps.maps") // Specify Google Maps app
+        
+        // If Google Maps is installed, open it; otherwise, open in browser
+        if (mapIntent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(mapIntent)
+        } else {
+            // Fallback to opening in browser
+            val mapUrl = "https://maps.google.com/?q=${Uri.encode(locationQuery)}"
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mapUrl))
+            context.startActivity(browserIntent)
+        }
+    } catch (e: Exception) {
+        // If there's an error, show a toast message
+        Toast.makeText(context, "No se pudo abrir el mapa: ${e.message}", Toast.LENGTH_SHORT).show()
+    }
 }
 
 

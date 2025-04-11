@@ -25,14 +25,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.cleanarchitecture.domain.entity.CustomerData
+import com.example.cleanarchitecture.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.entity.InstallationType
 import com.example.cleanarchitecture.domain.entity.NapBox
 import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.CustomerFormData
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.PlacesState
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SaveSubscriptionState
 
 val filters = listOf(
     SubscriptionFilter.BY_NAME(),
@@ -189,7 +187,9 @@ fun generateMockSubscriptions(): List<SubscriptionResume> {
             serviceStatus = ServiceStatus.ACTIVE
         , installationType = InstallationType.FIBER,
             napBox = NapBox("NapBox $i", "Calle $i", placeName = "placeName", placeId = -1),
-            placeId = ""
+            placeId = "",
+            location = GeoLocation()
+
         )
         mockList.add(subscriptionResume)
     }

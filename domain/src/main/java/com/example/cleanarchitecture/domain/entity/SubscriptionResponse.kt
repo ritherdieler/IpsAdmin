@@ -69,7 +69,8 @@ data class SubscriptionResponse(
             email = email ?: "",
         ),
         installationType = installationType,
-        napBox = napBox?.toDomain()
+        napBox = napBox?.toDomain(),
+        location = location!!
     )
 }
 
