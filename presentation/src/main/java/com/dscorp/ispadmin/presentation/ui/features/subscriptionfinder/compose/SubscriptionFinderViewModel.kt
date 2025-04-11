@@ -13,6 +13,8 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -20,35 +22,45 @@ import kotlinx.coroutines.launch
 
 const val REQUEST_DELAY = 500L
 
+data class SubscriptionFinderUiState(
+    val subscriptions: Map<ServiceStatus, List<SubscriptionResume>> = emptyMap(),
+    val cancelSubscriptionState: CancelSubscriptionState = CancelSubscriptionState.Empty,
+    val saveSubscriptionState: SaveSubscriptionState = SaveSubscriptionState.Success,
+    val napBoxesState: NapBoxesState = NapBoxesState.Loading,
+    val placesState: PlacesState = PlacesState(),
+    val selectedSubscription: SubscriptionResume? = null
+)
+
 class SubscriptionFinderViewModel(
     private val repository: IRepository
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow(SubscriptionFinderUiState())
+    val uiState: StateFlow<SubscriptionFinderUiState> = _uiState.asStateFlow()
+
     private val subscriptionsFlow = MutableStateFlow<List<SubscriptionResume>>(emptyList())
-    val subscriptionFlowGrouped: Flow<Map<ServiceStatus, List<SubscriptionResume>>> =
-        subscriptionsFlow.map { list ->
-            list.map {
-                if (it.serviceStatus != ServiceStatus.CANCELLED) it.copy(serviceStatus = ServiceStatus.ACTIVE)
-                else it.copy(serviceStatus = ServiceStatus.CANCELLED)
-            }.groupBy { it.serviceStatus }
-        }
 
     val documentNumberFlow = MutableSharedFlow<SubscriptionFilter>(extraBufferCapacity = 1)
-    val updateCustomerDataFlow =
-        MutableStateFlow<SaveSubscriptionState>(SaveSubscriptionState.Success)
-    val cancelSubscriptionFlow =
-        MutableStateFlow<CancelSubscriptionState>(CancelSubscriptionState.Empty)
-
-    val napBoxDialogDataFlow = MutableStateFlow<NapBoxesState>(NapBoxesState.Loading)
-    val placesFlow = MutableStateFlow(PlacesState())
 
     init {
         findSubscription()
         getPlaces()
+        
+        // Observe subscriptionsFlow and update the UI state
+        viewModelScope.launch {
+            subscriptionsFlow.map { list ->
+                list.map {
+                    if (it.serviceStatus != ServiceStatus.CANCELLED) it.copy(serviceStatus = ServiceStatus.ACTIVE)
+                    else it.copy(serviceStatus = ServiceStatus.CANCELLED)
+                }.groupBy { it.serviceStatus }
+            }.collect { groupedSubscriptions ->
+                _uiState.update { it.copy(subscriptions = groupedSubscriptions) }
+            }
+        }
     }
 
     fun resetNapBoxFlow() {
-        napBoxDialogDataFlow.value = NapBoxesState.Loading
+        _uiState.update { it.copy(napBoxesState = NapBoxesState.Loading) }
     }
 
     @OptIn(FlowPreview::class)
@@ -90,87 +102,94 @@ class SubscriptionFinderViewModel(
                 }
                 subscriptionsFlow.value = response
             }
-
     }
 
     fun updateCustomerData(customer: CustomerData) = viewModelScope.launch {
         try {
-            updateCustomerDataFlow.value = SaveSubscriptionState.Loading
+            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Loading) }
             repository.updateCustomerData(customer)
-            updateCustomerDataFlow.value = SaveSubscriptionState.Success
+            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Success) }
         } catch (e: Exception) {
             e.printStackTrace()
-            updateCustomerDataFlow.value = SaveSubscriptionState.Error
+            _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Error) }
         }
     }
 
+    fun setSelectedSubscription(subscription: SubscriptionResume?) {
+        _uiState.update { it.copy(selectedSubscription = subscription) }
+    }
 
     fun cancelSubscription(subscriptionId: Int) = viewModelScope.launch {
         try {
-            cancelSubscriptionFlow.value = CancelSubscriptionState.Loading
+            _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Loading) }
             repository.cancelSubscription(subscriptionId)
-            cancelSubscriptionFlow.value = CancelSubscriptionState.Success
+            _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Success) }
         } catch (e: Exception) {
             e.printStackTrace()
-            cancelSubscriptionFlow.value = CancelSubscriptionState.Error
+            _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Error) }
         }
     }
 
     fun removeSubscriptionFromList(id: Int) {
         subscriptionsFlow.value = subscriptionsFlow.value.filter { it.id != id }
-        cancelSubscriptionFlow.value = CancelSubscriptionState.Empty
+        _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Empty) }
     }
 
     fun getNapBoxes() = viewModelScope.launch {
         try {
-            napBoxDialogDataFlow.value = NapBoxesState.Loading
+            _uiState.update { it.copy(napBoxesState = NapBoxesState.Loading) }
             val response = repository.getNapBoxes()
-            napBoxDialogDataFlow.value = NapBoxesState.NapBoxListLoaded(response)
-
+            _uiState.update { it.copy(napBoxesState = NapBoxesState.NapBoxListLoaded(response)) }
         } catch (e: Exception) {
-            napBoxDialogDataFlow.value = NapBoxesState.Error
+            _uiState.update { it.copy(napBoxesState = NapBoxesState.Error) }
             e.printStackTrace()
         }
     }
 
     fun changeNapBox(request: MoveOnuRequest) = viewModelScope.launch {
         try {
-            napBoxDialogDataFlow.value = NapBoxesState.Loading
+            _uiState.update { it.copy(napBoxesState = NapBoxesState.Loading) }
             repository.changeSubscriptionNapBox(request)
-            napBoxDialogDataFlow.value = NapBoxesState.NapBoxChanged
+            _uiState.update { it.copy(napBoxesState = NapBoxesState.NapBoxChanged) }
         } catch (e: Exception) {
-            napBoxDialogDataFlow.value = NapBoxesState.Error
+            _uiState.update { it.copy(napBoxesState = NapBoxesState.Error) }
             e.printStackTrace()
         }
     }
 
     private fun getPlaces() = viewModelScope.launch {
         try {
-            placesFlow.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(placesState = it.placesState.copy(isLoading = true)) }
             val places = repository.getPlaces()
-            placesFlow.update {
+            _uiState.update { 
                 it.copy(
-                    places = places,
-                    isLoading = false
+                    placesState = it.placesState.copy(
+                        places = places,
+                        isLoading = false
+                    )
                 )
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            placesFlow.update {
+            _uiState.update { 
                 it.copy(
-                    isLoading = false,
-                    error = e.message
+                    placesState = it.placesState.copy(
+                        isLoading = false,
+                        error = e.message
+                    )
                 )
             }
         }
     }
 
     fun onPlaceSelected(place: PlaceResponse) {
-        placesFlow.update { it.copy(selectedPlace = place) }
+        _uiState.update { 
+            it.copy(
+                placesState = it.placesState.copy(selectedPlace = place)
+            )
+        }
     }
-
 }
-
 
 sealed class SaveSubscriptionState {
     object Loading : SaveSubscriptionState()

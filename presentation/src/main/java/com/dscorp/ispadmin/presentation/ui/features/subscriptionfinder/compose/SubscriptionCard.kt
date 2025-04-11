@@ -107,11 +107,10 @@ fun CustomerDataForm(
     subscriptionResume: SubscriptionResume,
     viewModel: SubscriptionFinderViewModel = koinViewModel()
 ) {
-    val updateCustomerState by viewModel.updateCustomerDataFlow.collectAsState()
-    val placesState by viewModel.placesFlow.collectAsState()
-
+    val uiState by viewModel.uiState.collectAsState()
+    
     LaunchedEffect(Unit) {
-        val currentPlace = placesState.places.find {
+        val currentPlace = uiState.placesState.places.find {
             it.id == subscriptionResume.placeId
         }
         currentPlace?.let { viewModel.onPlaceSelected(it) }
@@ -190,7 +189,7 @@ fun CustomerDataForm(
                 )
 
                 when {
-                    placesState.places.isNotEmpty() -> {
+                    uiState.placesState.places.isNotEmpty() -> {
                         MyOutLinedDropDown(
                             modifier = Modifier.constrainAs(place) {
                                 top.linkTo(dni.bottom, margin = 8.dp)
@@ -198,8 +197,8 @@ fun CustomerDataForm(
                                 end.linkTo(parent.end)
                                 width = Dimension.fillToConstraints
                             },
-                            items = placesState.places,
-                            selected = placesState.selectedPlace,
+                            items = uiState.placesState.places,
+                            selected = uiState.placesState.selectedPlace,
                             label = "Lugar",
                             onItemSelected = { selectedPlace ->
                                 subscriptionResume.customer.place = selectedPlace.name!!
@@ -209,7 +208,7 @@ fun CustomerDataForm(
                         )
                     }
 
-                    placesState.isLoading -> {
+                    uiState.placesState.isLoading -> {
                         Box(
                             modifier = Modifier.constrainAs(place) {
                                 top.linkTo(dni.bottom, margin = 8.dp)
@@ -226,7 +225,7 @@ fun CustomerDataForm(
                         }
                     }
 
-                    placesState.error != null -> {
+                    uiState.placesState.error != null -> {
                         CustomOutlinedTextField(
                             modifier = Modifier.constrainAs(place) {
                                 top.linkTo(dni.bottom, margin = 8.dp)
@@ -287,12 +286,12 @@ fun CustomerDataForm(
                     disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
                     disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f)
                 ),
-                enabled = updateCustomerState !is SaveSubscriptionState.Loading,
+                enabled = uiState.saveSubscriptionState !is SaveSubscriptionState.Loading,
                 onClick = {
                     viewModel.updateCustomerData(subscriptionResume.customer)
                 }
             ) {
-                if (updateCustomerState is SaveSubscriptionState.Loading) {
+                if (uiState.saveSubscriptionState is SaveSubscriptionState.Loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.onPrimary,

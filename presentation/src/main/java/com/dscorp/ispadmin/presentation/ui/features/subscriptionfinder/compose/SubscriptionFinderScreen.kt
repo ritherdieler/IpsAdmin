@@ -40,21 +40,14 @@ fun SubscriptionFinderScreen(
     navController: NavController,
     viewModel: SubscriptionFinderViewModel = koinViewModel(),
 ) {
-
-    val subscriptionsFlow by viewModel.subscriptionFlowGrouped.collectAsState(emptyMap())
+    val uiState by viewModel.uiState.collectAsState()
     val coroutinesScope = rememberCoroutineScope()
     var showCancelSubscriptionConfirmDialog by remember { mutableStateOf(false) }
-    val cancelSubscriptionUiState by viewModel.cancelSubscriptionFlow.collectAsState()
     val context = LocalContext.current
-    var selectedSubscription by remember {
-        mutableStateOf<SubscriptionResume?>(null)
-    }
-
-    val napBoxDialogDataFlow by viewModel.napBoxDialogDataFlow.collectAsState()
     var showChangeNapBoxDialog by remember { mutableStateOf(false) }
 
     SubscriptionFinder(
-        subscriptions = subscriptionsFlow,
+        subscriptions = uiState.subscriptions,
         onSearch = {
             coroutinesScope.launch {
                 viewModel.documentNumberFlow.emit(it)
@@ -93,19 +86,19 @@ fun SubscriptionFinderScreen(
                 }
 
                 CANCEL_SUBSCRIPTION -> {
-                    selectedSubscription = subscription
+                    viewModel.setSelectedSubscription(subscription)
                     showCancelSubscriptionConfirmDialog = true
                 }
 
                 CHANGE_NAP_BOX -> {
-                    selectedSubscription = subscription
+                    viewModel.setSelectedSubscription(subscription)
                     showChangeNapBoxDialog = true
                 }
             }
         }
     )
 
-    when (cancelSubscriptionUiState) {
+    when (uiState.cancelSubscriptionState) {
         CancelSubscriptionState.Empty -> {}
         CancelSubscriptionState.Error -> {
             Toast.makeText(
@@ -119,12 +112,11 @@ fun SubscriptionFinderScreen(
         CancelSubscriptionState.Success -> {
             Toast.makeText(context, "Suscripción cancelada correctamente", Toast.LENGTH_LONG)
                 .show()
-            viewModel.removeSubscriptionFromList(selectedSubscription?.id ?: 0)
-
+            uiState.selectedSubscription?.id?.let { viewModel.removeSubscriptionFromList(it) }
         }
     }
 
-    if (showCancelSubscriptionConfirmDialog)
+    if (showCancelSubscriptionConfirmDialog) {
         MyConfirmDialog(
             title = "Cancelar suscripción",
             body = {
@@ -133,11 +125,12 @@ fun SubscriptionFinderScreen(
             onDismissRequest = {
                 showCancelSubscriptionConfirmDialog = false
             }, onAccept = {
-                selectedSubscription?.id?.let {
+                uiState.selectedSubscription?.id?.let {
                     viewModel.cancelSubscription(it)
                 }
             }
         )
+    }
 
     if (showChangeNapBoxDialog) {
         viewModel.getNapBoxes()
@@ -151,10 +144,10 @@ fun SubscriptionFinderScreen(
             }
 
             ChangeNapBoxComp(
-                currentNapBox = selectedSubscription?.napBox!!,
-                napBoxListState = napBoxDialogDataFlow,
+                currentNapBox = uiState.selectedSubscription?.napBox!!,
+                napBoxListState = uiState.napBoxesState,
                 onChangeNapBoxClick = { napBox ->
-                    selectedSubscription?.let { subscription ->
+                    uiState.selectedSubscription?.let { subscription ->
                         when {
                             napBox.id == null -> showToast(
                                 context,
@@ -177,7 +170,6 @@ fun SubscriptionFinderScreen(
                                     newNapBoxId = napBox.id!!.toInt()
                                 )
                                 viewModel.changeNapBox(request)
-//                                showChangeNapBoxDialog = false
                             }
                         }
                     } ?: showToast(context, "No se ha seleccionado una suscripción")
@@ -188,9 +180,5 @@ fun SubscriptionFinderScreen(
                 }
             )
         }
-
     }
-
-
-
 }
