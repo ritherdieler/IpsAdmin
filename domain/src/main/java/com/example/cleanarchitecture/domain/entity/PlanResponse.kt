@@ -6,7 +6,7 @@ data class PlanResponse(
     var price: Double? = null,
     var downloadSpeed: String? = null,
     var uploadSpeed: String? = null,
-    var type: PlanType
+    var type: InstallationType
 ) : java.io.Serializable {
     override fun toString(): String {
         return "${name?.capitalize()} / Precio: ${priceToString()}"
@@ -17,8 +17,9 @@ data class PlanResponse(
     }
 
     fun getPlanType() = when (type) {
-        PlanType.WIRELESS -> "W"
-        PlanType.FIBER -> "F"
+        InstallationType.WIRELESS -> "W"
+        InstallationType.FIBER -> "F"
+        InstallationType.ONLY_TV_FIBER -> "TV"
     }
 
     fun priceToString(): String {
@@ -33,7 +34,5 @@ data class PlanResponse(
         return "${uploadSpeed}Mbps"
     }
 
-    enum class PlanType {
-        WIRELESS, FIBER
-    }
+
 }
