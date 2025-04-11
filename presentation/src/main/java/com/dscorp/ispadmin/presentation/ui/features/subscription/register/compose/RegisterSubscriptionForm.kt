@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,7 +33,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -72,109 +72,69 @@ fun RegisterSubscriptionForm(
     onNoteChanged: (String) -> Unit = {},
     onRegisterClick: () -> Unit = {}
 ) {
-    Surface(
-        modifier = modifier
-            .fillMaxSize()
-    ) {
+    Surface(modifier = modifier.fillMaxSize()) {
         val scrollState = rememberScrollState()
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 24.dp)
                 .verticalScroll(scrollState)
         ) {
-            FormRow {
-                MyOutlinedTextField(
-                    modifier = Modifier.weight(1f),
-                    value = formState.registerSubscriptionForm.firstName,
-                    label = FIRST_NAME_LABEL,
-                    onValueChange = onFirstNameChanged,
-                    hasError = formState.registerSubscriptionForm.firstNameError != null,
-                    singleLine = false,
-                    maxLines = 4,
-                )
-                MyOutlinedTextField(
-                    modifier = Modifier.weight(1f),
-                    value = formState.registerSubscriptionForm.lastName,
-                    label = LAST_NAME_LABEL,
-                    onValueChange = onLastNameChanged,
-                    hasError = formState.registerSubscriptionForm.lastNameError != null,
-                    singleLine = false,
-                    maxLines = 4,
-                )
-            }
+            SectionTitle("Datos del Cliente")
 
-            FormRow {
-                MyOutlinedTextField(
-                    modifier = Modifier.weight(1f),
-                    value = formState.registerSubscriptionForm.dni,
-                    label = DNI_LABEL,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    onValueChange = onDniChanged,
-                    hasError = formState.registerSubscriptionForm.dniError != null,
-                    singleLine = false,
-                    maxLines = 4,
+            TwoFieldsRow(
+                label1 = "Nombres",
+                value1 = formState.registerSubscriptionForm.firstName,
+                onValueChange1 = onFirstNameChanged,
+                hasError1 = formState.registerSubscriptionForm.firstNameError != null,
+                label2 = "Apellidos",
+                value2 = formState.registerSubscriptionForm.lastName,
+                onValueChange2 = onLastNameChanged,
+                hasError2 = formState.registerSubscriptionForm.lastNameError != null
+            )
 
-                    )
-                MyOutlinedTextField(
-                    modifier = Modifier.weight(1f),
-                    value = formState.registerSubscriptionForm.phone,
-                    label = PHONE_LABEL,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Phone,
-                        imeAction = ImeAction.Done
-                    ),
-                    onValueChange = onPhoneChanged,
-                    hasError = formState.registerSubscriptionForm.phoneError != null,
-                    singleLine = false,
-                    maxLines = 4,
+            TwoFieldsRow(
+                label1 = "DNI",
+                value1 = formState.registerSubscriptionForm.dni,
+                onValueChange1 = onDniChanged,
+                hasError1 = formState.registerSubscriptionForm.dniError != null,
+                keyboardType1 = KeyboardType.Number,
+                label2 = "Teléfono",
+                value2 = formState.registerSubscriptionForm.phone,
+                onValueChange2 = onPhoneChanged,
+                hasError2 = formState.registerSubscriptionForm.phoneError != null,
+                keyboardType2 = KeyboardType.Phone
+            )
 
-                    )
-            }
-
+            SectionTitle("Dirección")
             MyAutoCompleteTextViewCompose(
                 modifier = Modifier.fillMaxWidth(),
                 items = formState.registerSubscriptionForm.placeList,
-                label = PLACE_LABEL,
+                label = "Lugar",
                 selectedItem = formState.registerSubscriptionForm.selectedPlace,
                 onItemSelected = onPlaceSelected,
                 onSelectionCleared = onPLaceSelectionCleared,
                 hasError = formState.registerSubscriptionForm.placeError != null,
             )
-
-                Text(
-                    text = "Lugar seleccionado: ${formState.registerSubscriptionForm.selectedPlace?.toString() ?: "Ninguno"}",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 4.dp, bottom = 8.dp),
-                    textAlign = TextAlign.Start,
-                    style = androidx.compose.material3.MaterialTheme.typography.bodySmall
-                )
-
             MyOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = formState.registerSubscriptionForm.address,
-                label = ADDRESS_LABEL,
+                label = "Dirección",
                 onValueChange = onAddressChanged,
                 hasError = formState.registerSubscriptionForm.addressError != null,
                 singleLine = false,
-                maxLines = 4,
+                maxLines = 4
+            )
 
-                )
-
+            SectionTitle("Instalación")
             InstallationTypeSelector(
                 installationType = formState.registerSubscriptionForm.installationType,
-                onTypeSelected = {
-                    onInstallationTypeSelected(it)
-                }
+                onTypeSelected = onInstallationTypeSelected
             )
 
             MyOutLinedDropDown(
-                label = PLAN_LABEL,
+                label = "Plan",
                 items = formState.registerSubscriptionForm.planList,
                 selected = formState.registerSubscriptionForm.selectedPlan,
                 onItemSelected = onPlanSelected,
@@ -192,18 +152,20 @@ fun RegisterSubscriptionForm(
                 )
             }
 
+            SectionTitle("Observaciones")
             MyOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = onNoteChanged,
                 value = formState.registerSubscriptionForm.note,
-                label = NOTE_LABEL,
+                onValueChange = onNoteChanged,
+                label = "Nota",
                 singleLine = false,
                 maxLines = 4,
                 supportingText = {
                     Text(
                         text = "${formState.registerSubscriptionForm.note.length}/180",
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.End
+                        textAlign = TextAlign.End,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             )
@@ -220,6 +182,49 @@ fun RegisterSubscriptionForm(
         }
     }
 }
+
+@Composable
+private fun SectionTitle(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier.padding(vertical = 4.dp)
+    )
+}
+
+@Composable
+private fun TwoFieldsRow(
+    label1: String,
+    value1: String,
+    onValueChange1: (String) -> Unit,
+    hasError1: Boolean = false,
+    keyboardType1: KeyboardType = KeyboardType.Text,
+    label2: String,
+    value2: String,
+    onValueChange2: (String) -> Unit,
+    hasError2: Boolean = false,
+    keyboardType2: KeyboardType = KeyboardType.Text
+) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        MyOutlinedTextField(
+            modifier = Modifier.weight(1f),
+            label = label1,
+            value = value1,
+            onValueChange = onValueChange1,
+            hasError = hasError1,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType1)
+        )
+        MyOutlinedTextField(
+            modifier = Modifier.weight(1f),
+            label = label2,
+            value = value2,
+            onValueChange = onValueChange2,
+            hasError = hasError2,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType2)
+        )
+    }
+}
+
 
 @Composable
 fun InstallationTypeSelector(

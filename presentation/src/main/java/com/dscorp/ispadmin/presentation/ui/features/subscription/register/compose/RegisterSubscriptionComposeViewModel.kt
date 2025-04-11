@@ -33,7 +33,8 @@ class RegisterSubscriptionComposeViewModel(
     private val getNapBoxListUseCase: GetNapBoxListUseCase,
     private val registerSubscriptionUseCase: RegisterSubscriptionUseCase,
     private val getUserSessionUseCase: GetUserSessionUseCase,
-    private val getCoreDevicesUseCase: GetCoreDevicesUseCase
+    private val getCoreDevicesUseCase: GetCoreDevicesUseCase,
+    private val getNearNapBoxesUseCase: GetNearNapBoxesUseCase
 ) : ViewModel() {
 
     val uiState = MutableStateFlow(RegisterSubscriptionState())
@@ -330,11 +331,7 @@ class RegisterSubscriptionComposeViewModel(
                 }
             },
             onFailure = { error ->
-                uiState.update {
-                    it.copy(
-                        error = error.message ?: "Unknown error"
-                    )
-                }
+
             }
         )
     }
@@ -417,7 +414,7 @@ class RegisterSubscriptionComposeViewModel(
         }
     }
 
-    fun onLocationChanged(currentLocation:LatLng) {
+    fun onLocationChanged(currentLocation: LatLng) {
         uiState.update {
             it.copy(
                 registerSubscriptionForm = it.registerSubscriptionForm.copy(
@@ -425,7 +422,31 @@ class RegisterSubscriptionComposeViewModel(
                 )
             )
         }
-
     }
-}
 
+    fun getNearbyNapBoxes(latitude: Double, longitude: Double) {
+        viewModelScope.launch {
+
+            getNearNapBoxesUseCase(latitude, longitude).fold(
+                onSuccess = { napBoxes ->
+                    cachedNapBoxList = napBoxes
+                    val filteredNapBoxes =
+                        currentUiState().registerSubscriptionForm.selectedPlace?.let { place ->
+                            napBoxes.filter { it.placeId == place.id?.toInt() }
+                        } ?: cachedNapBoxList
+
+                    uiState.update {
+                        it.copy(
+                            registerSubscriptionForm = it.registerSubscriptionForm.copy(napBoxList = filteredNapBoxes),
+                        )
+                    }
+                },
+                onFailure = {
+
+                }
+            )
+        }
+    }
+
+    private fun currentUiState() = uiState.value
+}

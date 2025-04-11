@@ -37,7 +37,7 @@ val filters = listOf(
 )
 
 @Composable
-fun SubscriptionFinderScreen(
+fun SubscriptionFinder(
     subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
     onSearch: (SubscriptionFilter) -> Unit = {},
     onMenuItemSelected: (menuItem: SubscriptionMenu, subscription: SubscriptionResume) -> Unit = { _, _ -> }
@@ -116,11 +116,11 @@ fun Int.toDp(context: Context): Dp {
     return this.dp / context.resources.displayMetrics.density
 }
 
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 private fun SubscriptionFinderPreview() {
     MaterialTheme {
-        SubscriptionFinderScreen(subscriptions = emptyMap())
+        SubscriptionFinder(subscriptions = emptyMap())
     }
 }
 

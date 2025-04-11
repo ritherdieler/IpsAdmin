@@ -29,6 +29,13 @@ import com.dscorp.ispadmin.presentation.theme.Scrim
 import com.dscorp.ispadmin.presentation.theme.Secondary
 import com.dscorp.ispadmin.presentation.theme.SecondaryContainer
 import com.dscorp.ispadmin.presentation.theme.Surface
+import com.dscorp.ispadmin.presentation.theme.SurfaceBright
+import com.dscorp.ispadmin.presentation.theme.SurfaceContainer
+import com.dscorp.ispadmin.presentation.theme.SurfaceContainerHigh
+import com.dscorp.ispadmin.presentation.theme.SurfaceContainerHighest
+import com.dscorp.ispadmin.presentation.theme.SurfaceContainerLow
+import com.dscorp.ispadmin.presentation.theme.SurfaceContainerLowest
+import com.dscorp.ispadmin.presentation.theme.SurfaceDim
 import com.dscorp.ispadmin.presentation.theme.SurfaceTint
 import com.dscorp.ispadmin.presentation.theme.SurfaceVariant
 import com.dscorp.ispadmin.presentation.theme.Tertiary
@@ -63,7 +70,14 @@ val myColorScheme = ColorScheme(
     onErrorContainer = OnErrorContainer,
     outline = Outline,
     outlineVariant = OutlineVariant,
-    scrim = Scrim
+    scrim = Scrim,
+    surfaceBright = SurfaceBright,
+    surfaceDim =  SurfaceDim,
+    surfaceContainer =  SurfaceContainer,
+    surfaceContainerHigh = SurfaceContainerHigh,
+    surfaceContainerHighest = SurfaceContainerHighest,
+    surfaceContainerLow = SurfaceContainerLow,
+    surfaceContainerLowest = SurfaceContainerLowest,
 )
 
 @Composable

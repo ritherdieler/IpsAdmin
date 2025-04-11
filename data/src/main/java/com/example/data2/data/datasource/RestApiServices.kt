@@ -26,9 +26,9 @@ import com.example.cleanarchitecture.domain.entity.ServiceOrderResponse
 import com.example.cleanarchitecture.domain.entity.Subscription
 import com.example.cleanarchitecture.domain.entity.SubscriptionFastSearchResponse
 import com.example.cleanarchitecture.domain.entity.SubscriptionResponse
+import com.example.cleanarchitecture.domain.entity.Technician
 import com.example.cleanarchitecture.domain.entity.User
 import com.example.cleanarchitecture.domain.entity.extensions.PayerFinderResult
-import com.example.cleanarchitecture.domain.entity.Technician
 import com.example.data2.data.apirequestmodel.AssistanceTicketRequest
 import com.example.data2.data.apirequestmodel.FixedCostRequest
 import com.example.data2.data.apirequestmodel.IpPoolRequest
@@ -120,6 +120,12 @@ interface RestApiServices {
 
     @GET("napbox")
     suspend fun getNapBoxes(): Response<List<NapBoxResponse>>
+
+    @GET("napbox/near")
+    suspend fun getNapBoxesOrderedByLocation(
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double
+    ): Response<List<NapBoxResponse>>
 
     @GET("payment/filtered")
     suspend fun getFilteredPaymentHistory(

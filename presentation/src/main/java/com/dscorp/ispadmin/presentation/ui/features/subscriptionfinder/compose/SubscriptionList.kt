@@ -5,28 +5,19 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -56,8 +47,6 @@ fun SubscriptionList(
             }
             items(items = subscriptionList, key = { it.id }) { subscription ->
                 SubscriptionCard(
-                    backgroundColor = if (status == ServiceStatus.CANCELLED) Color(0x80140B4C)
-                    else Color(0xFF140B4C),
                     subscriptionResume = subscription,
                     onMenuItemSelected = { onMenuItemSelected(it, subscription) })
             }
@@ -100,28 +89,5 @@ fun openInBrowser(ipAddress: String, context: Context) {
     context.startActivity(intent)
 }
 
-@Composable
-fun DebtViewer(modifier: Modifier = Modifier, pendingInvoicesQuantity: Int, totalDebt: Double) {
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .size(32.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFFF9100))
-        ) {
-            Text(
-                text = "$pendingInvoicesQuantity",
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        Spacer(modifier = Modifier.size(8.dp))
-        Text(text = "$$totalDebt", color = Color.White, style = MaterialTheme.typography.titleSmall)
-    }
-
-}
 
 

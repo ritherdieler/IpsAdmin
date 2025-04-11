@@ -83,24 +83,33 @@ fun RegisterSubscriptionFormScreen(
                         Text("Teléfono: ${uiState.registeredSubscription?.phone}")
                         Text("Dirección: ${uiState.registeredSubscription?.address}")
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text("IP: ${uiState.registeredSubscription?.ip ?: "No asignada"}", fontWeight = FontWeight.Bold)
+                        Text(
+                            "IP: ${uiState.registeredSubscription?.ip ?: "No asignada"}",
+                            fontWeight = FontWeight.Bold
+                        )
                         Text("Tipo de instalación: ${uiState.registeredSubscription?.installationType?.name ?: "No especificado"}")
                     }
                 },
                 confirmButton = {
-                    Button(onClick = { registerSubscriptionViewModel.clearRegisteredSubscription()
-                    onSubscriptionRegisterSuccess()
+                    Button(onClick = {
+                        registerSubscriptionViewModel.clearRegisteredSubscription()
+                        onSubscriptionRegisterSuccess()
                     }) {
                         Text("Aceptar")
                     }
                 }
             )
         }
+
         uiState.error != null -> {
             AlertDialog(
                 onDismissRequest = { registerSubscriptionViewModel.clearError() },
                 title = { Text("Error") },
-                text = { Text(uiState.error ?: "Ha ocurrido un error al registrar la suscripción") },
+                text = {
+                    Text(
+                        uiState.error ?: "Ha ocurrido un error al registrar la suscripción"
+                    )
+                },
                 confirmButton = {
                     Button(onClick = { registerSubscriptionViewModel.clearError() }) {
                         Text("Aceptar")
@@ -158,8 +167,19 @@ fun RegisterSubscriptionFormScreen(
                     fusedLocationClient.getCurrentLocation(currentLocationRequest, null)
                         .addOnSuccessListener { location ->
                             location?.let {
-                                registerSubscriptionViewModel.onLocationChanged(LatLng(it.latitude, it.longitude))
+                                registerSubscriptionViewModel.onLocationChanged(
+                                    LatLng(
+                                        it.latitude,
+                                        it.longitude
+                                    )
+                                )
                                 registerSubscriptionViewModel.getPlaceFromCurrentLocation(
+                                    it.latitude,
+                                    it.longitude
+                                )
+                                
+                                // Obtener cajas Nap cercanas a la ubicación actual
+                                registerSubscriptionViewModel.getNearbyNapBoxes(
                                     it.latitude,
                                     it.longitude
                                 )
@@ -259,10 +279,11 @@ fun RegisterSubscriptionFormScreen(
                     Button(
                         onClick = {
                             // Abrir la configuración de la aplicación para que el usuario active manualmente el permiso
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                data = Uri.fromParts("package", context.packageName, null)
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            }
+                            val intent =
+                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    data = Uri.fromParts("package", context.packageName, null)
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                }
                             context.startActivity(intent)
                         }
                     ) {
@@ -279,3 +300,4 @@ private fun isGpsEnabled(context: Context): Boolean {
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }
+

@@ -74,6 +74,8 @@ interface IRepository {
     suspend fun getServicesOrder(): List<ServiceOrderResponse>
     suspend fun getTechnicians(): List<Technician>
     suspend fun getNapBoxes(): List<NapBoxResponse>
+    suspend fun getNapBoxesOrderedByLocation(latitude:Double, longitude: Double): List<NapBoxResponse>
+
     suspend fun getFilteredPaymentHistory(request: SearchPaymentsRequest): List<Payment>
     suspend fun findSubscriptionByDNI(id: String): List<SubscriptionResume>
     suspend fun registerPayment(payment: Payment): Payment

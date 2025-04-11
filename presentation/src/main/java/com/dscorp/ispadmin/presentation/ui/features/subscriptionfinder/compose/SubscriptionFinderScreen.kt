@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,7 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -39,7 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 const val SUBSCRIPTION_ID = "subscriptionId"
 
 @Composable
-fun SubscriptionFinderScreen(
+fun SubscriptionFinder(
     navController: NavController,
     viewModel: SubscriptionFinderViewModel = koinViewModel(),
 ) {
@@ -56,7 +53,7 @@ fun SubscriptionFinderScreen(
     val napBoxDialogDataFlow by viewModel.napBoxDialogDataFlow.collectAsState()
     var showChangeNapBoxDialog by remember { mutableStateOf(false) }
 
-    SubscriptionFinderScreen(
+    SubscriptionFinder(
         subscriptions = subscriptionsFlow,
         onSearch = {
             coroutinesScope.launch {

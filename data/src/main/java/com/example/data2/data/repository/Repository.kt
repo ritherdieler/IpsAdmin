@@ -295,6 +295,18 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun getNapBoxesOrderedByLocation(
+        latitude: Double,
+        longitude: Double
+    ): List<NapBoxResponse> {
+        val response = restApiServices.getNapBoxesOrderedByLocation(latitude, longitude)
+        if (response.code() == 200) {
+            return response.body()!!
+        } else {
+            throw Exception("Error")
+        }
+    }
+
     override suspend fun getFilteredPaymentHistory(request: SearchPaymentsRequest): List<Payment> {
         val response = restApiServices.getFilteredPaymentHistory(
             request.subscriptionId!!,
