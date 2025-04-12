@@ -231,19 +231,30 @@ fun InstallationTypeSelector(
     installationType: InstallationType,
     onTypeSelected: (InstallationType) -> Unit
 ) {
-    Row {
-        RadioButtonWithLabel(
-            modifier = Modifier.weight(1f),
-            label = FIBER_OPTIC,
-            selected = installationType == InstallationType.FIBER,
-            onClick = { onTypeSelected(InstallationType.FIBER) }
-        )
-        RadioButtonWithLabel(
-            modifier = Modifier.weight(1f),
-            label = WIRELESS,
-            selected = installationType == InstallationType.WIRELESS,
-            onClick = { onTypeSelected(InstallationType.WIRELESS) }
-        )
+    Column {
+        Row {
+            RadioButtonWithLabel(
+                modifier = Modifier.weight(1f),
+                label = FIBER_OPTIC,
+                selected = installationType == InstallationType.FIBER,
+                onClick = { onTypeSelected(InstallationType.FIBER) }
+            )
+            RadioButtonWithLabel(
+                modifier = Modifier.weight(1f),
+                label = WIRELESS,
+                selected = installationType == InstallationType.WIRELESS,
+                onClick = { onTypeSelected(InstallationType.WIRELESS) }
+            )
+        }
+        Row {
+            RadioButtonWithLabel(
+                modifier = Modifier.weight(1f),
+                label = ONLY_TV,
+                selected = installationType == InstallationType.ONLY_TV_FIBER,
+                onClick = { onTypeSelected(InstallationType.ONLY_TV_FIBER) }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        }
     }
 }
 
@@ -347,18 +358,12 @@ fun FormRow(
 }
 
 // Constantes para etiquetas
-private const val FIRST_NAME_LABEL = "Nombres"
-private const val LAST_NAME_LABEL = "Apellidos"
-private const val DNI_LABEL = "Dni"
-private const val ADDRESS_LABEL = "Direccion"
-private const val PHONE_LABEL = "Telefono"
-private const val PLACE_LABEL = "Lugar"
-private const val PLAN_LABEL = "Plan"
+
 private const val ONU_LABEL = "Onu"
 private const val NAP_BOX_LABEL = "Caja Nap"
-private const val NOTE_LABEL = "Nota"
 const val FIBER_OPTIC = "Fibra óptica"
 const val WIRELESS = "Inalámbrico"
+const val ONLY_TV = "Solo TV"
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL)
 @Composable

@@ -303,7 +303,8 @@ class RegisterSubscriptionComposeViewModel(
     fun onInstallationTypeSelected(type: InstallationType) {
         val filteredPlans = when (type) {
             InstallationType.FIBER -> cachedPlanList.filter { it.type == InstallationType.FIBER }
-            else -> cachedPlanList.filter { it.type == InstallationType.WIRELESS }
+            InstallationType.WIRELESS -> cachedPlanList.filter { it.type == InstallationType.WIRELESS }
+            InstallationType.ONLY_TV_FIBER -> cachedPlanList.filter { it.type == InstallationType.ONLY_TV_FIBER }
         }
 
         uiState.update {

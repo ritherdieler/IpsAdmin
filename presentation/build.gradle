@@ -16,8 +16,8 @@ android {
         applicationId "com.dscorp.ispadmin"
         minSdk 26
         targetSdk 34
-        versionCode 28
-        versionName "1.10.0"
+        versionCode 29
+        versionName "1.10.1"
         testInstrumentationRunner "com.dscorp.ispadmin.test.InstrumentationTestRunner"
         vectorDrawables {
             useSupportLibrary true

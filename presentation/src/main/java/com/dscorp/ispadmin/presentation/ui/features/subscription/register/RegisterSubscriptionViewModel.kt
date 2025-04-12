@@ -180,6 +180,7 @@ class RegisterSubscriptionViewModel(
                 }
 
                 InstallationType.WIRELESS -> subscription
+                InstallationType.ONLY_TV_FIBER -> subscription
                 else -> throw Exception("Invalid Installation Type")
             }
         }
