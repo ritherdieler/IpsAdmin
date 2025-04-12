@@ -57,7 +57,7 @@ data class RegisterSubscriptionFormState(
 
 
         // Si es fibra, ONU y NapBox son obligatorios
-        val isFiberPlan = selectedPlan?.type == PlanResponse.PlanType.FIBER
+        val isFiberPlan = selectedPlan?.type == InstallationType.FIBER
         val fiberRequirementsValid = if (isFiberPlan) {
             selectedOnu != null && selectedNapBox != null
         } else {

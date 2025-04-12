@@ -70,7 +70,7 @@ class RegisterSubscriptionComposeViewModel(
                     isLoading = false,
                     registerSubscriptionForm = current.registerSubscriptionForm.copy(
                         onuList = onuList.getOrNull() ?: emptyList(),
-                        planList = cachedPlanList.filter { it.type == PlanResponse.PlanType.FIBER },
+                        planList = cachedPlanList.filter { it.type == InstallationType.FIBER },
                         placeList = placeList.getOrNull() ?: emptyList(),
                         napBoxList = cachedNapBoxList,
                         selectedHostDevice = coreDevices.getOrThrow().firstOrNull()
@@ -302,8 +302,8 @@ class RegisterSubscriptionComposeViewModel(
 
     fun onInstallationTypeSelected(type: InstallationType) {
         val filteredPlans = when (type) {
-            InstallationType.FIBER -> cachedPlanList.filter { it.type == PlanResponse.PlanType.FIBER }
-            else -> cachedPlanList.filter { it.type == PlanResponse.PlanType.WIRELESS }
+            InstallationType.FIBER -> cachedPlanList.filter { it.type == InstallationType.FIBER }
+            else -> cachedPlanList.filter { it.type == InstallationType.WIRELESS }
         }
 
         uiState.update {

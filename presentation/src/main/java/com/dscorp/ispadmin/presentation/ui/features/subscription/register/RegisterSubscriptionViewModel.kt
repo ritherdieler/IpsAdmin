@@ -55,11 +55,11 @@ class RegisterSubscriptionViewModel(
     private val plans = MutableStateFlow<List<PlanResponse>?>(null)
 
     private val plansFiber = plans.map { plans ->
-        plans?.filter { it.type == PlanResponse.PlanType.FIBER }
+        plans?.filter { it.type == InstallationType.FIBER }
     }
 
     private val plansWireless = plans.map { plans ->
-        plans?.filter { it.type == PlanResponse.PlanType.WIRELESS }
+        plans?.filter { it.type == InstallationType.WIRELESS }
     }
 
     fun getFormData() =

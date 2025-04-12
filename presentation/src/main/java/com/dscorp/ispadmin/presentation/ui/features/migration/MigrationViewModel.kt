@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.presentation.ui.features.migration
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cleanarchitecture.domain.entity.InstallationType
 import com.example.cleanarchitecture.domain.entity.Onu
 import com.example.cleanarchitecture.domain.entity.PlanResponse
 import com.example.cleanarchitecture.domain.entity.SubscriptionResponse
@@ -41,7 +42,7 @@ class MigrationViewModel(private val repository: IRepository) : ViewModel() {
             _uiState.emit(MigrationUiState.Loading)
             val unconfirmedOnus = async { repository.getUnconfirmedOnus() }.await()
             val plans = async { repository.getPlans() }.await()
-                .filter { it.type == PlanResponse.PlanType.FIBER }
+                .filter { it.type == InstallationType.FIBER }
             _uiState.emit(MigrationUiState.FormDataReady(plans, unconfirmedOnus, subscription))
         } catch (e: Exception) {
             _uiState.emit(MigrationUiState.Error(e))

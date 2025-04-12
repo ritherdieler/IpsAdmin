@@ -15,12 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.ServiceStatus
@@ -79,24 +73,6 @@ fun SubscriptionList(
         }
     }
 }
-
-fun createSpannableString(fullText: String, subText: String): AnnotatedString {
-    return buildAnnotatedString {
-        withStyle(style = SpanStyle(color = Color(0xFFFF9100))) {
-            append(fullText)
-        }
-        val textDecoration =
-            if (subText.isAnIp(subText)) TextDecoration.Underline else TextDecoration.None
-        withStyle(style = SpanStyle(color = Color.White, textDecoration = textDecoration)) {
-            append(subText)
-        }
-    }
-}
-
-fun String.isAnIp(subText: String): Boolean {
-    return subText.matches(Regex("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$"))
-}
-
 
 fun sendWhatsapp(subscriptionResume: SubscriptionResume, context: Context) {
     val message = when {
