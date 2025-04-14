@@ -1,21 +1,13 @@
 package com.dscorp.ispadmin.presentation.ui.features.login
 
-import MyTheme
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ProgressBar
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.databinding.ActivityLoginBinding
 import com.dscorp.ispadmin.presentation.extension.showCrossDialog
-import com.dscorp.ispadmin.presentation.extension.showErrorDialog
-import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
-import com.dscorp.ispadmin.presentation.ui.features.login.compose.Login
+import com.dscorp.ispadmin.presentation.theme.MyTheme
 import com.dscorp.ispadmin.presentation.ui.features.login.compose.LoginScreen
 import com.dscorp.ispadmin.presentation.ui.features.main.MainActivity
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterActivity

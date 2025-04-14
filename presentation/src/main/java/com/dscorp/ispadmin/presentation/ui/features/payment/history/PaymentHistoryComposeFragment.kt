@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment.history
 
-import MyTheme
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.dscorp.ispadmin.presentation.theme.MyTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PaymentHistoryComposeFragment : Fragment() {

@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+Estamos desarrollando una app para la gestion de usuarios de un isp, el cual tiene clientes del tipo fibra optica e inalambrico, algunas de las funcionalidades principales son: Registro de suscripciones, buscador de suscripciones, visualizacion y registro de pagos.
+
+Actualmente esta aplicacion esta en un proceso de migracion de vistas clasicas en xml a compose, todo el codigo generado debe usar jetpack compose.
+
+Las vistas generadas deben seguir las mejores practicas de diseño para asegurar un excelente experiencia de usuario siguiendo los lineamientos de material3.
+
+En los ViewModel se deben usar siempre Unidirectinal data flow por medio de data class para ser consumidos en las screens hechas en compose
+
+--usa siempre los componentes personalizados que estan dentro de com.dscorp.ispadmin.presentation.ui.features.composecomponents
+--usa siempre  MyTheme como tema para las screens
+--cuando te pidra migrar un fragmento en xml a compose siempre envuelve la nueva screen con un wraper en un fragmento
+--en la migracion de los fragmentos realiza mejoras en el diseño  siguiendo los lineamientos de material3
+
+## Tecnologias
+--cuando hagas una migracion elimina la version xml del fragmento
+
+- Jetpack compose como sistema de interfaces.
+- Material 3 como sistema de diseño.
+- Kotlin como lenguaje de programacion.
+- Koin como inyector de dependencias.
+
+- Siempre que termines de generar un codigo, compilalo para ver que no hay problemas. Para ello utiliza compileDebugSources

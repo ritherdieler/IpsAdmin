@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentEvent
 import com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -16,16 +17,14 @@ fun PayerFinderScreen(
     modifier: Modifier = Modifier,
     paymentViewModel: RegisterPaymentViewModel = koinViewModel()
 ) {
-    val subscriptions by paymentViewModel.subscriptionFlow.collectAsState()
+    val state by paymentViewModel.state.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold { paddingValues ->
         PayerFinder(
-            results = subscriptions,
-            onTextChanged = {
-                coroutineScope.launch {
-                    paymentViewModel.paymentSearchFlow.emit(it)
-                }
+            results = state.electronicPayers,
+            onTextChanged = { searchText ->
+                paymentViewModel.onEvent(RegisterPaymentEvent.ElectronicPayerNameChanged(searchText))
             }
         )
     }

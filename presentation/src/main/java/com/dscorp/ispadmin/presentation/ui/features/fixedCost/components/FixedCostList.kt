@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.fixedCost.components
 
-import MyTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,11 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.dscorp.ispadmin.presentation.theme.MyTheme
+import com.dscorp.ispadmin.presentation.theme.myTypography
 import com.dscorp.ispadmin.presentation.ui.features.fixedCost.GetAllFixedCostsState
 import com.dscorp.ispadmin.presentation.ui.features.migration.Loader
 import com.example.cleanarchitecture.domain.entity.FixedCost
 import com.example.cleanarchitecture.domain.entity.FixedCostType
-import myTypography
 
 @Composable
 fun FixedCostList(modifier: Modifier = Modifier, fixedCosts: GetAllFixedCostsState) {

@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment.history
 
-import MyTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.presentation.theme.MyTheme
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyButton
 import com.example.cleanarchitecture.domain.entity.Payment
 import kotlinx.coroutines.launch

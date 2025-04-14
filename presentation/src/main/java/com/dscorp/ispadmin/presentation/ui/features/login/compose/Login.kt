@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.login.compose
 
-import MyTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -31,9 +29,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyProgressButton
+import com.dscorp.ispadmin.presentation.theme.MyTheme
+import com.dscorp.ispadmin.presentation.theme.myTypography
+import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyButton
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginState
-import myTypography
 
 data class LoginForm(
     var username: String = "",
@@ -129,7 +128,7 @@ fun Login(
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
-            MyProgressButton(
+            MyButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -146,15 +145,14 @@ fun Login(
                     )
                 })
 
-            Button(
+            MyButton (
                 modifier = Modifier.fillMaxWidth(),
+                text = "Crear cuenta",
                 onClick = {
                     onCreateAccountClicked()
                 },
                 enabled = loginState !is LoginState.Loading
-            ) {
-                Text(text = "Crear cuenta")
-            }
+            )
         }
     }
 }

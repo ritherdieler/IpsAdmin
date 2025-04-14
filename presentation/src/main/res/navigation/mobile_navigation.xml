@@ -148,8 +148,7 @@
     <fragment
         android:id="@+id/register_payment"
         android:name="com.dscorp.ispadmin.presentation.ui.features.payment.register.RegisterPaymentFragment"
-        android:label="Registrar Pago"
-        tools:layout="@layout/fragment_register_payment">
+        android:label="Registrar Pago">
         <argument
             android:name="payment"
             app:argType="com.example.cleanarchitecture.domain.entity.Payment" />

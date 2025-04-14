@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment.payerFinder.compose
 
-import MyTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,18 +18,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.dscorp.ispadmin.presentation.theme.MyTheme
 import com.dscorp.ispadmin.presentation.theme.Primary
-import com.dscorp.ispadmin.presentation.theme.Secondary
-import com.example.cleanarchitecture.domain.entity.extensions.PayerFinderResult
-import myTypography
 
 @Composable
 fun PayerFinder(
     modifier: Modifier = Modifier,
-    results: List<PayerFinderResult>,
+    results: List<String>,
     onTextChanged: (String) -> Unit = {}
 ) {
-
     var text by remember { mutableStateOf("") }
 
     Column(modifier = modifier
@@ -53,16 +49,10 @@ fun PayerFinder(
                 .padding(top = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(results) { item ->
+            items(results) { payerName ->
                 Text(
-                    text = "Pagador:${item.electronicPayerName.uppercase()}",
-                    style = myTypography.titleMedium,
+                    text = payerName,
                     color = Primary
-                )
-                Text(
-                    text = "Cliente: ${item.subscriptionName}",
-                    style = myTypography.titleSmall,
-                    color = Secondary
                 )
                 HorizontalDivider()
             }
@@ -76,32 +66,10 @@ private fun PayerFinderPreview() {
     MyTheme {
         PayerFinder(
             results = listOf(
-                PayerFinderResult(
-                    subscriptionId = 1,
-                    subscriptionName = "Cliente 1",
-                    electronicPayerName = "Pagador 1",
-                    paymentMethod = "Efectivo",
-                    paymentDate = "01/01/2022",
-                    amountPaid = 100.0
-                ),
-                PayerFinderResult(
-                    subscriptionId = 2,
-                    subscriptionName = "Cliente 2",
-                    electronicPayerName = "Pagador 2",
-                    paymentMethod = "Tarjeta",
-                    paymentDate = "02/01/2022",
-                    amountPaid = 200.0
-                ),
-                PayerFinderResult(
-                    subscriptionId = 3,
-                    subscriptionName = "Cliente 3",
-                    electronicPayerName = "Pagador 3",
-                    paymentMethod = "Transferencia",
-                    paymentDate = "03/01/2022",
-                    amountPaid = 300.0
-                )
+                "Pagador 1", 
+                "Pagador 2", 
+                "Pagador 3"
             )
         )
     }
-
 }
