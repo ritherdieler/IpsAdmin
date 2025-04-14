@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.dscorp.ispadmin.presentation.theme.MyTheme
+import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyAutoCompleteTextViewCompose
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyButton
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyCustomDialog
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutLinedDropDown
@@ -190,24 +191,24 @@ fun RegisterPaymentScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             // Electronic Payer Name AutoComplete
-                            MyOutLinedDropDown(
+                            MyAutoCompleteTextViewCompose(
                                 modifier = Modifier.fillMaxWidth(),
                                 items = state.electronicPayers,
-                                selected = state.electronicPayerName,
-                                label = "Nombre del pagador",
+                                selectedItem = state.electronicPayerName.takeIf { it.isNotEmpty() },
+                                label = "Introduce o selecciona un nombre",
                                 onItemSelected = { payer ->
                                     viewModel.onEvent(RegisterPaymentEvent.ElectronicPayerNameChanged(payer))
                                 },
-                                hasError = state.errorMessages.containsKey("electronicPayerName")
+                                onSelectionCleared = {
+                                    viewModel.onEvent(RegisterPaymentEvent.ElectronicPayerNameChanged(null))
+                                },
+                                errorMessage = state.errorMessages["electronicPayerName"],
+                                hasError = state.errorMessages.containsKey("electronicPayerName"),
+                                onTextChanged = {
+                                    viewModel.onEvent(RegisterPaymentEvent.ElectronicPayerNameChanged(it))
+                                }
                             )
-                            
-                            if (state.errorMessages.containsKey("electronicPayerName")) {
-                                Text(
-                                    text = state.errorMessages["electronicPayerName"] ?: "",
-                                    color = MaterialTheme.colorScheme.error,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
+
                         }
                     }
                     

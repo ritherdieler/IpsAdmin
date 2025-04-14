@@ -47,10 +47,10 @@ fun <T> MyAutoCompleteTextViewCompose(
     selectedItem: T? = null,
     onItemSelected: (T) -> Unit,
     onSelectionCleared: () -> Unit,
-    hint: String = "",
+    onTextChanged: (String) -> Unit = {},
     errorMessage: String? = null,
     enabled: Boolean = true,
-    hasError: Boolean= false
+    hasError: Boolean = false
 ) {
     val context = LocalContext.current
     var internalSelectedItem by remember { mutableStateOf(selectedItem) }
@@ -139,6 +139,7 @@ fun <T> MyAutoCompleteTextViewCompose(
                             ignoreNextTextChange = false
                             return
                         }
+
                         val currentText = s?.toString() ?: ""
                         val selectedText = internalSelectedItem?.toString() ?: ""
 
@@ -146,13 +147,13 @@ fun <T> MyAutoCompleteTextViewCompose(
                             internalSelectedItem = null
                             onSelectionCleared()
                         }
+
+                        s?.let {
+                            onTextChanged(it.toString())
+                        }
                     }
                 })
 
-                // Hint si no hay selección
-                if (hint.isNotEmpty() && internalSelectedItem == null) {
-                    setHint(hint)
-                }
             }
 
             // Añadimos el AutoCompleteTextView al TextInputLayout
@@ -184,7 +185,7 @@ fun <T> MyAutoCompleteTextViewCompose(
                     autoCompleteTextView.setText(selectedText, false)
                     autoCompleteTextView.setSelection(selectedText.length)
                     onItemSelected(selectedValue)
-                    
+
                     // Ocultar el teclado después de la selección
                     hideKeyboard(context, autoCompleteTextView)
                 }
@@ -229,7 +230,8 @@ private fun <T> MaterialAutoCompleteTextView.setupAdapter(context: Context, item
 
 // Función para ocultar el teclado
 private fun hideKeyboard(context: Context, view: android.view.View) {
-    val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    val inputMethodManager =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 

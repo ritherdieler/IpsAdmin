@@ -30,7 +30,7 @@ sealed interface RegisterPaymentEvent {
     data class PaymentMethodSelected(val method: String) : RegisterPaymentEvent
     data class DiscountAmountChanged(val amount: String) : RegisterPaymentEvent
     data class DiscountReasonChanged(val reason: String) : RegisterPaymentEvent
-    data class ElectronicPayerNameChanged(val name: String) : RegisterPaymentEvent
+    data class ElectronicPayerNameChanged(val name: String?) : RegisterPaymentEvent
     object RegisterPayment : RegisterPaymentEvent
     data class SetPayment(val payment: Payment) : RegisterPaymentEvent
     object ToggleDiscountFields : RegisterPaymentEvent
@@ -97,11 +97,14 @@ class RegisterPaymentViewModel(private val repository: IRepository) : ViewModel(
                 }
             }
             is RegisterPaymentEvent.ElectronicPayerNameChanged -> {
-                _state.update { 
-                    it.copy(
-                        electronicPayerName = event.name
-                    ) 
+                event.name?.let { name ->
+                    _state.update {
+                        it.copy(
+                            electronicPayerName = name
+                        )
+                    }
                 }
+
             }
             is RegisterPaymentEvent.RegisterPayment -> {
                 registerPayment()
