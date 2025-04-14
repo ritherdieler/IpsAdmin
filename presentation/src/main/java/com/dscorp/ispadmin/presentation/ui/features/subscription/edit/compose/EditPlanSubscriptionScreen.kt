@@ -103,7 +103,7 @@ fun EditPlanSubscriptionScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 hasError = false,
                                 singleLine = true,
-                                enabled = false
+                                readOnly = true
                             )
 
                             Spacer(modifier = Modifier.height(12.dp))
@@ -115,7 +115,7 @@ fun EditPlanSubscriptionScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 hasError = false,
                                 singleLine = true,
-                                enabled = false
+                                readOnly = true
                             )
 
                             Spacer(modifier = Modifier.height(12.dp))
@@ -127,7 +127,7 @@ fun EditPlanSubscriptionScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 hasError = false,
                                 singleLine = true,
-                                enabled = false
+                                readOnly = true
                             )
                         }
                     }
