@@ -52,12 +52,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyButton
 import com.dscorp.ispadmin.presentation.ui.features.dialog.MyConfirmDialog
 import com.dscorp.ispadmin.presentation.ui.features.dialog.MyCustomDialog
+import com.dscorp.ispadmin.presentation.ui.features.locationMapView.MAP_SELECTION_REQUEST_KEY
+import com.dscorp.ispadmin.presentation.ui.features.locationMapView.MAP_SELECTION_RESULT_KEY
 import com.dscorp.ispadmin.presentation.ui.features.migration.Loader
 import com.dscorp.ispadmin.presentation.ui.features.migration.MigrationActivity
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.SubscriptionFinderFragmentDirections
@@ -67,14 +71,16 @@ import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.S
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.MIGRATE_TO_FIBER
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SEE_DETAILS
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SHOW_PAYMENT_HISTORY
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.UPDATE_LOCATION
+import com.example.cleanarchitecture.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import java.util.TimeZone
 
 const val SUBSCRIPTION_ID = "subscriptionId"
 
@@ -86,19 +92,36 @@ const val SUBSCRIPTION_ID = "subscriptionId"
 fun SubscriptionFinderScreen(
     navController: NavController,
     viewModel: SubscriptionFinderViewModel = koinViewModel(),
+    onShowMapSelector: (GeoLocation?) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val coroutinesScope = rememberCoroutineScope()
     var showCancelSubscriptionConfirmDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     var showChangeNapBoxDialog by remember { mutableStateOf(false) }
-    
+
     // Track which subscription card is expanded
     var expandedSubscriptionId by remember { mutableStateOf<Int?>(null) }
-    
+
     // For scrolling behavior with topAppBar
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    
+
+
+    // Listen for the result from the map dialog
+    LaunchedEffect(lifecycleOwner) {
+        val activity = context as? FragmentActivity
+        activity?.supportFragmentManager?.setFragmentResultListener(
+            MAP_SELECTION_REQUEST_KEY,
+            lifecycleOwner
+        ) { _, bundle ->
+            val result = bundle.getParcelable<LatLng>(MAP_SELECTION_RESULT_KEY)
+            result?.let {
+                viewModel.updateCoordinatesFromMap(it)
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
@@ -128,14 +151,14 @@ fun SubscriptionFinderScreen(
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    
+
                     val filters = filters
                     var selectedFilter by remember { mutableStateOf(filters[0]) }
                     var searchQuery by remember { mutableStateOf("") }
                     var lastNameQuery by remember { mutableStateOf("") }
-                    
+
                     // Show filter tabs
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -146,20 +169,20 @@ fun SubscriptionFinderScreen(
                             FilterChip(
                                 filter = filter,
                                 isSelected = isSelected,
-                                onClick = { 
+                                onClick = {
                                     // Restablecer los campos de búsqueda al cambiar de filtro
                                     if (selectedFilter != filter) {
                                         searchQuery = ""
                                         lastNameQuery = ""
                                     }
-                                    selectedFilter = filter 
+                                    selectedFilter = filter
                                 }
                             )
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
-                    
+
                     // Contenido específico según el tipo de filtro
                     when (selectedFilter) {
                         is SubscriptionFilter.BY_NAME -> {
@@ -171,7 +194,7 @@ fun SubscriptionFinderScreen(
                                 // Campo de nombre
                                 OutlinedTextField(
                                     value = searchQuery,
-                                    onValueChange = { newValue -> 
+                                    onValueChange = { newValue ->
                                         searchQuery = newValue
                                         // Realizar búsqueda mientras se escribe en el campo de nombre
                                         coroutinesScope.launch {
@@ -189,11 +212,11 @@ fun SubscriptionFinderScreen(
                                     singleLine = true,
                                     shape = RoundedCornerShape(8.dp)
                                 )
-                                
+
                                 // Campo de apellido
                                 OutlinedTextField(
                                     value = lastNameQuery,
-                                    onValueChange = { newValue -> 
+                                    onValueChange = { newValue ->
                                         lastNameQuery = newValue
                                         // Realizar búsqueda mientras se escribe en el campo de apellido
                                         coroutinesScope.launch {
@@ -213,15 +236,20 @@ fun SubscriptionFinderScreen(
                                 )
                             }
                         }
+
                         is SubscriptionFilter.BY_DOCUMENT -> {
                             // Campo único para documento
                             OutlinedTextField(
                                 value = searchQuery,
-                                onValueChange = { newValue -> 
+                                onValueChange = { newValue ->
                                     searchQuery = newValue
                                     // Realizar búsqueda mientras se escribe
                                     coroutinesScope.launch {
-                                        viewModel.documentNumberFlow.emit(SubscriptionFilter.BY_DOCUMENT(newValue))
+                                        viewModel.documentNumberFlow.emit(
+                                            SubscriptionFilter.BY_DOCUMENT(
+                                                newValue
+                                            )
+                                        )
                                     }
                                 },
                                 modifier = Modifier.fillMaxWidth(),
@@ -238,6 +266,7 @@ fun SubscriptionFinderScreen(
                                 shape = RoundedCornerShape(8.dp)
                             )
                         }
+
                         is SubscriptionFilter.BY_DATE -> {
                             // Reemplazamos la implementación por completo
                             DateRangeSelector(
@@ -253,7 +282,7 @@ fun SubscriptionFinderScreen(
                     }
                 }
             }
-            
+
             // Results section
             if (uiState.cancelSubscriptionState == CancelSubscriptionState.Loading) {
                 Box(
@@ -286,17 +315,17 @@ fun SubscriptionFinderScreen(
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )
-                        
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        
+
                         Text(
                             text = "No se encontraron resultados",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        
+
                         Spacer(modifier = Modifier.height(8.dp))
-                        
+
                         Text(
                             text = "Intente con otros criterios de búsqueda",
                             style = MaterialTheme.typography.bodyMedium,
@@ -322,12 +351,12 @@ fun SubscriptionFinderScreen(
                     onSubscriptionExpanded = { subscription, expanded ->
                         // Handle the expanded state change
                         expandedSubscriptionId = if (expanded) subscription.id else null
-                        
+
                         // Initialize customer form data when expanding
                         if (expanded) {
                             // Set the selected subscription first
                             viewModel.setSelectedSubscription(subscription)
-                            
+
                             // Then initialize the form data for this subscription
                             viewModel.initCustomerFormData(subscription)
                         }
@@ -375,6 +404,19 @@ fun SubscriptionFinderScreen(
             onDismiss = { showChangeNapBoxDialog = false }
         )
     }
+
+    // Location update dialog - controlled by ViewModel state
+    if (uiState.showLocationUpdateDialog) {
+        LocationUpdateDialog(
+            viewModel = viewModel,
+            selectedSubscription = uiState.selectedSubscription,
+            saveState = uiState.saveSubscriptionState,
+            latitude = uiState.editableLatitude,
+            longitude = uiState.editableLongitude,
+            onShowMap = { onShowMapSelector(uiState.selectedSubscription?.location) },
+            onDismiss = { viewModel.toggleLocationUpdateDialog(false) }
+        )
+    }
 }
 
 @Composable
@@ -388,7 +430,7 @@ fun FilterChip(
     } else {
         MaterialTheme.colorScheme.surfaceVariant
     }
-    
+
     val contentColor = if (isSelected) {
         MaterialTheme.colorScheme.onPrimaryContainer
     } else {
@@ -462,6 +504,11 @@ private fun handleMenuAction(
         CHANGE_NAP_BOX -> {
             viewModel.setSelectedSubscription(subscription)
             onShowChangeNapBoxDialog()
+        }
+
+        UPDATE_LOCATION -> {
+            viewModel.setSelectedSubscription(subscription)
+            viewModel.toggleLocationUpdateDialog(true)
         }
     }
 }
@@ -565,7 +612,7 @@ private fun ChangeNapBoxDialog(
                 is NapBoxesState.NapBoxListLoaded -> {
                     val currentNapBoxCode = selectedSubscription.napBox?.code ?: "Sin asignar"
                     var selectedNapBoxIndex by remember { mutableStateOf(-1) }
-                    
+
                     // Current NAP Box
                     OutlinedTextField(
                         value = "NAP Box actual: $currentNapBoxCode",
@@ -574,17 +621,17 @@ private fun ChangeNapBoxDialog(
                         enabled = false,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    
+
                     // Simple dropdown with list of NAP Box options
                     Column(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            "Seleccione nuevo NAP Box:", 
+                            "Seleccione nuevo NAP Box:",
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
-                        
+
                         // Display options as a list of buttons
                         napBoxesState.items.forEachIndexed { index, napBox ->
                             if (napBox.code != currentNapBoxCode) {
@@ -610,9 +657,9 @@ private fun ChangeNapBoxDialog(
                             }
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     // Confirm button
                     MyButton(
                         text = "Confirmar cambio",
@@ -639,28 +686,29 @@ private fun ChangeNapBoxDialog(
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(48.dp)
                     )
-                    
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    
+
                     Text(
                         text = "NAP Box cambiado exitosamente",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     MyButton(
                         text = "Aceptar",
-                        onClick = { 
+                        onClick = {
                             onDismiss()
                             viewModel.resetNapBoxFlow()
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
-                    
+
                     LaunchedEffect(Unit) {
-                        Toast.makeText(context, "NAP Box cambiado exitosamente", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "NAP Box cambiado exitosamente", Toast.LENGTH_LONG)
+                            .show()
                     }
                 }
             }
@@ -680,7 +728,7 @@ fun DateRangeSelector(
     var endDate by remember { mutableStateOf("") }
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
-    
+
     // Función para formatear la fecha
     fun formatDate(millis: Long): String {
         val calendar = Calendar.getInstance().apply {
@@ -689,7 +737,7 @@ fun DateRangeSelector(
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return dateFormat.format(calendar.time)
     }
-    
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -699,7 +747,7 @@ fun DateRangeSelector(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -724,7 +772,7 @@ fun DateRangeSelector(
                 },
                 shape = RoundedCornerShape(8.dp)
             )
-            
+
             // Campo de fecha final
             OutlinedTextField(
                 value = endDate,
@@ -746,7 +794,7 @@ fun DateRangeSelector(
                 shape = RoundedCornerShape(8.dp)
             )
         }
-        
+
         // Botón de búsqueda
         Button(
             onClick = {
@@ -777,14 +825,14 @@ fun DateRangeSelector(
             )
         }
     }
-    
+
     // Diálogo de selección de fecha inicial
     if (showStartDatePicker) {
         val datePickerState = rememberDatePickerState()
         val confirmEnabled = remember {
             derivedStateOf { datePickerState.selectedDateMillis != null }
         }
-        
+
         DatePickerDialog(
             onDismissRequest = { showStartDatePicker = false },
             confirmButton = {
@@ -809,14 +857,14 @@ fun DateRangeSelector(
             DatePicker(state = datePickerState)
         }
     }
-    
+
     // Diálogo de selección de fecha final
     if (showEndDatePicker) {
         val datePickerState = rememberDatePickerState()
         val confirmEnabled = remember {
             derivedStateOf { datePickerState.selectedDateMillis != null }
         }
-        
+
         DatePickerDialog(
             onDismissRequest = { showEndDatePicker = false },
             confirmButton = {

@@ -20,9 +20,6 @@ import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import com.example.cleanarchitecture.domain.entity.createReminderMessage
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.CustomerFormData
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.PlacesState
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SaveSubscriptionState
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -55,7 +52,7 @@ fun SubscriptionList(
             }
             items(items = subscriptionList, key = { it.id }) { subscription ->
                 val isExpanded = expandedSubscriptionId == subscription.id
-                
+
                 SubscriptionCard(
                     subscriptionResume = subscription,
                     onMenuItemSelected = { onMenuItemSelected(it, subscription) },
@@ -92,30 +89,53 @@ fun openInBrowser(ipAddress: String, context: Context) {
 }
 
 fun openMap(subscriptionResume: SubscriptionResume, context: Context) {
-    // Get the customer address for the map query
-    val address = subscriptionResume.customer.address
-    val place = subscriptionResume.placeName
-    
-    // Combine address and place for a more accurate location
-    val locationQuery = "$address, $place, Peru"
-    
+    // Obtener las coordenadas geográficas de la suscripción
+    val latitude = subscriptionResume.location.latitude
+    val longitude = subscriptionResume.location.longitude
+
     try {
-        // Create an intent to view the location in Google Maps
-        val gmmIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(locationQuery)}")
-        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-        mapIntent.setPackage("com.google.android.apps.maps") // Specify Google Maps app
-        
-        // If Google Maps is installed, open it; otherwise, open in browser
-        if (mapIntent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(mapIntent)
+        // Verificar si las coordenadas son válidas (no son 0,0)
+        if (latitude != 0.0 && longitude != 0.0) {
+            // Usar las coordenadas directamente para una ubicación precisa
+            val gmmIntentUri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps") // Especificar la app de Google Maps
+
+            // Si Google Maps está instalado, abrirlo; de lo contrario, abrir en el navegador
+            if (mapIntent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(mapIntent)
+            } else {
+                // Alternativa: abrir en el navegador
+                val mapUrl = "https://maps.google.com/?q=$latitude,$longitude"
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mapUrl))
+                context.startActivity(browserIntent)
+            }
         } else {
-            // Fallback to opening in browser
-            val mapUrl = "https://maps.google.com/?q=${Uri.encode(locationQuery)}"
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mapUrl))
-            context.startActivity(browserIntent)
+            // Si las coordenadas son 0,0, usar la dirección como respaldo
+            val address = subscriptionResume.customer.address
+            val place = subscriptionResume.placeName
+            val locationQuery = "$address, $place, Peru"
+
+            // Mostrar mensaje informativo
+            Toast.makeText(
+                context,
+                "No hay coordenadas disponibles. Usando dirección alternativa.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            val gmmIntentUri = Uri.parse("geo:0,0?q=${Uri.encode(locationQuery)}")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+
+            if (mapIntent.resolveActivity(context.packageManager) != null) {
+                context.startActivity(mapIntent)
+            } else {
+                val mapUrl = "https://maps.google.com/?q=${Uri.encode(locationQuery)}"
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(mapUrl))
+                context.startActivity(browserIntent)
+            }
         }
     } catch (e: Exception) {
-        // If there's an error, show a toast message
         Toast.makeText(context, "No se pudo abrir el mapa: ${e.message}", Toast.LENGTH_SHORT).show()
     }
 }

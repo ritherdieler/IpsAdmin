@@ -1,21 +1,18 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose
 
 import android.content.Context
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import com.dscorp.ispadmin.R
 import com.example.cleanarchitecture.domain.entity.InstallationType
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
-import androidx.compose.material3.HorizontalDivider
 
 /**
  * Enum representing the menu options available for a subscription
@@ -48,7 +43,8 @@ enum class SubscriptionMenu(val menuId: Int) {
     SEE_DETAILS(R.string.see_details),
     MIGRATE_TO_FIBER(R.string.migrate_to_fiber),
     CANCEL_SUBSCRIPTION(R.string.cancel_subscription),
-    CHANGE_NAP_BOX(R.string.change_nap_box);
+    CHANGE_NAP_BOX(R.string.change_nap_box),
+    UPDATE_LOCATION(R.string.update_location);
 
     fun getTitle(context: Context): String {
         return context.getString(menuId)
@@ -68,7 +64,6 @@ fun CardHeader(
     onMenuItemSelected: (SubscriptionMenu) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     var menuExpanded by remember { mutableStateOf(false) }
     
     Row(
@@ -79,7 +74,7 @@ fun CardHeader(
     ) {
         // Customer name (takes most of the space)
         Text(
-            text = subscription.customerName,
+            text = subscription.customerName.capitalize(),
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer,

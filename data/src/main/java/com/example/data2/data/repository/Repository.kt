@@ -800,10 +800,16 @@ class Repository : IRepository, KoinComponent {
     }
 
     override suspend fun getPlaceFromLocation(latitude: Double, longitude: Double): PlaceResponse {
-        val response = restApiServices.findPlaceByLatLng(latitude, longitude)
+        val response = restApiServices.findPlaceByLocation(latitude, longitude)
         if (response.code() != HTTP_OK)
             throw Exception("No se pudo obtener la ubicacion")
         return response.body()!!
+    }
+
+    override suspend fun updateSubscriptionLocation(subscriptionId: Int, latitude: Double, longitude: Double) {
+        val response = restApiServices.updateSubscriptionLocation(subscriptionId, latitude, longitude)
+        if (response.code() != HTTP_OK)
+            throw Exception("No se pudo actualizar la ubicación geográfica")
     }
 }
 

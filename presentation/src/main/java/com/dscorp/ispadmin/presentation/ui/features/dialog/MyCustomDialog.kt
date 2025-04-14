@@ -51,6 +51,7 @@ fun MyCustomDialog(
     showCloseIcon: Boolean = true,
     backGroundColor: Color = Color.White,
     cancelable: Boolean = true,
+    usePlatformDefaultWidth: Boolean = true,
     onDismissRequest: () -> Unit = {},
     content: @Composable (ColumnScope) -> Unit,
 
@@ -59,7 +60,10 @@ fun MyCustomDialog(
         onDismissRequest = {
             onDismissRequest()
         },
-        properties = DialogProperties(dismissOnClickOutside = cancelable)
+        properties = DialogProperties(
+            dismissOnClickOutside = cancelable,
+            usePlatformDefaultWidth = usePlatformDefaultWidth
+        )
     ) {
         Column(
             modifier = modifier

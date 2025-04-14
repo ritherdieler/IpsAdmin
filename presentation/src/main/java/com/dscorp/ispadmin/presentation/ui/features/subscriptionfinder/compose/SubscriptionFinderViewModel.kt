@@ -15,6 +15,7 @@ import com.example.cleanarchitecture.domain.entity.extensions.isValidEmail
 import com.example.cleanarchitecture.domain.entity.extensions.isValidPhone
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import com.example.data2.data.repository.IRepository
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +35,10 @@ data class SubscriptionFinderUiState(
     val napBoxesState: NapBoxesState = NapBoxesState.Loading,
     val placesState: PlacesState = PlacesState(),
     val selectedSubscription: SubscriptionResume? = null,
-    val customerFormData: CustomerFormData? = null
+    val customerFormData: CustomerFormData? = null,
+    val showLocationUpdateDialog: Boolean = false,
+    val editableLatitude: String = "",
+    val editableLongitude: String = ""
 )
 
 data class CustomerFormData(
@@ -374,6 +378,60 @@ class SubscriptionFinderViewModel(
         } catch (e: Exception) {
             e.printStackTrace()
             _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Error) }
+        }
+    }
+
+    fun toggleLocationUpdateDialog(show: Boolean) {
+        _uiState.update {
+            it.copy(
+                showLocationUpdateDialog = show,
+                editableLatitude = if (show) it.selectedSubscription?.location?.latitude?.toString() ?: "" else "",
+                editableLongitude = if (show) it.selectedSubscription?.location?.longitude?.toString() ?: "" else "",
+                saveSubscriptionState = if (!show) SaveSubscriptionState.Success else it.saveSubscriptionState
+            )
+        }
+    }
+
+    fun updateCoordinatesFromMap(latLng: LatLng) {
+        _uiState.update { 
+            it.copy(
+                editableLatitude = latLng.latitude.toString(),
+                editableLongitude = latLng.longitude.toString()
+            )
+        }
+    }
+
+    fun updateSubscriptionLocation() = viewModelScope.launch {
+        val currentState = _uiState.value
+        val latitudeStr = currentState.editableLatitude
+        val longitudeStr = currentState.editableLongitude
+
+        currentState.selectedSubscription?.let { subscription ->
+            try {
+                val latitude = latitudeStr.toDouble()
+                val longitude = longitudeStr.toDouble()
+
+                _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Loading) }
+                
+                repository.updateSubscriptionLocation(subscription.id, latitude, longitude)
+                
+                val updatedLocation = subscription.location.copy(latitude = latitude, longitude = longitude)
+                val updatedSubscription = subscription.copy(location = updatedLocation)
+                
+                val updatedList = subscriptionsFlow.value.map { sub ->
+                    if (sub.id == subscription.id) updatedSubscription else sub
+                }
+                subscriptionsFlow.value = updatedList
+                
+                _uiState.update { it.copy(
+                    saveSubscriptionState = SaveSubscriptionState.Success,
+                    showLocationUpdateDialog = false,
+                    selectedSubscription = updatedSubscription
+                ) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Error) }
+            }
         }
     }
 }

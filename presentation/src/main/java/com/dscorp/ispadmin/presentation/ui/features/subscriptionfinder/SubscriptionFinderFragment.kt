@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.dscorp.ispadmin.databinding.FragmentSubscriptionFinderBinding
+import com.dscorp.ispadmin.presentation.ui.features.locationMapView.SelectableLocationMapViewDialogFragment
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionFinderScreen
+import com.google.android.gms.maps.model.LatLng
 
 class SubscriptionFinderFragment : Fragment() {
 
@@ -21,7 +23,18 @@ class SubscriptionFinderFragment : Fragment() {
         val navController = findNavController()
 
         binding.root.setContent {
-            SubscriptionFinderScreen(navController)
+            SubscriptionFinderScreen(navController, onShowMapSelector = {
+                activity?.supportFragmentManager?.let { fm ->
+                    // Convert GeoLocation to LatLng before passing
+                 it?.let {
+                     val latLng = LatLng(it.latitude, it.longitude)
+                     SelectableLocationMapViewDialogFragment(latLng).show(
+                         fm, SelectableLocationMapViewDialogFragment::class.simpleName
+                     )
+                 }
+
+                }
+            })
         }
         return binding.root
     }

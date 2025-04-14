@@ -98,7 +98,7 @@ interface RestApiServices {
     suspend fun getPlaces(): Response<List<PlaceResponse>>
 
     @GET("place/findByLocation")
-    suspend fun findPlaceByLatLng(
+    suspend fun findPlaceByLocation(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
     ): Response<PlaceResponse>
@@ -323,6 +323,13 @@ interface RestApiServices {
 
     @GET("subscription/findByElectronicPayerName")
     suspend fun findPaymentByElectronicPayerName(@Query("electronicPayerName") electronicPayerName: String): BaseResponse<List<PayerFinderResult>>
+
+    @PUT("subscription/update-location")
+    suspend fun updateSubscriptionLocation(
+        @Query("subscriptionId") subscriptionId: Int,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double
+    ): Response<Void>
 
 }
 

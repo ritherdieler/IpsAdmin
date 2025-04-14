@@ -168,4 +168,5 @@ interface IRepository {
     suspend fun getAllFixedCosts(): List<FixedCost>
     suspend fun findPaymentByElectronicPayerName(electronicPayerName: String): List<PayerFinderResult>
     suspend fun getPlaceFromLocation(latitude: Double, longitude: Double): PlaceResponse
+    suspend fun updateSubscriptionLocation(subscriptionId: Int, latitude: Double, longitude: Double)
 }
