@@ -16,7 +16,9 @@ import com.example.cleanarchitecture.domain.entity.extensions.isValidPhone
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import com.example.data2.data.repository.IRepository
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,7 +40,8 @@ data class SubscriptionFinderUiState(
     val customerFormData: CustomerFormData? = null,
     val showLocationUpdateDialog: Boolean = false,
     val editableLatitude: String = "",
-    val editableLongitude: String = ""
+    val editableLongitude: String = "",
+    val isFetchingCurrentLocation: Boolean = false
 )
 
 data class CustomerFormData(
@@ -387,6 +390,7 @@ class SubscriptionFinderViewModel(
                 showLocationUpdateDialog = show,
                 editableLatitude = if (show) it.selectedSubscription?.location?.latitude?.toString() ?: "" else "",
                 editableLongitude = if (show) it.selectedSubscription?.location?.longitude?.toString() ?: "" else "",
+                isFetchingCurrentLocation = false,
                 saveSubscriptionState = if (!show) SaveSubscriptionState.Success else it.saveSubscriptionState
             )
         }
@@ -396,8 +400,21 @@ class SubscriptionFinderViewModel(
         _uiState.update { 
             it.copy(
                 editableLatitude = latLng.latitude.toString(),
-                editableLongitude = latLng.longitude.toString()
+                editableLongitude = latLng.longitude.toString(),
+                isFetchingCurrentLocation = false
             )
+        }
+    }
+
+    fun fetchCurrentLocation() = viewModelScope.launch {
+        _uiState.update { it.copy(isFetchingCurrentLocation = true) }
+        try {
+            delay(1500)
+            val fakeCurrentLocation = LatLng(-11.107, -77.605)
+            updateCoordinatesFromMap(fakeCurrentLocation)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            _uiState.update { it.copy(isFetchingCurrentLocation = false) }
         }
     }
 

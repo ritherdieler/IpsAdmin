@@ -56,12 +56,15 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyButton
 import com.dscorp.ispadmin.presentation.ui.features.dialog.MyConfirmDialog
 import com.dscorp.ispadmin.presentation.ui.features.dialog.MyCustomDialog
 import com.dscorp.ispadmin.presentation.ui.features.locationMapView.MAP_SELECTION_REQUEST_KEY
 import com.dscorp.ispadmin.presentation.ui.features.locationMapView.MAP_SELECTION_RESULT_KEY
+import com.dscorp.ispadmin.presentation.ui.features.locationMapView.SelectableLocationMapViewDialogFragment
 import com.dscorp.ispadmin.presentation.ui.features.migration.Loader
 import com.dscorp.ispadmin.presentation.ui.features.migration.MigrationActivity
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.SubscriptionFinderFragmentDirections
@@ -107,6 +110,11 @@ fun SubscriptionFinderScreen(
     // For scrolling behavior with topAppBar
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
+    // Function to show the map selection dialog (using callback now)
+    val showMapSelection: () -> Unit = {
+        val initialGeoLocation = uiState.selectedSubscription?.location
+        onShowMapSelector(initialGeoLocation)
+    }
 
     // Listen for the result from the map dialog
     LaunchedEffect(lifecycleOwner) {
@@ -405,7 +413,7 @@ fun SubscriptionFinderScreen(
         )
     }
 
-    // Location update dialog - controlled by ViewModel state
+    // Location update dialog
     if (uiState.showLocationUpdateDialog) {
         LocationUpdateDialog(
             viewModel = viewModel,
@@ -413,7 +421,12 @@ fun SubscriptionFinderScreen(
             saveState = uiState.saveSubscriptionState,
             latitude = uiState.editableLatitude,
             longitude = uiState.editableLongitude,
-            onShowMap = { onShowMapSelector(uiState.selectedSubscription?.location) },
+            onShowMap = showMapSelection,
+            onGetCurrentLocationClick = { 
+                // TODO: Add permission check before calling fetchCurrentLocation
+                viewModel.fetchCurrentLocation() 
+            },
+            isFetchingCurrentLocation = uiState.isFetchingCurrentLocation,
             onDismiss = { viewModel.toggleLocationUpdateDialog(false) }
         )
     }
