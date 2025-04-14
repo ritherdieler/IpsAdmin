@@ -177,7 +177,7 @@ fun PaymentDetailScreen(
                             DetailField(
                                 icon = Icons.Rounded.CreditCard,
                                 label = "Método de pago",
-                                value = payment.method
+                                value = payment.method?:""
                             )
                             
                             // Show electronic payer for YAPE payments

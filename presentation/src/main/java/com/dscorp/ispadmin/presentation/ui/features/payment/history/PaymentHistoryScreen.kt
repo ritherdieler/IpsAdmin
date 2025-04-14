@@ -1,5 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.payment.history
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -179,38 +179,123 @@ fun PaymentItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical = 8.dp)
             .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        shape = MaterialTheme.shapes.medium
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(16.dp)
         ) {
-            Text(
-                text = payment.billingDateStr(),
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            // Header with date and status
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = payment.billingDateStr(),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
 
+                // Status chip
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = if (payment.paid)
+                                MaterialTheme.colorScheme.primaryContainer
+                            else
+                                MaterialTheme.colorScheme.errorContainer,
+                            shape = MaterialTheme.shapes.small
+                        )
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = payment.paidStatusStr(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = if (payment.paid)
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        else
+                            MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Amount section
             Text(
                 text = payment.amountToPayStr(),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                fontWeight = FontWeight.Bold
             )
 
-            Text(
-                text = payment.paidStatusStr(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (payment.paid) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            // Discount information if available
+            val discountAmount = payment.discountAmount ?: 0.0
+            if (discountAmount > 0.0) {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                            shape = MaterialTheme.shapes.small
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
+                    Column {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Descuento: ",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                            Text(
+                                text = payment.discountAmountStr(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
+
+                        payment.discountReason?.let { reason ->
+                            if (reason.isNotBlank()) {
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "Motivo: $reason",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(
+                                        alpha = 0.8f
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Add payment method if available
+            payment.method?.takeIf { it.isNotBlank() }?.let { method ->
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                    text = "Método: $method",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
         }
     }
 }
@@ -222,7 +307,26 @@ fun PaymentItemPreview() {
         id = 1,
         billingDate = System.currentTimeMillis(),
         amountToPay = 100.0,
-        paid = false
+        paid = true,
+        discountAmount = 20.0,
+        discountReason = "Descuento por pago anticipado",
+        method = "Transferencia bancaria"
+    )
+
+    MyTheme {
+        PaymentItem(payment = payment)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PaymentItemPendingPreview() {
+    val payment = Payment(
+        id = 2,
+        billingDate = System.currentTimeMillis(),
+        amountToPay = 150.0,
+        paid = false,
+        method = "Efectivo"
     )
 
     MyTheme {

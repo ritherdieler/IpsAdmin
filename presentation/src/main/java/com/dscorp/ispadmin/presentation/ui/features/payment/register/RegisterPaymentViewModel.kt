@@ -143,8 +143,8 @@ class RegisterPaymentViewModel(private val repository: IRepository) : ViewModel(
             val amountDouble = amount.toDouble()
             if (amountDouble > maxAmount) {
                 "El descuento no puede ser mayor a la deuda"
-            } else if (amountDouble < 0) {
-                "El descuento no puede ser negativo"
+            } else if (amountDouble <= 0) {
+                "El descuento debe ser mayor a 0"
             } else {
                 null
             }
@@ -165,9 +165,28 @@ class RegisterPaymentViewModel(private val repository: IRepository) : ViewModel(
             errors["electronicPayerName"] = "Debe ingresar el nombre del pagador"
         }
         
-        currentState.discountAmount.takeIf { it.isNotEmpty() }?.let {
-            validateDiscountAmount(it, currentState.payment?.amountToPay ?: 0.0)?.let { error ->
-                errors["discountAmount"] = error
+        // Validación de descuento cuando está habilitado
+        if (currentState.showDiscountFields) {
+            // Validar que se haya ingresado un monto de descuento
+            if (currentState.discountAmount.isEmpty()) {
+                errors["discountAmount"] = "Debe ingresar un monto de descuento"
+            } else {
+                // Validar que el monto de descuento no sea 0
+                try {
+                    val amountDouble = currentState.discountAmount.toDouble()
+                    if (amountDouble <= 0) {
+                        errors["discountAmount"] = "El descuento debe ser mayor a 0"
+                    } else if (amountDouble > (currentState.payment?.amountToPay ?: 0.0)) {
+                        errors["discountAmount"] = "El descuento no puede ser mayor a la deuda"
+                    }
+                } catch (e: Exception) {
+                    errors["discountAmount"] = "Monto de descuento inválido"
+                }
+            }
+            
+            // Validar que se haya seleccionado una razón de descuento
+            if (currentState.discountReason.isEmpty()) {
+                errors["discountReason"] = "Debe seleccionar una razón para el descuento"
             }
         }
         

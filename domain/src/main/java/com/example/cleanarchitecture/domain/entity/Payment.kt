@@ -11,7 +11,7 @@ class Payment(
     val discountReason: String? = null,
     var paymentDate: Long = 0,
     var billingDate: Long = 0,
-    var method: String = "",
+    var method: String? = "",
     var paid: Boolean = false,
     var amountToPay: Double = 0.0,
     var responsibleId: Int = 0,
