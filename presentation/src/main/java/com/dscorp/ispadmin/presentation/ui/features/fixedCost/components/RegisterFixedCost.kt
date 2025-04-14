@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.dscorp.ispadmin.presentation.composeComponents.MyDropDown
+import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyDropDown
 import com.example.cleanarchitecture.domain.entity.FixedCostType
 import com.example.data2.data.apirequestmodel.FixedCostRequest
 import myTypography

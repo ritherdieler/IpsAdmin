@@ -1,6 +1,5 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose
 
-import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -147,9 +146,7 @@ fun SubscriptionFinderContent(
     }
 }
 
-fun Int.toDp(context: Context): Dp {
-    return this.dp / context.resources.displayMetrics.density
-}
+
 
 @Preview(showBackground = true)
 @Composable

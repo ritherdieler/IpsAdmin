@@ -109,7 +109,7 @@
 
         <action
             android:id="@+id/findSubscription_to_paymentHistoryFragment"
-            app:destination="@id/paymentHistoryFragment" />
+            app:destination="@id/payment_history_compose_fragment" />
 
         <action
             android:id="@+id/findSubscription_to_subscription_detail"
@@ -157,15 +157,15 @@
 
     <fragment
         android:id="@+id/nav_consult_payments"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
-        android:label="fragment_consut_payments"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryComposeFragment"
+        android:label="Consultar Pagos"
         tools:layout="@layout/fragment_consult_payments" />
 
 
     <fragment
-        android:id="@+id/paymentHistoryFragment"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragment"
-        android:label="fragment_payment_history"
+        android:id="@+id/payment_history_compose_fragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryComposeFragment"
+        android:label="Payment History"
         tools:layout="@layout/fragment_payment_history">
         <action
             android:id="@+id/action_paymentHistoryFragment_to_paymentDetailFragment"

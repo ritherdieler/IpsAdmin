@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.login.compose
 
 import MyTheme
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,7 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dscorp.ispadmin.R
-import com.dscorp.ispadmin.presentation.composeComponents.MyProgressButton
+import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyProgressButton
 import com.dscorp.ispadmin.presentation.ui.features.login.LoginState
 import myTypography
 

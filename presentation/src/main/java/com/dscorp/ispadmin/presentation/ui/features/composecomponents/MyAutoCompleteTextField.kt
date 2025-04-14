@@ -1,6 +1,7 @@
-package com.dscorp.ispadmin.presentation.composeComponents
+package com.dscorp.ispadmin.presentation.ui.features.composecomponents
 
 import MyTheme
+import android.R
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
@@ -167,7 +168,7 @@ fun <T> MyAutoCompleteTextViewCompose(
             // Configurar un adaptador personalizado que nos permita acceder a los elementos filtrados
             val adapter = CustomItemAdapter(
                 context,
-                android.R.layout.simple_dropdown_item_1line,
+                R.layout.simple_dropdown_item_1line,
                 currentItems
             )
             autoCompleteTextView.setAdapter(adapter)
@@ -220,7 +221,7 @@ private class CustomItemAdapter<T>(
 private fun <T> MaterialAutoCompleteTextView.setupAdapter(context: Context, items: List<T>) {
     val adapter = CustomItemAdapter(
         context,
-        android.R.layout.simple_dropdown_item_1line,
+        R.layout.simple_dropdown_item_1line,
         items
     )
     setAdapter(adapter)

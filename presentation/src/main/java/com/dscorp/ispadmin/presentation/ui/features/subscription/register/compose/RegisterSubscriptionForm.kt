@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.dscorp.ispadmin.presentation.composeComponents.MyAutoCompleteTextViewCompose
+import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyAutoCompleteTextViewCompose
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyButton
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyIconButton
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutLinedDropDown

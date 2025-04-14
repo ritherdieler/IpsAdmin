@@ -10,13 +10,6 @@ import com.dscorp.ispadmin.databinding.FragmentConsultPaymentsBinding
 import com.dscorp.ispadmin.presentation.extension.showErrorDialog
 import com.dscorp.ispadmin.presentation.extension.showSuccessDialog
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseFragment
-import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragmentDirections.actionPaymentHistoryFragmentToPaymentDetailFragment
-import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryFragmentDirections.toRegisterPayment
-import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.GetRecentPaymentsHistoryError
-import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.GetRecentPaymentsHistoryResponse
-import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.OnError
-import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.OnPaymentHistoryFilteredResponse
-import com.dscorp.ispadmin.presentation.ui.features.payment.history.PaymentHistoryUiState.ServiceReactivated
 import com.example.cleanarchitecture.domain.entity.Payment
 import com.example.data2.data.apirequestmodel.SearchPaymentsRequest
 import com.google.android.material.datepicker.CalendarConstraints
@@ -24,31 +17,32 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Calendar
 
-class PaymentHistoryFragment :
+@Deprecated("Use PaymentHistoryComposeFragment instead")
+class PaymentHistoryFragmentOld :
     BaseFragment<PaymentHistoryUiState, FragmentConsultPaymentsBinding>(),
     PaymentHistoryAdapterListener {
 
     override val viewModel: PaymentHistoryViewModel by viewModel()
     override val binding by lazy { FragmentConsultPaymentsBinding.inflate(layoutInflater) }
-    private val args: PaymentHistoryFragmentArgs by navArgs()
+    private val args by navArgs<PaymentHistoryComposeFragmentArgs>()
     val adapter by lazy { PaymentHistoryAdapter(this) }
     private var selectedEndDate: Long? = null
     private var selectedStartDate: Long? = null
 
     override fun handleState(state: PaymentHistoryUiState) {
         when (state) {
-            is OnError -> showErrorDialog(state.message)
-            is OnPaymentHistoryFilteredResponse -> {
+            is PaymentHistoryUiState.OnError -> showErrorDialog(state.message)
+            is PaymentHistoryUiState.OnPaymentHistoryFilteredResponse -> {
                 fillPaymentHistoryFiltered(state.payments)
                 binding.tvDisclaimer.visibility = View.GONE
             }
 
-            is GetRecentPaymentsHistoryResponse -> {
+            is PaymentHistoryUiState.GetRecentPaymentsHistoryResponse -> {
                 fillRecentPaymentHistory(state.payments)
             }
 
-            is GetRecentPaymentsHistoryError -> showErrorDialog(state.message)
-            is ServiceReactivated -> showSuccessDialog(getString(R.string.service_reactivated_successfully))
+            is PaymentHistoryUiState.GetRecentPaymentsHistoryError -> showErrorDialog(state.message)
+            is PaymentHistoryUiState.ServiceReactivated -> showSuccessDialog(getString(R.string.service_reactivated_successfully))
         }
     }
 
@@ -158,9 +152,8 @@ class PaymentHistoryFragment :
     }
 
     override fun onPaymentHistoryItemClicked(payment: Payment) {
-        val action = if (!payment.paid) toRegisterPayment(payment)
-        else actionPaymentHistoryFragmentToPaymentDetailFragment(payment)
-        findNavController().navigate(action)
+        // This fragment is deprecated, so we won't navigate
+        showErrorDialog("This fragment is deprecated. Please use PaymentHistoryComposeFragment instead.")
     }
 
 }
