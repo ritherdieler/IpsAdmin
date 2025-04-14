@@ -17,6 +17,7 @@ fun MyOutlinedTextField(
     hasError: Boolean = false,
     singleLine: Boolean = false,
     maxLines: Int? = null,
+    enabled : Boolean = true,
     supportingText: (@Composable () -> Unit)? = null,
 ) {
     OutlinedTextField(
@@ -26,9 +27,9 @@ fun MyOutlinedTextField(
         onValueChange = onValueChange,
         keyboardOptions = keyboardOptions,
         isError = hasError,
-        supportingText = errorMessage?.let { { Text(it) } } ?: supportingText ,
+        supportingText = errorMessage?.let { { Text(it) } } ?: supportingText,
         singleLine = singleLine,
         maxLines = maxLines ?: 1,
-
+        enabled = enabled
     )
 }

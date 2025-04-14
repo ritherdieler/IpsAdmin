@@ -3,28 +3,48 @@ description:
 globs: 
 alwaysApply: true
 ---
+# **Reglas para el Desarrollo de la Aplicación de Gestión de ISP**
 
-# Your rule content
+1. **Objetivo de la Aplicación**  
+   - La aplicación se encarga de la gestión de usuarios de un ISP (Internet Service Provider), incluyendo clientes de fibra óptica e inalámbricos.  
+   - Funcionalidades principales:
+     - Registro de suscripciones.  
+     - Buscador de suscripciones.  
+     - Visualización y registro de pagos.
 
-Estamos desarrollando una app para la gestion de usuarios de un isp, el cual tiene clientes del tipo fibra optica e inalambrico, algunas de las funcionalidades principales son: Registro de suscripciones, buscador de suscripciones, visualizacion y registro de pagos.
+2. **Migración a Jetpack Compose**  
+   - Todas las vistas deben ser desarrolladas en **Jetpack Compose**, reemplazando las implementaciones en XML.  
+   - Al migrar un `Fragment` basado en XML, se debe:  
+     1. Eliminar la versión XML del fragmento.  
+     2. Crear un nuevo `Fragment` que envuelva la pantalla en Compose.  
+     3. Mejorar la interfaz para asegurar una experiencia de usuario óptima, siguiendo los lineamientos de **Material 3**.
 
-Actualmente esta aplicacion esta en un proceso de migracion de vistas clasicas en xml a compose, todo el codigo generado debe usar jetpack compose.
+3. **Diseño y Temas**  
+   - Se deben seguir los lineamientos de **Material 3** para mantener una experiencia de usuario coherente y atractiva.  
+   - Utilizar **MyTheme** como tema principal en todas las pantallas de Compose.  
+   - Emplear los componentes personalizados localizados en  
+     `com.dscorp.ispadmin.presentation.ui.features.composecomponents`.
 
-Las vistas generadas deben seguir las mejores practicas de diseño para asegurar un excelente experiencia de usuario siguiendo los lineamientos de material3.
+4. **Arquitectura y Flujo de Datos**  
+   - En los ViewModel se debe implementar **Unidirectional Data Flow (UDF)**.  
+   - El estado de cada pantalla debe ser representado por una **data class** que contenga toda la información necesaria para la UI.  
+   - Exponer el estado a la UI a través de `State<T>`, `Flow`, o `LiveData`.  
 
-En los ViewModel se deben usar siempre Unidirectinal data flow por medio de data class para ser consumidos en las screens hechas en compose
+5. **Koin como Inyector de Dependencias**  
+   - Utilizar **Koin** para la inyección de dependencias en ViewModels y otros componentes.  
+   - Configurar los módulos de Koin necesarios (por ejemplo, módulos de red, repositorios, casos de uso, etc.) y proveer las dependencias adecuadas a cada ViewModel.
 
---usa siempre los componentes personalizados que estan dentro de com.dscorp.ispadmin.presentation.ui.features.composecomponents
---usa siempre  MyTheme como tema para las screens
---cuando te pidra migrar un fragmento en xml a compose siempre envuelve la nueva screen con un wraper en un fragmento
---en la migracion de los fragmentos realiza mejoras en el diseño  siguiendo los lineamientos de material3
+6. **Buenas Prácticas de Código**  
+   - Mantener el código **modular**, separando responsabilidades en capas:  
+     - Datos (repositorios, servicios de red, bases de datos).  
+     - Dominio (casos de uso, lógica de negocio).  
+     - Presentación (ViewModels y pantallas Compose).  
+   - Asegurar que cada ViewModel contenga solo lógica de presentación y no dependa directamente de la capa de UI.  
+   - Utilizar nombres claros y descriptivos para clases, funciones y variables.
 
-## Tecnologias
---cuando hagas una migracion elimina la version xml del fragmento
-
-- Jetpack compose como sistema de interfaces.
-- Material 3 como sistema de diseño.
-- Kotlin como lenguaje de programacion.
-- Koin como inyector de dependencias.
-
-- Siempre que termines de generar un codigo, compilalo para ver que no hay problemas. Para ello utiliza compileDebugSources
+7. **Compilación y Verificación**  
+   - Antes de finalizar una tarea de migración o desarrollo, compilar el código para asegurarse de que no haya errores:  
+     ```bash
+     ./gradlew compileDebugSources
+     ```
+   - Realizar pruebas básicas de las pantallas y flujos de datos para garantizar estabilidad y correcto funcionamiento.

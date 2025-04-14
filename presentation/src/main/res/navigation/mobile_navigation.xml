@@ -296,9 +296,8 @@
     </dialog>
     <fragment
         android:id="@+id/editSubscriptionFragment"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditPlanSubscription"
-        android:label="EditSubscriptionFragment"
-        tools:layout="@layout/fragment_edit_plan_subscription">
+        android:name="com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditPlanSubscriptionFragment"
+        android:label="EditSubscriptionFragment">
         <argument
             android:name="subscriptionId"
             app:argType="java.lang.Integer" />

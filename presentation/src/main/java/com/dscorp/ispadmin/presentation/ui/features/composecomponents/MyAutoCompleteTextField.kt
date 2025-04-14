@@ -93,7 +93,7 @@ fun <T> MyAutoCompleteTextViewCompose(
             val autoCompleteTextView = MaterialAutoCompleteTextView(originalContext).apply {
                 id = android.R.id.text1
                 background = null
-
+                isSingleLine = true
                 threshold = 0 // Permite mostrar sugerencias incluso sin escribir
                 setTextColor(onSurfaceColor.toArgb())
                 setHintTextColor(onSurfaceVariant.toArgb())

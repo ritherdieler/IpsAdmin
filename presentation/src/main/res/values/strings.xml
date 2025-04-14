@@ -152,6 +152,14 @@
     <string name="empty" />
     <string name="editPlanSuccess">Se actualizó el plan correctamente</string>
     <string name="edit_plan">Editar plan</string>
+    <string name="edit_plan_success">Se actualizó el plan correctamente</string>
+    <string name="subscription_details">Detalles de la suscripción</string>
+    <string name="new_plan">Nuevo plan</string>
+    <string name="error">Error</string>
+    <string name="success">Éxito</string>
+    <string name="ok">Aceptar</string>
+    <string name="edit">Editar</string>
+    <string name="must_select_plan">Debe seleccionar un plan</string>
     <string name="see_details">Ver detalles</string>
     <string name="name1">Nombre</string>
     <string name="id">ID</string>
@@ -290,7 +298,6 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-    <string name="error">Error</string>
     <string name="loading">Cargando...</string>
     <string name="delete_onu">Eliminar Onu</string>
     <string name="register_payment_is_by_reconnection">Registrar Pago - (es factura por reconexión)</string>

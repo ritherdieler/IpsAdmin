@@ -4,18 +4,26 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.asFlow
 import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailViewModel
@@ -30,218 +38,211 @@ fun SubscriptionDetailForm(
     val scrollState = rememberScrollState()
     val places by viewModel.places.asFlow().collectAsState(initial = listOf())
 
-
     LaunchedEffect(places) {
         viewModel.initForm(subscriptionId)
     }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
             .verticalScroll(scrollState)
     ) {
-
-        Row {
-            OutlinedTextField(
-                value = viewModel.editSubscriptionForm.firstNameField.liveData.value ?: "",
-                onValueChange = {
-                    viewModel.editSubscriptionForm.firstNameField.liveData.value = it
-                },
-                label = { Text(text = viewModel.editSubscriptionForm.firstNameField.hint ?: "") },
-                modifier = Modifier.weight(1f),
-                isError = viewModel.editSubscriptionForm.firstNameField.errorLiveData.value != null,
-                singleLine = true,
-                readOnly = true,
-                maxLines = 1
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            OutlinedTextField(
-                value = viewModel.editSubscriptionForm.lastNameField.liveData.value ?: "",
-                onValueChange = {
-                    viewModel.editSubscriptionForm.lastNameField.liveData.value = it
-                },
-                readOnly = true,
-                label = { Text(text = viewModel.editSubscriptionForm.lastNameField.hint ?: "") },
-                modifier = Modifier.weight(1f),
-                isError = viewModel.editSubscriptionForm.lastNameField.errorLiveData.value != null,
-                singleLine = true,
-                maxLines = 1
-            )
-        }
-
-        Row {
-
-            OutlinedTextField(
-                value = viewModel.editSubscriptionForm.dniField.liveData.value ?: "",
-                onValueChange = { viewModel.editSubscriptionForm.dniField.liveData.value = it },
-                label = { Text(text = viewModel.editSubscriptionForm.dniField.hint ?: "") },
-                modifier = Modifier.weight(1f),
-                isError = viewModel.editSubscriptionForm.dniField.errorLiveData.value != null,
-                singleLine = true,
-                readOnly = true,
-                maxLines = 1
-            )
-
-            Spacer(modifier = Modifier.width(16.dp)) // Add space between the two fields
-
-            OutlinedTextField(
-                value = viewModel.editSubscriptionForm.addressField.liveData.value ?: "",
-                onValueChange = { viewModel.editSubscriptionForm.addressField.liveData.value = it },
-                label = { Text(text = viewModel.editSubscriptionForm.addressField.hint ?: "") },
-                modifier = Modifier.weight(1f),
-                isError = viewModel.editSubscriptionForm.addressField.errorLiveData.value != null,
-                singleLine = true,
-                readOnly = true,
-                maxLines = 1
-            )
-        }
-
-        Row {
-
-            OutlinedTextField(
-                value = viewModel.editSubscriptionForm.phoneField.liveData.value ?: "",
-                onValueChange = { viewModel.editSubscriptionForm.phoneField.liveData.value = it },
-                label = { Text(text = viewModel.editSubscriptionForm.phoneField.hint ?: "") },
-                modifier = Modifier.weight(1f),
-                isError = viewModel.editSubscriptionForm.phoneField.errorLiveData.value != null,
-                singleLine = true,
-                readOnly = true,
-                maxLines = 1
-            )
-
-            Spacer(modifier = Modifier.width(16.dp)) // Add space between the two fields
-
-            OutlinedTextField(
-                value = viewModel.editSubscriptionForm.couponField.liveData.value ?: "",
-                onValueChange = { viewModel.editSubscriptionForm.couponField.liveData.value = it },
-                label = { Text(text = viewModel.editSubscriptionForm.couponField.hint ?: "") },
-                modifier = Modifier.weight(1f),
-                isError = viewModel.editSubscriptionForm.couponField.errorLiveData.value != null,
-                singleLine = true,
-                readOnly = true,
-                maxLines = 1
-            )
-
-        }
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-
-
-            OutlinedTextField(
-                value = viewModel.editSubscriptionForm.planField.liveData.value?.name ?: "",
-                onValueChange = {},
-                label = { Text(text = viewModel.editSubscriptionForm.planField.hint ?: "") },
-                modifier = Modifier.weight(1f),
-                isError = viewModel.editSubscriptionForm.planField.errorLiveData.value != null,
-                singleLine = true,
-                readOnly = true,
-                maxLines = 1
-            )
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            OutlinedTextField(
-                value = viewModel.editSubscriptionForm.placeField.liveData.value?.name ?: "",
-                onValueChange = {},
-                label = { Text(text = viewModel.editSubscriptionForm.placeField.hint ?: "") },
-                modifier = Modifier.weight(1f),
-                isError = viewModel.editSubscriptionForm.placeField.errorLiveData.value != null,
-                singleLine = true,
-                readOnly = true,
-                maxLines = 1
-            )
-
-        }
-
-
-        OutlinedTextField(
-            value = viewModel.editSubscriptionForm.noteField.liveData.value ?: "",
-            onValueChange = { viewModel.editSubscriptionForm.noteField.liveData.value = it },
-            label = { Text(text = viewModel.editSubscriptionForm.noteField.hint ?: "") },
+        // Customer Information Card
+        ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
-            isError = viewModel.editSubscriptionForm.noteField.errorLiveData.value != null,
-            singleLine = true,
-            readOnly = true,
-            maxLines = 1
-        )
-
-        OutlinedTextField(
-            value = viewModel.editSubscriptionForm.subscriptionDateField.liveData.value?.toFormattedDateString()
-                ?: "",
-            onValueChange = {
-
-            },
-            label = {
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+            colors = CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
                 Text(
-                    text = viewModel.editSubscriptionForm.subscriptionDateField.hint ?: ""
+                    text = "Información del Cliente",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
                 )
-            },
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Customer basic information
+                FormFieldRow(
+                    label1 = viewModel.editSubscriptionForm.firstNameField.hint ?: "",
+                    value1 = viewModel.editSubscriptionForm.firstNameField.liveData.value ?: "",
+                    label2 = viewModel.editSubscriptionForm.lastNameField.hint ?: "",
+                    value2 = viewModel.editSubscriptionForm.lastNameField.liveData.value ?: ""
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                FormFieldRow(
+                    label1 = viewModel.editSubscriptionForm.dniField.hint ?: "",
+                    value1 = viewModel.editSubscriptionForm.dniField.liveData.value ?: "",
+                    label2 = viewModel.editSubscriptionForm.addressField.hint ?: "",
+                    value2 = viewModel.editSubscriptionForm.addressField.liveData.value ?: ""
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                FormFieldRow(
+                    label1 = viewModel.editSubscriptionForm.phoneField.hint ?: "",
+                    value1 = viewModel.editSubscriptionForm.phoneField.liveData.value ?: "",
+                    label2 = viewModel.editSubscriptionForm.couponField.hint ?: "",
+                    value2 = viewModel.editSubscriptionForm.couponField.liveData.value ?: ""
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Subscription Details Card
+        ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
-            isError = viewModel.editSubscriptionForm.subscriptionDateField.errorLiveData.value != null,
-            singleLine = true,
-            readOnly = true,
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+            colors = CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Detalles de la Suscripción",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
-            maxLines = 1
-        )
+                Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = viewModel.editSubscriptionForm.technicianField.liveData.value?.name ?: "",
-            onValueChange = { },
-            label = { Text(text = viewModel.editSubscriptionForm.technicianField.hint ?: "") },
+                // Plan and Place information
+                FormFieldRow(
+                    label1 = viewModel.editSubscriptionForm.planField.hint ?: "",
+                    value1 = viewModel.editSubscriptionForm.planField.liveData.value?.name ?: "",
+                    label2 = viewModel.editSubscriptionForm.placeField.hint ?: "",
+                    value2 = viewModel.editSubscriptionForm.placeField.liveData.value?.name ?: ""
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Note field
+                FormField(
+                    label = viewModel.editSubscriptionForm.noteField.hint ?: "",
+                    value = viewModel.editSubscriptionForm.noteField.liveData.value ?: ""
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Subscription date
+                FormField(
+                    label = viewModel.editSubscriptionForm.subscriptionDateField.hint ?: "",
+                    value = viewModel.editSubscriptionForm.subscriptionDateField.liveData.value?.toFormattedDateString() ?: ""
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Technician and price
+                FormFieldRow(
+                    label1 = viewModel.editSubscriptionForm.technicianField.hint ?: "",
+                    value1 = viewModel.editSubscriptionForm.technicianField.liveData.value?.name ?: "",
+                    label2 = viewModel.editSubscriptionForm.priceField.hint ?: "",
+                    value2 = viewModel.editSubscriptionForm.priceField.liveData.value ?: ""
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Technical Details Card
+        ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
-            isError = viewModel.editSubscriptionForm.technicianField.errorLiveData.value != null,
-            singleLine = true,
-            readOnly = true,
-            maxLines = 1
-        )
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
+            colors = CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Detalles Técnicos",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
-        OutlinedTextField(
-            value = viewModel.editSubscriptionForm.priceField.liveData.value ?: "",
-            onValueChange = { viewModel.editSubscriptionForm.priceField.liveData.value = it },
-            label = { Text(text = viewModel.editSubscriptionForm.priceField.hint ?: "") },
-            isError = viewModel.editSubscriptionForm.priceField.errorLiveData.value != null,
-            singleLine = true,
-            maxLines = 1,
-            modifier = Modifier.fillMaxWidth()
-        )
+                Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = viewModel.editSubscriptionForm.ipField.liveData.value ?: "",
-            onValueChange = { viewModel.editSubscriptionForm.ipField.liveData.value = it },
-            label = { Text(text = viewModel.editSubscriptionForm.ipField.hint ?: "") },
-            modifier = Modifier.fillMaxWidth(),
-            isError = viewModel.editSubscriptionForm.ipField.errorLiveData.value != null,
-            singleLine = true,
-            maxLines = 1,
-            readOnly = true
-        )
+                // IP field
+                FormField(
+                    label = viewModel.editSubscriptionForm.ipField.hint ?: "",
+                    value = viewModel.editSubscriptionForm.ipField.liveData.value ?: ""
+                )
 
-        OutlinedTextField(
-            value = viewModel.editSubscriptionForm.hostDeviceField.liveData.value?.name ?: "",
-            onValueChange = { },
-            label = { Text(text = viewModel.editSubscriptionForm.hostDeviceField.hint ?: "") },
-            modifier = Modifier.fillMaxWidth(),
-            isError = viewModel.editSubscriptionForm.hostDeviceField.errorLiveData.value != null,
-            singleLine = true,
-            readOnly = true,
-            maxLines = 1
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Host device field
+                FormField(
+                    label = viewModel.editSubscriptionForm.hostDeviceField.hint ?: "",
+                    value = viewModel.editSubscriptionForm.hostDeviceField.liveData.value?.name ?: ""
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FormFieldRow(
+    label1: String,
+    value1: String,
+    label2: String,
+    value2: String,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier = modifier.fillMaxWidth()) {
+        FormField(
+            label = label1,
+            value = value1,
+            modifier = Modifier.weight(1f)
+        )
+        
+        Spacer(modifier = Modifier.width(16.dp))
+        
+        FormField(
+            label = label2,
+            value = value2,
+            modifier = Modifier.weight(1f)
         )
     }
+}
 
-
-//        FloatingActionButton(
-//            onClick = { viewModel.makeFieldsEditable() },
-//            modifier = Modifier
-//                .align(Alignment.End)
-//                .padding(16.dp)
-//        ) {
-//            Icon(
-//                painter = painterResource(
-//                    id = viewModel.editingIcon.value ?: R.drawable.baseline_edit_24
-//                ),
-//                contentDescription = "Edit subscription data"
-//            )
-
+@Composable
+private fun FormField(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        
+        Spacer(modifier = Modifier.height(2.dp))
+        
+        Text(
+            text = value.ifEmpty { "—" },
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
 }
