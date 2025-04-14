@@ -300,7 +300,6 @@ fun SubscriptionFinderScreen(
                 // Main subscription finder content
                 SubscriptionFinder(
                     subscriptions = uiState.subscriptions,
-                    onSearch = null,
                     onMenuItemSelected = { menuItem, subscription ->
                         handleMenuAction(
                             menuItem = menuItem,
