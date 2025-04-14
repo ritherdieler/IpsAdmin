@@ -4,18 +4,34 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.CloudSync
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,11 +42,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyButton
 import com.dscorp.ispadmin.presentation.ui.features.dialog.MyConfirmDialog
 import com.dscorp.ispadmin.presentation.ui.features.dialog.MyCustomDialog
 import com.dscorp.ispadmin.presentation.ui.features.migration.Loader
@@ -42,8 +61,6 @@ import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.S
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.MIGRATE_TO_FIBER
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SEE_DETAILS
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SHOW_PAYMENT_HISTORY
-import com.example.cleanarchitecture.domain.entity.NapBoxResponse
-import com.example.cleanarchitecture.domain.entity.PlaceResponse
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 import com.example.data2.data.apirequestmodel.MoveOnuRequest
 import kotlinx.coroutines.launch
@@ -54,6 +71,7 @@ const val SUBSCRIPTION_ID = "subscriptionId"
 /**
  * Main screen for finding and managing subscriptions.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubscriptionFinderScreen(
     navController: NavController,
@@ -67,48 +85,258 @@ fun SubscriptionFinderScreen(
     
     // Track which subscription card is expanded
     var expandedSubscriptionId by remember { mutableStateOf<Int?>(null) }
-
-    // Main subscription finder content
-    SubscriptionFinder(
-        subscriptions = uiState.subscriptions,
-        onSearch = {
-            coroutinesScope.launch {
-                viewModel.documentNumberFlow.emit(it)
+    
+    // For scrolling behavior with topAppBar
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            // Search card with nice material design
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Buscar suscripción",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    val filters = filters
+                    var selectedFilter by remember { mutableStateOf(filters[0]) }
+                    var searchQuery by remember { mutableStateOf("") }
+                    var lastNameQuery by remember { mutableStateOf("") }
+                    
+                    // Show filter tabs
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        filters.forEach { filter ->
+                            val isSelected = selectedFilter == filter
+                            FilterChip(
+                                filter = filter,
+                                isSelected = isSelected,
+                                onClick = { 
+                                    // Restablecer los campos de búsqueda al cambiar de filtro
+                                    if (selectedFilter != filter) {
+                                        searchQuery = ""
+                                        lastNameQuery = ""
+                                    }
+                                    selectedFilter = filter 
+                                }
+                            )
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    // Contenido específico según el tipo de filtro
+                    when (selectedFilter) {
+                        is SubscriptionFilter.BY_NAME -> {
+                            // Formulario con dos campos: nombre y apellido
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                // Campo de nombre
+                                OutlinedTextField(
+                                    value = searchQuery,
+                                    onValueChange = { newValue -> 
+                                        searchQuery = newValue
+                                        // Realizar búsqueda mientras se escribe en el campo de nombre
+                                        coroutinesScope.launch {
+                                            viewModel.documentNumberFlow.emit(
+                                                SubscriptionFilter.BY_NAME(
+                                                    name = newValue,
+                                                    lastName = lastNameQuery
+                                                )
+                                            )
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    label = { Text("Nombre") },
+                                    placeholder = { Text("Ingrese nombre") },
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                
+                                // Campo de apellido
+                                OutlinedTextField(
+                                    value = lastNameQuery,
+                                    onValueChange = { newValue -> 
+                                        lastNameQuery = newValue
+                                        // Realizar búsqueda mientras se escribe en el campo de apellido
+                                        coroutinesScope.launch {
+                                            viewModel.documentNumberFlow.emit(
+                                                SubscriptionFilter.BY_NAME(
+                                                    name = searchQuery,
+                                                    lastName = newValue
+                                                )
+                                            )
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    label = { Text("Apellido") },
+                                    placeholder = { Text("Ingrese apellido") },
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                            }
+                        }
+                        is SubscriptionFilter.BY_DOCUMENT -> {
+                            // Campo único para documento
+                            OutlinedTextField(
+                                value = searchQuery,
+                                onValueChange = { newValue -> 
+                                    searchQuery = newValue
+                                    // Realizar búsqueda mientras se escribe
+                                    coroutinesScope.launch {
+                                        viewModel.documentNumberFlow.emit(SubscriptionFilter.BY_DOCUMENT(newValue))
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                label = { Text("DNI") },
+                                placeholder = { Text("Ingrese número de documento") },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Search,
+                                        contentDescription = "Buscar",
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                },
+                                singleLine = true,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                        }
+                        is SubscriptionFilter.BY_DATE -> {
+                            // Campo para fecha (mantenemos básico por ahora)
+                            OutlinedTextField(
+                                value = searchQuery,
+                                onValueChange = { newValue -> 
+                                    searchQuery = newValue
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                label = { Text("Fecha") },
+                                placeholder = { Text("Seleccione una fecha") },
+                                singleLine = true,
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                        }
+                    }
+                }
             }
-        },
-        onMenuItemSelected = { menuItem, subscription ->
-            handleMenuAction(
-                menuItem = menuItem,
-                subscription = subscription,
-                navController = navController,
-                context = context,
-                viewModel = viewModel,
-                onShowCancelDialog = { showCancelSubscriptionConfirmDialog = true },
-                onShowChangeNapBoxDialog = { showChangeNapBoxDialog = true }
-            )
-        },
-        onSubscriptionExpanded = { subscription, expanded ->
-            // Handle the expanded state change
-            expandedSubscriptionId = if (expanded) subscription.id else null
             
-            // Initialize customer form data when expanding
-            if (expanded) {
-                // Set the selected subscription first
-                viewModel.setSelectedSubscription(subscription)
-                
-                // Then initialize the form data for this subscription
-                viewModel.initCustomerFormData(subscription)
+            // Results section
+            if (uiState.cancelSubscriptionState == CancelSubscriptionState.Loading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            } else if (uiState.subscriptions.isEmpty()) {
+                // No results found
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = null,
+                            modifier = Modifier.size(64.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        )
+                        
+                        Spacer(modifier = Modifier.height(16.dp))
+                        
+                        Text(
+                            text = "No se encontraron resultados",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        Text(
+                            text = "Intente con otros criterios de búsqueda",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            } else {
+                // Main subscription finder content
+                SubscriptionFinder(
+                    subscriptions = uiState.subscriptions,
+                    onSearch = null,
+                    onMenuItemSelected = { menuItem, subscription ->
+                        handleMenuAction(
+                            menuItem = menuItem,
+                            subscription = subscription,
+                            navController = navController,
+                            context = context,
+                            viewModel = viewModel,
+                            onShowCancelDialog = { showCancelSubscriptionConfirmDialog = true },
+                            onShowChangeNapBoxDialog = { showChangeNapBoxDialog = true }
+                        )
+                    },
+                    onSubscriptionExpanded = { subscription, expanded ->
+                        // Handle the expanded state change
+                        expandedSubscriptionId = if (expanded) subscription.id else null
+                        
+                        // Initialize customer form data when expanding
+                        if (expanded) {
+                            // Set the selected subscription first
+                            viewModel.setSelectedSubscription(subscription)
+                            
+                            // Then initialize the form data for this subscription
+                            viewModel.initCustomerFormData(subscription)
+                        }
+                    },
+                    expandedSubscriptionId = expandedSubscriptionId,
+                    customerFormData = uiState.customerFormData,
+                    placesState = uiState.placesState,
+                    saveState = uiState.saveSubscriptionState,
+                    onFieldChange = viewModel::updateCustomerFormField,
+                    onPlaceSelected = viewModel::onPlaceSelected,
+                    onUpdatePlaceId = viewModel::updateCustomerPlaceId,
+                    onSaveCustomer = viewModel::saveCustomerData
+                )
             }
-        },
-        expandedSubscriptionId = expandedSubscriptionId,
-        customerFormData = uiState.customerFormData,
-        placesState = uiState.placesState,
-        saveState = uiState.saveSubscriptionState,
-        onFieldChange = viewModel::updateCustomerFormField,
-        onPlaceSelected = viewModel::onPlaceSelected,
-        onUpdatePlaceId = viewModel::updateCustomerPlaceId,
-        onSaveCustomer = viewModel::saveCustomerData
-    )
+        }
+    }
 
     // Handle cancel subscription state
     HandleCancelSubscriptionState(
@@ -138,6 +366,40 @@ fun SubscriptionFinderScreen(
             napBoxesState = uiState.napBoxesState,
             context = context,
             onDismiss = { showChangeNapBoxDialog = false }
+        )
+    }
+}
+
+@Composable
+fun FilterChip(
+    filter: SubscriptionFilter,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = if (isSelected) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant
+    }
+    
+    val contentColor = if (isSelected) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(backgroundColor)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = filter.valueName,
+            color = contentColor,
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -245,7 +507,7 @@ private fun CancelSubscriptionDialog(
 }
 
 /**
- * Dialog to change NAP box - simplified version
+ * Dialog to change NAP box - enhanced version with Material 3 styling
  */
 @Composable
 private fun ChangeNapBoxDialog(
@@ -306,9 +568,12 @@ private fun ChangeNapBoxDialog(
                         modifier = Modifier.fillMaxWidth()
                     )
                     
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
                     // Simple dropdown with list of NAP Box options
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        Text("Seleccione nuevo NAP Box:", 
+                        Text(
+                            "Seleccione nuevo NAP Box:", 
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
@@ -322,14 +587,16 @@ private fun ChangeNapBoxDialog(
                                         .fillMaxWidth()
                                         .padding(vertical = 4.dp),
                                     colors = if (selectedNapBoxIndex == index) {
-                                        MaterialTheme.colorScheme.primary.let {
-                                            ButtonDefaults.buttonColors(containerColor = it)
-                                        }
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.primary
+                                        )
                                     } else {
                                         ButtonDefaults.buttonColors(
-                                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
-                                    }
+                                    },
+                                    shape = RoundedCornerShape(8.dp)
                                 ) {
                                     Text("${napBox.code} - ${napBox.address}")
                                 }
@@ -337,8 +604,13 @@ private fun ChangeNapBoxDialog(
                         }
                     }
                     
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
                     // Confirm button
-                    Button(
+                    MyButton(
+                        text = "Confirmar cambio",
+                        isLoading = false,
+                        enabled = selectedNapBoxIndex >= 0,
                         onClick = {
                             if (selectedNapBoxIndex >= 0) {
                                 val selectedNapBox = napBoxesState.items[selectedNapBoxIndex]
@@ -349,21 +621,37 @@ private fun ChangeNapBoxDialog(
                                 viewModel.changeNapBox(request)
                             }
                         },
-                        enabled = selectedNapBoxIndex >= 0,
                         modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Confirmar cambio")
-                    }
+                    )
                 }
 
                 is NapBoxesState.NapBoxChanged -> {
-                    Text(text = "NAP Box cambiado exitosamente")
-                    Button(onClick = { 
-                        onDismiss()
-                        viewModel.resetNapBoxFlow()
-                    }) {
-                        Text("Cerrar")
-                    }
+                    Icon(
+                        imageVector = Icons.Outlined.CloudSync,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(48.dp)
+                    )
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    Text(
+                        text = "NAP Box cambiado exitosamente",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    MyButton(
+                        text = "Aceptar",
+                        onClick = { 
+                            onDismiss()
+                            viewModel.resetNapBoxFlow()
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    
                     LaunchedEffect(Unit) {
                         Toast.makeText(context, "NAP Box cambiado exitosamente", Toast.LENGTH_LONG).show()
                     }

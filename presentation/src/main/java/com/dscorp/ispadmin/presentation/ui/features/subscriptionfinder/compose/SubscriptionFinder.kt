@@ -1,13 +1,7 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -18,11 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.example.cleanarchitecture.domain.entity.CustomerData
 import com.example.cleanarchitecture.domain.entity.GeoLocation
 import com.example.cleanarchitecture.domain.entity.InstallationType
@@ -40,7 +31,6 @@ val filters = listOf(
 @Composable
 fun SubscriptionFinder(
     subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
-    onSearch: (SubscriptionFilter) -> Unit = {},
     onMenuItemSelected: (menuItem: SubscriptionMenu, subscription: SubscriptionResume) -> Unit = { _, _ -> },
     onSubscriptionExpanded: (SubscriptionResume, Boolean) -> Unit = { _, _ -> },
     expandedSubscriptionId: Int? = null,
@@ -55,11 +45,6 @@ fun SubscriptionFinder(
     var lastScrollOffset by remember { mutableStateOf(1) }
     var scrollingUp by remember { mutableStateOf(0) }
 
-    val animatedScrollingUp by animateDpAsState(
-        targetValue = if (scrollingUp > 0) 4.dp else 0.dp,
-        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing), label = ""
-    )
-
     val scrollState = rememberLazyListState()
 
     LaunchedEffect(key1 = scrollState) {
@@ -70,8 +55,6 @@ fun SubscriptionFinder(
     }
 
     SubscriptionFinderContent(
-        animatedScrollingUp = animatedScrollingUp,
-        onSearch = onSearch,
         subscriptions = subscriptions,
         scrollState = scrollState,
         onMenuItemSelected = onMenuItemSelected,
@@ -89,8 +72,6 @@ fun SubscriptionFinder(
 
 @Composable
 fun SubscriptionFinderContent(
-    animatedScrollingUp: Dp,
-    onSearch: (SubscriptionFilter) -> Unit,
     subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
     scrollState: LazyListState,
     onMenuItemSelected: (menuItem: SubscriptionMenu, subscription: SubscriptionResume) -> Unit,
@@ -108,16 +89,7 @@ fun SubscriptionFinderContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = animatedScrollingUp)
     ) {
-        AnimatedVisibility(visible = filtersVisible) {
-            SubscriptionFinderFilters(
-                onSearch = { onSearch(it) },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .offset(y = if (filtersVisible) 0.dp else -animatedScrollingUp)
-            )
-        }
         SubscriptionList(
             subscriptions = subscriptions,
             scrollState = scrollState,
@@ -145,7 +117,6 @@ fun SubscriptionFinderContent(
         }
     }
 }
-
 
 
 @Preview(showBackground = true)
@@ -181,8 +152,7 @@ fun generateMockSubscriptions(): List<SubscriptionResume> {
                 email = "cliente$i@gmail.com",
                 subscriptionId = i
             ),
-            serviceStatus = ServiceStatus.ACTIVE
-        , installationType = InstallationType.FIBER,
+            serviceStatus = ServiceStatus.ACTIVE, installationType = InstallationType.FIBER,
             napBox = NapBox("NapBox $i", "Calle $i", placeName = "placeName", placeId = -1),
             placeId = "",
             location = GeoLocation()

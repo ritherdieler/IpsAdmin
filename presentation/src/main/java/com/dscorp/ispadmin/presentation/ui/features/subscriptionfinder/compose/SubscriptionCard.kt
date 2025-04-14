@@ -28,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,7 +49,9 @@ import androidx.constraintlayout.compose.Dimension
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.CustomOutlinedTextField
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.MyOutLinedDropDown
+import com.example.cleanarchitecture.domain.entity.InstallationType
 import com.example.cleanarchitecture.domain.entity.PlaceResponse
+import com.example.cleanarchitecture.domain.entity.ServiceStatus
 import com.example.cleanarchitecture.domain.entity.SubscriptionResume
 
 /**
@@ -532,23 +535,143 @@ fun CardBody(subscriptionResume: SubscriptionResume, modifier: Modifier = Modifi
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        // Status indicator and service type
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(0.6f)) {
-                SubscriptionInfoItem(
-                    label = "Plan",
-                    value = subscriptionResume.planName.capitalize(),
-                    alignment = Alignment.CenterStart
+            // Indicator de tipo de servicio (Fibra o Inalámbrico)
+            Surface(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .padding(end = 8.dp),
+                color = when (subscriptionResume.installationType) {
+                    InstallationType.FIBER -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.2f)
+                    InstallationType.WIRELESS -> MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
+                    else -> MaterialTheme.colorScheme.surfaceVariant
+                }
+            ) {
+                Text(
+                    text = when (subscriptionResume.installationType) {
+                        InstallationType.FIBER -> "Fibra"
+                        InstallationType.WIRELESS -> "Inalámbrico"
+                        else -> "Otro"
+                    },
+                    style = MaterialTheme.typography.labelMedium,
+                    color = when (subscriptionResume.installationType) {
+                        InstallationType.FIBER -> MaterialTheme.colorScheme.tertiary
+                        InstallationType.WIRELESS -> MaterialTheme.colorScheme.secondary
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                 )
+            }
+            
+            Spacer(modifier = Modifier.weight(1f))
+            
+            // Indicador de estado del servicio
+            Surface(
+                modifier = Modifier.clip(RoundedCornerShape(16.dp)),
+                color = when (subscriptionResume.serviceStatus) {
+                    ServiceStatus.ACTIVE -> MaterialTheme.colorScheme.primaryContainer
+                    ServiceStatus.CUT_OFF -> MaterialTheme.colorScheme.errorContainer
+                    ServiceStatus.SUSPENDED -> MaterialTheme.colorScheme.tertiaryContainer
+                    ServiceStatus.CANCELLED -> MaterialTheme.colorScheme.errorContainer
+                    else -> MaterialTheme.colorScheme.surfaceVariant
+                }
+            ) {
+                Text(
+                    text = when (subscriptionResume.serviceStatus) {
+                        ServiceStatus.ACTIVE -> "Activo"
+                        ServiceStatus.CUT_OFF -> "Cortado"
+                        ServiceStatus.SUSPENDED -> "Suspendido"
+                        ServiceStatus.CANCELLED -> "Cancelado"
+                        else -> "Desconocido"
+                    },
+                    style = MaterialTheme.typography.labelMedium,
+                    color = when (subscriptionResume.serviceStatus) {
+                        ServiceStatus.ACTIVE -> MaterialTheme.colorScheme.onPrimaryContainer
+                        ServiceStatus.CUT_OFF -> MaterialTheme.colorScheme.onErrorContainer
+                        ServiceStatus.SUSPENDED -> MaterialTheme.colorScheme.onTertiaryContainer
+                        ServiceStatus.CANCELLED -> MaterialTheme.colorScheme.onErrorContainer
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                )
+            }
+        }
+        
+        // Deuda destacada cuando existe
+        if (subscriptionResume.totalDebt > 0) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    Text(
+                        text = "Deuda pendiente",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Monto de deuda
+                        Text(
+                            text = "S/. ${String.format("%.2f", subscriptionResume.totalDebt)}",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        
+                        Spacer(modifier = Modifier.weight(1f))
+                        
+                        // Cantidad de facturas
+                        Text(
+                            text = "${subscriptionResume.pendingInvoicesQuantity} facturas",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    }
+                }
+            }
+        }
+        
+        // Información principal en dos columnas
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = if (subscriptionResume.totalDebt > 0) 4.dp else 12.dp)
+        ) {
+            // Primera columna: Información del plan
+            Column(modifier = Modifier.weight(0.6f)) {
+                // Plan con estilo destacado
+                Text(
+                    text = "Plan",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = subscriptionResume.planName.capitalize(),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                
+                // Otros datos en formato más compacto
                 SubscriptionInfoItem(
                     label = "Antigüedad",
                     value = "${subscriptionResume.antiquity} meses",
-                    alignment = Alignment.CenterStart
-                )
-                SubscriptionInfoItem(
-                    label = "Calificación",
-                    value = subscriptionResume.qualification,
                     alignment = Alignment.CenterStart
                 )
                 SubscriptionInfoItem(
@@ -570,63 +693,67 @@ fun CardBody(subscriptionResume: SubscriptionResume, modifier: Modifier = Modifi
                 )
             }
             
+            // Segunda columna: Acciones y último pago
             Column(
                 modifier = Modifier.weight(0.5f),
                 horizontalAlignment = Alignment.End
             ) {
-                // Debt info
-                DebtViewer(
-                    pendingInvoicesQuantity = subscriptionResume.pendingInvoicesQuantity,
-                    totalDebt = subscriptionResume.totalDebt
+                // Último pago destacado
+                Text(
+                    text = "Último pago",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.align(Alignment.End)
+                )
+                Text(
+                    text = subscriptionResume.lastPaymentDate ?: "Sin pagos",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(bottom = 8.dp)
                 )
                 
-                // WhatsApp and Map buttons in a row
+                Spacer(modifier = Modifier.weight(1f))
+                
+                // Acciones rápidas: WhatsApp y Mapa
                 Row(
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                         .align(Alignment.End)
                 ) {
-                    // Map button
-                    Box(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .clickable { openMap(subscriptionResume, context) }
-                            .padding(8.dp),
-                        contentAlignment = Alignment.Center
+                    // Map button en un contenedor material
+                    Surface(
+                        modifier = Modifier.clip(CircleShape),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                        contentColor = MaterialTheme.colorScheme.primary
                     ) {
-                        Icon(
-                            imageVector =  Icons.Default.Place,
-                            contentDescription = "Ver ubicación en mapa",
-                            modifier = Modifier.size(28.dp),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                        IconButton(onClick = { openMap(subscriptionResume, context) }) {
+                            Icon(
+                                imageVector = Icons.Default.Place,
+                                contentDescription = "Ver ubicación en mapa",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                     }
                     
                     Spacer(modifier = Modifier.size(8.dp))
                     
-                    // WhatsApp button
-                    Box(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .clickable { sendWhatsapp(subscriptionResume, context) }
-                            .padding(8.dp),
-                        contentAlignment = Alignment.Center
+                    // WhatsApp button en un contenedor material
+                    Surface(
+                        modifier = Modifier.clip(CircleShape),
+                        color = Color(0xFF25D366).copy(alpha = 0.1f),
+                        contentColor = Color(0xFF25D366)
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_whatsapp),
-                            contentDescription = "Enviar mensaje por WhatsApp",
-                            modifier = Modifier.size(28.dp),
-                            tint = Color(0xFF25D366)
-                        )
+                        IconButton(onClick = { sendWhatsapp(subscriptionResume, context) }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_whatsapp),
+                                contentDescription = "Enviar mensaje por WhatsApp",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                     }
                 }
-                
-                // Last payment info
-                SubscriptionInfoItem(
-                    label = "Últ. Pago",
-                    value = subscriptionResume.lastPaymentDate ?: "Sin pagos",
-                    alignment = Alignment.CenterEnd
-                )
             }
         }
     }
