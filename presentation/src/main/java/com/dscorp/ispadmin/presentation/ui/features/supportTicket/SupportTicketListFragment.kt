@@ -117,8 +117,8 @@ class SupportTicketAdapter(
         private fun getCloseTicketVisibility(ticket: AssistanceTicketResponse, user: User): Int {
 
             return when {
-                ticket.status == AssistanceTicketStatus.PENDING && user.type == User.UserType.SECRETARY -> View.VISIBLE
-                ticket.status == AssistanceTicketStatus.ASSIGNED && user.type == User.UserType.TECHNICIAN -> View.VISIBLE
+                ticket.status == AssistanceTicketStatus.PENDING && (user.type == User.UserType.SECRETARY || user.type == User.UserType.ADMIN) -> View.VISIBLE
+                ticket.status == AssistanceTicketStatus.ASSIGNED && (user.type == User.UserType.TECHNICIAN || user.type == User.UserType.ADMIN) -> View.VISIBLE
                 else -> View.GONE
             }
         }

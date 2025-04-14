@@ -32,6 +32,6 @@ fun MyOutlinedTextField(
         singleLine = singleLine,
         maxLines = maxLines ?: 1,
         enabled = enabled,
-        readOnly = true
+        readOnly = readOnly
     )
 }
