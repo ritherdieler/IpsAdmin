@@ -55,17 +55,25 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.IspAdminAndroid" />
+            
         <activity
-            android:name=".presentation.ui.features.login.LoginActivity"
+            android:name=".presentation.ui.features.splash.SplashActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppSplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        
+        <activity
+            android:name=".presentation.ui.features.login.LoginActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppSplashScreen">
         </activity>
         <activity
             android:name=".presentation.ui.features.supportTicket.TicketActivity"

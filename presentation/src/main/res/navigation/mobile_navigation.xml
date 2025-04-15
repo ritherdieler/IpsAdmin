@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/nav_create_support_ticket"
-        android:name="com.dscorp.ispadmin.presentation.ui.features.supportTicket.create.CreateSupportTicketComposeFragment"
+        android:name="com.dscorp.ispadmin.presentation.ui.features.supportTicket.create.CreateSupportTicketFragment"
         android:label="Registrar tickets de soporte" />
 
     <fragment

@@ -25,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
-        Thread.sleep(1000)
 
         binding.composeView.setContent {
             MyTheme {
@@ -34,11 +33,6 @@ class LoginActivity : AppCompatActivity() {
                     onLoginSuccess = ::handleLoginResponse,
                     onAcceptUpdate = {
                         finish()
-                    },
-                    onNoUpdate = {
-                        val (status, user) = viewModel.checkSessionStatus()
-                        if (status)
-                            handleLoginResponse(user!!)
                     }
                 )
             }
