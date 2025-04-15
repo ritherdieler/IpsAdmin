@@ -19,6 +19,7 @@ alwaysApply: true
      2. Crear un nuevo `Fragment` que envuelva la pantalla en Compose.  
      3. **Mejorar el diseño** para ofrecer una experiencia de usuario moderna y consistente, siguiendo los lineamientos de **Material 3**.  
      4. siempre que te pida migrar borra el fragmento migrado y su xml.
+     5. Las screen en compose deben tener el viewModel y pasar solo la uiState a el composable hijo que representa toda la ui esto con la finalidad de que este composable no tenga ninguna referencia al viewModel.
 
 3. **Diseño y Temas**  
    - Se deben aplicar los lineamientos de **Material 3** para ofrecer una **experiencia de usuario moderna**:  
