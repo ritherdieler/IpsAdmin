@@ -52,6 +52,7 @@ fun CreateSupportTicketScreen(
     onPlaceSelected: (PlaceResponse?) -> Unit,
     onSubscriptionSelected: (SubscriptionFastSearchResponse?) -> Unit,
     onSearchTextChange: (String) -> Unit,
+    onCustomerNameChange: (String) -> Unit,
     onCreateTicket: () -> Unit,
     onDismissError: () -> Unit,
     categories: List<String>
@@ -329,6 +330,39 @@ fun CreateSupportTicketScreen(
                         }
                     }
                 }
+                
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                // Campo de nombre completo del cliente cuando no es cliente
+                Text(
+                    text = "Datos Personales",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Person,
+                        contentDescription = "Nombre",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    
+                    MyOutlinedTextField(
+                        value = uiState.customerName,
+                        onValueChange = onCustomerNameChange,
+                        label = "Nombre completo",
+                        modifier = Modifier.fillMaxWidth(),
+                        hasError = uiState.customerNameError != null,
+                        errorMessage = uiState.customerNameError,
+                        singleLine = true
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -406,6 +440,8 @@ fun CreateSupportTicketScreenPreview() {
                 descriptionError = null,
                 subscriptionError = null,
                 placeError = null,
+                customerName = "",
+                customerNameError = null,
                 isTicketCreated = false
             ),
             onPhoneChange = {},
@@ -415,6 +451,7 @@ fun CreateSupportTicketScreenPreview() {
             onPlaceSelected = {},
             onSubscriptionSelected = {},
             onSearchTextChange = {},
+            onCustomerNameChange = {},
             onCreateTicket = {},
             onDismissError = {},
             categories = listOf("Internet", "Telefonía", "Cable TV", "Otros")
@@ -446,6 +483,8 @@ fun CreateSupportTicketScreenWithErrorsPreview() {
                 descriptionError = "La descripción es muy corta",
                 subscriptionError = null,
                 placeError = "Seleccione un lugar",
+                customerName = "",
+                customerNameError = "El nombre completo es obligatorio",
                 isTicketCreated = false
             ),
             onPhoneChange = {},
@@ -455,6 +494,7 @@ fun CreateSupportTicketScreenWithErrorsPreview() {
             onPlaceSelected = {},
             onSubscriptionSelected = {},
             onSearchTextChange = {},
+            onCustomerNameChange = {},
             onCreateTicket = {},
             onDismissError = {},
             categories = listOf("Internet", "Telefonía", "Cable TV", "Otros")
@@ -483,6 +523,8 @@ fun CreateSupportTicketScreenWithDialogPreview() {
                 descriptionError = null,
                 subscriptionError = null,
                 placeError = null,
+                customerName = "",
+                customerNameError = null,
                 isTicketCreated = false
             ),
             onPhoneChange = {},
@@ -492,6 +534,50 @@ fun CreateSupportTicketScreenWithDialogPreview() {
             onPlaceSelected = {},
             onSubscriptionSelected = {},
             onSearchTextChange = {},
+            onCustomerNameChange = {},
+            onCreateTicket = {},
+            onDismissError = {},
+            categories = listOf("Internet", "Telefonía", "Cable TV", "Otros")
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CreateSupportTicketScreenNonClientPreview() {
+    MyTheme {
+        CreateSupportTicketScreen(
+            uiState = CreateSupportTicketUiState(
+                phone = "987654321",
+                category = "Internet",
+                description = "Problema con la conexión en mi negocio",
+                isClient = false,
+                selectedSubscription = null,
+                subscriptions = emptyList(),
+                places = listOf(
+                    PlaceResponse("1", "Lima"),
+                    PlaceResponse("2", "Arequipa")
+                ),
+                selectedPlace = PlaceResponse("1", "Lima"),
+                isLoading = false,
+                error = null,
+                phoneError = null,
+                categoryError = null,
+                descriptionError = null,
+                subscriptionError = null,
+                placeError = null,
+                customerName = "Pedro Sánchez",
+                customerNameError = null,
+                isTicketCreated = false
+            ),
+            onPhoneChange = {},
+            onCategoryChange = {},
+            onDescriptionChange = {},
+            onIsClientChange = {},
+            onPlaceSelected = {},
+            onSubscriptionSelected = {},
+            onSearchTextChange = {},
+            onCustomerNameChange = {},
             onCreateTicket = {},
             onDismissError = {},
             categories = listOf("Internet", "Telefonía", "Cable TV", "Otros")

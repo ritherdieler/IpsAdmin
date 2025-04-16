@@ -85,9 +85,16 @@ fun SubscriptionCard(
     onSaveClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    // Calculate primary background color from Material3 theme
-    val cardBackgroundColor = MaterialTheme.colorScheme.primaryContainer
-    val contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+    // Calculate card background color based on service status
+    val cardBackgroundColor = when (subscriptionResume.serviceStatus) {
+        ServiceStatus.CANCELLED -> MaterialTheme.colorScheme.errorContainer
+        else -> MaterialTheme.colorScheme.primaryContainer
+    }
+    
+    val contentColor = when (subscriptionResume.serviceStatus) {
+        ServiceStatus.CANCELLED -> MaterialTheme.colorScheme.errorContainer
+        else -> MaterialTheme.colorScheme.onPrimaryContainer
+    }
 
     ElevatedCard(
         modifier = modifier
@@ -557,6 +564,7 @@ fun CardBody(subscriptionResume: SubscriptionResume, modifier: Modifier = Modifi
                     text = when (subscriptionResume.installationType) {
                         InstallationType.FIBER -> "Fibra"
                         InstallationType.WIRELESS -> "Inalámbrico"
+                        InstallationType.ONLY_TV_FIBER -> "Solo cable"
                         else -> "Otro"
                     },
                     style = MaterialTheme.typography.labelMedium,
@@ -846,3 +854,4 @@ private fun String.toIntOrNull(): Int? {
         null
     }
 }
+

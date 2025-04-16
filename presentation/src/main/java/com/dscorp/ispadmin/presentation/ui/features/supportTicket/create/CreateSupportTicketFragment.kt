@@ -36,6 +36,7 @@ class CreateSupportTicketFragment : Fragment() {
                         onPlaceSelected = viewModel::updateSelectedPlace,
                         onSubscriptionSelected = viewModel::updateSelectedSubscription,
                         onSearchTextChange = viewModel::findSubscriptionByNames,
+                        onCustomerNameChange = viewModel::updateCustomerName,
                         onCreateTicket = viewModel::createTicket,
                         onDismissError = viewModel::resetError,
                         categories = viewModel.categories

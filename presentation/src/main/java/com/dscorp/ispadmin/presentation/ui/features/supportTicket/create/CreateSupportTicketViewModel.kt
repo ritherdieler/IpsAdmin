@@ -128,7 +128,8 @@ class CreateSupportTicketViewModel(
                 isClient = isClient,
                 // Resetear selecciones según el tipo de cliente
                 selectedPlace = if (isClient) null else it.selectedPlace,
-                selectedSubscription = if (!isClient) null else it.selectedSubscription
+                selectedSubscription = if (!isClient) null else it.selectedSubscription,
+                customerNameError = null
             )
         }
     }
@@ -205,7 +206,7 @@ class CreateSupportTicketViewModel(
                         category = state.category,
                         description = state.description,
                         subscriptionId = state.selectedSubscription?.id,
-                        customerName = state.selectedSubscription?.fullName ?: "",
+                        customerName = if (state.isClient) state.selectedSubscription?.fullName ?: "" else state.customerName,
                         placeName = state.selectedPlace?.name
                     )
                     
@@ -249,7 +250,7 @@ class CreateSupportTicketViewModel(
         return if (state.isClient) {
             state.selectedSubscription != null
         } else {
-            state.selectedPlace != null
+            state.selectedPlace != null && !state.customerName.isNullOrBlank()
         }
     }
     
@@ -263,7 +264,8 @@ class CreateSupportTicketViewModel(
                 categoryError = if (state.category.isEmpty()) "La categoría es obligatoria" else null,
                 descriptionError = if (state.description.isEmpty()) "La descripción es obligatoria" else null,
                 subscriptionError = if (state.isClient && state.selectedSubscription == null) "Debe seleccionar un cliente" else null,
-                placeError = if (!state.isClient && state.selectedPlace == null) "Debe seleccionar un lugar" else null
+                placeError = if (!state.isClient && state.selectedPlace == null) "Debe seleccionar un lugar" else null,
+                customerNameError = if (!state.isClient && state.customerName.isBlank()) "El nombre completo es obligatorio" else null
             )
         }
     }
@@ -276,6 +278,22 @@ class CreateSupportTicketViewModel(
     // Resetear el estado de ticketCreated
     fun resetTicketCreated() {
         _uiState.update { it.copy(isTicketCreated = false) }
+    }
+
+    // Función para actualizar el nombre del cliente cuando no es cliente
+    fun updateCustomerName(name: String) {
+        _uiState.update {
+            val customerNameError = if (!it.isClient && name.isEmpty()) {
+                "El nombre completo es obligatorio"
+            } else {
+                null
+            }
+            
+            it.copy(
+                customerName = name,
+                customerNameError = customerNameError
+            )
+        }
     }
 }
 
@@ -297,6 +315,8 @@ data class CreateSupportTicketUiState(
     val subscriptionError: String? = null,
     val selectedPlace: PlaceResponse? = null,
     val placeError: String? = null,
+    val customerName: String = "",
+    val customerNameError: String? = null,
     
     // Datos para los dropdowns
     val subscriptions: List<SubscriptionFastSearchResponse> = emptyList(),
