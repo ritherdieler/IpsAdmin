@@ -7,7 +7,7 @@ package com.example.cleanarchitecture.domain.entity
  * Huacho, Peru.
  *
  **/
-class Subscription(
+data class Subscription(
     var subscriptionId: Int? = null,
     var firstName: String? = null,
     var lastName: String? = null,
