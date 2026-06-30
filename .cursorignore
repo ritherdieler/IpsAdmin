@@ -1,0 +1,14 @@
+**/build/
+**/target/
+**/node_modules/
+**/dist/
+**/.gradle/
+**/.kotlin/
+**/logs/
+**/*.log
+**/.DS_Store
+**/.idea/
+**/presentation/debug/
+**/captures/
+**/.cxx/
+**/.externalNativeBuild/
