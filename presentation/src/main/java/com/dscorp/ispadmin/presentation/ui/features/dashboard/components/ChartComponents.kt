@@ -332,9 +332,8 @@ fun LineChartContainer(title: String, data: List<Any>) {
                             this.data = lineData
                             
                             // Configurar etiquetas del eje X
-                            val dateFormat = SimpleDateFormat("MMM", Locale("es", "PE"))
-                            val labels = revenueData.map { 
-                                dateFormat.format(Date(it.billingDate)).capitalize(Locale("es", "PE"))
+                            val labels = revenueData.map {
+                                it.billingMonth.toSpanishMonthLabel()
                             }
                             xAxis.valueFormatter = IndexAxisValueFormatter(labels)
                         }
@@ -432,7 +431,7 @@ fun BarChartContainer(
     ChartCard {
         AndroidView(
             factory = { context ->
-                BarChart(context).apply {
+                BarChart(context).apply     {
                     description.isEnabled = false
                     setDrawGridBackground(false)
                     setDrawBarShadow(false)
@@ -1009,4 +1008,17 @@ fun String.capitalize(locale: Locale): String {
     return this.replaceFirstChar { 
         if (it.isLowerCase()) it.titlecase(locale) else it.toString() 
     }
-} 
+}
+
+private fun String.toSpanishMonthLabel(): String {
+    val month = substringOrNull(5, 7)?.toIntOrNull() ?: return this
+    val labels = listOf(
+        "Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.",
+        "Jul.", "Ago.", "Set.", "Oct.", "Nov.", "Dic."
+    )
+    return labels.getOrElse(month - 1) { this }
+}
+
+private fun String.substringOrNull(startIndex: Int, endIndex: Int): String? {
+    return if (length >= endIndex) substring(startIndex, endIndex) else null
+}

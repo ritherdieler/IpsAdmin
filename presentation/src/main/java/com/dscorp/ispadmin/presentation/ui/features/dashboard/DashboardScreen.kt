@@ -215,7 +215,7 @@ fun DashboardContent(data: DashBoardDataResponse, onRefresh: () -> Unit) {
                 // Gráfico lineal de ingresos brutos
                 LineChartContainer(
                     title = stringResource(R.string.gross_revenue_per_month),
-                    data = data.grossRevenueHistoryStatics.sortedBy { it.billingDate }
+                    data = data.grossRevenueHistoryStatics.sortedBy { it.billingMonth }
                 )
                 Spacer(modifier = Modifier.height(36.dp))
             }

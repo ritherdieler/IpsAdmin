@@ -252,7 +252,10 @@ interface RestApiServices {
     suspend fun downloadDebtorsCutOffCandidatesReportDocument(): Response<DownloadDocumentResponse>
 
     @PUT("subscription/cancel-subscription")
-    suspend fun cancelSubscription(@Query("subscriptionId") subscriptionId: Int): Response<Unit>
+    suspend fun cancelSubscription(
+        @Query("subscriptionId") subscriptionId: Int,
+        @Query("responsibleId") responsibleId: Int
+    ): Response<Unit>
 
     @PUT("subscription/update-subscription-data")
     suspend fun updateSubscriptionData(@Body subscriptionData: UpdateSubscriptionDataBody): Response<Unit>

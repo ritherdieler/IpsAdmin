@@ -204,16 +204,23 @@ class SubscriptionFinderViewModel(
         _uiState.update { it.copy(selectedSubscription = subscription) }
     }
 
-    fun cancelSubscription(subscriptionId: Int) = viewModelScope.launch {
-        try {
-            _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Loading) }
-            repository.cancelSubscription(subscriptionId)
+    fun cancelSubscription(subscriptionId: Int) {
+        if (_uiState.value.cancelSubscriptionState == CancelSubscriptionState.Loading) return
+
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Loading) }
+            val responsibleId = repository.getUserSession()?.id
+                ?: throw IllegalStateException("Usuario no encontrado")
+
+            repository.cancelSubscription(subscriptionId, responsibleId)
             _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Success) }
-        } catch (e: Exception) {
+        }catch (e: Exception) {
             e.printStackTrace()
             _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Error) }
         }
     }
+}
 
     fun removeSubscriptionFromList(id: Int) {
         subscriptionsFlow.value = subscriptionsFlow.value.filter { it.id != id }
