@@ -55,6 +55,9 @@ import com.dscorp.ispadmin.presentation.ui.features.dashboard.components.Migrati
 import com.dscorp.ispadmin.presentation.ui.features.dashboard.components.PieChartContainer
 import com.dscorp.ispadmin.presentation.ui.features.dashboard.components.ReconnectionChartContainer
 import kotlinx.coroutines.delay
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun DashboardScreen(
@@ -488,6 +491,7 @@ fun CustomersResumeTable(data: DashBoardDataResponse) {
             
             TableRow(
                 title = stringResource(R.string.cancelledBySystem),
+                smallSuffix = "(mes anterior)",
                 value = data.cancellationsResume.cancelledBySystem.toString(),
                 icon = R.drawable.ic_cancel_system,
                 valueColor = MaterialTheme.colorScheme.error,
@@ -511,7 +515,8 @@ fun TableRow(
     isHeader: Boolean = false,
     isLight: Boolean = false,
     icon: Int? = null,
-    valueColor: Color = Color.Unspecified
+    valueColor: Color = Color.Unspecified,
+    smallSuffix: String? = null
 ) {
     val backgroundColor = when {
         isHeader -> MaterialTheme.colorScheme.primary
@@ -546,7 +551,15 @@ fun TableRow(
                 }
                 
                 Text(
-                    text = title,
+                    text = buildAnnotatedString {
+                        append(title)
+                        if (!smallSuffix.isNullOrBlank()) {
+                            append(" ")
+                            pushStyle(SpanStyle(fontSize = 11.sp))
+                            append(smallSuffix)
+                            pop()
+                        }
+                    },
                     style = if (isHeader) 
                         MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
                     else 
