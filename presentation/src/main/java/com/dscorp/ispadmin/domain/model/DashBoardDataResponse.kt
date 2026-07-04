@@ -44,7 +44,7 @@ fun Double.toCurrencyString(): String {
 
 data class MonthlyGrossRevenueResume(
     val totalCharged: Double,
-    val billingDate: Long
+    val billingMonth: String
 )
 
 data class EconomicResume(

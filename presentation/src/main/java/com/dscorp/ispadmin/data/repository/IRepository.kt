@@ -136,7 +136,7 @@ interface IRepository {
     suspend fun findSubscriptionByIP(ip: String): List<SubscriptionResume>
 
     suspend fun downloadDebtorsCutOffCandidatesSubscriptionsReport(): DownloadDocumentResponse
-    suspend fun cancelSubscription(subscriptionId: Int)
+    suspend fun cancelSubscription(subscriptionId: Int, responsibleId: Int)
     suspend fun updateSubscriptionData(subscriptionData: UpdateSubscriptionDataBody)
     suspend fun downloadDebtorWithCancelledSubscriptionsReport(): DownloadDocumentResponse
     suspend fun downloadCancelledSubscriptionsFromCurrentMonthReport(): DownloadDocumentResponse

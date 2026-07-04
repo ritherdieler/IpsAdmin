@@ -511,6 +511,7 @@ fun SubscriptionFinderScreen(
             onDismiss = { showCancelSubscriptionConfirmDialog = false },
             onConfirm = {
                 uiState.selectedSubscription?.id?.let {
+                    showCancelSubscriptionConfirmDialog = false
                     viewModel.cancelSubscription(it)
                 }
             }
