@@ -4,6 +4,7 @@ enum class FaceCaptureProfile {
     ENROLLMENT,
     VERIFICATION,
     EVIDENCE,
+    FACADE,
 }
 
 data class FaceCaptureSettings(
@@ -41,6 +42,12 @@ object FaceCaptureConfig {
             maxHeight = 480,
             jpegQuality = 80,
             targetSizeBytes = 200 * 1024,
+        )
+        FaceCaptureProfile.FACADE -> FaceCaptureSettings(
+            maxWidth = 1920,
+            maxHeight = 1440,
+            jpegQuality = 85,
+            targetSizeBytes = 1_572_864,
         )
     }
 }

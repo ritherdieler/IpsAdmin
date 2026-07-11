@@ -1,7 +1,6 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose
 
 import android.content.Context
-import android.net.Uri
 import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,13 +39,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.dscorp.ispadmin.data.media.prepareFacadePhotoFile
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.Subscription
 import com.dscorp.ispadmin.presentation.theme.MyTheme
 import com.dscorp.ispadmin.presentation.ui.components.rememberPhotoTaker
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionUiEvent
-import java.io.File
 
 @Composable
 fun RegisterSubscriptionFormScreen(
@@ -113,7 +112,7 @@ fun RegisterSubscriptionFormScreen(
                     if (intent is RegisterSubscriptionIntent.RegisterClick) {
                         val facadePhotoFile =
                             uiState.registerSubscriptionForm.facadePhotoUri?.let { uri ->
-                                uriToFile(context = context, uri = uri)
+                                prepareFacadePhotoFile(context = context, uri = uri)
                             }
                         viewModel.onIntent(
                             RegisterSubscriptionIntent.RegisterClick(
@@ -179,22 +178,6 @@ fun RegisterSubscriptionFormScreen(
             )
         }
     }
-}
-
-private fun uriToFile(context: Context, uri: Uri): File {
-    val file = File.createTempFile(
-        "facade_photo_",
-        ".jpg",
-        context.cacheDir
-    )
-
-    context.contentResolver.openInputStream(uri)?.use { inputStream ->
-        file.outputStream().use { outputStream ->
-            inputStream.copyTo(outputStream)
-        }
-    } ?: throw IllegalArgumentException("No se pudo leer la foto de fachada")
-
-    return file
 }
 
 @Composable

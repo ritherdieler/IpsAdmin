@@ -64,7 +64,6 @@ import com.dscorp.ispadmin.presentation.theme.MyTheme
 import com.dscorp.ispadmin.presentation.ui.components.CleanDetailField
 import com.dscorp.ispadmin.presentation.ui.features.composecomponents.ErrorView
 import org.koin.androidx.compose.koinViewModel
-import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.AlertDialog
@@ -72,8 +71,8 @@ import androidx.compose.material3.Button
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.dscorp.ispadmin.data.media.prepareFacadePhotoFile
 import com.dscorp.ispadmin.presentation.ui.components.rememberPhotoTaker
-import java.io.File
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -104,7 +103,7 @@ fun SubscriptionDetailScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
-            val facadePhotoFile = uriToFile(context, it)
+            val facadePhotoFile = prepareFacadePhotoFile(context, it)
             viewModel.updateFacadePhoto(
                 subscriptionId = subscriptionId,
                 facadePhotoFile = facadePhotoFile
@@ -115,7 +114,7 @@ fun SubscriptionDetailScreen(
     val (takeFacadePhoto, _) = rememberPhotoTaker(
         context = context,
         onPhotoTaken = { uri ->
-            val facadePhotoFile = uriToFile(context, uri)
+            val facadePhotoFile = prepareFacadePhotoFile(context, uri)
             viewModel.updateFacadePhoto(
                 subscriptionId = subscriptionId,
                 facadePhotoFile = facadePhotoFile
@@ -938,21 +937,4 @@ fun SubscriptionDetailFormSuspendedPreview() {
     MyTheme {
         SubscriptionDetailForm(subscription = mockSubscription)
     }
-}
-// Convierte el Uri elegido desde cámara o galería en un archivo temporal.
-// Ese archivo se envía al backend como multipart para actualizar la fachada.
-private fun uriToFile(context: Context, uri: Uri): File {
-    val file = File.createTempFile(
-        "facade_photo_",
-        ".jpg",
-        context.cacheDir
-    )
-
-    context.contentResolver.openInputStream(uri)?.use { inputStream ->
-        file.outputStream().use { outputStream ->
-            inputStream.copyTo(outputStream)
-        }
-    } ?: throw IllegalArgumentException("No se pudo leer la foto de fachada")
-
-    return file
 }
