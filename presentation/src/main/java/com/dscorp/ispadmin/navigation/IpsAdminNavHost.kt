@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.navigation
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -9,7 +10,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.dscorp.ispadmin.navigation.NavRoutes.Features
 import com.dscorp.ispadmin.navigation.NavRoutes.Splash
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.ui.features.splash.compose.SplashScreen
+import org.koin.compose.koinInject
 
 /**
  * Componente principal de navegación para la aplicación IpsAdmin.
@@ -24,7 +27,15 @@ import com.dscorp.ispadmin.presentation.ui.features.splash.compose.SplashScreen
 fun IpsAdminNavHost(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
+    observabilityClient: ObservabilityClient = koinInject(),
 ) {
+    LaunchedEffect(navController) {
+        navController.currentBackStackEntryFlow.collect { entry ->
+            val route = entry.destination.route ?: entry.destination.displayName
+            observabilityClient.addBreadcrumb(category = "navigation", message = route)
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = Splash,

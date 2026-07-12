@@ -103,6 +103,7 @@ class RegisterSubscriptionComposeViewModelTest {
             getCoreDevicesUseCase = getCoreDevicesUseCase,
             getNearNapBoxesUseCase = getNearNapBoxesUseCase,
             installationOrderUseCase = installationOrderUseCase,
+            observabilityClient = mockk(relaxed = true),
             mainImmediate = testDispatcher
         )
     }

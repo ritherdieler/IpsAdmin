@@ -180,7 +180,8 @@ private fun ClientDataFields(
     Spacer(modifier = Modifier.height(8.dp))
 
     MyOutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         label = "DNI (8 dígitos)",
         value = form.dni,
         errorMessage = form.dniError,
@@ -195,7 +196,8 @@ private fun ClientDataFields(
     Spacer(modifier = Modifier.height(8.dp))
 
     MyOutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         label = "Teléfono (9 dígitos)",
         value = form.phone,
         errorMessage = form.phoneError,
@@ -248,7 +250,8 @@ private fun AddressFields(
         enabled = !formState.isLoading,
     )
     MyOutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         value = form.address,
         label = "Dirección completa",
         errorMessage = form.addressError,
@@ -444,7 +447,8 @@ private fun TwoFieldsRow(
 ) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         MyOutlinedTextField(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f),
             label = label1,
             value = value1,
             errorMessage = error1,
@@ -456,7 +460,8 @@ private fun TwoFieldsRow(
             )
         )
         MyOutlinedTextField(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f),
             label = label2,
             value = value2,
             errorMessage = error2,

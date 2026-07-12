@@ -2,11 +2,18 @@ package com.dscorp.ispadmin.di
 
 import android.app.Application
 import com.dscorp.ispadmin.BuildConfig
+import com.dscorp.ispadmin.data.repository.IRepository
 import com.dscorp.ispadmin.di.apiModule
+import com.dscorp.ispadmin.observability.ObservabilityActivityTracker
+import com.dscorp.ispadmin.observability.ObservabilityClient
+import com.dscorp.ispadmin.observability.ObservabilityConnectivityMonitor
+import com.dscorp.ispadmin.observability.ObservabilityCrashHandler
+import com.dscorp.ispadmin.observability.ObservabilityTracer
 import com.example.data2.data.di.fileStorageModule
 import com.facebook.stetho.Stetho
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.ktx.Firebase
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.koin.androidContext
@@ -40,11 +47,40 @@ class KoinApplication : Application() {
                     single { firebaseAnalytics }
                 },
                 fileStorageModule,
+                observabilityModule,
             )
         }
 
         getKoin().run {
             setProperty(BASE_URL, BuildConfig.BASE_URL)
+            setProperty(OBS_BASE_URL, BuildConfig.OBS_BASE_URL)
         }
+
+        setupCrashlytics()
+        setupObservability()
+    }
+
+    private fun setupCrashlytics() {
+        val repository = getKoin().get<IRepository>()
+        val session = runCatching { repository.getUserSession() }.getOrNull()
+        FirebaseCrashlytics.getInstance().apply {
+            setUserId(session?.id?.toString() ?: "anonymous")
+            setCustomKey("flavor", BuildConfig.FLAVOR)
+            setCustomKey("versionName", BuildConfig.VERSION_NAME)
+            setCustomKey("versionCode", BuildConfig.VERSION_CODE)
+            setCustomKey("environment", if (BuildConfig.DEBUG) "debug" else "release")
+        }
+    }
+
+    private fun setupObservability() {
+        val observabilityClient = getKoin().get<ObservabilityClient>()
+        val previousHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler(
+            ObservabilityCrashHandler(observabilityClient, previousHandler)
+        )
+        observabilityClient.start()
+        getKoin().get<ObservabilityTracer>().flush()
+        getKoin().get<ObservabilityConnectivityMonitor>().register()
+        registerActivityLifecycleCallbacks(getKoin().get<ObservabilityActivityTracker>())
     }
 }

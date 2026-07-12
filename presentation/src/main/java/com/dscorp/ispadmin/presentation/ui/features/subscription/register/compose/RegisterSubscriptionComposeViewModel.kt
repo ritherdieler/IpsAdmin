@@ -25,6 +25,7 @@ import com.dscorp.ispadmin.domain.usecase.subscription.GetPlaceFromLocationUseCa
 import com.dscorp.ispadmin.domain.usecase.subscription.GetPlaceListUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetUserSessionUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionUseCase
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.extension.removeSpecialCharacters
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.FormFieldKey
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionFormState
@@ -60,8 +61,13 @@ class RegisterSubscriptionComposeViewModel(
     private val getCoreDevicesUseCase: GetCoreDevicesUseCase,
     private val getNearNapBoxesUseCase: GetNearNapBoxesUseCase,
     private val installationOrderUseCase: InstallationOrderUseCase,
+    private val observabilityClient: ObservabilityClient,
     private val mainImmediate: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_SCREEN = "register_subscription"
+    }
 
     private val _uiState = MutableStateFlow(RegisterSubscriptionState())
     val uiState: StateFlow<RegisterSubscriptionState> = _uiState.asStateFlow()
@@ -90,11 +96,25 @@ class RegisterSubscriptionComposeViewModel(
 
     fun loadScreenData(installationOrderId: Int?) {
         loadScreenJob?.cancel()
+        observabilityClient.addBreadcrumb(
+            category = "subscription",
+            message = "load_screen_data",
+            data = mapOf("orderId" to installationOrderId)
+        )
         loadScreenJob = viewModelScope.launch(mainImmediate) {
             try {
                 _uiState.update { it.copy(isLoading = true) }
                 applyInitialCatalogData().exceptionOrNull()?.let { throwable ->
                     _uiState.update { it.copy(isLoading = false) }
+                    observabilityClient.reportError(
+                        throwable = throwable,
+                        message = "Fallo al cargar catálogos iniciales",
+                        tags = mapOf(
+                            "screen" to OBS_SCREEN,
+                            "action" to "load_initial_catalog",
+                            "orderId" to installationOrderId
+                        )
+                    )
                     _uiEvent.emit(
                         RegisterSubscriptionUiEvent.Error(
                             throwable.message ?: "Unknown error"
@@ -107,6 +127,15 @@ class RegisterSubscriptionComposeViewModel(
                     mergeInstallationOrderData(installationOrderId).exceptionOrNull()
                         ?.let { throwable ->
                             _uiState.update { it.copy(isLoading = false) }
+                            observabilityClient.reportError(
+                                throwable = throwable,
+                                message = "Fallo al cargar datos de la orden de instalación",
+                                tags = mapOf(
+                                    "screen" to OBS_SCREEN,
+                                    "action" to "merge_installation_order",
+                                    "orderId" to installationOrderId
+                                )
+                            )
                             _uiEvent.emit(
                                 RegisterSubscriptionUiEvent.Error(
                                     throwable.message ?: "Error al cargar los datos de la orden"
@@ -253,6 +282,14 @@ class RegisterSubscriptionComposeViewModel(
             },
             onFailure = { error ->
                 _uiState.update { it.copy(isRefreshingOnuList = false) }
+                observabilityClient.reportError(
+                    throwable = error,
+                    message = "Fallo al actualizar lista de ONUs",
+                    tags = mapOf(
+                        "screen" to OBS_SCREEN,
+                        "action" to "refresh_onu_list"
+                    )
+                )
                 _uiEvent.emit(
                     RegisterSubscriptionUiEvent.Error(
                         error.message ?: "Error al actualizar la lista de ONUs"
@@ -308,6 +345,11 @@ private fun onPhoneChanged(value: String) {
 }
 
 private fun onPlanSelected(value: PlanResponse) {
+    observabilityClient.addBreadcrumb(
+        category = "subscription",
+        message = "plan_selected",
+        data = mapOf("planId" to value.id)
+    )
     updateValidatedForm(FormFieldKey.PLAN) { form ->
         form.copy(selectedPlan = value)
     }
@@ -315,6 +357,11 @@ private fun onPlanSelected(value: PlanResponse) {
 
 private fun onPlaceSelected(value: Place) {
     val filteredNapBoxes = getFilteredNapBoxesForPlace(value.id)
+    observabilityClient.addBreadcrumb(
+        category = "subscription",
+        message = "place_selected",
+        data = mapOf("placeId" to value.id)
+    )
 
     updateValidatedForm(FormFieldKey.PLACE, FormFieldKey.NAP_BOX) { form ->
         form.copy(
@@ -427,6 +474,16 @@ private suspend fun resolvePlaceFromLocation(
         },
         onFailure = { error ->
             if (expectedGen != locationRequestGeneration.get()) return@fold
+            observabilityClient.reportError(
+                throwable = error,
+                message = "Fallo al resolver lugar desde ubicación",
+                tags = mapOf(
+                    "screen" to OBS_SCREEN,
+                    "action" to "resolve_place_from_location",
+                    "latitude" to latitude,
+                    "longitude" to longitude
+                )
+            )
             _uiEvent.emit(
                 RegisterSubscriptionUiEvent.Error(
                     error.message ?: "No se pudo obtener el lugar desde la ubicación"
@@ -478,6 +535,16 @@ private suspend fun fetchNearbyNapBoxes(
                 _uiState.update {
                     it.copy(isLoadingNearbyNapBoxes = false)
                 }
+                observabilityClient.reportError(
+                    throwable = error,
+                    message = "Fallo al obtener cajas NAP cercanas",
+                    tags = mapOf(
+                        "screen" to OBS_SCREEN,
+                        "action" to "fetch_nearby_nap_boxes",
+                        "latitude" to latitude,
+                        "longitude" to longitude
+                    )
+                )
                 _uiEvent.emit(
                     RegisterSubscriptionUiEvent.Error(
                         error.message ?: "Error al obtener cajas NAP cercanas"
@@ -496,14 +563,32 @@ fun saveSubscription(facadePhotoFile: File? = null) {
     val form = uiState.value.registerSubscriptionForm
     val validatedForm = form.validated()
     val hasFacadePhoto = form.facadePhotoUri != null || facadePhotoFile != null
-    val isFormValid = FormFieldKey.blockingForSubmit.all { field ->
+    observabilityClient.addBreadcrumb(
+        category = "subscription",
+        message = "register_click",
+        data = mapOf(
+            "installationType" to form.installationType.name,
+            "hasFacadePhoto" to hasFacadePhoto,
+            "hasOrder" to (uiState.value.orderId != null)
+        )
+    )
+    val invalidFields = FormFieldKey.blockingForSubmit.filter { field ->
         when (field) {
-            FormFieldKey.FACADE_PHOTO -> hasFacadePhoto
-            else -> validatedForm.validate(field) == null
+            FormFieldKey.FACADE_PHOTO -> !hasFacadePhoto
+            else -> validatedForm.validate(field) != null
         }
     }
 
-    if (!isFormValid) {
+    if (invalidFields.isNotEmpty()) {
+        observabilityClient.reportLog(
+            message = "Registro bloqueado por validación de formulario",
+            severity = "warning",
+            tags = mapOf(
+                "screen" to OBS_SCREEN,
+                "action" to "save_subscription_validation",
+                "invalidFields" to invalidFields.map { it.name }
+            )
+        )
         _uiState.update {
             it.copy(
                 registerSubscriptionForm = validatedForm.copy(
@@ -524,6 +609,14 @@ fun saveSubscription(facadePhotoFile: File? = null) {
 
     val subscription = buildSubscriptionFromForm(validatedForm)
     if (subscription == null) {
+        observabilityClient.reportError(
+            throwable = IllegalStateException("Usuario no disponible para crear suscripción"),
+            message = "Usuario no disponible al construir suscripción",
+            tags = mapOf(
+                "screen" to OBS_SCREEN,
+                "action" to "build_subscription"
+            )
+        )
         viewModelScope.launch(mainImmediate) {
             _uiEvent.emit(
                 RegisterSubscriptionUiEvent.Error("Usuario no disponible para crear suscripción")
@@ -552,12 +645,32 @@ fun saveSubscription(facadePhotoFile: File? = null) {
                             orderId = null
                         )
                     }
+                    observabilityClient.addBreadcrumb(
+                        category = "subscription",
+                        message = "register_success",
+                        data = mapOf("orderId" to orderIdSnapshot)
+                    )
                     _uiEvent.emit(RegisterSubscriptionUiEvent.Success(registeredSubscription))
                 },
                 onFailure = { error ->
                     _uiState.update {
                         it.copy(isLoading = false)
                     }
+                    observabilityClient.reportError(
+                        throwable = error,
+                        message = "Fallo al registrar suscripción",
+                        tags = mapOf(
+                            "screen" to OBS_SCREEN,
+                            "action" to "save_subscription",
+                            "orderId" to orderIdSnapshot,
+                            "installationType" to subscription.installationType?.name,
+                            "hasFacadePhoto" to (facadePhotoFile != null),
+                            "planId" to subscription.planId,
+                            "placeId" to subscription.placeId,
+                            "hasNapBox" to (subscription.napBoxId != null),
+                            "hasOnu" to (subscription.onu != null)
+                        )
+                    )
                     _uiEvent.emit(
                         RegisterSubscriptionUiEvent.Error(
                             error.message ?: "Error al registrar la suscripción"
@@ -618,6 +731,15 @@ fun closeInstallationOrder(orderId: Int) = viewModelScope.launch(mainImmediate) 
     installationOrderUseCase.closeInstallationOrderResult(orderId).fold(
         onSuccess = { },
         onFailure = { error ->
+            observabilityClient.reportError(
+                throwable = error,
+                message = "Fallo al cerrar orden de instalación",
+                tags = mapOf(
+                    "screen" to OBS_SCREEN,
+                    "action" to "close_installation_order",
+                    "orderId" to orderId
+                )
+            )
             _uiEvent.emit(
                 RegisterSubscriptionUiEvent.Error(
                     error.message ?: "Error al cerrar la orden de instalación"

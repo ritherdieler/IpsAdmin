@@ -1,0 +1,40 @@
+---
+description: Desarrollo obligatorio con Test-Driven Development (TDD)
+alwaysApply: true
+---
+
+# Test-Driven Development (TDD)
+
+Todo desarrollo de funcionalidad o corrección de bugs debe seguir TDD estrictamente. No escribir código de producción sin una prueba que lo exija primero.
+
+## Ciclo Red-Green-Refactor
+
+1. **Red**: Escribir una prueba que falle y describa el comportamiento esperado.
+2. **Green**: Implementar el mínimo código necesario para que la prueba pase.
+3. **Refactor**: Mejorar el código manteniendo todas las pruebas en verde.
+
+## Flujo obligatorio
+
+- Antes de implementar una feature, definir el comportamiento en una prueba.
+- Ejecutar las pruebas y confirmar que fallan por la razón correcta (Red).
+- Implementar solo lo necesario para pasar la prueba (Green).
+- Refactorizar sin cambiar el comportamiento; las pruebas deben seguir pasando.
+- Al corregir un bug, primero escribir una prueba que reproduzca el fallo.
+
+## Alcance de pruebas
+
+- Lógica de negocio, casos de uso, servicios y utilidades: pruebas unitarias.
+- ViewModels, hooks y componentes con lógica: pruebas unitarias o de integración.
+- Flujos críticos de UI: pruebas de integración o instrumentadas según el stack del proyecto.
+- Endpoints y contratos de API: pruebas de integración.
+
+## Criterio de terminado
+
+- No dar por cerrada una tarea sin pruebas que cubran el comportamiento nuevo o corregido.
+- Ejecutar la suite de pruebas afectada antes de finalizar; todas deben pasar.
+- No eliminar ni desactivar pruebas existentes para hacer pasar código nuevo.
+
+## Excepciones
+
+- Solo se permite omitir TDD con justificación explícita del usuario (ej. prototipo desechable, spike de investigación).
+- Cambios puramente cosméticos sin lógica (textos, espaciado) no requieren prueba nueva.

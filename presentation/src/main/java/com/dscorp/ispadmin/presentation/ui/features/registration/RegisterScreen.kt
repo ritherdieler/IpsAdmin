@@ -184,7 +184,8 @@ fun RegisterForm(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 singleLine = true,
                 maxLength = 50,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
             )
 
             MyOutlinedTextField(
@@ -195,7 +196,8 @@ fun RegisterForm(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 singleLine = true,
                 maxLength = 50,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
             )
         }
 
@@ -215,7 +217,8 @@ fun RegisterForm(
                 ),
                 singleLine = true,
                 maxLength = 8,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
             )
 
             MyOutlinedTextField(
@@ -229,7 +232,8 @@ fun RegisterForm(
                 ),
                 singleLine = true,
                 maxLength = 100,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
             )
 
         }
@@ -245,7 +249,8 @@ fun RegisterForm(
             ),
             singleLine = true,
             maxLength = 9,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
         )
             MyOutlinedTextField(
                 value = state.username,
@@ -255,7 +260,8 @@ fun RegisterForm(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 singleLine = true,
                 maxLength = 30,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
             )
 
 
@@ -271,7 +277,8 @@ fun RegisterForm(
                 ),
                 singleLine = true,
                 maxLength = 30,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
 
             )
 
@@ -287,7 +294,8 @@ fun RegisterForm(
                 ),
                 singleLine = true,
                 maxLength = 30,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
 
             )
 

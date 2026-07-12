@@ -96,7 +96,8 @@ fun Login(
             )
 
             MyOutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 value = username,
                 label = "Usuario",
                 onValueChange = { username = it },
@@ -106,7 +107,8 @@ fun Login(
             Spacer(modifier = Modifier.height(16.dp))
 
             MyOutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 value = password,
                 label = "Contraseña",
                 onValueChange = { password = it },

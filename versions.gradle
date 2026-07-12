@@ -30,6 +30,9 @@ ext {
     
     // ViewModel y Lifecycle
     lifecycleVersion = '2.9.0'
+
+    // WorkManager
+    workVersion = '2.9.1'
     
     // Navigation
     navigationVersion = '2.9.0'

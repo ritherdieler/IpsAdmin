@@ -18,6 +18,7 @@ if (localPropsFile.exists()) {
 
 def oltServiceApiKey = (localProps.getProperty("OLT_SERVICE_API_KEY") ?: "").replace('"', '')
 def sendCloudMessagingApiKey = (localProps.getProperty("SEND_CLOUD_MESSAGING_API_KEY") ?: "").replace('"', '')
+def obsApiKey = (localProps.getProperty("OBS_API_KEY") ?: System.getenv("OBS_API_KEY") ?: "").replace('"', '')
 
 android {
     compileSdk rootProject.ext.compileSdk
@@ -41,7 +42,9 @@ android {
             applicationIdSuffix ".dev"
             versionNameSuffix "-dev"
             buildConfigField 'String', "FIRE_BASE_URL", '"https://fcm.googleapis.com"'
-            buildConfigField 'String', "BASE_URL", '"http://192.168.1.39:8080/ispadmin/"'
+            buildConfigField 'String', "BASE_URL", '"http://192.168.1.11:8080/ispadmin/"'
+            buildConfigField 'String', "OBS_BASE_URL", '"http://192.168.1.11:8080/ispadmin/"'
+            buildConfigField 'String', "OBS_API_KEY", '"dev-obs-android-key"'
             buildConfigField 'String', "OLT_SERVICE_API_KET", "\"${oltServiceApiKey}\""
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", "\"${sendCloudMessagingApiKey}\""
         }
@@ -49,6 +52,8 @@ android {
             dimension "environment"
             buildConfigField 'String', "FIRE_BASE_URL", '"https://fcm.googleapis.com"'
             buildConfigField 'String', "BASE_URL", '"https://api.gigafiberperu.cloud/ispadmin/"'
+            buildConfigField 'String', "OBS_BASE_URL", '"https://api.gigafiberperu.cloud/ispadmin/"'
+            buildConfigField 'String', "OBS_API_KEY", "\"${obsApiKey}\""
             buildConfigField 'String', "OLT_SERVICE_API_KET", "\"${oltServiceApiKey}\""
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", "\"${sendCloudMessagingApiKey}\""
         }
@@ -140,6 +145,10 @@ dependencies {
     // Lifecycle y ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${rootProject.ext.lifecycleVersion}"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:${rootProject.ext.lifecycleVersion}"
+    implementation "androidx.lifecycle:lifecycle-process:${rootProject.ext.lifecycleVersion}"
+
+    // WorkManager
+    implementation "androidx.work:work-runtime-ktx:${rootProject.ext.workVersion}"
     
     // Paging 3
     implementation "androidx.paging:paging-runtime-ktx:3.2.1"
