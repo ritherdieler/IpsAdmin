@@ -12,6 +12,8 @@ data class User(
     val dni: String = "",
     val email: String = "",
     val phone: String = "",
+    val accessToken: String? = null,
+    val refreshToken: String? = null,
 ) {
     enum class UserType(val value: String) {
         ADMIN("Administrador"),

@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.dscorp.ispadmin.data.datasource.remote.auth.SessionEventBus
 import com.dscorp.ispadmin.navigation.NavRoutes.Features
 import com.dscorp.ispadmin.navigation.NavRoutes.Splash
 import com.dscorp.ispadmin.observability.ObservabilityClient
@@ -28,11 +29,21 @@ fun IpsAdminNavHost(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
     observabilityClient: ObservabilityClient = koinInject(),
+    sessionEventBus: SessionEventBus = koinInject(),
 ) {
     LaunchedEffect(navController) {
         navController.currentBackStackEntryFlow.collect { entry ->
             val route = entry.destination.route ?: entry.destination.displayName
             observabilityClient.addBreadcrumb(category = "navigation", message = route)
+        }
+    }
+
+    LaunchedEffect(navController) {
+        sessionEventBus.sessionExpired.collect {
+            navController.navigate(NavRoutes.Auth) {
+                popUpTo(0) { inclusive = true }
+                launchSingleTop = true
+            }
         }
     }
 

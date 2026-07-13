@@ -11,6 +11,8 @@ const val REMEMBER_CHECKBOX_STATUS = "remembercbox"
 const val SESSION_DNI = "dni"
 const val SESSION_EMAIL = "email"
 const val SESSION_PHONE = "phone"
+const val SESSION_ACCESS_TOKEN = "access_token"
+const val SESSION_REFRESH_TOKEN = "refresh_token"
 
 // Claves separadas para recordar el usuario que puede ingresar con huella.
 // No guardan la huella; solo guardan datos de sesion del usuario ya autenticado.
@@ -24,3 +26,5 @@ const val BIOMETRIC_SESSION_VERIFIED = "biometric_verified"
 const val BIOMETRIC_SESSION_DNI = "biometric_dni"
 const val BIOMETRIC_SESSION_EMAIL = "biometric_email"
 const val BIOMETRIC_SESSION_PHONE = "biometric_phone"
+const val BIOMETRIC_SESSION_ACCESS_TOKEN = "biometric_access_token"
+const val BIOMETRIC_SESSION_REFRESH_TOKEN = "biometric_refresh_token"

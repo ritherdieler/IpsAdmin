@@ -16,6 +16,10 @@ import com.dscorp.ispadmin.data.response.AssistanceTicketResponse
 import com.dscorp.ispadmin.data.response.AssistanceTicketStatus
 import com.dscorp.ispadmin.data.utils.HttpCodes
 import com.dscorp.ispadmin.data.utils.REMEMBER_CHECKBOX_STATUS
+import com.dscorp.ispadmin.data.utils.BIOMETRIC_SESSION_ACCESS_TOKEN
+import com.dscorp.ispadmin.data.utils.BIOMETRIC_SESSION_REFRESH_TOKEN
+import com.dscorp.ispadmin.data.utils.SESSION_ACCESS_TOKEN
+import com.dscorp.ispadmin.data.utils.SESSION_REFRESH_TOKEN
 import com.dscorp.ispadmin.data.utils.BIOMETRIC_SESSION_DNI
 import com.dscorp.ispadmin.data.utils.BIOMETRIC_SESSION_EMAIL
 import com.dscorp.ispadmin.data.utils.BIOMETRIC_SESSION_ID
@@ -135,6 +139,8 @@ class Repository : IRepository, KoinComponent {
         editor.putString(SESSION_TYPE, user.type.toString())
         user.id?.let { editor.putInt(SESSION_ID, it) }
         editor.putBoolean(SESSION_VERIFIED, user.verified)
+        editor.putString(SESSION_ACCESS_TOKEN, user.accessToken)
+        editor.putString(SESSION_REFRESH_TOKEN, user.refreshToken)
         editor.apply()
         // Cada login valido actualiza tambien el usuario recordado para huella.
         saveBiometricUserSession(user)
@@ -154,6 +160,8 @@ class Repository : IRepository, KoinComponent {
         editor.putString(BIOMETRIC_SESSION_TYPE, user.type.toString())
         user.id?.let { editor.putInt(BIOMETRIC_SESSION_ID, it) }
         editor.putBoolean(BIOMETRIC_SESSION_VERIFIED, user.verified)
+        editor.putString(BIOMETRIC_SESSION_ACCESS_TOKEN, user.accessToken)
+        editor.putString(BIOMETRIC_SESSION_REFRESH_TOKEN, user.refreshToken)
         editor.apply()
     }
 
@@ -171,6 +179,8 @@ class Repository : IRepository, KoinComponent {
             dni = prefs.getString(SESSION_DNI, "")!!,
             email = prefs.getString(SESSION_EMAIL, "")!!,
             phone = prefs.getString(SESSION_PHONE, "")!!,
+            accessToken = prefs.getString(SESSION_ACCESS_TOKEN, null),
+            refreshToken = prefs.getString(SESSION_REFRESH_TOKEN, null),
         )
     }
 
@@ -189,6 +199,8 @@ class Repository : IRepository, KoinComponent {
             dni = prefs.getString(BIOMETRIC_SESSION_DNI, "")!!,
             email = prefs.getString(BIOMETRIC_SESSION_EMAIL, "")!!,
             phone = prefs.getString(BIOMETRIC_SESSION_PHONE, "")!!,
+            accessToken = prefs.getString(BIOMETRIC_SESSION_ACCESS_TOKEN, null),
+            refreshToken = prefs.getString(BIOMETRIC_SESSION_REFRESH_TOKEN, null),
         )
     }
 
@@ -210,6 +222,8 @@ class Repository : IRepository, KoinComponent {
         editor.remove(SESSION_PHONE)
         editor.remove(SESSION_TYPE)
         editor.remove(SESSION_VERIFIED)
+        editor.remove(SESSION_ACCESS_TOKEN)
+        editor.remove(SESSION_REFRESH_TOKEN)
         editor.remove(REMEMBER_CHECKBOX_STATUS)
         editor.apply()
     }
