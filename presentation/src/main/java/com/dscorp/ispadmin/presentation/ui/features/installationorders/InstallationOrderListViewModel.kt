@@ -10,6 +10,8 @@ import com.dscorp.ispadmin.domain.model.InstallationOrder
 import com.dscorp.ispadmin.domain.model.User
 import com.dscorp.ispadmin.domain.usecase.InstallationOrderUseCase
 import com.dscorp.ispadmin.domain.usecase.UserUseCase
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -75,8 +77,14 @@ data class InstallationOrderListUiState(
  */
 class InstallationOrderListViewModel(
     private val installationOrderUseCase: InstallationOrderUseCase,
-    private val userUseCase: UserUseCase
+    private val userUseCase: UserUseCase,
+    private val observabilityClient: ObservabilityClient
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "installation_order"
+        const val OBS_SCREEN = "installation_order_list"
+    }
 
     private val _uiState = MutableStateFlow(
         InstallationOrderListUiState(
@@ -128,6 +136,11 @@ class InstallationOrderListViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar órdenes de instalación",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_orders")
+                )
                 _uiState.update { state ->
                     state.copy(
                         isLoading = false,
@@ -216,6 +229,11 @@ class InstallationOrderListViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar técnicos",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_technicians")
+                )
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -250,6 +268,16 @@ class InstallationOrderListViewModel(
         }
 
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = if (isTransfer) "$OBS_FEATURE.transfer" else "$OBS_FEATURE.assign",
+                data = mapOf(
+                    "feature" to OBS_FEATURE,
+                    "screen" to OBS_SCREEN,
+                    "entityId" to order.id,
+                    "technicianId" to technician.id
+                )
+            )
             try {
                 _uiState.update { it.copy(isLoading = true) }
 
@@ -284,6 +312,16 @@ class InstallationOrderListViewModel(
                 loadInstallationOrders()
 
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = if (isTransfer) "Fallo al transferir orden de instalación" else "Fallo al asignar técnico",
+                    tags = mapOf(
+                        "feature" to OBS_FEATURE,
+                        "screen" to OBS_SCREEN,
+                        "action" to if (isTransfer) "transfer" else "assign",
+                        "entityId" to order.id
+                    )
+                )
                 _uiState.update {
                     it.copy(
                         isLoading = false,

@@ -6,6 +6,8 @@ import com.dscorp.ispadmin.data.apirequestmodel.AssistanceTicketRequest
 import com.dscorp.ispadmin.data.repository.IRepository
 import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.SubscriptionFastSearchResponse
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +16,13 @@ import kotlinx.coroutines.launch
 
 class CreateSupportTicketViewModel(
     private val repository: IRepository,
+    private val observabilityClient: ObservabilityClient,
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "support_ticket"
+        const val OBS_SCREEN = "create_support_ticket"
+    }
 
     // Estado principal de la pantalla usando UDF
     private val _uiState = MutableStateFlow(CreateSupportTicketUiState())
@@ -58,6 +66,11 @@ class CreateSupportTicketViewModel(
                     ) 
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar lugares para crear ticket",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_places")
+                )
                 // Manejar el error sin afectar el estado principal
                 _uiState.update { 
                     it.copy(
@@ -179,6 +192,11 @@ class CreateSupportTicketViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al buscar suscripciones para ticket",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "find_subscription")
+                )
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -192,6 +210,17 @@ class CreateSupportTicketViewModel(
     // Crear un ticket de soporte
     fun createTicket() {
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.create",
+                data = mapOf(
+                    "feature" to OBS_FEATURE,
+                    "screen" to OBS_SCREEN,
+                    "category" to _uiState.value.category,
+                    "isClient" to _uiState.value.isClient,
+                    "entityId" to _uiState.value.selectedSubscription?.id
+                )
+            )
             try {
                 _uiState.update { it.copy(isLoading = true) }
                 
@@ -228,6 +257,11 @@ class CreateSupportTicketViewModel(
                     }
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al crear ticket de soporte",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "create", "category" to _uiState.value.category)
+                )
                 _uiState.update {
                     it.copy(
                         isLoading = false,

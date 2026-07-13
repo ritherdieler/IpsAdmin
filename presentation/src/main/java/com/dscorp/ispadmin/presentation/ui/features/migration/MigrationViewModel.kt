@@ -8,6 +8,8 @@ import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.Onu
 import com.dscorp.ispadmin.domain.model.PlanResponse
 import com.dscorp.ispadmin.domain.model.SubscriptionResponse
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
@@ -17,13 +19,26 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class MigrationViewModel(private val repository: IRepository) : ViewModel() {
+class MigrationViewModel(
+    private val repository: IRepository,
+    private val observabilityClient: ObservabilityClient
+) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "migration"
+        const val OBS_SCREEN = "migration"
+    }
 
     private val _uiState = MutableStateFlow<MigrationUiState>(MigrationUiState.Empty)
     val uiState = _uiState.stateIn(viewModelScope, SharingStarted.Lazily, MigrationUiState.Empty)
     private var refreshOnusJob: Job? = null
 
     fun doMigration(migrationRequest: MigrationRequest) = viewModelScope.launch {
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$OBS_FEATURE.migrate",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN)
+        )
         if (migrationRequest.isValid().not()) {
             _uiState.value = MigrationUiState.Error(Exception("Datos incorrectos"))
             return@launch
@@ -36,6 +51,11 @@ class MigrationViewModel(private val repository: IRepository) : ViewModel() {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al ejecutar migración",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "migrate")
+                )
                 _uiState.emit(MigrationUiState.Error(e))
             }
         }
@@ -43,6 +63,11 @@ class MigrationViewModel(private val repository: IRepository) : ViewModel() {
     }
 
     fun getMigrationFormData(subscriptionId: Int) = viewModelScope.launch {
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.NAVIGATION,
+            message = "$OBS_FEATURE.load_form_data",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to subscriptionId)
+        )
         try {
             val subscription = async { repository.subscriptionById(subscriptionId) }.await()
             _uiState.emit(MigrationUiState.Loading)
@@ -53,6 +78,11 @@ class MigrationViewModel(private val repository: IRepository) : ViewModel() {
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar datos de formulario de migración",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_form_data", "entityId" to subscriptionId)
+            )
             _uiState.emit(MigrationUiState.Error(e))
         }
     }
@@ -96,6 +126,11 @@ class MigrationViewModel(private val repository: IRepository) : ViewModel() {
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al refrescar ONUs en migración",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "refresh_onus", "entityId" to subscriptionId)
+            )
             _uiState.emit(MigrationUiState.Error(e))
         }
     }

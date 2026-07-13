@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.domain.model.Outlay
 import com.dscorp.ispadmin.domain.usecase.outlay.RegisterOutlayUseCase
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -22,8 +24,15 @@ sealed class OutlayIntent {
 }
 
 class OutLayViewModel(
-    private val registerOutlayUseCase: RegisterOutlayUseCase
+    private val registerOutlayUseCase: RegisterOutlayUseCase,
+    private val observabilityClient: ObservabilityClient
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "outlay"
+        const val OBS_SCREEN = "register_outlay"
+    }
+
     private val _uiState = MutableStateFlow(OutlayUiState())
     val uiState: StateFlow<OutlayUiState> get() = _uiState
 
@@ -111,6 +120,11 @@ class OutLayViewModel(
             return@launch
         }
 
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$OBS_FEATURE.register",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "category" to uiState.value.outlay.category)
+        )
         _uiState.update { it.copy(isLoading = true, error = null) }
 
         registerOutlayUseCase(
@@ -128,6 +142,11 @@ class OutLayViewModel(
                 }
             }
             .onFailure { exception ->
+                observabilityClient.reportError(
+                    throwable = exception,
+                    message = "Fallo al registrar egreso",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "register")
+                )
                 _uiState.update {
                     it.copy(
                         error = exception.message ?: "Error desconocido",

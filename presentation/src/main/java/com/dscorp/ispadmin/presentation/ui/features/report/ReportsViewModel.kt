@@ -1,61 +1,65 @@
 package com.dscorp.ispadmin.presentation.ui.features.report
 
 import com.dscorp.ispadmin.data.repository.IRepository
+import com.dscorp.ispadmin.domain.model.DownloadDocumentResponse
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 
-class ReportsViewModel(private val repository: IRepository) : BaseViewModel<ReportsUiState>() {
+class ReportsViewModel(
+    private val repository: IRepository,
+    private val observabilityClient: ObservabilityClient
+) : BaseViewModel<ReportsUiState>() {
 
-    fun downloadDebtorWithActiveSubscriptionsReport() = executeWithProgress {
-        val downloadedDocument = repository.downloadDebtorWithActiveSubscriptionsReport()
-        uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
+    private companion object {
+        const val OBS_FEATURE = "report"
+        const val OBS_SCREEN = "reports"
     }
 
-    fun downloadPaymentCommitmentSubscriptionsReport() = executeWithProgress {
-        val downloadedDocument = repository.downloadPaymentCommitmentSubscriptionsReport()
-        uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
+    private fun downloadReport(action: String, request: suspend () -> DownloadDocumentResponse) = executeWithProgress {
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$OBS_FEATURE.$action",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to action)
+        )
+        try {
+            val downloadedDocument = request()
+            uiState.value = BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
+        } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al descargar reporte",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to action)
+            )
+            throw e
+        }
     }
 
-    fun downloadSuspendedSubscriptionsReport() = executeWithProgress {
-        val downloadedDocument = repository.downloadSuspendedSubscriptionsReport()
-        uiState.value = BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
-    }
+    fun downloadDebtorWithActiveSubscriptionsReport() =
+        downloadReport("debtor_active") { repository.downloadDebtorWithActiveSubscriptionsReport() }
 
-    fun downloadCutOffSubscriptionsReport() = executeWithProgress {
-        val downloadedDocument = repository.downloadCutOffSubscriptionsReport()
-        uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
-    }
+    fun downloadPaymentCommitmentSubscriptionsReport() =
+        downloadReport("payment_commitment") { repository.downloadPaymentCommitmentSubscriptionsReport() }
 
-    fun downloadPastMonthDebtorsReport() = executeWithProgress {
-        val downloadedDocument = repository.downloadPastMonthDebtorsReport()
-        uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
-    }
+    fun downloadSuspendedSubscriptionsReport() =
+        downloadReport("suspended") { repository.downloadSuspendedSubscriptionsReport() }
 
-    fun downloadCancelledSubscriptionsFromCurrentMonthReport() = executeWithProgress {
-        val downloadedDocument = repository.downloadCancelledSubscriptionsFromCurrentMonthReport()
-        uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
-    }
+    fun downloadCutOffSubscriptionsReport() =
+        downloadReport("cut_off") { repository.downloadCutOffSubscriptionsReport() }
 
-    fun downloadCancelledSubscriptionsFromPastMonthReport() = executeWithProgress {
-        val downloadedDocument = repository.downloadCancelledSubscriptionsFromPastMonthReport()
-        uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
-    }
+    fun downloadPastMonthDebtorsReport() =
+        downloadReport("past_month_debtors") { repository.downloadPastMonthDebtorsReport() }
 
-    fun downloadDebtorsCutOffCandidatesSubscriptionsReport() = executeWithProgress {
-        val downloadedDocument = repository.downloadDebtorsCutOffCandidatesSubscriptionsReport()
-        uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
-    }
+    fun downloadCancelledSubscriptionsFromCurrentMonthReport() =
+        downloadReport("cancelled_current_month") { repository.downloadCancelledSubscriptionsFromCurrentMonthReport() }
 
-    fun downloadDebtorWithCancelledSubscriptionsReport() = executeWithProgress {
-        val downloadedDocument = repository.downloadDebtorWithCancelledSubscriptionsReport()
-        uiState.value =
-            BaseUiState(ReportsUiState.DocumentReady(downloadedDocument))
-    }
+    fun downloadCancelledSubscriptionsFromPastMonthReport() =
+        downloadReport("cancelled_past_month") { repository.downloadCancelledSubscriptionsFromPastMonthReport() }
+
+    fun downloadDebtorsCutOffCandidatesSubscriptionsReport() =
+        downloadReport("cut_off_candidates") { repository.downloadDebtorsCutOffCandidatesSubscriptionsReport() }
+
+    fun downloadDebtorWithCancelledSubscriptionsReport() =
+        downloadReport("debtor_cancelled") { repository.downloadDebtorWithCancelledSubscriptionsReport() }
 }

@@ -25,6 +25,7 @@ import com.dscorp.ispadmin.domain.usecase.subscription.GetPlaceFromLocationUseCa
 import com.dscorp.ispadmin.domain.usecase.subscription.GetPlaceListUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetUserSessionUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionUseCase
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
 import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.extension.removeSpecialCharacters
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.FormFieldKey
@@ -66,6 +67,7 @@ class RegisterSubscriptionComposeViewModel(
 ) : ViewModel() {
 
     private companion object {
+        const val OBS_FEATURE = "subscription"
         const val OBS_SCREEN = "register_subscription"
     }
 
@@ -97,9 +99,9 @@ class RegisterSubscriptionComposeViewModel(
     fun loadScreenData(installationOrderId: Int?) {
         loadScreenJob?.cancel()
         observabilityClient.addBreadcrumb(
-            category = "subscription",
-            message = "load_screen_data",
-            data = mapOf("orderId" to installationOrderId)
+            category = ObsBreadcrumbCategory.NAVIGATION,
+            message = "$OBS_FEATURE.load_screen_data",
+            data = mapOf("feature" to OBS_FEATURE, "orderId" to installationOrderId)
         )
         loadScreenJob = viewModelScope.launch(mainImmediate) {
             try {
@@ -110,6 +112,7 @@ class RegisterSubscriptionComposeViewModel(
                         throwable = throwable,
                         message = "Fallo al cargar catálogos iniciales",
                         tags = mapOf(
+                            "feature" to OBS_FEATURE,
                             "screen" to OBS_SCREEN,
                             "action" to "load_initial_catalog",
                             "orderId" to installationOrderId
@@ -131,6 +134,7 @@ class RegisterSubscriptionComposeViewModel(
                                 throwable = throwable,
                                 message = "Fallo al cargar datos de la orden de instalación",
                                 tags = mapOf(
+                                    "feature" to OBS_FEATURE,
                                     "screen" to OBS_SCREEN,
                                     "action" to "merge_installation_order",
                                     "orderId" to installationOrderId
@@ -286,6 +290,7 @@ class RegisterSubscriptionComposeViewModel(
                     throwable = error,
                     message = "Fallo al actualizar lista de ONUs",
                     tags = mapOf(
+                        "feature" to OBS_FEATURE,
                         "screen" to OBS_SCREEN,
                         "action" to "refresh_onu_list"
                     )
@@ -346,9 +351,9 @@ private fun onPhoneChanged(value: String) {
 
 private fun onPlanSelected(value: PlanResponse) {
     observabilityClient.addBreadcrumb(
-        category = "subscription",
-        message = "plan_selected",
-        data = mapOf("planId" to value.id)
+        category = ObsBreadcrumbCategory.USER_ACTION,
+        message = "$OBS_FEATURE.plan_selected",
+        data = mapOf("feature" to OBS_FEATURE, "planId" to value.id)
     )
     updateValidatedForm(FormFieldKey.PLAN) { form ->
         form.copy(selectedPlan = value)
@@ -358,9 +363,9 @@ private fun onPlanSelected(value: PlanResponse) {
 private fun onPlaceSelected(value: Place) {
     val filteredNapBoxes = getFilteredNapBoxesForPlace(value.id)
     observabilityClient.addBreadcrumb(
-        category = "subscription",
-        message = "place_selected",
-        data = mapOf("placeId" to value.id)
+        category = ObsBreadcrumbCategory.USER_ACTION,
+        message = "$OBS_FEATURE.place_selected",
+        data = mapOf("feature" to OBS_FEATURE, "placeId" to value.id)
     )
 
     updateValidatedForm(FormFieldKey.PLACE, FormFieldKey.NAP_BOX) { form ->
@@ -478,6 +483,7 @@ private suspend fun resolvePlaceFromLocation(
                 throwable = error,
                 message = "Fallo al resolver lugar desde ubicación",
                 tags = mapOf(
+                    "feature" to OBS_FEATURE,
                     "screen" to OBS_SCREEN,
                     "action" to "resolve_place_from_location",
                     "latitude" to latitude,
@@ -539,6 +545,7 @@ private suspend fun fetchNearbyNapBoxes(
                     throwable = error,
                     message = "Fallo al obtener cajas NAP cercanas",
                     tags = mapOf(
+                        "feature" to OBS_FEATURE,
                         "screen" to OBS_SCREEN,
                         "action" to "fetch_nearby_nap_boxes",
                         "latitude" to latitude,
@@ -564,9 +571,10 @@ fun saveSubscription(facadePhotoFile: File? = null) {
     val validatedForm = form.validated()
     val hasFacadePhoto = form.facadePhotoUri != null || facadePhotoFile != null
     observabilityClient.addBreadcrumb(
-        category = "subscription",
-        message = "register_click",
+        category = ObsBreadcrumbCategory.USER_ACTION,
+        message = "$OBS_FEATURE.register_click",
         data = mapOf(
+            "feature" to OBS_FEATURE,
             "installationType" to form.installationType.name,
             "hasFacadePhoto" to hasFacadePhoto,
             "hasOrder" to (uiState.value.orderId != null)
@@ -584,6 +592,7 @@ fun saveSubscription(facadePhotoFile: File? = null) {
             message = "Registro bloqueado por validación de formulario",
             severity = "warning",
             tags = mapOf(
+                "feature" to OBS_FEATURE,
                 "screen" to OBS_SCREEN,
                 "action" to "save_subscription_validation",
                 "invalidFields" to invalidFields.map { it.name }
@@ -613,6 +622,7 @@ fun saveSubscription(facadePhotoFile: File? = null) {
             throwable = IllegalStateException("Usuario no disponible para crear suscripción"),
             message = "Usuario no disponible al construir suscripción",
             tags = mapOf(
+                "feature" to OBS_FEATURE,
                 "screen" to OBS_SCREEN,
                 "action" to "build_subscription"
             )
@@ -646,9 +656,9 @@ fun saveSubscription(facadePhotoFile: File? = null) {
                         )
                     }
                     observabilityClient.addBreadcrumb(
-                        category = "subscription",
-                        message = "register_success",
-                        data = mapOf("orderId" to orderIdSnapshot)
+                        category = ObsBreadcrumbCategory.STATE,
+                        message = "$OBS_FEATURE.register_success",
+                        data = mapOf("feature" to OBS_FEATURE, "orderId" to orderIdSnapshot)
                     )
                     _uiEvent.emit(RegisterSubscriptionUiEvent.Success(registeredSubscription))
                 },
@@ -660,8 +670,10 @@ fun saveSubscription(facadePhotoFile: File? = null) {
                         throwable = error,
                         message = "Fallo al registrar suscripción",
                         tags = mapOf(
+                            "feature" to OBS_FEATURE,
                             "screen" to OBS_SCREEN,
                             "action" to "save_subscription",
+                            "entityId" to orderIdSnapshot,
                             "orderId" to orderIdSnapshot,
                             "installationType" to subscription.installationType?.name,
                             "hasFacadePhoto" to (facadePhotoFile != null),
@@ -735,8 +747,10 @@ fun closeInstallationOrder(orderId: Int) = viewModelScope.launch(mainImmediate) 
                 throwable = error,
                 message = "Fallo al cerrar orden de instalación",
                 tags = mapOf(
+                    "feature" to OBS_FEATURE,
                     "screen" to OBS_SCREEN,
                     "action" to "close_installation_order",
+                    "entityId" to orderId,
                     "orderId" to orderId
                 )
             )

@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.data.repository.IRepository
 import com.dscorp.ispadmin.domain.model.extensions.PayerFinderResult
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,8 +24,14 @@ sealed class PayerFinderEvent {
 }
 
 class PayerFinderViewmodel(
-    private val repository: IRepository
+    private val repository: IRepository,
+    private val observabilityClient: ObservabilityClient
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "payment"
+        const val OBS_SCREEN = "payer_finder"
+    }
 
     private val _state = MutableStateFlow(PayerFinderState())
     val state: StateFlow<PayerFinderState> = _state.asStateFlow()
@@ -46,6 +54,11 @@ class PayerFinderViewmodel(
             }
             
             _state.value = _state.value.copy(isLoading = true)
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.search_payer",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "queryLength" to query.length)
+            )
             try {
                 val results = repository.findPaymentByElectronicPayerName(query)
                 _state.value = _state.value.copy(
@@ -54,6 +67,11 @@ class PayerFinderViewmodel(
                     error = null
                 )
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al buscar pagador electrónico",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "search_payer")
+                )
                 _state.value = _state.value.copy(
                     isLoading = false,
                     error = e.message ?: "Error desconocido"

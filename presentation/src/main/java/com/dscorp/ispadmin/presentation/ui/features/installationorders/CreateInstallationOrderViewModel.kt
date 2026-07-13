@@ -9,6 +9,8 @@ import com.dscorp.ispadmin.domain.model.User
 import com.dscorp.ispadmin.domain.usecase.InstallationOrderUseCase
 import com.dscorp.ispadmin.domain.usecase.PlaceUseCase
 import com.dscorp.ispadmin.domain.usecase.UserUseCase
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,8 +55,14 @@ data class InstallationOrderUiState(
 class CreateInstallationOrderViewModel(
     private val installationOrderUseCase: InstallationOrderUseCase,
     private val userUseCase: UserUseCase,
-    private val placeUseCase: PlaceUseCase
+    private val placeUseCase: PlaceUseCase,
+    private val observabilityClient: ObservabilityClient
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "installation_order"
+        const val OBS_SCREEN = "create_installation_order"
+    }
 
     private val _uiState = MutableStateFlow(InstallationOrderUiState())
     val uiState: StateFlow<InstallationOrderUiState> = _uiState.asStateFlow()
@@ -126,6 +134,11 @@ class CreateInstallationOrderViewModel(
                 val places = placeUseCase.getPlaces()
                 _uiState.update { it.copy(places = places, isLoading = false) }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar lugares para orden de instalación",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_places")
+                )
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -143,6 +156,11 @@ class CreateInstallationOrderViewModel(
         }
 
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.create",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "placeId" to _uiState.value.form.place?.id)
+            )
             try {
                 _uiState.update { it.copy(isLoading = true) }
                 val formState = _uiState.value.form
@@ -172,6 +190,11 @@ class CreateInstallationOrderViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al crear orden de instalación",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "create")
+                )
                 _uiState.update {
                     it.copy(
                         isLoading = false,

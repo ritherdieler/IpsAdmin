@@ -7,6 +7,8 @@ import com.dscorp.ispadmin.domain.model.Plan
 import com.dscorp.ispadmin.domain.model.PlanResponse
 import com.dscorp.ispadmin.domain.usecase.plan.GetPlanListUseCase
 import com.dscorp.ispadmin.domain.usecase.plan.UpdatePlanUseCase
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,8 +41,14 @@ data class PlanEditForm(
 
 class PlanListViewModel(
     private val getPlanListUseCase: GetPlanListUseCase,
-    private val updatePlanUseCase: UpdatePlanUseCase
+    private val updatePlanUseCase: UpdatePlanUseCase,
+    private val observabilityClient: ObservabilityClient
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "plan"
+        const val OBS_SCREEN = "plan_list"
+    }
 
     private val _uiState = MutableStateFlow(PlanListUIState())
     val uiState: StateFlow<PlanListUIState> = _uiState.asStateFlow()
@@ -68,6 +76,11 @@ class PlanListViewModel(
                     }
                 },
                 onFailure = { error ->
+                    observabilityClient.reportError(
+                        throwable = error,
+                        message = "Fallo al cargar lista de planes",
+                        tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_plans")
+                    )
                     _uiState.update { 
                         it.copy(
                             isLoading = false,
@@ -92,6 +105,11 @@ class PlanListViewModel(
 
     fun updatePlan(plan: Plan) {
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.update",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to plan.id)
+            )
             _uiState.update { it.copy(isLoading = true, error = null) }
             
             if (plan.id == null) {
@@ -128,6 +146,11 @@ class PlanListViewModel(
                     }
                 },
                 onFailure = { error ->
+                    observabilityClient.reportError(
+                        throwable = error,
+                        message = "Fallo al actualizar plan",
+                        tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "update", "entityId" to plan.id)
+                    )
                     _uiState.update {
                         it.copy(
                             isLoading = false,

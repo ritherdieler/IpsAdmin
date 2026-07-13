@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.data.repository.IRepository
 import com.dscorp.ispadmin.domain.model.User
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +16,13 @@ import org.koin.java.KoinJavaComponent
 
 class ProfileViewModel : ViewModel(), KoinComponent {
     private val repository: IRepository by KoinJavaComponent.inject(IRepository::class.java)
-    
+    private val observabilityClient: ObservabilityClient by KoinJavaComponent.inject(ObservabilityClient::class.java)
+
+    private companion object {
+        const val OBS_FEATURE = "profile"
+        const val OBS_SCREEN = "profile"
+    }
+
     // Estado de la UI usando UDF
     private val _uiState = MutableStateFlow(MyProfileUiState())
     val uiState: StateFlow<MyProfileUiState> = _uiState.asStateFlow()
@@ -44,6 +52,11 @@ class ProfileViewModel : ViewModel(), KoinComponent {
                     }
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar perfil de usuario",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_profile")
+                )
                 _uiState.update { 
                     it.copy(
                         isLoading = false,
@@ -56,6 +69,11 @@ class ProfileViewModel : ViewModel(), KoinComponent {
     
     fun logOut() {
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.logout",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN)
+            )
             _uiState.update { it.copy(isLoading = true) }
             try {
                 repository.clearUserSession()
@@ -66,6 +84,11 @@ class ProfileViewModel : ViewModel(), KoinComponent {
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cerrar sesión",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "logout")
+                )
                 _uiState.update { 
                     it.copy(
                         isLoading = false,

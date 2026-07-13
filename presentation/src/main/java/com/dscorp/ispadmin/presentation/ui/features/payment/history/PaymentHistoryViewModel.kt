@@ -7,6 +7,8 @@ import com.dscorp.ispadmin.domain.model.Payment
 import com.dscorp.ispadmin.domain.model.ServiceStatus
 import com.dscorp.ispadmin.domain.usecase.service.ReactivateServiceUseCase
 import com.dscorp.ispadmin.domain.usecase.service.RestoreInternetConnectionUseCase
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,10 +31,13 @@ data class PaymentHistoryState(
 class PaymentHistoryViewModel(
     val repository: IRepository,
     private val reactivateServiceUseCase: ReactivateServiceUseCase,
-    private val restoreInternetConnectionUseCase: RestoreInternetConnectionUseCase
+    private val restoreInternetConnectionUseCase: RestoreInternetConnectionUseCase,
+    private val observabilityClient: ObservabilityClient
 ) : BaseViewModel<PaymentHistoryUiState>() {
     companion object {
         const val LAST_PAYMENTS_ROW_LIMIT = 10
+        private const val OBS_FEATURE = "payment"
+        private const val OBS_SCREEN = "payment_history"
     }
 
     private val _state = MutableStateFlow(PaymentHistoryState())
@@ -50,6 +55,11 @@ class PaymentHistoryViewModel(
     var serviceStatus: ServiceStatus = ServiceStatus.ACTIVE
 
     fun getLastPayments(itemsLimit: Int) = viewModelScope.launch {
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.NAVIGATION,
+            message = "$OBS_FEATURE.load_history",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to subscriptionId, "itemsLimit" to itemsLimit)
+        )
         try {
             _state.update { it.copy(isLoading = true) }
             val response = repository.getRecentPaymentsHistory(subscriptionId!!, itemsLimit)
@@ -60,6 +70,11 @@ class PaymentHistoryViewModel(
             uiState.value =
                 BaseUiState(PaymentHistoryUiState.GetRecentPaymentsHistoryResponse())
         } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar historial de pagos",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_history", "entityId" to subscriptionId)
+            )
             _state.update { it.copy(isLoading = false, error = e.message) }
             uiState.value =
                 BaseUiState(PaymentHistoryUiState.GetRecentPaymentsHistoryError(e.message))
@@ -111,6 +126,11 @@ class PaymentHistoryViewModel(
         reactivationButtonIsLoading.value = true
 
         subscriptionId?.let { id ->
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.reactivate",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to id)
+            )
             reactivateServiceUseCase(id, _state.value.reactivationNotes).fold(
                 onSuccess = {
                     _state.update {
@@ -124,6 +144,11 @@ class PaymentHistoryViewModel(
                     reactivationButtonIsLoading.value = false
                 },
                 onFailure = { error ->
+                    observabilityClient.reportError(
+                        throwable = error,
+                        message = "Fallo al reactivar servicio desde historial de pagos",
+                        tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "reactivate", "entityId" to id)
+                    )
                     _state.update { 
                         it.copy(
                             isReactivationButtonLoading = false, 
@@ -141,6 +166,11 @@ class PaymentHistoryViewModel(
         _state.update { it.copy(isRestoreInternetLoading = true) }
 
         subscriptionId?.let { id ->
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.restore_internet",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to id)
+            )
             restoreInternetConnectionUseCase(id).fold(
                 onSuccess = {
                     _state.update {
@@ -152,6 +182,11 @@ class PaymentHistoryViewModel(
                     uiState.value = BaseUiState(PaymentHistoryUiState.InternetRestored)
                 },
                 onFailure = { error ->
+                    observabilityClient.reportError(
+                        throwable = error,
+                        message = "Fallo al restaurar conexión de internet",
+                        tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "restore_internet", "entityId" to id)
+                    )
                     _state.update {
                         it.copy(
                             isRestoreInternetLoading = false,

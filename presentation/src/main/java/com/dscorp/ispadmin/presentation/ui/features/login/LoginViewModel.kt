@@ -7,6 +7,10 @@ import com.dscorp.ispadmin.data.extensions.encryptWithSHA384
 import com.dscorp.ispadmin.data.repository.IRepository
 import com.dscorp.ispadmin.domain.model.Loging
 import com.dscorp.ispadmin.domain.model.User
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
+import com.dscorp.ispadmin.observability.obsTags
+import com.dscorp.ispadmin.observability.runTracked
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
@@ -26,7 +30,15 @@ sealed class CheckVersionState {
     data class CheckVersionSuccess(val forceUpdate: Boolean) : CheckVersionState()
 }
 
-class LoginViewModel(private val repository: IRepository) : ViewModel() {
+class LoginViewModel(
+    private val repository: IRepository,
+    private val observabilityClient: ObservabilityClient
+) : ViewModel() {
+
+    private companion object {
+        const val FEATURE = "login"
+        const val SCREEN = "login"
+    }
 
     val loginRequestFlow = MutableStateFlow<LoginState>(LoginState.Empty)
     val checkVersionFlow = MutableStateFlow<CheckVersionState>(CheckVersionState.Loading)
@@ -43,41 +55,58 @@ class LoginViewModel(private val repository: IRepository) : ViewModel() {
     }
 
     fun doLogin(loginData: LoginForm) = viewModelScope.launch {
-        try {
-            if (!loginData.isValid()) return@launch
-            loginRequestFlow.value = LoginState.Loading
+        if (!loginData.isValid()) return@launch
+        loginRequestFlow.value = LoginState.Loading
+        runTracked(
+            client = observabilityClient,
+            feature = FEATURE,
+            screen = SCREEN,
+            action = "submit",
+            extra = mapOf(
+                "username" to loginData.username,
+                "rememberSession" to loginData.checkedState
+            ),
+            errorMessage = "Fallo al iniciar sesión"
+        ) {
             val login = Loging(
                 loginData.username,
                 loginData.password.encryptWithSHA384(),
                 loginData.checkedState
             )
-            val response = repository.doLogin(login)
-
-            if (!response.verified) {
-                loginRequestFlow.value = LoginState.UnverifiedAccount(response)
-            } else {
-                // El login tradicional no obliga al usuario a registrar un rostro.
-                loginRequestFlow.value = LoginState.LoginSuccess(response)
+            repository.doLogin(login)
+        }.fold(
+            onSuccess = { response ->
+                loginRequestFlow.value = if (!response.verified) {
+                    LoginState.UnverifiedAccount(response)
+                } else {
+                    LoginState.LoginSuccess(response)
+                }
+            },
+            onFailure = { e ->
+                loginRequestFlow.value = LoginState.Error(e.message ?: "Error desconocido")
             }
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            loginRequestFlow.value = LoginState.Error(e.message ?: "Error desconocido")
-        }
+        )
     }
 
     fun checkAppVersion() = viewModelScope.launch {
-        try {
-            val response = repository.getRemoteAppVersion()
-            if (response.versionCode > BuildConfig.VERSION_CODE) {
-                checkVersionFlow.value = CheckVersionState.CheckVersionSuccess(true)
-            } else {
-                checkVersionFlow.value = CheckVersionState.CheckVersionSuccess(false)
+        runTracked(
+            client = observabilityClient,
+            feature = FEATURE,
+            screen = SCREEN,
+            action = "check_version",
+            errorMessage = "Fallo al verificar la versión de la app"
+        ) {
+            repository.getRemoteAppVersion()
+        }.fold(
+            onSuccess = { response ->
+                checkVersionFlow.value = CheckVersionState.CheckVersionSuccess(
+                    response.versionCode > BuildConfig.VERSION_CODE
+                )
+            },
+            onFailure = { e ->
+                checkVersionFlow.value = CheckVersionState.Error(e.message ?: "Error desconocido")
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            checkVersionFlow.value = CheckVersionState.Error(e.message ?: "Error desconocido")
-        }
+        )
     }
 
     fun resetLoginState() {
@@ -91,44 +120,60 @@ class LoginViewModel(private val repository: IRepository) : ViewModel() {
 
     // Inicia sesion con el usuario guardado localmente despues de validar la huella con Android.
     fun loginWithSavedSession() = viewModelScope.launch {
-        val savedUser = repository.getBiometricUserSession()
+        runTracked(
+            client = observabilityClient,
+            feature = FEATURE,
+            screen = SCREEN,
+            action = "biometric",
+            errorMessage = "Fallo al restaurar la sesión guardada"
+        ) {
+            val savedUser = repository.getBiometricUserSession()
+            when {
+                savedUser == null -> loginRequestFlow.value = LoginState.Error(
+                    "Primero inicia sesion con usuario y contrasena o reconocimiento facial."
+                )
 
-        if (savedUser == null) {
+                !savedUser.verified ->
+                    loginRequestFlow.value = LoginState.UnverifiedAccount(savedUser)
+
+                else -> {
+                    repository.saveUserSession(savedUser, true)
+                    loginRequestFlow.value = LoginState.LoginSuccess(savedUser)
+                }
+            }
+        }.onFailure { e ->
             loginRequestFlow.value = LoginState.Error(
-                "Primero inicia sesion con usuario y contrasena o reconocimiento facial."
+                e.message ?: "No se pudo restaurar la sesión guardada."
             )
-            return@launch
         }
-
-        if (!savedUser.verified) {
-            loginRequestFlow.value = LoginState.UnverifiedAccount(savedUser)
-            return@launch
-        }
-
-        // Restaura la sesion activa despues de validar la huella.
-        // Asi las pantallas internas pueden leer repository.getUserSession().
-        repository.saveUserSession(savedUser, true)
-        loginRequestFlow.value = LoginState.LoginSuccess(savedUser)
     }
 
     // Inicia sesion facial enviando la foto capturada al backend.
     fun doFaceLogin(photo: File) = viewModelScope.launch {
+        loginRequestFlow.value = LoginState.Loading
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$FEATURE.face_login",
+            data = obsTags(FEATURE, SCREEN, "face_login")
+        )
         try {
-            loginRequestFlow.value = LoginState.Loading
-
             val user = repository.loginWithFace(photo)
 
-            if (!user.verified){
+            if (!user.verified) {
                 loginRequestFlow.value = LoginState.UnverifiedAccount(user)
-            } else{
+            } else {
                 loginRequestFlow.value = LoginState.LoginSuccess(user)
             }
-        } catch (e: Exception){
-            e.printStackTrace()
-            loginRequestFlow.value = if (e.message == "No se reconocio el rostro") {
-                LoginState.FaceEnrollmentOffer
+        } catch (e: Exception) {
+            if (e.message == "No se reconocio el rostro") {
+                loginRequestFlow.value = LoginState.FaceEnrollmentOffer
             } else {
-                LoginState.Error(e.toFaceLoginMessage())
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al iniciar sesión facial",
+                    tags = obsTags(FEATURE, SCREEN, "face_login")
+                )
+                loginRequestFlow.value = LoginState.Error(e.toFaceLoginMessage())
             }
         } finally {
             photo.delete()
@@ -139,9 +184,14 @@ class LoginViewModel(private val repository: IRepository) : ViewModel() {
     // La sesion ya fue guardada por Repository.doLogin, por eso no necesitamos
     // volver a enviar usuario ni contrasena durante el registro facial.
     fun registerFaceForLoggedUser(photo: File) = viewModelScope.launch {
-        try {
-            loginRequestFlow.value = LoginState.Loading
-
+        loginRequestFlow.value = LoginState.Loading
+        runTracked(
+            client = observabilityClient,
+            feature = FEATURE,
+            screen = SCREEN,
+            action = "face_enroll",
+            errorMessage = "Fallo al registrar el rostro"
+        ) {
             val user = repository.getUserSession()
                 ?: throw Exception("No se encontro una sesion activa para registrar el rostro.")
 
@@ -150,18 +200,18 @@ class LoginViewModel(private val repository: IRepository) : ViewModel() {
                 password = user.password,
                 photo = photo
             )
-
-            // Al finalizar el registro facial, continua hacia el sistema con la sesion existente.
-            loginRequestFlow.value = LoginState.LoginSuccess(user)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            loginRequestFlow.value = LoginState.Error(
-                e.message ?: "No se pudo registrar el rostro."
-            )
-        } finally {
-            // Elimina la foto temporal despues de enviarla al backend.
-            photo.delete()
-        }
+            user
+        }.fold(
+            onSuccess = { user ->
+                loginRequestFlow.value = LoginState.LoginSuccess(user)
+            },
+            onFailure = { e ->
+                loginRequestFlow.value = LoginState.Error(
+                    e.message ?: "No se pudo registrar el rostro."
+                )
+            }
+        )
+        photo.delete()
     }
 }
 

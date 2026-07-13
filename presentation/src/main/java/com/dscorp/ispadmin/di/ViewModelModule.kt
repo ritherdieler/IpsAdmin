@@ -40,8 +40,8 @@ import org.koin.dsl.module
  *
  **/
 val viewModelModule = module {
-    viewModel { LoginViewModel(get()) }
-    viewModel { RegisterViewModel(get(), get()) }
+    viewModel { LoginViewModel(get(), get()) }
+    viewModel { RegisterViewModel(get(), get(), get()) }
     viewModel {
         RegisterSubscriptionComposeViewModel(
             get(),
@@ -59,29 +59,29 @@ val viewModelModule = module {
         )
     }
 
-    viewModel { NapBoxViewModel(get()) }
-    viewModel { PaymentHistoryViewModel(get(), get(), get()) }
-    viewModel { PaymentDetailViewModel(get()) }
-    viewModel { RegisterPaymentViewModel(get()) }
+    viewModel { NapBoxViewModel(get(), get()) }
+    viewModel { PaymentHistoryViewModel(get(), get(), get(), get()) }
+    viewModel { PaymentDetailViewModel(get(), get()) }
+    viewModel { RegisterPaymentViewModel(get(), get()) }
     viewModel { ProfileViewModel() }
     viewModel { MainActivityViewModel() }
-    viewModel { ReportsViewModel(get()) }
+    viewModel { ReportsViewModel(get(), get()) }
     viewModel { DashBoardViewModel() }
-    viewModel { MufaViewModel(get()) }
-    viewModel { EditSubscriptionViewModel(get()) }
-    viewModel { SubscriptionDetailViewModel(get()) }
-    viewModel { SupportTicketViewModel(get(), get()) }
-    viewModel { CreateSupportTicketViewModel(get()) }
-    viewModel { MigrationViewModel(get()) }
-    viewModel { OltAdministrationViewModel(get()) }
-    viewModel { OutLayViewModel(get()) }
-    viewModel { SubscriptionFinderViewModel(get(), get(), get()) }
-    viewModel { FixedCostViewModel(get()) }
-    viewModel { CreateInstallationOrderViewModel(get(), get(), get()) }
-    viewModel { SupportTicketListViewModel(get(), get()) }
-    viewModel { InstallationOrderListViewModel(get(), get()) }
-    viewModel { PayerFinderViewmodel(get()) }
-    viewModel { MainViewModel(get()) }
-    viewModel { PlanListViewModel(get(), get()) }
+    viewModel { MufaViewModel(get(), get()) }
+    viewModel { EditSubscriptionViewModel(get(), get()) }
+    viewModel { SubscriptionDetailViewModel(get(), get()) }
+    viewModel { SupportTicketViewModel(get(), get(), get()) }
+    viewModel { CreateSupportTicketViewModel(get(), get()) }
+    viewModel { MigrationViewModel(get(), get()) }
+    viewModel { OltAdministrationViewModel(get(), get()) }
+    viewModel { OutLayViewModel(get(), get()) }
+    viewModel { SubscriptionFinderViewModel(get(), get(), get(), get()) }
+    viewModel { FixedCostViewModel(get(), get()) }
+    viewModel { CreateInstallationOrderViewModel(get(), get(), get(), get()) }
+    viewModel { SupportTicketListViewModel(get(), get(), get()) }
+    viewModel { InstallationOrderListViewModel(get(), get(), get()) }
+    viewModel { PayerFinderViewmodel(get(), get()) }
+    viewModel { MainViewModel(get(), get()) }
+    viewModel { PlanListViewModel(get(), get(), get()) }
 
 }

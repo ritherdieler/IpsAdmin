@@ -10,6 +10,8 @@ import com.dscorp.ispadmin.domain.model.extensions.isAValidName
 import com.dscorp.ispadmin.domain.model.extensions.isValidDni
 import com.dscorp.ispadmin.domain.model.extensions.isValidEmail
 import com.dscorp.ispadmin.domain.model.extensions.isValidPhone
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.extension.analytics.AnalyticsConstants
 import com.dscorp.ispadmin.presentation.extension.analytics.sendSignUpEvent
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -73,8 +75,14 @@ sealed class RegisterEvent {
 
 class RegisterViewModel(
     private val repository: IRepository,
-    private val firebaseAnalytics: FirebaseAnalytics
+    private val firebaseAnalytics: FirebaseAnalytics,
+    private val observabilityClient: ObservabilityClient
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "user_registration"
+        const val OBS_SCREEN = "user_registration"
+    }
 
     private val _state = MutableStateFlow(RegisterState())
     val state: StateFlow<RegisterState> = _state.asStateFlow()
@@ -215,6 +223,11 @@ class RegisterViewModel(
 
     private fun registerUser() {
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.submit",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN)
+            )
             _state.update { it.copy(isLoading = true) }
             try {
                 val user = createUser()
@@ -222,6 +235,11 @@ class RegisterViewModel(
                 _state.update { it.copy(registeredUser = registeredUser, isLoading = false, registerError = null) }
                 firebaseAnalytics.sendSignUpEvent(AnalyticsConstants.REGISTER_USER)
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al registrar usuario",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "submit")
+                )
                 _state.update { it.copy(isLoading = false, registerError = "Ocurrió un error al registrar el usuario") }
             }
         }

@@ -7,6 +7,8 @@ import com.dscorp.ispadmin.data.response.AssistanceTicketResponse
 import com.dscorp.ispadmin.data.response.AssistanceTicketStatus
 import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.SubscriptionFastSearchResponse
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.extension.firstDayFromCurrentMonth
 import com.dscorp.ispadmin.presentation.extension.lastDayFromCurrentMonth
 import com.dscorp.ispadmin.presentation.ui.features.base.BaseUiState
@@ -22,8 +24,14 @@ import java.util.Calendar
 
 class SupportTicketViewModel(
     private val repository: IRepository,
-    private val context: Context
+    private val context: Context,
+    private val observabilityClient: ObservabilityClient
 ) : BaseViewModel<SupportTicketState>() {
+
+    private companion object {
+        const val OBS_FEATURE = "support_ticket"
+        const val OBS_SCREEN = "support_ticket"
+    }
 
     val placesFlow = MutableStateFlow<List<Place>>(value = emptyList())
 
@@ -34,16 +42,39 @@ class SupportTicketViewModel(
     }
 
     private fun getPlaces() = executeNoProgress {
-        val response = repository.getPlaces()
-        placesFlow.value = response
+        try {
+            val response = repository.getPlaces()
+            placesFlow.value = response
+        } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar lugares de tickets de soporte",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_places")
+            )
+            throw e
+        }
     }
 
     fun getTicket(ticketId: String) = executeWithProgress {
-        val response = repository.getTicket(ticketId)
-        uiState.postValue(BaseUiState(SupportTicketState.Success(response)))
+        try {
+            val response = repository.getTicket(ticketId)
+            uiState.postValue(BaseUiState(SupportTicketState.Success(response)))
+        } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar ticket de soporte",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_ticket", "entityId" to ticketId)
+            )
+            throw e
+        }
     }
 
     suspend fun takeTicket(id: Int) {
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$OBS_FEATURE.take",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to id)
+        )
         val response =
             repository.assignSupportTicketToUser(id, AssistanceTicketStatus.ASSIGNED, user.id!!)
         uiState.postValue(BaseUiState(SupportTicketState.UpdatedTicket(response)))
@@ -95,24 +126,51 @@ class SupportTicketViewModel(
     }
 
     fun getClosedTickets() = executeWithProgress {
-        val firstDayOfMonth = Calendar.getInstance().firstDayFromCurrentMonth()
-        val lastDayOfMonth = Calendar.getInstance().lastDayFromCurrentMonth()
-        val response = repository.getTicketsByDateRange(
-            AssistanceTicketStatus.CLOSED,
-            firstDayOfMonth,
-            lastDayOfMonth
-        )
-        uiState.postValue(BaseUiState(SupportTicketState.TicketList(response)))
+        try {
+            val firstDayOfMonth = Calendar.getInstance().firstDayFromCurrentMonth()
+            val lastDayOfMonth = Calendar.getInstance().lastDayFromCurrentMonth()
+            val response = repository.getTicketsByDateRange(
+                AssistanceTicketStatus.CLOSED,
+                firstDayOfMonth,
+                lastDayOfMonth
+            )
+            uiState.postValue(BaseUiState(SupportTicketState.TicketList(response)))
+        } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar tickets cerrados",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_closed")
+            )
+            throw e
+        }
     }
 
     fun getPendingTickets() = executeWithProgress {
-        val response = repository.getTicketsByStatus(AssistanceTicketStatus.PENDING)
-        uiState.postValue(BaseUiState(SupportTicketState.TicketList(response)))
+        try {
+            val response = repository.getTicketsByStatus(AssistanceTicketStatus.PENDING)
+            uiState.postValue(BaseUiState(SupportTicketState.TicketList(response)))
+        } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar tickets pendientes",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_pending")
+            )
+            throw e
+        }
     }
 
     fun getTakenTickets() = executeWithProgress {
-        val response = repository.getTicketsByStatus(AssistanceTicketStatus.ASSIGNED)
-        uiState.postValue(BaseUiState(SupportTicketState.TicketList(response)))
+        try {
+            val response = repository.getTicketsByStatus(AssistanceTicketStatus.ASSIGNED)
+            uiState.postValue(BaseUiState(SupportTicketState.TicketList(response)))
+        } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar tickets asignados",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_taken")
+            )
+            throw e
+        }
     }
 
 }

@@ -9,6 +9,8 @@ import com.dscorp.ispadmin.domain.model.GeoLocation
 import com.dscorp.ispadmin.domain.model.Mufa
 import com.dscorp.ispadmin.domain.model.NapBox
 import com.dscorp.ispadmin.domain.model.NapBoxResponse
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.ui.features.formvalidation.FieldValidator
 import com.dscorp.ispadmin.presentation.ui.features.formvalidation.FormField
 import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxFormErrorUiState
@@ -16,7 +18,15 @@ import com.dscorp.ispadmin.presentation.ui.features.napbox.edit.EditNapBoxUiStat
 import com.dscorp.ispadmin.presentation.ui.features.napbox.register.RegisterNapBoxUiState
 import kotlinx.coroutines.launch
 
-class NapBoxViewModel(val repository :IRepository) : ViewModel() {
+class NapBoxViewModel(
+    val repository :IRepository,
+    private val observabilityClient: ObservabilityClient
+) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "nap_box"
+        const val OBS_SCREEN = "nap_box"
+    }
 
     val editNapBoxUiState = MutableLiveData<EditNapBoxUiState>()
     val editFormErrorLiveData = MutableLiveData<EditNapBoxFormErrorUiState>()
@@ -59,6 +69,11 @@ class NapBoxViewModel(val repository :IRepository) : ViewModel() {
 
 
     fun registerNapBox() = viewModelScope.launch {
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$OBS_FEATURE.register",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN)
+        )
         try {
             if (!formIsValid()) return@launch
             val registerNapBox = NapBox(
@@ -73,11 +88,21 @@ class NapBoxViewModel(val repository :IRepository) : ViewModel() {
             val response = repository.registerNapBox(registerNapBox)
             uiState.postValue(RegisterNapBoxUiState.OnRegisterNapBoxSealedClassRegister(response))
         } catch (error: Exception) {
+            observabilityClient.reportError(
+                throwable = error,
+                message = "Fallo al registrar caja NAP",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "register")
+            )
             uiState.postValue(RegisterNapBoxUiState.OnError(error))
         }
     }
 
     fun editNapBox(napBox: NapBox) = viewModelScope.launch {
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$OBS_FEATURE.edit",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to napBox.id)
+        )
         try {
             if (!editFormIsValid(napBox)) return@launch
             val response = repository.editNapBox(napBox)
@@ -87,6 +112,11 @@ class NapBoxViewModel(val repository :IRepository) : ViewModel() {
                 )
             )
         } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al editar caja NAP",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "edit", "entityId" to napBox.id)
+            )
             editNapBoxUiState.postValue(EditNapBoxUiState.EditNapBoxError(e.message))
         }
     }
@@ -134,6 +164,11 @@ class NapBoxViewModel(val repository :IRepository) : ViewModel() {
             val response = repository.getMufas()
             uiState.postValue(RegisterNapBoxUiState.MufasReady(response))
         } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar mufas para caja NAP",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_mufas")
+            )
             uiState.postValue(RegisterNapBoxUiState.OnError(e))
             e.printStackTrace()
         }

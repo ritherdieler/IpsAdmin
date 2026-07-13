@@ -16,6 +16,8 @@ import com.dscorp.ispadmin.domain.model.extensions.isValidEmail
 import com.dscorp.ispadmin.domain.model.extensions.isValidPhone
 import com.dscorp.ispadmin.domain.usecase.service.ReactivateServiceUseCase
 import com.dscorp.ispadmin.domain.usecase.service.RebootFiberOnuUseCase
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.extension.removeAccents
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.FlowPreview
@@ -90,7 +92,13 @@ class SubscriptionFinderViewModel(
     private val repository: IRepository,
     private val reactivateServiceUseCase: ReactivateServiceUseCase,
     private val rebootFiberOnuUseCase: RebootFiberOnuUseCase,
+    private val observabilityClient: ObservabilityClient,
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "subscription"
+        const val OBS_SCREEN = "subscription_finder"
+    }
 
     private val _uiState = MutableStateFlow(SubscriptionFinderUiState())
     val uiState: StateFlow<SubscriptionFinderUiState> = _uiState.asStateFlow()
@@ -126,9 +134,13 @@ class SubscriptionFinderViewModel(
     fun findSubscription() = viewModelScope.launch {
         documentNumberFlow.debounce(REQUEST_DELAY)
             .collect { filterType ->
-                // Guardar el último filtro usado
                 _uiState.update { it.copy(lastUsedFilter = filterType) }
-                
+                observabilityClient.addBreadcrumb(
+                    category = ObsBreadcrumbCategory.USER_ACTION,
+                    message = "$OBS_FEATURE.find",
+                    data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "filterType" to filterType::class.simpleName)
+                )
+                try {
                 val response = when (filterType) {
                     is SubscriptionFilter.BY_DATE -> {
                         if (filterType.startDate.isEmpty() || filterType.endDate.isEmpty()) {
@@ -188,6 +200,13 @@ class SubscriptionFinderViewModel(
                     }
                 }
                 subscriptionsFlow.value = response
+                } catch (e: Exception) {
+                    observabilityClient.reportError(
+                        throwable = e,
+                        message = "Fallo en búsqueda de suscripciones",
+                        tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "find", "filterType" to filterType::class.simpleName)
+                    )
+                }
             }
     }
 
@@ -208,6 +227,11 @@ class SubscriptionFinderViewModel(
         if (_uiState.value.cancelSubscriptionState == CancelSubscriptionState.Loading) return
 
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.cancel",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to subscriptionId)
+            )
             try {
                 _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Loading) }
             val responsibleId = repository.getUserSession()?.id
@@ -216,6 +240,11 @@ class SubscriptionFinderViewModel(
             repository.cancelSubscription(subscriptionId, responsibleId)
             _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Success) }
         }catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cancelar suscripción",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "cancel", "entityId" to subscriptionId)
+            )
             e.printStackTrace()
             _uiState.update { it.copy(cancelSubscriptionState = CancelSubscriptionState.Error) }
         }
@@ -256,6 +285,11 @@ class SubscriptionFinderViewModel(
                 reloadLastSearch()
             },
             onFailure = { error ->
+                observabilityClient.reportError(
+                    throwable = error,
+                    message = "Fallo al reactivar servicio",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "reactivate", "entityId" to subscriptionId)
+                )
                 error.printStackTrace()
                 _uiState.update { it.copy(reactivateServiceState = ReactivateServiceState.Error(error.message)) }
             }
@@ -273,6 +307,11 @@ class SubscriptionFinderViewModel(
                 _uiState.update { it.copy(rebootOnuState = RebootOnuState.Success) }
             },
             onFailure = { error ->
+                observabilityClient.reportError(
+                    throwable = error,
+                    message = "Fallo al reiniciar ONU de fibra",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "reboot_onu", "entityId" to subscriptionId)
+                )
                 error.printStackTrace()
                 _uiState.update {
                     it.copy(rebootOnuState = RebootOnuState.Error(error.message))
@@ -286,22 +325,42 @@ class SubscriptionFinderViewModel(
     }
 
     fun getNapBoxes() = viewModelScope.launch {
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$OBS_FEATURE.load_nap_boxes",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN)
+        )
         try {
             _uiState.update { it.copy(napBoxesState = NapBoxesState.Loading) }
             val response = repository.getNapBoxes()
             _uiState.update { it.copy(napBoxesState = NapBoxesState.NapBoxListLoaded(response)) }
         } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar lista de cajas NAP",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_nap_boxes")
+            )
             _uiState.update { it.copy(napBoxesState = NapBoxesState.Error) }
             e.printStackTrace()
         }
     }
 
     fun changeNapBox(request: MoveOnuRequest) = viewModelScope.launch {
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$OBS_FEATURE.change_nap_box",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to request.subscriptionId)
+        )
         try {
             _uiState.update { it.copy(napBoxesState = NapBoxesState.Loading) }
             repository.changeSubscriptionNapBox(request)
             _uiState.update { it.copy(napBoxesState = NapBoxesState.NapBoxChanged) }
         } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cambiar caja NAP",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "change_nap_box", "entityId" to request.subscriptionId)
+            )
             _uiState.update { it.copy(napBoxesState = NapBoxesState.Error) }
             e.printStackTrace()
         }
@@ -320,6 +379,11 @@ class SubscriptionFinderViewModel(
                 )
             }
         } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al cargar lista de lugares",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_places")
+            )
             e.printStackTrace()
             _uiState.update {
                 it.copy(
@@ -435,6 +499,12 @@ class SubscriptionFinderViewModel(
     }
 
     fun saveCustomerData() = viewModelScope.launch {
+        val subscriptionId = _uiState.value.customerFormData?.subscriptionId
+        observabilityClient.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$OBS_FEATURE.save_customer",
+            data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to subscriptionId)
+        )
         try {
             val formData = _uiState.value.customerFormData ?: return@launch
 
@@ -497,6 +567,11 @@ class SubscriptionFinderViewModel(
             // Informa a la pantalla solamente cuando los cambios fueron guardados correctamente.
             _customerSaveMessages.emit("Datos del cliente actualizados correctamente")
         } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo al guardar datos del cliente",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "save_customer", "entityId" to subscriptionId)
+            )
             e.printStackTrace()
             _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Error) }
 
@@ -554,6 +629,11 @@ class SubscriptionFinderViewModel(
         val longitudeStr = currentState.editableLongitude
 
         currentState.selectedSubscription?.let { subscription ->
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.update_location",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to subscription.id)
+            )
             try {
                 val latitude = latitudeStr.toDouble()
                 val longitude = longitudeStr.toDouble()
@@ -576,6 +656,11 @@ class SubscriptionFinderViewModel(
                     selectedSubscription = updatedSubscription
                 ) }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al actualizar ubicación de suscripción",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "update_location", "entityId" to subscription.id)
+                )
                 e.printStackTrace()
                 _uiState.update { it.copy(saveSubscriptionState = SaveSubscriptionState.Error) }
             }

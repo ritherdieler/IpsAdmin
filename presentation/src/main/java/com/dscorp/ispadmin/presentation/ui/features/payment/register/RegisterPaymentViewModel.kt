@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.data.repository.IRepository
 import com.dscorp.ispadmin.domain.model.Payment
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,7 +37,16 @@ sealed interface RegisterPaymentEvent {
     data class LoadPaymentData(val paymentId: Int) : RegisterPaymentEvent
 }
 
-class RegisterPaymentViewModel(private val repository: IRepository) : ViewModel(), KoinComponent {
+class RegisterPaymentViewModel(
+    private val repository: IRepository,
+    private val observabilityClient: ObservabilityClient
+) : ViewModel(), KoinComponent {
+
+    private companion object {
+        const val OBS_FEATURE = "payment"
+        const val OBS_SCREEN = "register_payment"
+    }
+
     private val _state = MutableStateFlow(RegisterPaymentState())
     val state: StateFlow<RegisterPaymentState> = _state.asStateFlow()
 
@@ -146,6 +157,11 @@ class RegisterPaymentViewModel(private val repository: IRepository) : ViewModel(
 
             is RegisterPaymentEvent.LoadPaymentData -> {
                 viewModelScope.launch {
+                    observabilityClient.addBreadcrumb(
+                        category = ObsBreadcrumbCategory.NAVIGATION,
+                        message = "$OBS_FEATURE.load_payment",
+                        data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to event.paymentId)
+                    )
                     _state.update { it.copy(isLoading = true) }
                     try {
                         val payment = repository.getPaymentById(event.paymentId.toString())
@@ -160,6 +176,11 @@ class RegisterPaymentViewModel(private val repository: IRepository) : ViewModel(
                         }
                         getElectronicPayers()
                     } catch (e: Exception) {
+                        observabilityClient.reportError(
+                            throwable = e,
+                            message = "Fallo al cargar datos de pago para registro",
+                            tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_payment", "entityId" to event.paymentId)
+                        )
                         _state.update {
                             it.copy(
                                 isLoading = false,
@@ -235,6 +256,17 @@ class RegisterPaymentViewModel(private val repository: IRepository) : ViewModel(
         if (!validateForm()) return
 
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.register",
+                data = mapOf(
+                    "feature" to OBS_FEATURE,
+                    "screen" to OBS_SCREEN,
+                    "entityId" to _state.value.payment?.id,
+                    "method" to _state.value.paymentMethod,
+                    "hasDiscount" to _state.value.showDiscountFields
+                )
+            )
             _state.update { it.copy(isLoading = true) }
 
             try {
@@ -255,6 +287,11 @@ class RegisterPaymentViewModel(private val repository: IRepository) : ViewModel(
                     _state.update { it.copy(isLoading = false, isSuccess = true) }
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al registrar pago",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "register", "entityId" to _state.value.payment?.id)
+                )
                 _state.update {
                     it.copy(
                         isLoading = false,

@@ -7,6 +7,8 @@ import com.dscorp.ispadmin.data.repository.IRepository
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.PlanResponse
 import com.dscorp.ispadmin.domain.model.SubscriptionResponse
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,7 +38,13 @@ data class PlanEditForm(
 
 class EditSubscriptionViewModel(
     private val repository: IRepository,
+    private val observabilityClient: ObservabilityClient,
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "subscription"
+        const val OBS_SCREEN = "edit_subscription"
+    }
 
     // Estado interno mutable
     private val _uiState = MutableStateFlow(EditSubscriptionUIState())
@@ -48,6 +56,11 @@ class EditSubscriptionViewModel(
 
     fun getFormData(subscriptionId: Int) {
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.NAVIGATION,
+                message = "$OBS_FEATURE.load_form_data",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to subscriptionId)
+            )
             try {
                 // Actualizamos estado a cargando
                 _uiState.update { it.copy(isLoading = true, error = null) }
@@ -81,6 +94,11 @@ class EditSubscriptionViewModel(
                     ) 
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar datos de edición de suscripción",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_form_data", "entityId" to subscriptionId)
+                )
                 _uiState.update { 
                     it.copy(
                         isLoading = false,
@@ -115,6 +133,11 @@ class EditSubscriptionViewModel(
                     return@launch
                 }
                 
+                observabilityClient.addBreadcrumb(
+                    category = ObsBreadcrumbCategory.USER_ACTION,
+                    message = "$OBS_FEATURE.save_edit",
+                    data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to subscriptionId)
+                )
                 _uiState.update { it.copy(isLoading = true, error = null) }
                 
                 val subscription = UpdateSubscriptionPlanBody(
@@ -130,7 +153,17 @@ class EditSubscriptionViewModel(
                         isSuccess = true
                     ) 
                 }
+                observabilityClient.addBreadcrumb(
+                    category = ObsBreadcrumbCategory.STATE,
+                    message = "$OBS_FEATURE.save_edit.success",
+                    data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to subscriptionId)
+                )
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al actualizar plan de suscripción",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "save_edit", "entityId" to subscriptionId)
+                )
                 _uiState.update { 
                     it.copy(
                         isLoading = false,

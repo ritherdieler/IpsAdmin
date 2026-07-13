@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.data.repository.IRepository
 import com.dscorp.ispadmin.data.response.AssistanceTicketResponse
 import com.dscorp.ispadmin.data.response.AssistanceTicketStatus
+import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.extension.firstDayFromCurrentMonth
 import com.dscorp.ispadmin.presentation.extension.lastDayFromCurrentMonth
 import com.dscorp.ispadmin.presentation.util.compressImage
@@ -24,8 +26,14 @@ import com.dscorp.ispadmin.data.apirequestmodel.RescheduleTicketRequest
 
 class SupportTicketListViewModel(
     private val repository: IRepository,
-    private val context: Context
+    private val context: Context,
+    private val observabilityClient: ObservabilityClient
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "support_ticket"
+        const val OBS_SCREEN = "support_ticket_list"
+    }
 
     private val _uiState = MutableStateFlow(SupportTicketListUiState())
     val uiState: StateFlow<SupportTicketListUiState> = _uiState.asStateFlow()
@@ -97,6 +105,11 @@ class SupportTicketListViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar tickets pendientes",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_pending")
+                )
                 _uiState.update { 
                     it.copy(
                         isLoading = false,
@@ -120,6 +133,11 @@ class SupportTicketListViewModel(
                     ) 
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar tickets en progreso",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_in_progress")
+                )
                 _uiState.update { 
                     it.copy(
                         isLoading = false,
@@ -149,6 +167,11 @@ class SupportTicketListViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar tickets cerrados",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_closed")
+                )
                 _uiState.update { 
                     it.copy(
                         isLoading = false,
@@ -161,6 +184,11 @@ class SupportTicketListViewModel(
     
     fun takeTicket(ticketId: Int) {
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.take",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to ticketId)
+            )
             try {
                 _uiState.update { 
                     it.copy(
@@ -191,6 +219,11 @@ class SupportTicketListViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al tomar ticket",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "take", "entityId" to ticketId)
+                )
                 _uiState.update { 
                     it.copy(
                         pendingTicketsLoading = it.pendingTicketsLoading.toMutableMap().apply {
@@ -205,6 +238,11 @@ class SupportTicketListViewModel(
     
     fun closeUnattendedTicket(ticket: AssistanceTicketResponse) {
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.close_unattended",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to ticket.id)
+            )
             try {
                 _uiState.update { 
                     it.copy(
@@ -233,6 +271,11 @@ class SupportTicketListViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cancelar ticket no atendido",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "close_unattended", "entityId" to ticket.id)
+                )
                 _uiState.update { 
                     it.copy(
                         pendingTicketsLoading = it.pendingTicketsLoading.toMutableMap().apply {
@@ -247,6 +290,11 @@ class SupportTicketListViewModel(
 
     fun rescheduleTicket(ticket: AssistanceTicketResponse, scheduledAt: Long) {
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.reschedule",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to ticket.id, "scheduledAt" to scheduledAt)
+            )
             try {
                 _uiState.update {
                     it.copy(
@@ -280,6 +328,11 @@ class SupportTicketListViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al reprogramar ticket",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "reschedule", "entityId" to ticket.id)
+                )
                 _uiState.update {
                     it.copy(
                         pendingTicketsLoading = it.pendingTicketsLoading.toMutableMap().apply {
@@ -298,6 +351,11 @@ class SupportTicketListViewModel(
     
     fun closeTicket(ticket: AssistanceTicketResponse, imageUri: Uri) {
         viewModelScope.launch {
+            observabilityClient.addBreadcrumb(
+                category = ObsBreadcrumbCategory.USER_ACTION,
+                message = "$OBS_FEATURE.close",
+                data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "entityId" to ticket.id)
+            )
             try {
                 _uiState.update { 
                     it.copy(
@@ -349,6 +407,11 @@ class SupportTicketListViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cerrar ticket",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "close", "entityId" to ticket.id)
+                )
                 _uiState.update { 
                     it.copy(
                         inProgressTicketsLoading = it.inProgressTicketsLoading.toMutableMap().apply {

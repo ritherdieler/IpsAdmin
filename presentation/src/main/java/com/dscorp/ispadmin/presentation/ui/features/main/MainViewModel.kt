@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dscorp.ispadmin.domain.model.User
 import com.dscorp.ispadmin.domain.usecase.UserUseCase
+import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.navigation.DrawerGroup
 import com.dscorp.ispadmin.presentation.navigation.DrawerNavigation
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,8 +27,14 @@ data class MainUiState(
 }
 
 class MainViewModel(
-    private val userUseCase: UserUseCase
+    private val userUseCase: UserUseCase,
+    private val observabilityClient: ObservabilityClient
 ) : ViewModel() {
+
+    private companion object {
+        const val OBS_FEATURE = "main"
+        const val OBS_SCREEN = "main"
+    }
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -51,6 +58,11 @@ class MainViewModel(
                     )
                 }
             } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar usuario actual",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_current_user")
+                )
                 _uiState.update {
                     it.copy(
                         isLoading = false,
