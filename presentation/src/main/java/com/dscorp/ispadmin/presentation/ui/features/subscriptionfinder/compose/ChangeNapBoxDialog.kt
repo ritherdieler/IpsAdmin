@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -134,7 +135,7 @@ private fun ErrorContent(onDismiss: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.Filled.Error,
-            contentDescription = null,
+            contentDescription = SubscriptionFinderContentDescriptions.NAP_BOX_ERROR,
             tint = MaterialTheme.colorScheme.error,
             modifier = Modifier.size(48.dp)
         )
@@ -148,7 +149,9 @@ private fun ErrorContent(onDismiss: () -> Unit) {
         MyButton(
             text = "Cerrar",
             onClick = onDismiss,
-            modifier = Modifier.fillMaxWidth(0.7f)
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .testTag(SubscriptionFinderTestTags.NAP_BOX_CLOSE)
         )
     }
 }
@@ -251,7 +254,9 @@ private fun NapBoxSelectionContent(
                 selected = selectedNapBox,
                 label = "Nuevo NAP Box",
                 onItemSelected = { selectedNapBox = it },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(SubscriptionFinderTestTags.NAP_BOX_DROPDOWN)
             )
         }
         
@@ -263,7 +268,9 @@ private fun NapBoxSelectionContent(
             isLoading = false,
             enabled = selectedNapBox != null,
             onClick = { selectedNapBox?.let { onConfirm(it) } },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(SubscriptionFinderTestTags.NAP_BOX_CONFIRM)
         )
     }
 }
@@ -282,7 +289,7 @@ private fun SuccessContent(onAccept: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Filled.CheckCircle,
-                contentDescription = null,
+                contentDescription = SubscriptionFinderContentDescriptions.NAP_BOX_SUCCESS,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(64.dp)
             )
@@ -300,7 +307,9 @@ private fun SuccessContent(onAccept: () -> Unit) {
         MyButton(
             text = "Aceptar",
             onClick = onAccept,
-            modifier = Modifier.fillMaxWidth(0.7f)
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .testTag(SubscriptionFinderTestTags.NAP_BOX_CLOSE)
         )
     }
 }

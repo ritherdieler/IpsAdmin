@@ -58,8 +58,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.dscorp.ispadmin.observability.ObservabilityComposeText
 import androidx.navigation.NavController
 import com.dscorp.components.components.formfields.MyOutlinedTextField
 import com.dscorp.ispadmin.domain.model.GeoLocation
@@ -239,9 +241,17 @@ fun SubscriptionFinderScreen(
                     ) {
                         filters.forEach { filter ->
                             val isSelected = selectedFilter == filter
+                            val filterTag = when (filter) {
+                                is SubscriptionFilter.BY_NAME -> SubscriptionFinderTestTags.FILTER_NAME
+                                is SubscriptionFilter.BY_DOCUMENT -> SubscriptionFinderTestTags.FILTER_DOCUMENT
+                                is SubscriptionFilter.BY_DATE -> SubscriptionFinderTestTags.FILTER_DATE
+                                is SubscriptionFilter.BY_IP -> SubscriptionFinderTestTags.FILTER_IP
+                                is SubscriptionFilter.BY_CODE -> SubscriptionFinderTestTags.FILTER_CODE
+                            }
                             FilterChip(
                                 filter = filter,
                                 isSelected = isSelected,
+                                testTag = filterTag,
                                 onClick = {
                                     // Restablecer los campos de búsqueda al cambiar de filtro
                                     if (selectedFilter != filter) {
@@ -265,6 +275,11 @@ fun SubscriptionFinderScreen(
                                 onValueChange = { newValue ->
                                     val upperValue = newValue.uppercase()
                                     searchQuery = upperValue
+                                    ObservabilityComposeText.report(
+                                        tag = SubscriptionFinderTestTags.QUERY_NAME,
+                                        label = "Nombre o apellido",
+                                        value = upperValue
+                                    )
                                     coroutinesScope.launch {
                                         viewModel.documentNumberFlow.emit(
                                             SubscriptionFilter.BY_NAME(
@@ -274,7 +289,9 @@ fun SubscriptionFinderScreen(
                                         )
                                     }
                                 },
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag(SubscriptionFinderTestTags.QUERY_NAME),
                                 label = { Text("Nombre o apellido") },
                                 placeholder = { Text("Ej: Juan Pérez") },
                                 trailingIcon = {
@@ -287,7 +304,7 @@ fun SubscriptionFinderScreen(
                                     } else {
                                         Icon(
                                             imageVector = Icons.Filled.Search,
-                                            contentDescription = "Buscar",
+                                            contentDescription = SubscriptionFinderContentDescriptions.SEARCH_LOADING,
                                             tint = MaterialTheme.colorScheme.primary
                                         )
                                     }
@@ -303,7 +320,11 @@ fun SubscriptionFinderScreen(
                                 value = searchQuery,
                                 onValueChange = { newValue ->
                                     searchQuery = newValue
-                                    // Realizar búsqueda mientras se escribe
+                                    ObservabilityComposeText.report(
+                                        tag = SubscriptionFinderTestTags.QUERY_DOCUMENT,
+                                        label = "DNI",
+                                        value = newValue
+                                    )
                                     coroutinesScope.launch {
                                         viewModel.documentNumberFlow.emit(
                                             SubscriptionFilter.BY_DOCUMENT(
@@ -312,7 +333,9 @@ fun SubscriptionFinderScreen(
                                         )
                                     }
                                 },
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag(SubscriptionFinderTestTags.QUERY_DOCUMENT),
                                 label = { Text("DNI") },
                                 placeholder = { Text("Ingrese número de documento") },
                                 trailingIcon = {
@@ -345,17 +368,22 @@ fun SubscriptionFinderScreen(
                             OutlinedTextField(
                                 value = searchQuery,
                                 onValueChange = { newValue ->
-                                    // Filtrar para permitir solo números y puntos
                                     val filteredValue = newValue.filter { it.isDigit() || it == '.' }
                                     searchQuery = filteredValue
-                                    // Realizar búsqueda mientras se escribe
+                                    ObservabilityComposeText.report(
+                                        tag = SubscriptionFinderTestTags.QUERY_IP,
+                                        label = "IP",
+                                        value = filteredValue
+                                    )
                                     coroutinesScope.launch {
                                         viewModel.documentNumberFlow.emit(
                                             SubscriptionFilter.BY_IP(filteredValue)
                                         )
                                     }
                                 },
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag(SubscriptionFinderTestTags.QUERY_IP),
                                 label = { Text("IP") },
                                 placeholder = { Text("Ej: 192.168.1.1") },
                                 trailingIcon = {
@@ -378,13 +406,20 @@ fun SubscriptionFinderScreen(
                                 onValueChange = { newValue ->
                                     val filteredValue = newValue.filter { it.isDigit() }
                                     searchQuery = filteredValue
+                                    ObservabilityComposeText.report(
+                                        tag = SubscriptionFinderTestTags.QUERY_CODE,
+                                        label = "Código",
+                                        value = filteredValue
+                                    )
                                     coroutinesScope.launch {
                                         viewModel.documentNumberFlow.emit(
                                             SubscriptionFilter.BY_CODE(filteredValue)
                                         )
                                     }
                                 },
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag(SubscriptionFinderTestTags.QUERY_CODE),
                                 label = { Text("Código") },
                                 placeholder = { Text("Ingrese ID de suscripción") },
                                 trailingIcon = {
@@ -435,7 +470,7 @@ fun SubscriptionFinderScreen(
                     ) {
                         Icon(
                             imageVector = if (uiState.searchPerformed) Icons.Outlined.Info else Icons.Filled.Search,
-                            contentDescription = null,
+                            contentDescription = SubscriptionFinderContentDescriptions.EMPTY_STATE_ICON,
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )
@@ -589,6 +624,7 @@ fun SubscriptionFinderScreen(
 fun FilterChip(
     filter: SubscriptionFilter,
     isSelected: Boolean,
+    testTag: String,
     onClick: () -> Unit
 ) {
     val backgroundColor = if (isSelected) {
@@ -608,6 +644,7 @@ fun FilterChip(
             .clip(RoundedCornerShape(16.dp))
             .background(backgroundColor)
             .clickable(onClick = onClick)
+            .testTag(testTag)
             .padding(horizontal = 12.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -754,7 +791,10 @@ private fun CancelSubscriptionDialog(
                 modifier = Modifier.padding(end = 4.dp),
                 horizontalArrangement = Arrangement.End
             ) {
-                TextButton(onClick = onDismiss) {
+                TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.CANCEL_DIALOG_DISMISS),
+                    onClick = onDismiss
+                ) {
                     Text(
                         text = "Volver",
                         style = MaterialTheme.typography.labelLarge,
@@ -763,6 +803,7 @@ private fun CancelSubscriptionDialog(
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.CANCEL_DIALOG_CONFIRM),
                     onClick = onConfirm,
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.error
@@ -818,6 +859,7 @@ private fun RebootOnuConfirmDialog(
                 horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.REBOOT_DIALOG_DISMISS),
                     onClick = onDismiss,
                     enabled = !isLoading
                 ) {
@@ -832,6 +874,7 @@ private fun RebootOnuConfirmDialog(
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.REBOOT_DIALOG_CONFIRM),
                     onClick = onConfirm,
                     enabled = !isLoading,
                     colors = ButtonDefaults.textButtonColors(
@@ -912,9 +955,18 @@ private fun ReactivateServiceDialog(
                 Spacer(modifier = Modifier.height(16.dp))
                 MyOutlinedTextField(
                     value = notes,
-                    onValueChange = onNotesChange,
+                    onValueChange = {
+                        onNotesChange(it)
+                        ObservabilityComposeText.report(
+                            tag = SubscriptionFinderTestTags.REACTIVATE_NOTES,
+                            label = "Notas de reactivación",
+                            value = it
+                        )
+                    },
                     label = "Notas de reactivación (opcional)",
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(SubscriptionFinderTestTags.REACTIVATE_NOTES),
                     enabled = !isLoading,
                     maxLines = 3
                 )
@@ -926,6 +978,7 @@ private fun ReactivateServiceDialog(
                 horizontalArrangement = Arrangement.End
             ) {
                 TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.REACTIVATE_DIALOG_DISMISS),
                     onClick = onDismiss,
                     enabled = !isLoading
                 ) {
@@ -940,6 +993,7 @@ private fun ReactivateServiceDialog(
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.REACTIVATE_DIALOG_CONFIRM),
                     onClick = onConfirm,
                     enabled = !isLoading,
                     colors = ButtonDefaults.textButtonColors(
@@ -1020,6 +1074,7 @@ fun DateRangeSelector(
                 onValueChange = { },
                 modifier = Modifier
                     .weight(1f)
+                    .testTag(SubscriptionFinderTestTags.DATE_START)
                     .clickable { showStartDatePicker = true },
                 label = { Text("Fecha inicial") },
                 placeholder = { Text("Seleccione") },
@@ -1041,6 +1096,7 @@ fun DateRangeSelector(
                 onValueChange = { },
                 modifier = Modifier
                     .weight(1f)
+                    .testTag(SubscriptionFinderTestTags.DATE_END)
                     .clickable { showEndDatePicker = true },
                 label = { Text("Fecha final") },
                 placeholder = { Text("Seleccione") },
@@ -1066,7 +1122,8 @@ fun DateRangeSelector(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = 16.dp)
+                .testTag(SubscriptionFinderTestTags.DATE_SUBMIT),
             enabled = startDate.isNotEmpty() || endDate.isNotEmpty(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -1078,7 +1135,7 @@ fun DateRangeSelector(
         ) {
             Icon(
                 imageVector = Icons.Filled.Search,
-                contentDescription = null,
+                contentDescription = SubscriptionFinderContentDescriptions.DATE_SEARCH_ICON,
                 modifier = Modifier.size(20.dp)
             )
             Text(
@@ -1099,9 +1156,15 @@ fun DateRangeSelector(
             onDismissRequest = { showStartDatePicker = false },
             confirmButton = {
                 TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.DATE_PICKER_CONFIRM),
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
                             startDate = formatDate(it)
+                            ObservabilityComposeText.report(
+                                tag = SubscriptionFinderTestTags.DATE_START,
+                                label = "Fecha inicial",
+                                value = startDate
+                            )
                         }
                         showStartDatePicker = false
                     },
@@ -1111,7 +1174,10 @@ fun DateRangeSelector(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showStartDatePicker = false }) {
+                TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.DATE_PICKER_DISMISS),
+                    onClick = { showStartDatePicker = false }
+                ) {
                     Text("Cancelar")
                 }
             }
@@ -1131,9 +1197,15 @@ fun DateRangeSelector(
             onDismissRequest = { showEndDatePicker = false },
             confirmButton = {
                 TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.DATE_PICKER_CONFIRM),
                     onClick = {
                         datePickerState.selectedDateMillis?.let {
                             endDate = formatDate(it)
+                            ObservabilityComposeText.report(
+                                tag = SubscriptionFinderTestTags.DATE_END,
+                                label = "Fecha final",
+                                value = endDate
+                            )
                         }
                         showEndDatePicker = false
                     },
@@ -1143,7 +1215,10 @@ fun DateRangeSelector(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showEndDatePicker = false }) {
+                TextButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.DATE_PICKER_DISMISS),
+                    onClick = { showEndDatePicker = false }
+                ) {
                     Text("Cancelar")
                 }
             }

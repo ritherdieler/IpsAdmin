@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -91,7 +92,9 @@ fun CardHeader(
         Box {
             IconButton(
                 onClick = { menuExpanded = true },
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier
+                    .size(40.dp)
+                    .testTag(SubscriptionFinderTestTags.resultMenu(subscription.id))
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
@@ -174,6 +177,12 @@ private fun SubscriptionDropdownMenu(
         // Menu items
         menuItems.forEach { menuItem ->
             DropdownMenuItem(
+                modifier = Modifier.testTag(
+                    SubscriptionFinderTestTags.resultMenuItem(
+                        subscription.id,
+                        SubscriptionFinderTestTags.menuActionTag(menuItem)
+                    )
+                ),
                 text = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         // Icon based on menu item type
@@ -181,7 +190,7 @@ private fun SubscriptionDropdownMenu(
                             painter = painterResource(
                                 id = R.drawable.ic_more_dot
                             ),
-                            contentDescription = null,
+                            contentDescription = menuItem.getTitle(context),
                             modifier = Modifier.size(20.dp),
                             tint = MaterialTheme.colorScheme.primary
                         )

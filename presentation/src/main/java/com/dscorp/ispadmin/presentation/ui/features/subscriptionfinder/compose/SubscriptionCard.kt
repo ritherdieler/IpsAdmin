@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.dscorp.ispadmin.R
+import com.dscorp.ispadmin.observability.ObservabilityComposeText
 import com.dscorp.ispadmin.domain.model.CustomerData
 import com.dscorp.ispadmin.domain.model.GeoLocation
 import com.dscorp.ispadmin.domain.model.InstallationType
@@ -103,7 +105,8 @@ fun SubscriptionCard(
     ElevatedCard(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .testTag(SubscriptionFinderTestTags.resultItem(subscriptionResume.id)),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = cardBackgroundColor,
@@ -129,6 +132,7 @@ fun SubscriptionCard(
 
             ExpandableCardFooter(
                 expanded = expanded,
+                subscriptionId = subscriptionResume.id,
                 onClick = { onExpandChange(subscriptionResume, !expanded) }
             )
 
@@ -212,6 +216,7 @@ fun CustomerDataForm(
             SaveButton(
                 enabled = formData.isValid() && saveState !is SaveSubscriptionState.Loading,
                 saveState = saveState,
+                subscriptionId = formData.subscriptionId,
                 onSaveClick = onSaveClick
             )
         }
@@ -227,6 +232,8 @@ private fun CustomerFormFields(
     onUpdatePlace: (Int, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val subscriptionId = formData.subscriptionId
+
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
         val (
             name, lastName, phone, dni, address, email, place,
@@ -240,9 +247,16 @@ private fun CustomerFormFields(
                 start.linkTo(parent.start)
                 end.linkTo(lastName.start, margin = 8.dp)
                 width = Dimension.fillToConstraints
-            },
+            }.testTag(SubscriptionFinderTestTags.customerName(subscriptionId)),
             value = formData.name,
-            onValueChange = { onFieldChange("name", it) },
+            onValueChange = {
+                onFieldChange("name", it)
+                ObservabilityComposeText.report(
+                    tag = SubscriptionFinderTestTags.customerName(subscriptionId),
+                    label = "Nombre",
+                    value = it
+                )
+            },
             label = "Nombre",
             isError = formData.nameError != null
         )
@@ -265,9 +279,16 @@ private fun CustomerFormFields(
                 start.linkTo(name.end, margin = 8.dp)
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
-            },
+            }.testTag(SubscriptionFinderTestTags.customerLastName(subscriptionId)),
             value = formData.lastName,
-            onValueChange = { onFieldChange("lastName", it) },
+            onValueChange = {
+                onFieldChange("lastName", it)
+                ObservabilityComposeText.report(
+                    tag = SubscriptionFinderTestTags.customerLastName(subscriptionId),
+                    label = "Apellido",
+                    value = it
+                )
+            },
             label = "Apellido",
             isError = formData.lastNameError != null
         )
@@ -308,9 +329,16 @@ private fun CustomerFormFields(
                 start.linkTo(parent.start)
                 end.linkTo(dni.start, margin = 8.dp)
                 width = Dimension.fillToConstraints
-            },
+            }.testTag(SubscriptionFinderTestTags.customerPhone(subscriptionId)),
             value = formData.phone,
-            onValueChange = { onFieldChange("phone", it) },
+            onValueChange = {
+                onFieldChange("phone", it)
+                ObservabilityComposeText.report(
+                    tag = SubscriptionFinderTestTags.customerPhone(subscriptionId),
+                    label = "Teléfono",
+                    value = it
+                )
+            },
             label = "Teléfono",
             maxLength = 9,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -335,9 +363,16 @@ private fun CustomerFormFields(
                 start.linkTo(phone.end, margin = 8.dp)
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
-            },
+            }.testTag(SubscriptionFinderTestTags.customerDni(subscriptionId)),
             value = formData.dni,
-            onValueChange = { onFieldChange("dni", it) },
+            onValueChange = {
+                onFieldChange("dni", it)
+                ObservabilityComposeText.report(
+                    tag = SubscriptionFinderTestTags.customerDni(subscriptionId),
+                    label = "DNI",
+                    value = it
+                )
+            },
             label = "DNI",
             maxLength = 8,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -376,7 +411,7 @@ private fun CustomerFormFields(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
-            },
+            }.testTag(SubscriptionFinderTestTags.customerPlace(subscriptionId)),
             placesState = placesState,
             currentPlace = formData.place,
             currentPlaceId = formData.placeId,
@@ -392,9 +427,16 @@ private fun CustomerFormFields(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
-            },
+            }.testTag(SubscriptionFinderTestTags.customerAddress(subscriptionId)),
             value = formData.address,
-            onValueChange = { onFieldChange("address", it) },
+            onValueChange = {
+                onFieldChange("address", it)
+                ObservabilityComposeText.report(
+                    tag = SubscriptionFinderTestTags.customerAddress(subscriptionId),
+                    label = "Dirección",
+                    value = it
+                )
+            },
             label = "Dirección",
             isError = formData.addressError != null
         )
@@ -423,9 +465,16 @@ private fun CustomerFormFields(
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
-            },
+            }.testTag(SubscriptionFinderTestTags.customerEmail(subscriptionId)),
             value = formData.email,
-            onValueChange = { onFieldChange("email", it) },
+            onValueChange = {
+                onFieldChange("email", it)
+                ObservabilityComposeText.report(
+                    tag = SubscriptionFinderTestTags.customerEmail(subscriptionId),
+                    label = "Email",
+                    value = it
+                )
+            },
             label = "Email",
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             isError = formData.emailError != null
@@ -512,6 +561,7 @@ private fun PlaceSelector(
 @Composable
 fun ExpandableCardFooter(
     expanded: Boolean,
+    subscriptionId: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -524,6 +574,7 @@ fun ExpandableCardFooter(
         modifier = modifier
             .fillMaxWidth()
             .clickable { onClick() }
+            .testTag(SubscriptionFinderTestTags.resultExpand(subscriptionId))
             .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -700,6 +751,7 @@ fun CardBody(subscriptionResume: SubscriptionResume, modifier: Modifier = Modifi
                     value = subscriptionResume.ipAddress,
                     labelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                     isClickable = true,
+                    testTag = SubscriptionFinderTestTags.resultIp(subscriptionResume.id),
                     onClick = { openInBrowser(subscriptionResume.ipAddress, context) },
                     alignment = Alignment.CenterStart
                 )
@@ -743,7 +795,10 @@ fun CardBody(subscriptionResume: SubscriptionResume, modifier: Modifier = Modifi
                         color = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ) {
-                        IconButton(onClick = { openMap(subscriptionResume, context) }) {
+                        IconButton(
+                            modifier = Modifier.testTag(SubscriptionFinderTestTags.resultMap(subscriptionResume.id)),
+                            onClick = { openMap(subscriptionResume, context) }
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Place,
                                 contentDescription = "Ver ubicación en mapa",
@@ -761,7 +816,10 @@ fun CardBody(subscriptionResume: SubscriptionResume, modifier: Modifier = Modifi
                         color = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = whatsappColor
                     ) {
-                        IconButton(onClick = { sendWhatsapp(subscriptionResume, context) }) {
+                        IconButton(
+                            modifier = Modifier.testTag(SubscriptionFinderTestTags.resultWhatsapp(subscriptionResume.id)),
+                            onClick = { sendWhatsapp(subscriptionResume, context) }
+                        ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_whatsapp),
                                 tint = Color.White,
@@ -784,6 +842,7 @@ fun SubscriptionInfoItem(
     onClick: () -> Unit = {},
     alignment: Alignment = Alignment.Center,
     labelColor: Color = MaterialTheme.colorScheme.primary,
+    testTag: String? = null,
     modifier: Modifier = Modifier
 ) {
     val baseModifier = modifier
@@ -791,7 +850,8 @@ fun SubscriptionInfoItem(
         .fillMaxWidth()
     
     val textModifier = if (isClickable) {
-        Modifier.clickable(onClick = onClick)
+        val clickableModifier = Modifier.clickable(onClick = onClick)
+        if (testTag != null) clickableModifier.testTag(testTag) else clickableModifier
     } else {
         Modifier
     }
@@ -821,6 +881,7 @@ fun SubscriptionInfoItem(
 private fun SaveButton(
     saveState: SaveSubscriptionState,
     onSaveClick: () -> Unit,
+    subscriptionId: Int,
     modifier: Modifier = Modifier,
     enabled: Boolean
 ) {
@@ -828,7 +889,8 @@ private fun SaveButton(
     Button(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(56.dp)
+            .testTag(SubscriptionFinderTestTags.customerSave(subscriptionId)),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,

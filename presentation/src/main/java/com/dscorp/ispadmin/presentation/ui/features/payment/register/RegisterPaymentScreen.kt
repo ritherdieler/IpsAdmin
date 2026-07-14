@@ -39,6 +39,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import com.dscorp.ispadmin.observability.ObservabilityComposeText
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -166,7 +168,10 @@ private fun RegisterPaymentScreenContent(
                 CenterAlignedTopAppBar(
                     title = { Text(text = "Registrar Pago") },
                     navigationIcon = {
-                        IconButton(onClick = onNavigateBack) {
+                        IconButton(
+                            onClick = onNavigateBack,
+                            modifier = Modifier.testTag(RegisterPaymentTestTags.BACK)
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Regresar"
@@ -240,7 +245,7 @@ fun RegisterPaymentForm(
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.AttachMoney,
-                        contentDescription = null,
+                        contentDescription = RegisterPaymentContentDescriptions.DEBT_ICON,
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -273,7 +278,9 @@ fun RegisterPaymentForm(
         // Payment Method Dropdown
         val paymentMethods = listOf("Efectivo", "Tarjeta", "Yape", "Plin", "Transferencia", "Depósito")
         MyOutLinedDropDown(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(RegisterPaymentTestTags.PAYMENT_METHOD),
             items = paymentMethods,
             selected = state.paymentMethod,
             label = "Seleccionar método",
@@ -297,7 +304,7 @@ fun RegisterPaymentForm(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Outlined.Person,
-                        contentDescription = null,
+                        contentDescription = RegisterPaymentContentDescriptions.PAYER_ICON,
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -311,7 +318,9 @@ fun RegisterPaymentForm(
                 
                 // Electronic Payer Name AutoComplete
                 MyAutoCompleteTextViewCompose(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(RegisterPaymentTestTags.ELECTRONIC_PAYER_NAME),
                     items = state.electronicPayers,
                     selectedItem = state.electronicPayerName.takeIf { it.isNotEmpty() },
                     label = "Introduce o selecciona un nombre",
@@ -319,7 +328,14 @@ fun RegisterPaymentForm(
                     onSelectionCleared = onElectronicPayerNameCleared,
                     errorMessage = state.errorMessages["electronicPayerName"],
                     hasError = state.errorMessages.containsKey("electronicPayerName"),
-                    onTextChanged = onElectronicPayerNameChanged
+                    onTextChanged = { value ->
+                        ObservabilityComposeText.report(
+                            tag = RegisterPaymentTestTags.ELECTRONIC_PAYER_NAME,
+                            label = "Nombre del pagador electrónico",
+                            value = value
+                        )
+                        onElectronicPayerNameChanged(value)
+                    }
                 )
             }
         }
@@ -350,7 +366,7 @@ fun RegisterPaymentForm(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Discount,
-                            contentDescription = null,
+                            contentDescription = RegisterPaymentContentDescriptions.DISCOUNT_ICON,
                             tint = MaterialTheme.colorScheme.primary
                         )
                         
@@ -371,7 +387,8 @@ fun RegisterPaymentForm(
                     
                     Switch(
                         checked = state.showDiscountFields,
-                        onCheckedChange = { onToggleDiscountFields() }
+                        onCheckedChange = { onToggleDiscountFields() },
+                        modifier = Modifier.testTag(RegisterPaymentTestTags.DISCOUNT_TOGGLE)
                     )
                 }
                 
@@ -382,25 +399,43 @@ fun RegisterPaymentForm(
                         
                         // Discount Amount Field - Asegurando que el error se muestre correctamente
                         MyOutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag(RegisterPaymentTestTags.DISCOUNT_AMOUNT),
                             value = state.discountAmount,
                             label = "Monto de descuento",
                             errorMessage = state.errorMessages["discountAmount"],
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            onValueChange = onDiscountAmountChanged,
+                            onValueChange = { amount ->
+                                ObservabilityComposeText.report(
+                                    tag = RegisterPaymentTestTags.DISCOUNT_AMOUNT,
+                                    label = "Monto de descuento",
+                                    value = amount
+                                )
+                                onDiscountAmountChanged(amount)
+                            },
                         )
                         
                         Spacer(modifier = Modifier.height(16.dp))
                         
                         val discountReasons = listOf("Fallas de internet", "Fallas de TVcable", "Error de facturación")
                         MyAutoCompleteTextViewCompose(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag(RegisterPaymentTestTags.DISCOUNT_REASON),
                             items = discountReasons,
                             selectedItem = state.discountReason.takeIf { it.isNotEmpty() },
                             label = "Razón del descuento",
                             onItemSelected = onDiscountReasonChanged,
                             onSelectionCleared = { onDiscountReasonChanged("") },
-                            onTextChanged = onDiscountReasonChanged,
+                            onTextChanged = { value ->
+                                ObservabilityComposeText.report(
+                                    tag = RegisterPaymentTestTags.DISCOUNT_REASON,
+                                    label = "Razón del descuento",
+                                    value = value
+                                )
+                                onDiscountReasonChanged(value)
+                            },
                             errorMessage = state.errorMessages["discountReason"],
                             hasError = state.errorMessages.containsKey("discountReason")
                         )
@@ -457,7 +492,7 @@ fun RegisterPaymentForm(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Payments,
-                    contentDescription = null,
+                    contentDescription = RegisterPaymentContentDescriptions.CONFIRM_ICON,
                     tint = MaterialTheme.colorScheme.primary
                 )
                 
@@ -472,6 +507,7 @@ fun RegisterPaymentForm(
                 MyButton(
                     text = "Registrar",
                     isLoading = state.isLoading,
+                    modifier = Modifier.testTag(RegisterPaymentTestTags.SUBMIT),
                     onClick = onRegisterPayment
                 )
             }
@@ -492,7 +528,7 @@ private fun SuccessDialog(onDismiss: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Filled.CheckCircle,
-                contentDescription = null,
+                contentDescription = RegisterPaymentContentDescriptions.SUCCESS_ICON,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(48.dp)
@@ -520,7 +556,9 @@ private fun SuccessDialog(onDismiss: () -> Unit) {
             
             MyButton(
                 text = "Aceptar",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(RegisterPaymentTestTags.SUCCESS_DISMISS),
                 onClick = onDismiss
             )
         }

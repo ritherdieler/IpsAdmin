@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -113,7 +114,10 @@ fun LocationUpdateDialog(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                IconButton(onClick = onDismiss) {
+                IconButton(
+                    modifier = Modifier.testTag(SubscriptionFinderTestTags.LOCATION_BACK),
+                    onClick = onDismiss
+                ) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Volver",
@@ -277,7 +281,9 @@ private fun LocationContent(
     ) {
         Button(
             onClick = onShowMap,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(SubscriptionFinderTestTags.LOCATION_MAP),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary
             )
@@ -298,7 +304,9 @@ private fun LocationContent(
         OutlinedButton(
             onClick = onGetCurrentLocationClick,
             enabled = !isFetchingCurrentLocation,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(SubscriptionFinderTestTags.LOCATION_GPS)
         ) {
             if (isFetchingCurrentLocation) {
                 CircularProgressIndicator(
@@ -330,7 +338,9 @@ private fun LocationContent(
     ) {
         TextButton(
             onClick = onDismiss,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .testTag(SubscriptionFinderTestTags.LOCATION_CANCEL)
         ) {
             Text(
                 text = "Cancelar",
@@ -341,7 +351,9 @@ private fun LocationContent(
 
         Button(
             onClick = onUpdateLocation,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .testTag(SubscriptionFinderTestTags.LOCATION_UPDATE),
             enabled = isLocationChanged,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -368,7 +380,7 @@ private fun ErrorContent(onDismiss: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.Filled.Error,
-            contentDescription = null,
+            contentDescription = SubscriptionFinderContentDescriptions.LOCATION_ERROR,
             tint = MaterialTheme.colorScheme.error,
             modifier = Modifier.size(64.dp)
         )

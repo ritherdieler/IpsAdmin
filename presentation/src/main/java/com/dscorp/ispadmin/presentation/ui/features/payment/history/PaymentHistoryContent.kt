@@ -39,6 +39,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.domain.model.Payment
+import com.dscorp.ispadmin.observability.ObservabilityComposeText
 import com.dscorp.ispadmin.presentation.theme.MyTheme
 import com.dscorp.ispadmin.presentation.ui.components.MyButton
 
@@ -60,6 +62,7 @@ fun PaymentItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
+            .testTag(PaymentHistoryTestTags.paymentItem(payment.id ?: 0))
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
@@ -181,7 +184,7 @@ fun PaymentItem(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.CreditCard,
-                            contentDescription = null,
+                            contentDescription = PaymentHistoryContentDescriptions.PAYMENT_METHOD_ICON,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(16.dp)
                         )
@@ -202,7 +205,7 @@ fun PaymentItem(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Person,
-                            contentDescription = null,
+                            contentDescription = PaymentHistoryContentDescriptions.RESPONSIBLE_ICON,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(16.dp)
                         )
@@ -384,6 +387,7 @@ fun PaymentScreenContent(
                     modifier = Modifier.padding(vertical = 8.dp)
                 ) {
                     Checkbox(
+                        modifier = Modifier.testTag(PaymentHistoryTestTags.FILTER_PENDING),
                         checked = onlyPendingChecked,
                         onCheckedChange = { isChecked ->
                             onlyPendingChecked = isChecked
@@ -441,7 +445,9 @@ fun PaymentScreenContent(
                         Button(
                             onClick = onRestoreInternetConnection,
                             enabled = !state.isRestoreInternetLoading,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag(PaymentHistoryTestTags.RESTORE_CONNECTION),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary
                             )
@@ -513,9 +519,18 @@ fun PaymentScreenContent(
 
                             OutlinedTextField(
                                 value = state.reactivationNotes,
-                                onValueChange = onUpdateReactivationNotes,
+                                onValueChange = {
+                                    onUpdateReactivationNotes(it)
+                                    ObservabilityComposeText.report(
+                                        tag = PaymentHistoryTestTags.REACTIVATION_NOTES,
+                                        label = "Notas de reactivación",
+                                        value = it
+                                    )
+                                },
                                 label = { Text(stringResource(R.string.reactivation_notes)) },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag(PaymentHistoryTestTags.REACTIVATION_NOTES)
                             )
 
                             Spacer(modifier = Modifier.height(16.dp))
@@ -523,7 +538,8 @@ fun PaymentScreenContent(
                             MyButton(
                                 text = stringResource(R.string.reactivate_service),
                                 isLoading = state.isReactivationButtonLoading,
-                                onClick = onReactivateService
+                                onClick = onReactivateService,
+                                modifier = Modifier.testTag(PaymentHistoryTestTags.REACTIVATE_SUBMIT)
                             )
                         }
                     }

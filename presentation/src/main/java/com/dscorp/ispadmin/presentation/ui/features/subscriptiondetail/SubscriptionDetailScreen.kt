@@ -44,6 +44,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -134,6 +135,7 @@ fun SubscriptionDetailScreen(
             },
             confirmButton = {
                 Button(
+                    modifier = Modifier.testTag(SubscriptionDetailTestTags.FACADE_DIALOG_CAMERA),
                     onClick = {
                         showFacadePhotoOptionsDialog = false
                         takeFacadePhoto()
@@ -144,6 +146,7 @@ fun SubscriptionDetailScreen(
             },
             dismissButton = {
                 Button(
+                    modifier = Modifier.testTag(SubscriptionDetailTestTags.FACADE_DIALOG_GALLERY),
                     onClick = {
                         showFacadePhotoOptionsDialog = false
                         facadePhotoGalleryLauncher.launch("image/*")
@@ -291,7 +294,9 @@ fun SubscriptionDetailForm(subscription: SubscriptionResponse, onFacadePhotoClic
                             }
                             context.startActivity(intent)
                         },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag(SubscriptionDetailTestTags.CALL),
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         elevation = FloatingActionButtonDefaults.elevation(
@@ -327,7 +332,9 @@ fun SubscriptionDetailForm(subscription: SubscriptionResponse, onFacadePhotoClic
                                 ).show()
                             }
                         },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .testTag(SubscriptionDetailTestTags.WHATSAPP),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                         contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         elevation = FloatingActionButtonDefaults.elevation(
@@ -664,9 +671,9 @@ private fun FacadePhotoBox(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Muestra la fachada en tamaño grande para que el tecnico pueda verificarla.
-                    Image(
-                        painter = rememberAsyncImagePainter(facadePhotoUrl),
-                        contentDescription = "Foto de fachada completa",
+                Image(
+                    painter = rememberAsyncImagePainter(facadePhotoUrl),
+                    contentDescription = SubscriptionDetailContentDescriptions.FACADE_PHOTO_FULL,
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
@@ -682,20 +689,24 @@ private fun FacadePhotoBox(
                     ) {
                         // Reutiliza el flujo existente: camara o galeria y subida al backend.
                         Button(
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag(SubscriptionDetailTestTags.FACADE_FULL_UPDATE),
                             onClick = {
                                 showFullPhoto = false
                                 onClick()
-                            },
-                            modifier = Modifier.weight(1f)
+                            }
                         ) {
                             Text("Actualizar foto")
                         }
 
                         Button(
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag(SubscriptionDetailTestTags.FACADE_FULL_CLOSE),
                             onClick = {
                                 showFullPhoto = false
-                            },
-                            modifier = Modifier.weight(1f)
+                            }
                         ) {
                             Text("Cerrar")
                         }
@@ -724,7 +735,7 @@ private fun FacadePhotoBox(
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(facadePhotoUrl),
-                    contentDescription = "Foto de fachada",
+                    contentDescription = SubscriptionDetailContentDescriptions.FACADE_PHOTO,
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .aspectRatio(16f / 9f)
@@ -736,7 +747,8 @@ private fun FacadePhotoBox(
                         )
                         .clickable {
                             showFullPhoto = true
-                        },
+                        }
+                        .testTag(SubscriptionDetailTestTags.FACADE_PHOTO),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -763,13 +775,14 @@ private fun FacadePhotoBox(
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = shape
             )
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .testTag(SubscriptionDetailTestTags.FACADE_PHOTO),
         contentAlignment = Alignment.Center
     ) {
         if (hasPhoto) {
             Image(
                 painter = rememberAsyncImagePainter(facadePhotoUrl),
-                contentDescription = "Foto de fachada",
+                contentDescription = SubscriptionDetailContentDescriptions.FACADE_PHOTO,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
