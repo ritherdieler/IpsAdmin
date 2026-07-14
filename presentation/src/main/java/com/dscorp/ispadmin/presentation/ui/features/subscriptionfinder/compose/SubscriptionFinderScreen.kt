@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -71,16 +72,15 @@ import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.S
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.EDIT_PLAN_SUBSCRIPTION
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.MIGRATE_TO_FIBER
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.REACTIVATE_SERVICE
+import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.REBOOT_FIBER_ONU
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SEE_DETAILS
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.SHOW_PAYMENT_HISTORY
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.UPDATE_LOCATION
-import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionMenu.REBOOT_FIBER_ONU
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 
 const val SUBSCRIPTION_ID = "subscriptionId"
 
@@ -104,6 +104,10 @@ fun SubscriptionFinderScreen(
     var showChangeNapBoxDialog by remember { mutableStateOf(false) }
     var showRebootOnuDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        viewModel.initialize()
+    }
     // Escucha el resultado del guardado y muestra un mensaje visible al usuario.
     LaunchedEffect(Unit) {
         viewModel.customerSaveMessages.collect { message ->
@@ -111,6 +115,16 @@ fun SubscriptionFinderScreen(
                 message = message,
                 duration = androidx.compose.material3.SnackbarDuration.Short
             )
+        }
+    }
+    // Muestra un mensaje visible cuando la búsqueda falla (antes el error era silencioso).
+    LaunchedEffect(uiState.searchError) {
+        uiState.searchError?.let { message ->
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = androidx.compose.material3.SnackbarDuration.Short
+            )
+            viewModel.clearSearchError()
         }
     }
     // Track which subscription card is expanded
@@ -245,55 +259,42 @@ fun SubscriptionFinderScreen(
                     // Contenido específico según el tipo de filtro
                     when (selectedFilter) {
                         is SubscriptionFilter.BY_NAME -> {
-                            // Formulario con dos campos: nombre y apellido
-                            Row(
+                            // Campo único de búsqueda por nombre o apellido
+                            OutlinedTextField(
+                                value = searchQuery,
+                                onValueChange = { newValue ->
+                                    val upperValue = newValue.uppercase()
+                                    searchQuery = upperValue
+                                    coroutinesScope.launch {
+                                        viewModel.documentNumberFlow.emit(
+                                            SubscriptionFilter.BY_NAME(
+                                                name = upperValue,
+                                                lastName = ""
+                                            )
+                                        )
+                                    }
+                                },
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                // Campo de nombre
-                                OutlinedTextField(
-                                    value = searchQuery,
-                                    onValueChange = { newValue ->
-                                        val upperValue = newValue.uppercase()
-                                        searchQuery = upperValue
-                                        coroutinesScope.launch {
-                                            viewModel.documentNumberFlow.emit(
-                                                SubscriptionFilter.BY_NAME(
-                                                    name = upperValue,
-                                                    lastName = lastNameQuery
-                                                )
-                                            )
-                                        }
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                    label = { Text("Nombre") },
-                                    placeholder = { Text("Ingrese nombre") },
-                                    singleLine = true,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-
-                                // Campo de apellido
-                                OutlinedTextField(
-                                    value = lastNameQuery,
-                                    onValueChange = { newValue ->
-                                        val upperValue = newValue.uppercase()
-                                        lastNameQuery = upperValue
-                                        coroutinesScope.launch {
-                                            viewModel.documentNumberFlow.emit(
-                                                SubscriptionFilter.BY_NAME(
-                                                    name = searchQuery,
-                                                    lastName = upperValue
-                                                )
-                                            )
-                                        }
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                    label = { Text("Apellido") },
-                                    placeholder = { Text("Ingrese apellido") },
-                                    singleLine = true,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                            }
+                                label = { Text("Nombre o apellido") },
+                                placeholder = { Text("Ej: Juan Pérez") },
+                                trailingIcon = {
+                                    if (uiState.isSearching) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(20.dp),
+                                            strokeWidth = 2.dp,
+                                            color = MaterialTheme.colorScheme.primary
+                                        )
+                                    } else {
+                                        Icon(
+                                            imageVector = Icons.Filled.Search,
+                                            contentDescription = "Buscar",
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
+                                    }
+                                },
+                                singleLine = true,
+                                shape = RoundedCornerShape(8.dp)
+                            )
                         }
 
                         is SubscriptionFilter.BY_DOCUMENT -> {
@@ -405,7 +406,9 @@ fun SubscriptionFinderScreen(
             }
 
             // Results section
-            if (uiState.cancelSubscriptionState == CancelSubscriptionState.Loading) {
+            if (uiState.cancelSubscriptionState == CancelSubscriptionState.Loading ||
+                (uiState.isSearching && uiState.subscriptions.isEmpty())
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -418,7 +421,7 @@ fun SubscriptionFinderScreen(
                     )
                 }
             } else if (uiState.subscriptions.isEmpty()) {
-                // No results found
+                // Estado vacío diferenciado: inicial vs sin resultados
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -431,7 +434,7 @@ fun SubscriptionFinderScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Outlined.Info,
+                            imageVector = if (uiState.searchPerformed) Icons.Outlined.Info else Icons.Filled.Search,
                             contentDescription = null,
                             modifier = Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
@@ -440,7 +443,7 @@ fun SubscriptionFinderScreen(
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
-                            text = "No se encontraron resultados",
+                            text = if (uiState.searchPerformed) "No se encontraron resultados" else "Busca una suscripción",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -448,7 +451,7 @@ fun SubscriptionFinderScreen(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
-                            text = "Intente con otros criterios de búsqueda",
+                            text = if (uiState.searchPerformed) "Intente con otros criterios de búsqueda" else "Ingresa un nombre, apellido o documento para comenzar",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         )
@@ -458,6 +461,8 @@ fun SubscriptionFinderScreen(
                 // Main subscription finder content
                 SubscriptionFinder(
                     subscriptions = uiState.subscriptions,
+                    isLoadingMore = uiState.isSearching,
+                    onLoadMore = viewModel::loadNextPage,
                     onMenuItemSelected = { menuItem, subscription ->
                         handleMenuAction(
                             menuItem = menuItem,

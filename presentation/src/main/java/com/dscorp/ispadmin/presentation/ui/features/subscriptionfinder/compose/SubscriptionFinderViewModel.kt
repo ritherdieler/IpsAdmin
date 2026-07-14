@@ -16,6 +16,7 @@ import com.dscorp.ispadmin.domain.model.extensions.isValidEmail
 import com.dscorp.ispadmin.domain.model.extensions.isValidPhone
 import com.dscorp.ispadmin.domain.usecase.service.ReactivateServiceUseCase
 import com.dscorp.ispadmin.domain.usecase.service.RebootFiberOnuUseCase
+import com.dscorp.ispadmin.domain.usecase.subscription.SearchSubscriptionsUseCase
 import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
 import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.extension.removeAccents
@@ -49,6 +50,11 @@ data class SubscriptionFinderUiState(
     val isFetchingCurrentLocation: Boolean = false,
     val lastUsedFilter: SubscriptionFilter? = null,
     val rebootOnuState: RebootOnuState = RebootOnuState.Empty,
+    val isSearching: Boolean = false,
+    val searchError: String? = null,
+    val searchPerformed: Boolean = false,
+    val currentPage: Int = 0,
+    val canLoadMore: Boolean = false,
 )
 
 data class CustomerFormData(
@@ -92,13 +98,19 @@ class SubscriptionFinderViewModel(
     private val repository: IRepository,
     private val reactivateServiceUseCase: ReactivateServiceUseCase,
     private val rebootFiberOnuUseCase: RebootFiberOnuUseCase,
+    private val searchSubscriptionsUseCase: SearchSubscriptionsUseCase,
     private val observabilityClient: ObservabilityClient,
 ) : ViewModel() {
 
     private companion object {
         const val OBS_FEATURE = "subscription"
         const val OBS_SCREEN = "subscription_finder"
+        const val PAGE_SIZE = 20
     }
+
+    private var currentQuery: String = ""
+    private var currentStatus: String? = null
+    private var initialized = false
 
     private val _uiState = MutableStateFlow(SubscriptionFinderUiState())
     val uiState: StateFlow<SubscriptionFinderUiState> = _uiState.asStateFlow()
@@ -109,20 +121,22 @@ class SubscriptionFinderViewModel(
 
     val documentNumberFlow = MutableSharedFlow<SubscriptionFilter>(extraBufferCapacity = 1)
 
-    init {
+    fun initialize() {
+        if (initialized) return
+        initialized = true
+        observeSubscriptions()
         findSubscription()
         getPlaces()
+    }
 
-        // Observe subscriptionsFlow and update the UI state
-        viewModelScope.launch {
-            subscriptionsFlow.map { list ->
-                list.map {
-                    if (it.serviceStatus != ServiceStatus.CANCELLED) it.copy(serviceStatus = ServiceStatus.ACTIVE)
-                    else it.copy(serviceStatus = ServiceStatus.CANCELLED)
-                }.groupBy { it.serviceStatus }
-            }.collect { groupedSubscriptions ->
-                _uiState.update { it.copy(subscriptions = groupedSubscriptions) }
-            }
+    fun observeSubscriptions() = viewModelScope.launch {
+        subscriptionsFlow.map { list ->
+            list.map {
+                if (it.serviceStatus != ServiceStatus.CANCELLED) it.copy(serviceStatus = ServiceStatus.ACTIVE)
+                else it.copy(serviceStatus = ServiceStatus.CANCELLED)
+            }.groupBy { it.serviceStatus }
+        }.collect { groupedSubscriptions ->
+            _uiState.update { it.copy(subscriptions = groupedSubscriptions) }
         }
     }
 
@@ -140,74 +154,172 @@ class SubscriptionFinderViewModel(
                     message = "$OBS_FEATURE.find",
                     data = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "filterType" to filterType::class.simpleName)
                 )
-                try {
-                val response = when (filterType) {
-                    is SubscriptionFilter.BY_DATE -> {
-                        if (filterType.startDate.isEmpty() || filterType.endDate.isEmpty()) {
-                            subscriptionsFlow.value = emptyList()
-                            return@collect
-                        }
-                        repository.findSubscriptionBySubscriptionDate(
-                            filterType.startDate,
-                            filterType.endDate
-                        )
-                    }
-
-                    is SubscriptionFilter.BY_DOCUMENT -> {
-                        if (filterType.documentNumber.isEmpty()) {
-                            subscriptionsFlow.value = emptyList()
-                            return@collect
-                        } else {
-                            repository.findSubscriptionByDNI(filterType.documentNumber)
-                        }
-                    }
-
-                    is SubscriptionFilter.BY_NAME -> {
-                        if (filterType.name.isEmpty() && filterType.lastName.isEmpty()) {
-                            subscriptionsFlow.value = emptyList()
-                            return@collect
-                        } else {
-                            repository.findSubscriptionByNameAndLastName(
-                                filterType.name,
-                                filterType.lastName
-                            )
-                        }
-                    }
-
-                    is SubscriptionFilter.BY_IP -> {
-                        if (filterType.ip.isEmpty()) {
-                            subscriptionsFlow.value = emptyList()
-                            return@collect
-                        } else {
-                            repository.findSubscriptionByIP(filterType.ip)
-                        }
-                    }
-                    is SubscriptionFilter.BY_CODE -> {
-                        val code = filterType.code.trim()
-                        if (code.isEmpty()) {
-                            subscriptionsFlow.value = emptyList()
-                            return@collect
-                        }
-                        val subscriptionId = code.toIntOrNull()
-                        if (subscriptionId == null) {
-                            subscriptionsFlow.value = emptyList()
-                            return@collect
-                        }
-                        runCatching { repository.subscriptionById(subscriptionId).toDomain() }
-                            .getOrNull()
-                            ?.let { listOf(it) }
-                            ?: emptyList()
-                    }
+                if (filterType is SubscriptionFilter.BY_NAME) {
+                    searchByName(filterType)
+                } else {
+                    legacyFind(filterType)
                 }
-                subscriptionsFlow.value = response
-                } catch (e: Exception) {
-                    observabilityClient.reportError(
-                        throwable = e,
-                        message = "Fallo en búsqueda de suscripciones",
-                        tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "find", "filterType" to filterType::class.simpleName)
+            }
+    }
+
+    private suspend fun searchByName(filterType: SubscriptionFilter.BY_NAME) {
+        val query = "${filterType.name} ${filterType.lastName}".trim()
+        if (query.isEmpty()) {
+            currentQuery = ""
+            subscriptionsFlow.value = emptyList()
+            _uiState.update {
+                it.copy(
+                    isSearching = false,
+                    searchPerformed = false,
+                    searchError = null,
+                    currentPage = 0,
+                    canLoadMore = false
+                )
+            }
+            return
+        }
+        currentQuery = query
+        _uiState.update { it.copy(isSearching = true, searchError = null, searchPerformed = true) }
+        searchSubscriptionsUseCase(query = query, status = currentStatus, page = 0, size = PAGE_SIZE).fold(
+            onSuccess = { result ->
+                subscriptionsFlow.value = result.items
+                _uiState.update {
+                    it.copy(
+                        isSearching = false,
+                        currentPage = result.page,
+                        canLoadMore = result.canLoadMore
+                    )
+                }
+            },
+            onFailure = { error ->
+                observabilityClient.reportError(
+                    throwable = error,
+                    message = "Fallo en búsqueda de suscripciones",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "search", "filterType" to filterType::class.simpleName)
+                )
+                _uiState.update {
+                    it.copy(
+                        isSearching = false,
+                        canLoadMore = false,
+                        searchError = error.message ?: "No se pudo completar la búsqueda"
                     )
                 }
             }
+        )
+    }
+
+    fun loadNextPage() {
+        val state = _uiState.value
+        if (state.isSearching || !state.canLoadMore) return
+        if (state.lastUsedFilter !is SubscriptionFilter.BY_NAME || currentQuery.isEmpty()) return
+
+        viewModelScope.launch {
+            val nextPage = state.currentPage + 1
+            _uiState.update { it.copy(isSearching = true, searchError = null) }
+            searchSubscriptionsUseCase(query = currentQuery, status = currentStatus, page = nextPage, size = PAGE_SIZE).fold(
+                onSuccess = { result ->
+                    subscriptionsFlow.value = subscriptionsFlow.value + result.items
+                    _uiState.update {
+                        it.copy(
+                            isSearching = false,
+                            currentPage = result.page,
+                            canLoadMore = result.canLoadMore
+                        )
+                    }
+                },
+                onFailure = { error ->
+                    observabilityClient.reportError(
+                        throwable = error,
+                        message = "Fallo al cargar más resultados",
+                        tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "search_next_page")
+                    )
+                    _uiState.update {
+                        it.copy(
+                            isSearching = false,
+                            searchError = error.message ?: "No se pudieron cargar más resultados"
+                        )
+                    }
+                }
+            )
+        }
+    }
+
+    fun clearSearchError() {
+        _uiState.update { it.copy(searchError = null) }
+    }
+
+    private suspend fun legacyFind(filterType: SubscriptionFilter) {
+        _uiState.update { it.copy(isSearching = true, searchError = null, canLoadMore = false) }
+        try {
+            val response = when (filterType) {
+                is SubscriptionFilter.BY_DATE -> {
+                    if (filterType.startDate.isEmpty() || filterType.endDate.isEmpty()) {
+                        subscriptionsFlow.value = emptyList()
+                        _uiState.update { it.copy(isSearching = false, searchPerformed = false) }
+                        return
+                    }
+                    repository.findSubscriptionBySubscriptionDate(
+                        filterType.startDate,
+                        filterType.endDate
+                    )
+                }
+
+                is SubscriptionFilter.BY_DOCUMENT -> {
+                    if (filterType.documentNumber.isEmpty()) {
+                        subscriptionsFlow.value = emptyList()
+                        _uiState.update { it.copy(isSearching = false, searchPerformed = false) }
+                        return
+                    } else {
+                        repository.findSubscriptionByDNI(filterType.documentNumber)
+                    }
+                }
+
+                is SubscriptionFilter.BY_IP -> {
+                    if (filterType.ip.isEmpty()) {
+                        subscriptionsFlow.value = emptyList()
+                        _uiState.update { it.copy(isSearching = false, searchPerformed = false) }
+                        return
+                    } else {
+                        repository.findSubscriptionByIP(filterType.ip)
+                    }
+                }
+
+                is SubscriptionFilter.BY_CODE -> {
+                    val code = filterType.code.trim()
+                    if (code.isEmpty()) {
+                        subscriptionsFlow.value = emptyList()
+                        _uiState.update { it.copy(isSearching = false, searchPerformed = false) }
+                        return
+                    }
+                    val subscriptionId = code.toIntOrNull()
+                    if (subscriptionId == null) {
+                        subscriptionsFlow.value = emptyList()
+                        _uiState.update { it.copy(isSearching = false, searchPerformed = false) }
+                        return
+                    }
+                    runCatching { repository.subscriptionById(subscriptionId).toDomain() }
+                        .getOrNull()
+                        ?.let { listOf(it) }
+                        ?: emptyList()
+                }
+
+                else -> emptyList()
+            }
+            subscriptionsFlow.value = response
+            _uiState.update { it.copy(isSearching = false, searchPerformed = true) }
+        } catch (e: Exception) {
+            observabilityClient.reportError(
+                throwable = e,
+                message = "Fallo en búsqueda de suscripciones",
+                tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "find", "filterType" to filterType::class.simpleName)
+            )
+            _uiState.update {
+                it.copy(
+                    isSearching = false,
+                    searchError = e.message ?: "No se pudo completar la búsqueda"
+                )
+            }
+        }
     }
 
     // Función para recargar los datos con el último filtro usado

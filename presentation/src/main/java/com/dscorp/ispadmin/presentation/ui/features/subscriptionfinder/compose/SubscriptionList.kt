@@ -6,14 +6,20 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dscorp.ispadmin.domain.model.Place
@@ -27,6 +33,8 @@ import com.dscorp.ispadmin.domain.model.createReminderMessage
 fun SubscriptionList(
     subscriptions: Map<ServiceStatus, List<SubscriptionResume>>,
     scrollState: LazyListState,
+    isLoadingMore: Boolean = false,
+    onLoadMore: () -> Unit = {},
     onMenuItemSelected: (menuItem: SubscriptionMenu, subscriptionResponse: SubscriptionResume) -> Unit = { _, _ -> },
     onSubscriptionExpanded: (SubscriptionResume, Boolean) -> Unit = { _, _ -> },
     expandedSubscriptionId: Int? = null,
@@ -38,6 +46,20 @@ fun SubscriptionList(
     onUpdatePlaceId: (Int, String) -> Unit = { _, _ -> },
     onSaveCustomer: () -> Unit = {}
 ) {
+    val totalItems = subscriptions.values.sumOf { it.size }
+
+    LaunchedEffect(scrollState, totalItems) {
+        snapshotFlow {
+            val layoutInfo = scrollState.layoutInfo
+            val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleIndex to layoutInfo.totalItemsCount
+        }.collect { (lastVisibleIndex, itemsCount) ->
+            if (itemsCount > 0 && lastVisibleIndex >= itemsCount - LOAD_MORE_THRESHOLD) {
+                onLoadMore()
+            }
+        }
+    }
+
     LazyColumn(modifier = Modifier.fillMaxWidth(), state = scrollState) {
         subscriptions.forEach { (status, subscriptionList) ->
             stickyHeader {
@@ -68,8 +90,26 @@ fun SubscriptionList(
                 )
             }
         }
+        if (isLoadingMore) {
+            item(key = "load_more_indicator") {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(28.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
     }
 }
+
+private const val LOAD_MORE_THRESHOLD = 3
 
 fun sendWhatsapp(subscriptionResume: SubscriptionResume, context: Context) {
     val message = when {

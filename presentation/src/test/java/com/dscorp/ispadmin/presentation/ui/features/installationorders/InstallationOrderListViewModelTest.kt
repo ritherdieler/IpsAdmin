@@ -49,7 +49,8 @@ class InstallationOrderListViewModelTest {
         
         viewModel = InstallationOrderListViewModel(
             installationOrderUseCase = installationOrderUseCase,
-            userUseCase = userUseCase
+            userUseCase = userUseCase,
+            observabilityClient = mockk(relaxed = true)
         )
     }
 

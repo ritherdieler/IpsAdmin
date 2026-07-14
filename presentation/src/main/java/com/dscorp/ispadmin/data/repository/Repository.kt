@@ -68,6 +68,7 @@ import com.dscorp.ispadmin.domain.model.ServiceOrderResponse
 import com.dscorp.ispadmin.domain.model.Subscription
 import com.dscorp.ispadmin.domain.model.SubscriptionFastSearchResponse
 import com.dscorp.ispadmin.domain.model.SubscriptionResponse
+import com.dscorp.ispadmin.domain.model.PagedResult
 import com.dscorp.ispadmin.domain.model.SubscriptionResume
 import com.dscorp.ispadmin.domain.model.User
 import com.dscorp.ispadmin.domain.model.extensions.PayerFinderResult
@@ -724,6 +725,29 @@ class Repository : IRepository, KoinComponent {
         val response = restApiServices.findSubscriptionByNameAndLastName(name, lastName)
         return when (response.code()) {
             in 200..299 -> response.body()?.map { it.toDomain() } ?: emptyList()
+            else -> throw Exception("Error")
+        }
+    }
+
+    override suspend fun searchSubscriptions(
+        query: String,
+        status: String?,
+        page: Int,
+        size: Int
+    ): PagedResult<SubscriptionResume> {
+        val response = restApiServices.searchSubscriptions(query, status, page, size)
+        return when (response.code()) {
+            in 200..299 -> {
+                val body = response.body()
+                PagedResult(
+                    items = body?.items?.map { it.toDomain() } ?: emptyList(),
+                    page = body?.page ?: page,
+                    size = body?.size ?: size,
+                    total = body?.total ?: 0,
+                    totalPages = body?.totalPages ?: 0,
+                )
+            }
+
             else -> throw Exception("Error")
         }
     }

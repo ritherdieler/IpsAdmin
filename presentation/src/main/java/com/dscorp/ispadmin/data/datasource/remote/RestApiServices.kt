@@ -36,6 +36,7 @@ import com.dscorp.ispadmin.domain.model.PlanResponse
 import com.dscorp.ispadmin.domain.model.ServiceOrder
 import com.dscorp.ispadmin.domain.model.ServiceOrderResponse
 import com.dscorp.ispadmin.domain.model.Subscription
+import com.dscorp.ispadmin.domain.model.PagedSubscriptionResponse
 import com.dscorp.ispadmin.domain.model.SubscriptionFastSearchResponse
 import com.dscorp.ispadmin.domain.model.SubscriptionResponse
 import com.dscorp.ispadmin.domain.model.User
@@ -247,6 +248,14 @@ interface RestApiServices {
         @Query("name") name: String?,
         @Query("lastName") lastName: String?
     ): Response<List<SubscriptionResponse>>
+
+    @GET("subscription/search")
+    suspend fun searchSubscriptions(
+        @Query("q") q: String,
+        @Query("status") status: String?,
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): Response<PagedSubscriptionResponse>
 
     @GET("subscription/debtors-with-cut-report-document")
     suspend fun downloadDebtorsCutOffCandidatesReportDocument(): Response<DownloadDocumentResponse>

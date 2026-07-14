@@ -27,6 +27,7 @@ import com.dscorp.ispadmin.domain.model.ServiceOrderResponse
 import com.dscorp.ispadmin.domain.model.Subscription
 import com.dscorp.ispadmin.domain.model.SubscriptionFastSearchResponse
 import com.dscorp.ispadmin.domain.model.SubscriptionResponse
+import com.dscorp.ispadmin.domain.model.PagedResult
 import com.dscorp.ispadmin.domain.model.SubscriptionResume
 import com.dscorp.ispadmin.domain.model.User
 import com.dscorp.ispadmin.domain.model.extensions.PayerFinderResult
@@ -132,6 +133,13 @@ interface IRepository {
         name: String?,
         lastName: String?
     ): List<SubscriptionResume>
+
+    suspend fun searchSubscriptions(
+        query: String,
+        status: String?,
+        page: Int,
+        size: Int
+    ): PagedResult<SubscriptionResume>
 
     suspend fun findSubscriptionByIP(ip: String): List<SubscriptionResume>
 
