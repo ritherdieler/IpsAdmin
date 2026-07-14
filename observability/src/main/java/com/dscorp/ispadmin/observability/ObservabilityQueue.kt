@@ -6,24 +6,24 @@ import java.io.File
 class ObservabilityQueue(
     context: Context,
     fileName: String = "events-queue.jsonl"
-) {
+) : ObservabilityEventStore {
 
     private val directory = File(context.filesDir, "observability").apply { mkdirs() }
     private val queueFile = File(directory, fileName)
     private val lock = Any()
     private val maxQueuedEvents = 500
 
-    fun append(json: String) = synchronized(lock) {
+    override fun append(json: String) = synchronized(lock) {
         queueFile.appendText(json + "\n")
         trimToLimit()
     }
 
-    fun readAll(): List<String> = synchronized(lock) {
+    override fun readAll(): List<String> = synchronized(lock) {
         if (!queueFile.exists()) emptyList()
         else queueFile.readLines().filter { it.isNotBlank() }
     }
 
-    fun removeFirst(count: Int) = synchronized(lock) {
+    override fun removeFirst(count: Int) = synchronized(lock) {
         if (count <= 0 || !queueFile.exists()) return
         val remaining = queueFile.readLines().filter { it.isNotBlank() }.drop(count)
         writeAll(remaining)

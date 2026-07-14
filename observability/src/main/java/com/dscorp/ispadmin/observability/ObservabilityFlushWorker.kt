@@ -3,8 +3,6 @@ package com.dscorp.ispadmin.observability
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.dscorp.ispadmin.BuildConfig
-import com.dscorp.ispadmin.di.observabilityQualifier
 import com.google.gson.Gson
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -16,7 +14,8 @@ class ObservabilityFlushWorker(
 
     private val api: ObservabilityApi by inject()
     private val queue: ObservabilityQueue by inject()
-    private val gson: Gson by inject(observabilityQualifier)
+    private val gson: Gson by inject(ObservabilityQualifiers.gson)
+    private val config: ObservabilityConfig by inject()
 
     override suspend fun doWork(): Result {
         val delivered = runCatching {
@@ -24,7 +23,7 @@ class ObservabilityFlushWorker(
                 api = api,
                 queue = queue,
                 gson = gson,
-                apiKey = BuildConfig.OBS_API_KEY
+                apiKey = config.apiKey
             )
         }.getOrDefault(false)
         return if (delivered) Result.success() else Result.retry()

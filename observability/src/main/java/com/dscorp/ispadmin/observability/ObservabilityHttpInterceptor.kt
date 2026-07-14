@@ -17,10 +17,11 @@ class ObservabilityHttpInterceptor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val tracer = tracerProvider.value
+        val client = clientProvider.value
         val original = chain.request()
         val traceId = tracer.newTraceId()
         val spanId = tracer.newSpanId()
-        val sessionId = clientProvider.value.currentSessionId()
+        val sessionId = client.currentSessionId()
         val route = original.url.encodedPath
         val spanName = "${original.method} $route"
 
@@ -50,7 +51,7 @@ class ObservabilityHttpInterceptor(
                 )
             }
             runCatching {
-                clientProvider.value.reportHttpError(
+                client.reportHttpError(
                     url = request.url.toString(),
                     httpMethod = request.method,
                     httpStatus = 0,
@@ -81,7 +82,7 @@ class ObservabilityHttpInterceptor(
 
         if (response.code >= 400) {
             runCatching {
-                clientProvider.value.reportHttpError(
+                client.reportHttpError(
                     url = request.url.toString(),
                     httpMethod = request.method,
                     httpStatus = response.code,
@@ -95,3 +96,4 @@ class ObservabilityHttpInterceptor(
         return response
     }
 }
+

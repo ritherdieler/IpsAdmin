@@ -14,6 +14,10 @@ alwaysApply: true
 ## 2. UI y Jetpack Compose
 - Todas las vistas se desarrollan exclusivamente en Jetpack Compose.  
 - Prohibido usar XML u otros sistemas de vistas.
+- Todo componente visual Compose debe tener al menos `testTag` o `contentDescription` (nunca ninguno de los dos).
+- Si el composable es interactuable (click, focus, input, checkbox, switch, botón, enlace): `Modifier.testTag(...)` es obligatorio.
+- Si no es interactuable (imagen, ícono, ilustración): `contentDescription` no vacío es obligatorio.
+- Detalle y ejemplos: `.agent-docs/compose-testtag-content-description.md`.
 
 ## 3. Material 3, diseño moderno y experiencia de usuario
 - Todas las pantallas usan el tema `MyTheme` y siguen los lineamientos de Material 3.

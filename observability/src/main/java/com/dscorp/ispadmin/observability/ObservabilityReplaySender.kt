@@ -21,7 +21,7 @@ class ObservabilityReplaySender(
     private val replaysInSession = AtomicInteger(0)
     private val lastReplayAt = AtomicLong(0L)
 
-    suspend fun captureAndUpload(sessionId: String): Long? {
+    suspend fun captureAndUpload(sessionId: String, workflowId: String? = null): Long? {
         if (!config.enableReplay || apiKey.isBlank()) return null
         if (!reserveSlot(sessionId)) return null
 
@@ -52,6 +52,7 @@ class ObservabilityReplaySender(
                 format = FORMAT,
                 sessionId = sessionId,
                 durationMs = snapshot.durationMs,
+                workflowId = workflowId?.takeIf { it.isNotBlank() },
                 body = body
             )
         }.getOrNull()

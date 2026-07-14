@@ -10,13 +10,15 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class ObservabilityTracer(
     private val api: ObservabilitySpanApi,
-    private val queue: ObservabilityQueue,
+    private val queue: ObservabilityEventStore,
     private val contextProvider: ObservabilityContextProvider,
     private val gson: Gson,
-    private val apiKey: String
+    private val apiKey: String,
+    private val tagsProvider: () -> Map<String, Any?>? = { null },
+    coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 ) {
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val scope = coroutineScope
     private val flushing = AtomicBoolean(false)
     private val batchSize = 100
     private val random = SecureRandom()
@@ -37,8 +39,10 @@ class ObservabilityTracer(
         startEpochMs: Long,
         durationMs: Long,
         status: String,
-        sessionId: String
+        sessionId: String,
+        tags: Map<String, Any?>? = null
     ) {
+        val enrichedTags = mergeTags(tags, tagsProvider())
         val span = ObsSpanDto(
             traceId = traceId,
             spanId = spanId,
@@ -54,7 +58,7 @@ class ObservabilityTracer(
             httpRoute = httpRoute,
             httpStatus = httpStatus,
             dbStatement = null,
-            tagsJson = null,
+            tagsJson = enrichedTags?.let { runCatching { gson.toJson(it) }.getOrNull() },
             environment = contextProvider.environment(),
             release = contextProvider.release()
         )
@@ -62,6 +66,15 @@ class ObservabilityTracer(
             runCatching { queue.append(gson.toJson(span)) }
             flushInternal()
         }
+    }
+
+    private fun mergeTags(
+        explicit: Map<String, Any?>?,
+        fromProvider: Map<String, Any?>?
+    ): Map<String, Any?>? {
+        if (fromProvider.isNullOrEmpty()) return explicit
+        if (explicit.isNullOrEmpty()) return fromProvider
+        return fromProvider + explicit
     }
 
     fun flush() {

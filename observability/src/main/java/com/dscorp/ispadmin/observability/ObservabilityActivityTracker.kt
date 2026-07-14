@@ -6,7 +6,8 @@ import android.os.Bundle
 import java.lang.ref.WeakReference
 
 class ObservabilityActivityTracker(
-    private val recorder: ObservabilityScreenRecorder?
+    private val recorder: ObservabilityScreenRecorder?,
+    private val uiTracker: ObservabilityUiTracker? = null
 ) : Application.ActivityLifecycleCallbacks {
 
     @Volatile
@@ -17,12 +18,14 @@ class ObservabilityActivityTracker(
     override fun onActivityResumed(activity: Activity) {
         currentActivity = WeakReference(activity)
         recorder?.attach(activity)
+        uiTracker?.attach(activity)
     }
 
     override fun onActivityPaused(activity: Activity) {
         if (currentActivity?.get() === activity) {
             currentActivity = null
         }
+        uiTracker?.detach()
         recorder?.detach()
     }
 

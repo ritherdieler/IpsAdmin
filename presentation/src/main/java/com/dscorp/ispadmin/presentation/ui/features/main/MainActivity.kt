@@ -18,6 +18,7 @@ import com.dscorp.ispadmin.presentation.fcm.FcmTopics
 import com.dscorp.ispadmin.presentation.fcm.updateFcmToken
 import com.dscorp.ispadmin.presentation.theme.MyTheme
 import com.dscorp.ispadmin.presentation.ui.features.main.permissions.FcmTopicManager
+import com.dscorp.ispadmin.presentation.ui.semantics.TestTagResourceIdRoot
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
@@ -41,7 +42,9 @@ class MainActivity : FragmentActivity() {
 
         setContent {
             MyTheme {
-                IpsAdminNavHost()
+                TestTagResourceIdRoot {
+                    IpsAdminNavHost()
+                }
             }
         }
 

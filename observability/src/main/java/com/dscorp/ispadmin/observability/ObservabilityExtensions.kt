@@ -8,6 +8,8 @@ object ObsBreadcrumbCategory {
     const val USER_ACTION = "user_action"
     const val NETWORK = "network"
     const val STATE = "state"
+    const val WORKFLOW = "workflow"
+    const val UI = "ui"
 }
 
 fun obsTags(
@@ -53,6 +55,26 @@ fun ViewModel.trackUserAction(
     )
 }
 
+suspend fun <T> runWorkflow(
+    client: ObservabilityClient,
+    name: String,
+    category: String,
+    context: Map<String, Any?> = emptyMap(),
+    block: suspend () -> T
+): Result<T> {
+    client.startWorkflow(name = name, category = category, context = context)
+    return try {
+        val result = block()
+        client.endWorkflow(WorkflowStatus.SUCCESS)
+        Result.success(result)
+    } catch (cancellation: CancellationException) {
+        throw cancellation
+    } catch (throwable: Throwable) {
+        client.endWorkflow(WorkflowStatus.FAILED, reason = throwable.message)
+        Result.failure(throwable)
+    }
+}
+
 suspend fun <T> ViewModel.runTracked(
     client: ObservabilityClient,
     feature: String,
@@ -64,18 +86,26 @@ suspend fun <T> ViewModel.runTracked(
     severity: String = "error",
     block: suspend () -> T
 ): Result<T> {
-    client.addBreadcrumb(
-        category = ObsBreadcrumbCategory.USER_ACTION,
-        message = "$feature.$action",
-        data = obsTags(feature, screen, action, entityId, extra)
-    )
+    if (client.currentWorkflowId() != null) {
+        client.workflowStep("$feature.$action", obsTags(feature, screen, action, entityId, extra))
+    } else {
+        client.addBreadcrumb(
+            category = ObsBreadcrumbCategory.USER_ACTION,
+            message = "$feature.$action",
+            data = obsTags(feature, screen, action, entityId, extra)
+        )
+    }
     return try {
         val result = block()
-        client.addBreadcrumb(
-            category = ObsBreadcrumbCategory.STATE,
-            message = "$feature.$action.success",
-            data = obsTags(feature, screen, action, entityId)
-        )
+        if (client.currentWorkflowId() != null) {
+            client.workflowStep("$feature.$action.success", obsTags(feature, screen, action, entityId))
+        } else {
+            client.addBreadcrumb(
+                category = ObsBreadcrumbCategory.STATE,
+                message = "$feature.$action.success",
+                data = obsTags(feature, screen, action, entityId)
+            )
+        }
         Result.success(result)
     } catch (cancellation: CancellationException) {
         throw cancellation

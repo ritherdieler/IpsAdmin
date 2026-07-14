@@ -23,6 +23,7 @@ interface ObservabilityApi {
         @Query("format") format: String,
         @Query("sessionId") sessionId: String,
         @Query("durationMs") durationMs: Long,
+        @Query("workflowId") workflowId: String? = null,
         @Body body: RequestBody
     ): Response<ObsReplayUploadResponse>
 }

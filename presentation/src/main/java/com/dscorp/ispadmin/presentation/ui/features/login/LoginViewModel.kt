@@ -11,6 +11,7 @@ import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
 import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.observability.obsTags
 import com.dscorp.ispadmin.observability.runTracked
+import com.dscorp.ispadmin.observability.runWorkflow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
@@ -57,23 +58,33 @@ class LoginViewModel(
     fun doLogin(loginData: LoginForm) = viewModelScope.launch {
         if (!loginData.isValid()) return@launch
         loginRequestFlow.value = LoginState.Loading
-        runTracked(
+        runWorkflow(
             client = observabilityClient,
-            feature = FEATURE,
-            screen = SCREEN,
-            action = "submit",
-            extra = mapOf(
+            name = "login",
+            category = "auth",
+            context = mapOf(
                 "username" to loginData.username,
                 "rememberSession" to loginData.checkedState
-            ),
-            errorMessage = "Fallo al iniciar sesión"
-        ) {
-            val login = Loging(
-                loginData.username,
-                loginData.password.encryptWithSHA384(),
-                loginData.checkedState
             )
-            repository.doLogin(login)
+        ) {
+            runTracked(
+                client = observabilityClient,
+                feature = FEATURE,
+                screen = SCREEN,
+                action = "submit",
+                extra = mapOf(
+                    "username" to loginData.username,
+                    "rememberSession" to loginData.checkedState
+                ),
+                errorMessage = "Fallo al iniciar sesión"
+            ) {
+                val login = Loging(
+                    loginData.username,
+                    loginData.password.encryptWithSHA384(),
+                    loginData.checkedState
+                )
+                repository.doLogin(login)
+            }.getOrThrow()
         }.fold(
             onSuccess = { response ->
                 loginRequestFlow.value = if (!response.verified) {

@@ -7,7 +7,7 @@ object ObservabilityEventSender {
 
     suspend fun flush(
         api: ObservabilityApi,
-        queue: ObservabilityQueue,
+        queue: ObservabilityEventStore,
         gson: Gson,
         apiKey: String,
         batchSize: Int = 100

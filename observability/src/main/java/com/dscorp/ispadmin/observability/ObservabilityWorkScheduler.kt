@@ -9,13 +9,13 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
 
-class ObservabilityWorkScheduler(private val context: Context) {
+class ObservabilityWorkScheduler(private val context: Context) : ObservabilityFlushScheduler {
 
     companion object {
         private const val UNIQUE_WORK_NAME = "observability-event-flush"
     }
 
-    fun scheduleEventFlush() {
+    override fun scheduleEventFlush() {
         runCatching {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
