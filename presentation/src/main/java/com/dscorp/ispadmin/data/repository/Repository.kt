@@ -854,7 +854,7 @@ class Repository : IRepository, KoinComponent {
         newStatus: AssistanceTicketStatus,
         userId: Int
     ): AssistanceTicketResponse {
-        return restApiServices.closeUnattendedSupportTicket(id, userId).successOrThrow()
+        return restApiServices.closeUnattendedSupportTicket(id, userId, newStatus).successOrThrow()
     }
 
     override suspend fun createTicket(value: AssistanceTicketRequest): AssistanceTicketResponse {

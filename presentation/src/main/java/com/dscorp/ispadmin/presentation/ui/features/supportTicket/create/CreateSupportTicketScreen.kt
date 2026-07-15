@@ -286,6 +286,49 @@ fun CreateSupportTicketScreen(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "Ubicación",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.LocationOn,
+                        contentDescription = "Ubicación",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        MyOutLinedDropDown(
+                            items = uiState.places,
+                            selected = uiState.selectedPlace,
+                            onItemSelected = { place ->
+                                onPlaceSelected(place)
+                            },
+                            label = "Selecciona un lugar",
+                            hasError = uiState.placeError != null,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        if (uiState.placeError != null) {
+                            Text(
+                                text = uiState.placeError ?: "",
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+                            )
+                        }
+                    }
+                }
             } else {
                 Text(
                     text = "Ubicación",

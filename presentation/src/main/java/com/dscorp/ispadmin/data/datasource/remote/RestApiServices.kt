@@ -298,6 +298,7 @@ interface RestApiServices {
     suspend fun closeUnattendedSupportTicket(
         @Query("ticketId") ticketId: Int,
         @Query("userId") userId: Int,
+        @Query("status") status: AssistanceTicketStatus,
     ): Response<AssistanceTicketResponse>
 
     @Multipart

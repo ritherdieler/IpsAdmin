@@ -140,7 +140,6 @@ class CreateSupportTicketViewModel(
             it.copy(
                 isClient = isClient,
                 // Resetear selecciones según el tipo de cliente
-                selectedPlace = if (isClient) null else it.selectedPlace,
                 selectedSubscription = if (!isClient) null else it.selectedSubscription,
                 customerNameError = null
             )
@@ -150,7 +149,7 @@ class CreateSupportTicketViewModel(
     // Actualizar el lugar seleccionado
     fun updateSelectedPlace(place: Place?) {
         _uiState.update {
-            val placeError = if (!it.isClient && place == null) {
+            val placeError = if (place == null) {
                 "Debe seleccionar un lugar"
             } else {
                 null
@@ -282,7 +281,7 @@ class CreateSupportTicketViewModel(
         
         // Verificar campos específicos según tipo de cliente
         return if (state.isClient) {
-            state.selectedSubscription != null
+            state.selectedSubscription != null && state.selectedPlace != null
         } else {
             state.selectedPlace != null && !state.customerName.isNullOrBlank()
         }
@@ -298,7 +297,7 @@ class CreateSupportTicketViewModel(
                 categoryError = if (state.category.isEmpty()) "La categoría es obligatoria" else null,
                 descriptionError = if (state.description.isEmpty()) "La descripción es obligatoria" else null,
                 subscriptionError = if (state.isClient && state.selectedSubscription == null) "Debe seleccionar un cliente" else null,
-                placeError = if (!state.isClient && state.selectedPlace == null) "Debe seleccionar un lugar" else null,
+                placeError = if (state.selectedPlace == null) "Debe seleccionar un lugar" else null,
                 customerNameError = if (!state.isClient && state.customerName.isBlank()) "El nombre completo es obligatorio" else null
             )
         }

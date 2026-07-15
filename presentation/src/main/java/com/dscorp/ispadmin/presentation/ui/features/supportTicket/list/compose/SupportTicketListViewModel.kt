@@ -23,6 +23,8 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.Calendar
 import com.dscorp.ispadmin.data.apirequestmodel.RescheduleTicketRequest
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 class SupportTicketListViewModel(
     private val repository: IRepository,
@@ -40,7 +42,7 @@ class SupportTicketListViewModel(
     
     init {
         loadUserData()
-        loadPendingTickets()
+        loadAllTickets()
     }
     
     private fun loadUserData() {
@@ -57,7 +59,6 @@ class SupportTicketListViewModel(
     
     fun onTabChange(tabIndex: Int) {
         _uiState.update { it.copy(activeTab = tabIndex) }
-        loadTicketsForActiveTab()
     }
 
     fun onDateFilterChange(filter: TicketDateFilter) {
@@ -81,7 +82,54 @@ class SupportTicketListViewModel(
     }
     
     fun refreshData() {
-        loadTicketsForActiveTab()
+        loadAllTickets()
+    }
+
+    private fun loadAllTickets() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, error = null) }
+
+                val firstDayOfMonth = Calendar.getInstance().firstDayFromCurrentMonth()
+                val lastDayOfMonth = Calendar.getInstance().lastDayFromCurrentMonth()
+
+                val (pendingTickets, inProgressTickets, closedTickets) = coroutineScope {
+                    val pending = async { repository.getTicketsByStatus(AssistanceTicketStatus.PENDING) }
+                    val inProgress = async { repository.getTicketsByStatus(AssistanceTicketStatus.ASSIGNED) }
+                    val closed = async {
+                        repository.getTicketsByDateRange(
+                            AssistanceTicketStatus.CLOSED,
+                            firstDayOfMonth,
+                            lastDayOfMonth
+                        )
+                    }
+
+                    Triple(pending.await(), inProgress.await(), closed.await())
+                }
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        pendingTickets = pendingTickets,
+                        inProgressTickets = inProgressTickets,
+                        closedTickets = closedTickets,
+                        error = null
+                    )
+                }
+            } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar tickets de soporte",
+                    tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_all")
+                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = e.message ?: "Error al cargar tickets"
+                    )
+                }
+            }
+        }
     }
     
     private fun loadTicketsForActiveTab() {

@@ -108,6 +108,16 @@ fun TicketCard(
                     value = place
                 )
             }
+
+            ticket.assignedTo
+                ?.takeIf { it.isNotBlank() }
+                ?.let { assignedTo ->
+                    InfoItem(
+                        icon = Icons.Filled.Person,
+                        label = "Tecnico asignado",
+                        value = assignedTo
+                    )
+                }
             
             Spacer(modifier = Modifier.height(8.dp))
             

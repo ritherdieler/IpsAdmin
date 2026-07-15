@@ -148,12 +148,18 @@ fun SupportTicketListScreen(
                     }
                 ) {
                     uiState.tabTitles.forEachIndexed { index, title ->
+                        val ticketCount = when (index) {
+                            0 -> filteredPendingTickets.size
+                            1 -> filteredInProgressTickets.size
+                            2 -> filteredClosedTickets.size
+                            else -> 0
+                        }
                         Tab(
                             selected = uiState.activeTab == index,
                             onClick = { onTabChange(index) },
                             text = {
                                 Text(
-                                    text = title,
+                                    text = "$title ($ticketCount)",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
