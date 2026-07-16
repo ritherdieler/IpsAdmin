@@ -10,15 +10,19 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.1.0'
 }
 
-def localProps = new Properties()
-def localPropsFile = rootProject.file("local.properties")
-if (localPropsFile.exists()) {
-    localProps.load(new FileInputStream(localPropsFile))
-}
+apply from: "${rootProject.projectDir}/gradle/secrets.gradle"
 
-def oltServiceApiKey = (localProps.getProperty("OLT_SERVICE_API_KEY") ?: "").replace('"', '')
-def sendCloudMessagingApiKey = (localProps.getProperty("SEND_CLOUD_MESSAGING_API_KEY") ?: "").replace('"', '')
-def obsApiKey = (localProps.getProperty("OBS_API_KEY") ?: System.getenv("OBS_API_KEY") ?: "").replace('"', '')
+def localProps = loadLocalProperties(rootProject)
+def sendCloudMessagingApiKey = propOrEnv(localProps, "SEND_CLOUD_MESSAGING_API_KEY")
+def obsApiKey = propOrEnv(localProps, "OBS_API_KEY")
+
+
+secrets {
+    propertiesFileName = "local.properties"
+    ignoreList.add("sdk.*")
+    ignoreList.add("gpr.user")
+    ignoreList.add("gpr.key")
+}
 
 android {
     compileSdk rootProject.ext.compileSdk
@@ -45,7 +49,6 @@ android {
             buildConfigField 'String', "BASE_URL", '"http://127.0.0.1:8080/ispadmin/"'
             buildConfigField 'String', "OBS_BASE_URL", '"http://127.0.0.1:8080/ispadmin/"'
             buildConfigField 'String', "OBS_API_KEY", '"dev-obs-android-key"'
-            buildConfigField 'String', "OLT_SERVICE_API_KET", "\"${oltServiceApiKey}\""
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", "\"${sendCloudMessagingApiKey}\""
         }
         prod {
@@ -54,7 +57,6 @@ android {
             buildConfigField 'String', "BASE_URL", '"https://api.gigafiberperu.cloud/ispadmin/"'
             buildConfigField 'String', "OBS_BASE_URL", '"https://api.gigafiberperu.cloud/ispadmin/"'
             buildConfigField 'String', "OBS_API_KEY", "\"${obsApiKey}\""
-            buildConfigField 'String', "OLT_SERVICE_API_KET", "\"${oltServiceApiKey}\""
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", "\"${sendCloudMessagingApiKey}\""
         }
     }

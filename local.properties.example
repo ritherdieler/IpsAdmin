@@ -1,0 +1,18 @@
+## Copy to local.properties and fill in values. Do NOT commit local.properties.
+##
+## Onboarding:
+##   cp local.properties.example local.properties
+##
+## Keys:
+##   sdk.dir                       - Android SDK path (Android Studio)
+##   gpr.user / gpr.key            - GitHub Packages credentials (com.dscorp:components)
+##   MAPS_API_KEY                  - Google Maps API key (injected into AndroidManifest)
+##   OBS_API_KEY                   - Observability API key (prod BuildConfig; ignored in dev)
+##   SEND_CLOUD_MESSAGING_API_KEY  - FCM legacy server key (SendMessagingCloudApi)
+
+sdk.dir=
+gpr.user=
+gpr.key=
+MAPS_API_KEY=
+OBS_API_KEY=
+SEND_CLOUD_MESSAGING_API_KEY=
