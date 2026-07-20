@@ -7,6 +7,7 @@ import com.dscorp.ispadmin.domain.model.EquipmentCondition
 import com.dscorp.ispadmin.domain.model.GeoLocation
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.NapBoxResponse
+import com.dscorp.ispadmin.domain.model.NetworkDevice
 import com.dscorp.ispadmin.domain.model.Onu
 import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.PlanResponse
@@ -181,6 +182,13 @@ class RegisterSubscriptionComposeViewModel(
                 coreDevices.exceptionOrNull()
                     ?: IllegalStateException("Dispositivos no disponibles")
             )
+        val activeCores = coreList.filter { !it.disabled }
+        if (activeCores.isEmpty()) {
+            return@coroutineScope Result.failure(
+                IllegalStateException("No hay routers core disponibles")
+            )
+        }
+        val autoSelected = if (activeCores.size == 1) activeCores.first() else null
 
         val cachedNapBoxes = napBoxList.getOrNull() ?: emptyList()
         val cachedPlans = planList.getOrNull() ?: emptyList()
@@ -197,7 +205,9 @@ class RegisterSubscriptionComposeViewModel(
                     planList = filteredPlans,
                     placeList = placeList.getOrNull() ?: emptyList(),
                     napBoxList = cachedNapBoxes,
-                    selectedHostDevice = coreList.firstOrNull(),
+                    coreDeviceList = coreList,
+                    selectedHostDevice = autoSelected,
+                    hostDeviceError = null,
                     selectedPlan = selectedPlan
                 )
             )
@@ -244,6 +254,7 @@ class RegisterSubscriptionComposeViewModel(
             is RegisterSubscriptionIntent.PlaceSelected -> onPlaceSelected(intent.value)
             is RegisterSubscriptionIntent.OnuSelected -> onOnuSelected(intent.value)
             is RegisterSubscriptionIntent.NapBoxSelected -> onNapBoxSelected(intent.value)
+            is RegisterSubscriptionIntent.HostDeviceSelected -> onHostDeviceSelected(intent.device)
             RegisterSubscriptionIntent.PlaceSelectionCleared -> onPlaceSelectionCleared()
             RegisterSubscriptionIntent.NapBoxSelectionCleared -> onNapBoxSelectionCleared()
             is RegisterSubscriptionIntent.InstallationTypeSelected ->
@@ -388,6 +399,12 @@ private fun onOnuSelected(value: Onu) {
 private fun onNapBoxSelected(value: NapBoxResponse) {
     updateValidatedForm(FormFieldKey.NAP_BOX) { form ->
         form.copy(selectedNapBox = value)
+    }
+}
+
+private fun onHostDeviceSelected(device: NetworkDevice) {
+    updateValidatedForm(FormFieldKey.HOST_DEVICE) { form ->
+        form.copy(selectedHostDevice = device)
     }
 }
 

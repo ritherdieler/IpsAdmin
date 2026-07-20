@@ -44,6 +44,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -52,6 +54,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.dscorp.components.components.formfields.MyOutlinedTextField
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.domain.model.EquipmentCondition
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.NapBoxResponse
@@ -282,6 +285,22 @@ private fun InstallationBlock(
         onItemSelected = { onIntent(RegisterSubscriptionIntent.InstallationTypeSelected(it)) },
         enabled = !formState.isLoading,
     )
+
+    AnimatedVisibility(
+        visible = form.shouldShowHostDeviceSelector(),
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
+    ) {
+        MyOutLinedDropDown(
+            modifier = Modifier.testTag("register_host_device_dropdown"),
+            label = stringResource(R.string.host_device),
+            items = form.activeCoreDevices(),
+            selected = form.selectedHostDevice,
+            onItemSelected = { onIntent(RegisterSubscriptionIntent.HostDeviceSelected(it)) },
+            hasError = form.hostDeviceError != null,
+            enabled = !formState.isLoading,
+        )
+    }
 
     MyOutLinedDropDown(
         label = "Plan",

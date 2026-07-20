@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register.compo
 import com.dscorp.ispadmin.domain.model.InstallationOrder
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.NapBoxResponse
+import com.dscorp.ispadmin.domain.model.NetworkDevice
 import com.dscorp.ispadmin.domain.model.Onu
 import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.PlanResponse
@@ -35,6 +36,9 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -67,6 +71,8 @@ class RegisterSubscriptionComposeViewModelTest {
         uploadSpeed = "100",
         type = InstallationType.FIBER
     )
+    private val sampleCoreDevice = NetworkDevice(id = 10, name = "Core-A", disabled = false)
+    private val secondCoreDevice = NetworkDevice(id = 11, name = "Core-B", disabled = false)
 
     private lateinit var facadePhotoFile: File
 
@@ -90,7 +96,7 @@ class RegisterSubscriptionComposeViewModelTest {
         coEvery { getPlaceListUseCase() } returns Result.success(emptyList())
         coEvery { getNapBoxListUseCase() } returns Result.success(emptyList())
         coEvery { getUserSessionUseCase() } returns Result.success(sampleUser)
-        coEvery { getCoreDevicesUseCase() } returns Result.success(emptyList())
+        coEvery { getCoreDevicesUseCase() } returns Result.success(listOf(sampleCoreDevice))
 
         viewModel = RegisterSubscriptionComposeViewModel(
             getAvailableOnuListUseCase = getAvailableOnuListUseCase,
@@ -355,5 +361,111 @@ class RegisterSubscriptionComposeViewModelTest {
         advanceUntilIdle()
 
         coVerify(exactly = 1) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
+    }
+
+    @Test
+    fun `loadScreenData auto selects single active core and hides selector`() = runTest(testDispatcher) {
+        val disabled = NetworkDevice(id = 99, name = "Disabled", disabled = true)
+        coEvery { getCoreDevicesUseCase() } returns Result.success(listOf(sampleCoreDevice, disabled))
+
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        val form = viewModel.uiState.value.registerSubscriptionForm
+        assertEquals(sampleCoreDevice, form.selectedHostDevice)
+        assertFalse(form.shouldShowHostDeviceSelector())
+    }
+
+    @Test
+    fun `loadScreenData leaves host null when multiple active cores`() = runTest(testDispatcher) {
+        coEvery {
+            getCoreDevicesUseCase()
+        } returns Result.success(listOf(sampleCoreDevice, secondCoreDevice))
+
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        val form = viewModel.uiState.value.registerSubscriptionForm
+        assertNull(form.selectedHostDevice)
+        assertTrue(form.shouldShowHostDeviceSelector())
+    }
+
+    @Test
+    fun `loadScreenData emits error when no active cores`() = runTest(testDispatcher) {
+        coEvery {
+            getCoreDevicesUseCase()
+        } returns Result.success(
+            listOf(NetworkDevice(id = 1, name = "Off", disabled = true))
+        )
+
+        val events = mutableListOf<RegisterSubscriptionUiEvent>()
+        val job = launch {
+            viewModel.uiEvent.collect { events.add(it) }
+        }
+
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        assertEquals(1, events.size)
+        assertTrue(events[0] is RegisterSubscriptionUiEvent.Error)
+        assertEquals(
+            "No hay routers core disponibles",
+            (events[0] as RegisterSubscriptionUiEvent.Error).message
+        )
+
+        job.cancel()
+    }
+
+    @Test
+    fun `HostDeviceSelected updates selected host and clears error`() = runTest(testDispatcher) {
+        coEvery {
+            getCoreDevicesUseCase()
+        } returns Result.success(listOf(sampleCoreDevice, secondCoreDevice))
+
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        viewModel.onIntent(RegisterSubscriptionIntent.RegisterClick(facadePhotoFile))
+        advanceUntilIdle()
+        assertTrue(
+            viewModel.uiState.value.registerSubscriptionForm.hostDeviceError != null
+        )
+
+        viewModel.onIntent(RegisterSubscriptionIntent.HostDeviceSelected(secondCoreDevice))
+        advanceUntilIdle()
+
+        val form = viewModel.uiState.value.registerSubscriptionForm
+        assertEquals(secondCoreDevice, form.selectedHostDevice)
+        assertNull(form.hostDeviceError)
+    }
+
+    @Test
+    fun `RegisterClick fails validation when multiple cores and none selected`() = runTest(testDispatcher) {
+        val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+        val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+        coEvery { getNapBoxListUseCase() } returns Result.success(listOf(nap))
+        coEvery { getAvailableOnuListUseCase() } returns Result.success(listOf(onu))
+        coEvery {
+            getCoreDevicesUseCase()
+        } returns Result.success(listOf(sampleCoreDevice, secondCoreDevice))
+
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
+        viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
+        viewModel.onIntent(RegisterSubscriptionIntent.DniChanged("12345678"))
+        viewModel.onIntent(RegisterSubscriptionIntent.AddressChanged("Calle larga 12345"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PhoneChanged("987654321"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlanSelected(samplePlan))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
+        viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
+        viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+
+        viewModel.onIntent(RegisterSubscriptionIntent.RegisterClick(facadePhotoFile))
+        advanceUntilIdle()
+
+        assertNotNull(viewModel.uiState.value.registerSubscriptionForm.hostDeviceError)
+        coVerify(exactly = 0) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
     }
 }

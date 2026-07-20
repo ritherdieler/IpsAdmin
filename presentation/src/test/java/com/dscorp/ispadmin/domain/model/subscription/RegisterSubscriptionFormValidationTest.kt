@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.domain.model.subscription
 
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.NapBoxResponse
+import com.dscorp.ispadmin.domain.model.NetworkDevice
 import com.dscorp.ispadmin.domain.model.Onu
 import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.PlanResponse
@@ -16,9 +17,77 @@ import org.junit.Test
 
 class RegisterSubscriptionFormValidationTest {
 
+    private val activeCore = NetworkDevice(id = 1, name = "Core-1", disabled = false)
+    private val disabledCore = NetworkDevice(id = 2, name = "Core-2", disabled = true)
+    private val secondActiveCore = NetworkDevice(id = 3, name = "Core-3", disabled = false)
+
     @Test
     fun `validate equipment condition always null`() {
         assertNull(RegisterSubscriptionFormState().validate(FormFieldKey.EQUIPMENT_CONDITION))
+    }
+
+    @Test
+    fun `subscriptionHostDeviceError null when selected among active cores`() {
+        assertNull(
+            subscriptionHostDeviceError(
+                selectedHostDevice = activeCore,
+                coreDeviceList = listOf(activeCore, disabledCore)
+            )
+        )
+    }
+
+    @Test
+    fun `subscriptionHostDeviceError when null and active cores exist`() {
+        assertEquals(
+            "Seleccione un dispositivo host",
+            subscriptionHostDeviceError(
+                selectedHostDevice = null,
+                coreDeviceList = listOf(activeCore, secondActiveCore)
+            )
+        )
+    }
+
+    @Test
+    fun `subscriptionHostDeviceError null when no active cores`() {
+        assertNull(
+            subscriptionHostDeviceError(
+                selectedHostDevice = null,
+                coreDeviceList = listOf(disabledCore)
+            )
+        )
+    }
+
+    @Test
+    fun `activeCoreDevices filters disabled`() {
+        val form = RegisterSubscriptionFormState(
+            coreDeviceList = listOf(activeCore, disabledCore, secondActiveCore)
+        )
+        assertEquals(listOf(activeCore, secondActiveCore), form.activeCoreDevices())
+    }
+
+    @Test
+    fun `shouldShowHostDeviceSelector true when more than one active core`() {
+        val form = RegisterSubscriptionFormState(
+            coreDeviceList = listOf(activeCore, disabledCore, secondActiveCore)
+        )
+        assertTrue(form.shouldShowHostDeviceSelector())
+    }
+
+    @Test
+    fun `shouldShowHostDeviceSelector false when one active core`() {
+        val form = RegisterSubscriptionFormState(
+            coreDeviceList = listOf(activeCore, disabledCore)
+        )
+        assertFalse(form.shouldShowHostDeviceSelector())
+    }
+
+    @Test
+    fun `validate HOST_DEVICE sets hostDeviceError via validated`() {
+        val form = RegisterSubscriptionFormState(
+            coreDeviceList = listOf(activeCore, secondActiveCore),
+            selectedHostDevice = null
+        ).validated(FormFieldKey.HOST_DEVICE)
+        assertNotNull(form.hostDeviceError)
     }
 
     @Test
@@ -171,6 +240,7 @@ class RegisterSubscriptionFormValidationTest {
     @Test
     fun `blockingForSubmit excludes equipment only`() {
         assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.NOTE))
+        assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.HOST_DEVICE))
         assertFalse(FormFieldKey.blockingForSubmit.contains(FormFieldKey.EQUIPMENT_CONDITION))
     }
 

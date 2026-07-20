@@ -12,6 +12,7 @@ enum class FormFieldKey {
     NAP_BOX,
     NOTE,
     FACADE_PHOTO,
+    HOST_DEVICE,
     EQUIPMENT_CONDITION;
 
     companion object {

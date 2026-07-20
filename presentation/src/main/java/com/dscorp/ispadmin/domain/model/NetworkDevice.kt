@@ -14,8 +14,8 @@ data class NetworkDevice(
     val username: String = "",
     val ipAddress: String = "",
     val networkDeviceType: NetworkDeviceType? = null,
-
-    ) : java.io.Serializable {
+    val disabled: Boolean = false,
+) : java.io.Serializable {
     override fun toString(): String {
         return name
     }

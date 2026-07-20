@@ -1,6 +1,7 @@
 package com.dscorp.ispadmin.domain.model.subscription
 
 import com.dscorp.ispadmin.domain.model.NapBoxResponse
+import com.dscorp.ispadmin.domain.model.NetworkDevice
 import com.dscorp.ispadmin.domain.model.Onu
 import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.PlanResponse
@@ -69,6 +70,19 @@ fun subscriptionPlanError(selectedPlan: PlanResponse?, planList: List<PlanRespon
 
 fun subscriptionPlaceError(selectedPlace: Place?): String? =
     if (selectedPlace == null) "Seleccione un lugar" else null
+
+fun subscriptionHostDeviceError(
+    selectedHostDevice: NetworkDevice?,
+    coreDeviceList: List<NetworkDevice>
+): String? {
+    val activeCores = coreDeviceList.filter { !it.disabled }
+    return when {
+        selectedHostDevice == null ->
+            if (activeCores.isNotEmpty()) "Seleccione un dispositivo host" else null
+        activeCores.none { it.id == selectedHostDevice.id } -> "Seleccione un dispositivo host"
+        else -> null
+    }
+}
 
 fun subscriptionOnuError(
     requiresOnu: Boolean,

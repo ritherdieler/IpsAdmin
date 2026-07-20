@@ -12,6 +12,7 @@ import com.dscorp.ispadmin.domain.model.subscription.subscriptionAddressError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionDniError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionFacadePhotoError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionFirstNameError
+import com.dscorp.ispadmin.domain.model.subscription.subscriptionHostDeviceError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionLastNameError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionNapBoxError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionNoteError
@@ -41,7 +42,9 @@ data class RegisterSubscriptionFormState(
     val placeList: List<Place> = emptyList(),
     val selectedPlace: Place? = null,
     val placeError: String? = null,
+    val coreDeviceList: List<NetworkDevice> = emptyList(),
     val selectedHostDevice: NetworkDevice? = null,
+    val hostDeviceError: String? = null,
     val location: LatLng? = null,
     val cpeDevice: NetworkDevice? = null,
     val napBoxError: String? = null,
@@ -67,6 +70,10 @@ data class RegisterSubscriptionFormState(
         return installationType == InstallationType.FIBER
     }
 
+    fun activeCoreDevices(): List<NetworkDevice> = coreDeviceList.filter { !it.disabled }
+
+    fun shouldShowHostDeviceSelector(): Boolean = activeCoreDevices().size > 1
+
     fun validate(field: FormFieldKey): String? {
         return when (field) {
             FormFieldKey.FIRST_NAME -> subscriptionFirstNameError(firstName)
@@ -84,6 +91,10 @@ data class RegisterSubscriptionFormState(
             )
             FormFieldKey.FACADE_PHOTO -> subscriptionFacadePhotoError(facadePhotoUri != null)
             FormFieldKey.NOTE -> subscriptionNoteError(note)
+            FormFieldKey.HOST_DEVICE -> subscriptionHostDeviceError(
+                selectedHostDevice,
+                coreDeviceList
+            )
             FormFieldKey.EQUIPMENT_CONDITION -> null
         }
     }
@@ -118,6 +129,7 @@ private fun RegisterSubscriptionFormState.withFieldError(
         FormFieldKey.NAP_BOX -> copy(napBoxError = message)
         FormFieldKey.FACADE_PHOTO -> copy(facadePhotoError = message)
         FormFieldKey.NOTE -> copy(noteError = message)
+        FormFieldKey.HOST_DEVICE -> copy(hostDeviceError = message)
         FormFieldKey.EQUIPMENT_CONDITION -> this
     }
 }

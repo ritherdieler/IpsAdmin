@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.presentation.ui.features.subscription.register.model
 import com.dscorp.ispadmin.domain.model.EquipmentCondition
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.NapBoxResponse
+import com.dscorp.ispadmin.domain.model.NetworkDevice
 import com.dscorp.ispadmin.domain.model.Onu
 import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.PlanResponse
@@ -18,6 +19,7 @@ sealed interface RegisterSubscriptionIntent {
     data class PlaceSelected(val value: Place) : RegisterSubscriptionIntent
     data class OnuSelected(val value: Onu) : RegisterSubscriptionIntent
     data class NapBoxSelected(val value: NapBoxResponse) : RegisterSubscriptionIntent
+    data class HostDeviceSelected(val device: NetworkDevice) : RegisterSubscriptionIntent
     data object PlaceSelectionCleared : RegisterSubscriptionIntent
     data object NapBoxSelectionCleared : RegisterSubscriptionIntent
     data class InstallationTypeSelected(val type: InstallationType) : RegisterSubscriptionIntent
