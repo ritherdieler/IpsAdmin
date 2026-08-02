@@ -14,7 +14,7 @@ apply from: "${rootProject.projectDir}/gradle/secrets.gradle"
 
 def localProps = loadLocalProperties(rootProject)
 def sendCloudMessagingApiKey = propOrEnv(localProps, "SEND_CLOUD_MESSAGING_API_KEY")
-def obsApiKey = propOrEnv(localProps, "OBS_API_KEY")
+def obsApiKeyProd = resolveProdObsApiKey(localProps)
 
 
 secrets {
@@ -31,7 +31,7 @@ android {
         applicationId "com.dscorp.ispadmin"
         minSdk rootProject.ext.minSdk
         targetSdk rootProject.ext.targetSdk
-        versionCode 52
+        versionCode 53
         versionName "2.6.1"
         testInstrumentationRunner "com.dscorp.ispadmin.test.InstrumentationTestRunner"
         vectorDrawables {
@@ -56,7 +56,7 @@ android {
             buildConfigField 'String', "FIRE_BASE_URL", '"https://fcm.googleapis.com"'
             buildConfigField 'String', "BASE_URL", '"https://api.gigafiberperu.cloud/ispadmin/"'
             buildConfigField 'String', "OBS_BASE_URL", '"https://api.gigafiberperu.cloud/ispadmin/"'
-            buildConfigField 'String', "OBS_API_KEY", "\"${obsApiKey}\""
+            buildConfigField 'String', "OBS_API_KEY", "\"${obsApiKeyProd}\""
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", "\"${sendCloudMessagingApiKey}\""
         }
     }
@@ -281,5 +281,20 @@ tasks.register("debugWithReverse") {
     doLast {
         println "✅ App instalada y ADB reverse configurado"
         println "🔗 URL: http://127.0.0.1:8080/"
+    }
+}
+
+gradle.taskGraph.whenReady { graph ->
+    def needsProdObsKey = graph.allTasks.any { task ->
+        def name = task.name.toLowerCase()
+        name.contains("prod") && !name.contains("dev") &&
+            (name.contains("assemble") || name.contains("install") || name.contains("bundle") ||
+                name.contains("compile") || name.contains("generate"))
+    }
+    if (needsProdObsKey && obsApiKeyProd.isEmpty()) {
+        throw new GradleException(
+            "Falta OBS_API_KEY_ANDROID en local.properties (mismo valor que OBS_API_KEY_ANDROID del backend en prod). " +
+                "Opcional: ./scripts/sync-obs-android-key-from-prod.sh"
+        )
     }
 }

@@ -5,14 +5,22 @@
 ##
 ## Keys:
 ##   sdk.dir                       - Android SDK path (Android Studio)
-##   gpr.user / gpr.key            - GitHub Packages credentials (com.dscorp:components)
+##   gpr.user / gpr.key            - GitHub Packages (com.dscorp:components)
+##                                   Usuario = login GitHub; gpr.key = PAT con scope read:packages
+##                                   Tras login: gh auth refresh --hostname github.com -s read:packages
+##                                   Luego: ./scripts/sync-gpr-from-gh.sh
 ##   MAPS_API_KEY                  - Google Maps API key (injected into AndroidManifest)
-##   OBS_API_KEY                   - Observability API key (prod BuildConfig; ignored in dev)
+##   OBS_API_KEY_ANDROID           - Misma clave que OBS_API_KEY_ANDROID del backend prod (variantes prodDebug/prodRelease)
+##   OBS_API_KEY                   - (Deprecado) fallback si falta OBS_API_KEY_ANDROID
 ##   SEND_CLOUD_MESSAGING_API_KEY  - FCM legacy server key (SendMessagingCloudApi)
+##
+## Prod en campo: variante prodDebug (./gradlew :presentation:installProdDebug)
+## Sincronizar clave observabilidad desde VPS: ./scripts/sync-obs-android-key-from-prod.sh
 
 sdk.dir=
 gpr.user=
 gpr.key=
 MAPS_API_KEY=
+OBS_API_KEY_ANDROID=
 OBS_API_KEY=
 SEND_CLOUD_MESSAGING_API_KEY=
