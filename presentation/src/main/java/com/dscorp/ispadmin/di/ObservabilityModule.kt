@@ -23,6 +23,7 @@ import com.dscorp.ispadmin.observability.ObservabilityReplaySender
 import com.dscorp.ispadmin.observability.ObservabilityScreenRecorder
 import com.dscorp.ispadmin.observability.ObservabilitySpanApi
 import com.dscorp.ispadmin.observability.ObservabilityTracer
+import com.dscorp.ispadmin.observability.ProdObsApiKeyResolver
 import com.dscorp.ispadmin.observability.ObservabilityWorkScheduler
 import com.dscorp.ispadmin.observability.ObservabilityActivityTracker
 import com.dscorp.ispadmin.observability.ObservabilityComposeClick
@@ -51,7 +52,11 @@ val observabilityModule = module {
     single<ObsCrashReporter> { FirebaseObsCrashReporter() }
     single {
         ObservabilityConfig(
-            apiKey = resolveObservabilityApiKey(BuildConfig.FLAVOR, BuildConfig.OBS_API_KEY),
+            apiKey = resolveObservabilityApiKey(
+                flavor = BuildConfig.FLAVOR,
+                buildConfigKey = BuildConfig.OBS_API_KEY,
+                buildConfigAndroidKey = BuildConfig.OBS_API_KEY_ANDROID
+            ),
             sanitizePayloads = !BuildConfig.DEBUG
         )
     }
@@ -153,8 +158,16 @@ val observabilityModule = module {
     }
 }
 
-internal fun resolveObservabilityApiKey(flavor: String, buildConfigKey: String): String =
-    if (flavor.equals("dev", ignoreCase = true)) "dev-obs-android-key" else buildConfigKey
+internal fun resolveObservabilityApiKey(
+    flavor: String,
+    buildConfigKey: String,
+    buildConfigAndroidKey: String = ""
+): String =
+    if (flavor.equals("dev", ignoreCase = true)) {
+        "dev-obs-android-key"
+    } else {
+        ProdObsApiKeyResolver.resolve(buildConfigAndroidKey, buildConfigKey)
+    }
 
 private fun provideObservabilityHttpClient(gson: Gson, apiKey: String): OkHttpClient {
     val builder = OkHttpClient.Builder()

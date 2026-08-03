@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -66,6 +67,7 @@ import com.dscorp.ispadmin.presentation.ui.features.installationorders.Installat
 import com.dscorp.ispadmin.presentation.ui.features.locationMapView.LocationSelectorComposeDialog
 import com.dscorp.ispadmin.presentation.ui.features.main.MainEvent
 import com.dscorp.ispadmin.presentation.ui.features.main.MainViewModel
+import com.dscorp.ispadmin.presentation.ui.features.main.MainNavTestTags
 import com.dscorp.ispadmin.presentation.ui.features.main.MenuDrawerContent
 import com.dscorp.ispadmin.presentation.ui.features.migration.MigrationComposeScreen
 import com.dscorp.ispadmin.presentation.ui.features.outlay.RegisterOutlayScreen
@@ -202,11 +204,14 @@ fun FeatureNavGraph(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = {
-                            scope.launch {
-                                drawerState.open()
-                            }
-                        }) {
+                        IconButton(
+                            onClick = {
+                                scope.launch {
+                                    drawerState.open()
+                                }
+                            },
+                            modifier = Modifier.testTag(MainNavTestTags.OPEN_DRAWER)
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Menu,
                                 contentDescription = "Menu"

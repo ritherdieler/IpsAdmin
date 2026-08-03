@@ -1,0 +1,23 @@
+<journey name="MK1 lab payment Mikrotik">
+  <description>
+    Login labmk1, buscar suscripción 900001, registrar pago 900001 y verificar que la IP 192.168.250.1 sale de deudores en MK1.
+    Ejecutar: scripts/e2e_mk1_payment_lab.sh (android-cli layout + adb).
+  </description>
+  <actions>
+    <action>Reset fixture con ispadmin-backend/scripts/mk1-lab-reset.sh</action>
+    <action>Tap login_username, escribir labmk1</action>
+    <action>Tap login_password, escribir contraseña lab</action>
+    <action>Tap login_submit</action>
+    <action>Tap main_nav_open_drawer</action>
+    <action>Tap drawer_nav_subscription_finder</action>
+    <action>Tap subscription_search_filter_code</action>
+    <action>Tap subscription_search_query_code e introducir 900001</action>
+    <action>Tap subscription_result_item_900001</action>
+    <action>Tap subscription_result_menu_900001</action>
+    <action>Tap subscription_result_menu_payment_history_900001</action>
+    <action>Tap payment_history_item_900001</action>
+    <action>Tap payment_register_method y elegir Efectivo</action>
+    <action>Tap payment_register_submit</action>
+    <action>Verificar que 192.168.250.1 no aparece en GET /api/filter-rules/debt-cut/1</action>
+  </actions>
+</journey>

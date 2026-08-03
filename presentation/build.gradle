@@ -22,6 +22,8 @@ secrets {
     ignoreList.add("sdk.*")
     ignoreList.add("gpr.user")
     ignoreList.add("gpr.key")
+    ignoreList.add("OBS_API_KEY")
+    ignoreList.add("OBS_API_KEY_ANDROID")
 }
 
 android {
@@ -49,6 +51,7 @@ android {
             buildConfigField 'String', "BASE_URL", '"http://127.0.0.1:8080/ispadmin/"'
             buildConfigField 'String', "OBS_BASE_URL", '"http://127.0.0.1:8080/ispadmin/"'
             buildConfigField 'String', "OBS_API_KEY", '"dev-obs-android-key"'
+            buildConfigField 'String', "OBS_API_KEY_ANDROID", '""'
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", "\"${sendCloudMessagingApiKey}\""
         }
         prod {
@@ -57,6 +60,7 @@ android {
             buildConfigField 'String', "BASE_URL", '"https://api.gigafiberperu.cloud/ispadmin/"'
             buildConfigField 'String', "OBS_BASE_URL", '"https://api.gigafiberperu.cloud/ispadmin/"'
             buildConfigField 'String', "OBS_API_KEY", "\"${obsApiKeyProd}\""
+            buildConfigField 'String', "OBS_API_KEY_ANDROID", "\"${obsApiKeyProd}\""
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", "\"${sendCloudMessagingApiKey}\""
         }
     }

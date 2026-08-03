@@ -134,6 +134,7 @@ for n in data:
 PY
 }
 
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 $ADB -s "$DEVICE" reverse tcp:8080 tcp:8080
 $ADB -s "$DEVICE" shell am force-stop "$PACKAGE"
 $ADB -s "$DEVICE" shell pm clear "$PACKAGE"
@@ -172,3 +173,4 @@ PY
 
 PID="$($ADB -s "$DEVICE" shell pidof "$PACKAGE" | tr -d '\r')"
 $ADB -s "$DEVICE" logcat -d --pid="$PID" | rg "users/login| <-- 20" | tail -20 | tee "$OUT/log.txt"
+fi

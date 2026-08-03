@@ -17,7 +17,8 @@ import com.dscorp.ispadmin.navigation.NavRoutes.FeatureRoutes
 sealed class DrawerItem(
     val title: String,
     val route: Any,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val menuTestTag: String? = null
 ) {
 
     //Grupo Dashboard
@@ -43,8 +44,11 @@ sealed class DrawerItem(
 
     // Grupo: Suscripciones
     object SubscriptionFinder :
-        DrawerItem("Buscador de suscripciones", FeatureRoutes.Subscription.Find,
-            Icons.AutoMirrored.Filled.ManageSearch
+        DrawerItem(
+            "Buscador de suscripciones",
+            FeatureRoutes.Subscription.Find,
+            Icons.AutoMirrored.Filled.ManageSearch,
+            menuTestTag = "drawer_nav_subscription_finder"
         )
 
     object RegisterSubscription : DrawerItem(

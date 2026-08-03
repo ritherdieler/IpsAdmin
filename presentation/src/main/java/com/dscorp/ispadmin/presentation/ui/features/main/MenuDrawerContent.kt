@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -100,6 +101,7 @@ fun MenuDrawerContent(
                 MenuItem(
                     icon = item.icon,
                     title = item.title,
+                    menuTestTag = item.menuTestTag,
                     isSelected = navController.currentBackStackEntry?.destination?.route == item.route.toString(),
                     onClick = {
                         navController.navigate(item.route) {
@@ -118,6 +120,7 @@ fun MenuDrawerContent(
 fun MenuItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     title: String,
+    menuTestTag: String? = null,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -136,6 +139,7 @@ fun MenuItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .then(if (menuTestTag != null) Modifier.testTag(menuTestTag) else Modifier)
             .clickable(onClick = onClick)
             .background(backgroundColor)
             .padding(vertical = 12.dp, horizontal = 16.dp),

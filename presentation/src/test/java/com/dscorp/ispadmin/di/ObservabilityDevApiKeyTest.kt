@@ -17,4 +17,26 @@ class ObservabilityDevApiKeyTest {
         assertThat(resolveObservabilityApiKey("prod", "obs_android_prod"))
             .isEqualTo("obs_android_prod")
     }
+
+    @Test
+    fun `prod flavor prefiere OBS_API_KEY_ANDROID sobre OBS_API_KEY legacy dev`() {
+        assertThat(
+            resolveObservabilityApiKey(
+                flavor = "prod",
+                buildConfigKey = "dev-obs-android-key",
+                buildConfigAndroidKey = "obs_android_prod_key"
+            )
+        ).isEqualTo("obs_android_prod_key")
+    }
+
+    @Test
+    fun `dev flavor ignora keys de buildConfig y usa dev-obs-android-key`() {
+        assertThat(
+            resolveObservabilityApiKey(
+                flavor = "dev",
+                buildConfigKey = "dev-obs-android-key",
+                buildConfigAndroidKey = "obs_android_prod_key"
+            )
+        ).isEqualTo("dev-obs-android-key")
+    }
 }
