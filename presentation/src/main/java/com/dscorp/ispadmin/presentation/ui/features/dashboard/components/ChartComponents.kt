@@ -33,8 +33,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.dscorp.ispadmin.R
 import com.dscorp.ispadmin.domain.model.DashBoardDataResponse
 import com.dscorp.ispadmin.domain.model.MonthlyCollectsResume
 import com.dscorp.ispadmin.domain.model.MonthlyGrossRevenueResume
@@ -77,10 +79,7 @@ fun PieChartContainer(data: DashBoardDataResponse) {
         animationProgress = 1f
     }
     
-    // Calcular total
-    val total = data.economicResume.totalDiscount + 
-                data.economicResume.totalRaised + 
-                data.economicResume.totalToCollect
+    val total = data.economicResume.grossRevenue
     
     // Obtener colores del tema actual
     val backgroundColor = MaterialTheme.colorScheme.background.toArgb()
@@ -186,7 +185,7 @@ fun PieChartContainer(data: DashBoardDataResponse) {
             // Mostrar Total
             val formatter = NumberFormat.getNumberInstance(Locale("es", "PE"))
             Text(
-                text = "Total: S/. ${formatter.format(total)}",
+                text = "${stringResource(R.string.total_gross)}: S/. ${formatter.format(total)}",
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),

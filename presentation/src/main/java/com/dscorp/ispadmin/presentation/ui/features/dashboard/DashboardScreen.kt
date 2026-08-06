@@ -410,8 +410,6 @@ fun EconomicResumeTable(data: DashBoardDataResponse) {
                 isHeader = true
             )
             
-            // Filas de datos
-            
             TableRow(
                 title = stringResource(R.string.fixed_costs),
                 value = data.fixedCostsAsString(),
