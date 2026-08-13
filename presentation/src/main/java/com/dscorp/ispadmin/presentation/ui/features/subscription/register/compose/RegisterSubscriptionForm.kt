@@ -107,6 +107,30 @@ fun RegisterSubscriptionForm(
                 onPhoneChanged = { onIntent(RegisterSubscriptionIntent.PhoneChanged(it)) }
             )
 
+            AnimatedVisibility(
+                visible = form.requiresClientIpAddress,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Column {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    MyOutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("tf_client_ip_address"),
+                        label = "IP del cliente",
+                        value = form.clientIpAddress,
+                        errorMessage = form.clientIpAddressError,
+                        onValueChange = { onIntent(RegisterSubscriptionIntent.ClientIpAddressChanged(it)) },
+                        enabled = !formState.isLoading,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Decimal,
+                            imeAction = ImeAction.Next
+                        )
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 

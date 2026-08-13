@@ -21,6 +21,8 @@ class RegisterSubscriptionFormHostDeviceTest {
         assertThat(formSource).contains("RegisterSubscriptionIntent.HostDeviceSelected")
         assertThat(formSource).contains("R.string.host_device")
         assertThat(formSource).contains("form.activeCoreDevices()")
+        assertThat(formSource).contains("testTag(\"tf_client_ip_address\")")
+        assertThat(formSource).contains("requiresClientIpAddress")
     }
 
     @Test

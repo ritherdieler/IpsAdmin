@@ -14,5 +14,6 @@ data class RegisterSubscriptionState(
     val currentUser: User? = null,
     
     val registerSubscriptionForm: RegisterSubscriptionFormState = RegisterSubscriptionFormState(),
-    val orderId: Int? = null
+    val orderId: Int? = null,
+    val isOfflineMode: Boolean = false
 )

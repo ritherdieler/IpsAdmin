@@ -21,6 +21,7 @@ import com.dscorp.ispadmin.presentation.ui.features.profile.ProfileViewModel
 import com.dscorp.ispadmin.presentation.ui.features.registration.RegisterViewModel
 import com.dscorp.ispadmin.presentation.ui.features.report.ReportsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionViewModel
+import com.dscorp.ispadmin.presentation.ui.features.subscription.pending.PendingSubscriptionsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose.RegisterSubscriptionComposeViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionFinderViewModel
@@ -44,7 +45,6 @@ val viewModelModule = module {
     viewModel { RegisterViewModel(get(), get(), get()) }
     viewModel {
         RegisterSubscriptionComposeViewModel(
-            get(),
             get(),
             get(),
             get(),
@@ -83,5 +83,12 @@ val viewModelModule = module {
     viewModel { PayerFinderViewmodel(get(), get()) }
     viewModel { MainViewModel(get(), get()) }
     viewModel { PlanListViewModel(get(), get(), get()) }
+    viewModel {
+        PendingSubscriptionsViewModel(
+            get(),
+            get(),
+            get<CoroutineDispatcher>(named("mainImmediate"))
+        )
+    }
 
 }

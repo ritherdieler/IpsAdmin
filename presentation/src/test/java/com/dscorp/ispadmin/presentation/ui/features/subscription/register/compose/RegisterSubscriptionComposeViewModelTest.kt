@@ -1,32 +1,41 @@
 package com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose
 
+import com.dscorp.ispadmin.domain.model.CatalogCoreDevice
+import com.dscorp.ispadmin.domain.model.CatalogNapBox
+import com.dscorp.ispadmin.domain.model.CatalogOnu
+import com.dscorp.ispadmin.domain.model.CatalogPlan
 import com.dscorp.ispadmin.domain.model.InstallationOrder
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.NapBoxResponse
 import com.dscorp.ispadmin.domain.model.NetworkDevice
 import com.dscorp.ispadmin.domain.model.Onu
+import com.dscorp.ispadmin.domain.model.PendingSubscription
 import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.PlanResponse
+import com.dscorp.ispadmin.domain.model.RegistrationCatalog
 import com.dscorp.ispadmin.domain.model.Subscription
 import com.dscorp.ispadmin.domain.model.User
 import com.dscorp.ispadmin.domain.usecase.InstallationOrderUseCase
-import com.dscorp.ispadmin.domain.usecase.plan.GetPlanListUseCase
+import com.dscorp.ispadmin.domain.usecase.catalog.GetRegistrationCatalogUseCase
+import com.dscorp.ispadmin.domain.usecase.catalog.RefreshRegistrationCatalogUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetAvailableOnuListUseCase
-import com.dscorp.ispadmin.domain.usecase.subscription.GetCoreDevicesUseCase
-import com.dscorp.ispadmin.domain.usecase.subscription.GetNapBoxListUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetNearNapBoxesUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetPlaceFromLocationUseCase
-import com.dscorp.ispadmin.domain.usecase.subscription.GetPlaceListUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetUserSessionUseCase
+import com.dscorp.ispadmin.domain.usecase.subscription.ObserveOfflineRegistrationModeUseCase
+import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionResult
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionUseCase
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionUiEvent
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
@@ -50,15 +59,15 @@ class RegisterSubscriptionComposeViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var getAvailableOnuListUseCase: GetAvailableOnuListUseCase
-    private lateinit var getPlanListUseCase: GetPlanListUseCase
-    private lateinit var getPlaceListUseCase: GetPlaceListUseCase
+    private lateinit var getRegistrationCatalogUseCase: GetRegistrationCatalogUseCase
+    private lateinit var refreshRegistrationCatalogUseCase: RefreshRegistrationCatalogUseCase
     private lateinit var getPlaceFromLocationUseCase: GetPlaceFromLocationUseCase
-    private lateinit var getNapBoxListUseCase: GetNapBoxListUseCase
     private lateinit var registerSubscriptionUseCase: RegisterSubscriptionUseCase
     private lateinit var getUserSessionUseCase: GetUserSessionUseCase
-    private lateinit var getCoreDevicesUseCase: GetCoreDevicesUseCase
     private lateinit var getNearNapBoxesUseCase: GetNearNapBoxesUseCase
     private lateinit var installationOrderUseCase: InstallationOrderUseCase
+    private lateinit var observeOfflineRegistrationModeUseCase: ObserveOfflineRegistrationModeUseCase
+    private val offlineModeFlow = MutableStateFlow(false)
 
     private lateinit var viewModel: RegisterSubscriptionComposeViewModel
 
@@ -76,39 +85,73 @@ class RegisterSubscriptionComposeViewModelTest {
 
     private lateinit var facadePhotoFile: File
 
+    private fun sampleCatalog(
+        plans: List<CatalogPlan> = listOf(
+            CatalogPlan(
+                id = "p1",
+                name = "Plan",
+                price = 10.0,
+                downloadSpeed = "100",
+                uploadSpeed = "100",
+                type = "FIBER"
+            )
+        ),
+        napBoxes: List<CatalogNapBox> = emptyList(),
+        onus: List<CatalogOnu> = emptyList(),
+        coreDevices: List<CatalogCoreDevice> = listOf(
+            CatalogCoreDevice(id = 10, name = "Core-A", disabled = false)
+        )
+    ) = RegistrationCatalog(
+        plans = plans,
+        places = emptyList(),
+        napBoxes = napBoxes,
+        onus = onus,
+        coreDevices = coreDevices
+    )
+
+    private fun fiberNap() = CatalogNapBox(id = "n1", placeName = "P1", placeId = 1)
+
+    private fun fiberOnu() = CatalogOnu(
+        sn = "sn1",
+        board = "b",
+        oltId = "olt",
+        onu = "1",
+        onuTypeId = "t",
+        onuTypeName = "type",
+        ponType = "pon",
+        port = "p"
+    )
+
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         facadePhotoFile = File.createTempFile("facade_test", ".jpg")
         getAvailableOnuListUseCase = mockk()
-        getPlanListUseCase = mockk()
-        getPlaceListUseCase = mockk()
+        getRegistrationCatalogUseCase = mockk()
+        refreshRegistrationCatalogUseCase = mockk()
         getPlaceFromLocationUseCase = mockk()
-        getNapBoxListUseCase = mockk()
         registerSubscriptionUseCase = mockk()
         getUserSessionUseCase = mockk()
-        getCoreDevicesUseCase = mockk()
         getNearNapBoxesUseCase = mockk()
         installationOrderUseCase = mockk(relaxed = true)
+        observeOfflineRegistrationModeUseCase = mockk()
+        every { observeOfflineRegistrationModeUseCase() } returns Result.success(offlineModeFlow)
 
         coEvery { getAvailableOnuListUseCase() } returns Result.success(emptyList())
-        coEvery { getPlanListUseCase() } returns Result.success(listOf(samplePlan))
-        coEvery { getPlaceListUseCase() } returns Result.success(emptyList())
-        coEvery { getNapBoxListUseCase() } returns Result.success(emptyList())
+        coEvery { refreshRegistrationCatalogUseCase() } returns Result.success(Unit)
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(sampleCatalog())
         coEvery { getUserSessionUseCase() } returns Result.success(sampleUser)
-        coEvery { getCoreDevicesUseCase() } returns Result.success(listOf(sampleCoreDevice))
 
         viewModel = RegisterSubscriptionComposeViewModel(
             getAvailableOnuListUseCase = getAvailableOnuListUseCase,
-            getPlanListUseCase = getPlanListUseCase,
-            getPlaceListUseCase = getPlaceListUseCase,
+            getRegistrationCatalogUseCase = getRegistrationCatalogUseCase,
+            refreshRegistrationCatalogUseCase = refreshRegistrationCatalogUseCase,
             getPlaceFromLocationUseCase = getPlaceFromLocationUseCase,
-            getNapBoxListUseCase = getNapBoxListUseCase,
             registerSubscriptionUseCase = registerSubscriptionUseCase,
             getUserSessionUseCase = getUserSessionUseCase,
-            getCoreDevicesUseCase = getCoreDevicesUseCase,
             getNearNapBoxesUseCase = getNearNapBoxesUseCase,
             installationOrderUseCase = installationOrderUseCase,
+            observeOfflineRegistrationModeUseCase = observeOfflineRegistrationModeUseCase,
             observabilityClient = mockk(relaxed = true),
             mainImmediate = testDispatcher
         )
@@ -133,6 +176,8 @@ class RegisterSubscriptionComposeViewModelTest {
         assertEquals(false, viewModel.uiState.value.isLoading)
         assertEquals(sampleUser, viewModel.uiState.value.currentUser)
         assertEquals(samplePlan, viewModel.uiState.value.registerSubscriptionForm.selectedPlan)
+        coVerify(exactly = 1) { refreshRegistrationCatalogUseCase() }
+        coVerify(exactly = 1) { getRegistrationCatalogUseCase() }
 
         job.cancel()
     }
@@ -169,8 +214,8 @@ class RegisterSubscriptionComposeViewModelTest {
             customerDni = "12345678",
             place = place
         )
-        coEvery { getNapBoxListUseCase() } returns Result.success(
-            listOf(NapBoxResponse(id = "1", placeName = "Lima", placeId = 5))
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(CatalogNapBox(id = "1", placeName = "Lima", placeId = 5)))
         )
         coEvery { installationOrderUseCase.getInstallationOrderByIdResult(99) } returns Result.success(order)
 
@@ -186,10 +231,7 @@ class RegisterSubscriptionComposeViewModelTest {
 
     @Test
     fun `refreshOnuList emits error on failure`() = runTest(testDispatcher) {
-        coEvery { getAvailableOnuListUseCase() } returnsMany listOf(
-            Result.success(emptyList()),
-            Result.failure(Exception("onu fail"))
-        )
+        coEvery { getAvailableOnuListUseCase() } returns Result.failure(Exception("onu fail"))
 
         viewModel.loadScreenData(null)
         advanceUntilIdle()
@@ -212,8 +254,9 @@ class RegisterSubscriptionComposeViewModelTest {
     fun `saveSubscription emits success when register succeeds`() = runTest(testDispatcher) {
         val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
         val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
-        coEvery { getNapBoxListUseCase() } returns Result.success(listOf(nap))
-        coEvery { getAvailableOnuListUseCase() } returns Result.success(listOf(onu))
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+        )
 
         viewModel.loadScreenData(null)
         advanceUntilIdle()
@@ -223,7 +266,7 @@ class RegisterSubscriptionComposeViewModelTest {
             registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
         } answers {
             assertEquals(true, firstArg<Subscription>().autoCut)
-            Result.success(registered)
+            Result.success(RegisterSubscriptionResult.Registered(registered))
         }
 
         viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
@@ -253,11 +296,58 @@ class RegisterSubscriptionComposeViewModelTest {
     }
 
     @Test
+    fun `saveSubscription emits QueuedOffline when register is queued locally`() = runTest(testDispatcher) {
+        val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+        val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+        )
+
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        val pending = PendingSubscription(
+            localId = "local-1",
+            clientRequestId = "client-1",
+            subscriptionJson = "{}",
+            createdAt = 1L
+        )
+        coEvery {
+            registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
+        } returns Result.success(RegisterSubscriptionResult.QueuedOffline(pending))
+
+        viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
+        viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
+        viewModel.onIntent(RegisterSubscriptionIntent.DniChanged("12345678"))
+        viewModel.onIntent(RegisterSubscriptionIntent.AddressChanged("Calle larga 12345"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PhoneChanged("987654321"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlanSelected(samplePlan))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
+        viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
+        viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+
+        val events = mutableListOf<RegisterSubscriptionUiEvent>()
+        val job = launch {
+            viewModel.uiEvent.collect { events.add(it) }
+        }
+
+        viewModel.saveSubscription(facadePhotoFile)
+        advanceUntilIdle()
+
+        assertEquals(1, events.size)
+        assertEquals(RegisterSubscriptionUiEvent.QueuedOffline, events[0])
+        assertEquals(false, viewModel.uiState.value.isLoading)
+
+        job.cancel()
+    }
+
+    @Test
     fun `saveSubscription emits error when register fails`() = runTest(testDispatcher) {
         val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
         val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
-        coEvery { getNapBoxListUseCase() } returns Result.success(listOf(nap))
-        coEvery { getAvailableOnuListUseCase() } returns Result.success(listOf(onu))
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+        )
 
         viewModel.loadScreenData(null)
         advanceUntilIdle()
@@ -334,8 +424,9 @@ class RegisterSubscriptionComposeViewModelTest {
     fun `saveSubscription ignores second call while first is in progress`() = runTest(testDispatcher) {
         val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
         val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
-        coEvery { getNapBoxListUseCase() } returns Result.success(listOf(nap))
-        coEvery { getAvailableOnuListUseCase() } returns Result.success(listOf(onu))
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+        )
 
         viewModel.loadScreenData(null)
         advanceUntilIdle()
@@ -343,7 +434,7 @@ class RegisterSubscriptionComposeViewModelTest {
         val registered = Subscription(subscriptionId = 1, firstName = "A", lastName = "B")
         coEvery { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) } coAnswers {
             delay(100)
-            Result.success(registered)
+            Result.success(RegisterSubscriptionResult.Registered(registered))
         }
 
         viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
@@ -365,8 +456,14 @@ class RegisterSubscriptionComposeViewModelTest {
 
     @Test
     fun `loadScreenData auto selects single active core and hides selector`() = runTest(testDispatcher) {
-        val disabled = NetworkDevice(id = 99, name = "Disabled", disabled = true)
-        coEvery { getCoreDevicesUseCase() } returns Result.success(listOf(sampleCoreDevice, disabled))
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(
+                coreDevices = listOf(
+                    CatalogCoreDevice(id = 10, name = "Core-A", disabled = false),
+                    CatalogCoreDevice(id = 99, name = "Disabled", disabled = true)
+                )
+            )
+        )
 
         viewModel.loadScreenData(null)
         advanceUntilIdle()
@@ -378,9 +475,14 @@ class RegisterSubscriptionComposeViewModelTest {
 
     @Test
     fun `loadScreenData leaves host null when multiple active cores`() = runTest(testDispatcher) {
-        coEvery {
-            getCoreDevicesUseCase()
-        } returns Result.success(listOf(sampleCoreDevice, secondCoreDevice))
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(
+                coreDevices = listOf(
+                    CatalogCoreDevice(id = 10, name = "Core-A", disabled = false),
+                    CatalogCoreDevice(id = 11, name = "Core-B", disabled = false)
+                )
+            )
+        )
 
         viewModel.loadScreenData(null)
         advanceUntilIdle()
@@ -392,10 +494,10 @@ class RegisterSubscriptionComposeViewModelTest {
 
     @Test
     fun `loadScreenData emits error when no active cores`() = runTest(testDispatcher) {
-        coEvery {
-            getCoreDevicesUseCase()
-        } returns Result.success(
-            listOf(NetworkDevice(id = 1, name = "Off", disabled = true))
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(
+                coreDevices = listOf(CatalogCoreDevice(id = 1, name = "Off", disabled = true))
+            )
         )
 
         val events = mutableListOf<RegisterSubscriptionUiEvent>()
@@ -418,9 +520,14 @@ class RegisterSubscriptionComposeViewModelTest {
 
     @Test
     fun `HostDeviceSelected updates selected host and clears error`() = runTest(testDispatcher) {
-        coEvery {
-            getCoreDevicesUseCase()
-        } returns Result.success(listOf(sampleCoreDevice, secondCoreDevice))
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(
+                coreDevices = listOf(
+                    CatalogCoreDevice(id = 10, name = "Core-A", disabled = false),
+                    CatalogCoreDevice(id = 11, name = "Core-B", disabled = false)
+                )
+            )
+        )
 
         viewModel.loadScreenData(null)
         advanceUntilIdle()
@@ -443,11 +550,16 @@ class RegisterSubscriptionComposeViewModelTest {
     fun `RegisterClick fails validation when multiple cores and none selected`() = runTest(testDispatcher) {
         val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
         val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
-        coEvery { getNapBoxListUseCase() } returns Result.success(listOf(nap))
-        coEvery { getAvailableOnuListUseCase() } returns Result.success(listOf(onu))
-        coEvery {
-            getCoreDevicesUseCase()
-        } returns Result.success(listOf(sampleCoreDevice, secondCoreDevice))
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(
+                napBoxes = listOf(fiberNap()),
+                onus = listOf(fiberOnu()),
+                coreDevices = listOf(
+                    CatalogCoreDevice(id = 10, name = "Core-A", disabled = false),
+                    CatalogCoreDevice(id = 11, name = "Core-B", disabled = false)
+                )
+            )
+        )
 
         viewModel.loadScreenData(null)
         advanceUntilIdle()
@@ -467,5 +579,69 @@ class RegisterSubscriptionComposeViewModelTest {
 
         assertNotNull(viewModel.uiState.value.registerSubscriptionForm.hostDeviceError)
         coVerify(exactly = 0) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
+    }
+
+    @Test
+    fun `loadScreenData marks form offline when MikroTik is unreachable`() = runTest(testDispatcher) {
+        offlineModeFlow.value = true
+
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        assertTrue(viewModel.uiState.value.isOfflineMode)
+        assertTrue(viewModel.uiState.value.registerSubscriptionForm.requiresClientIpAddress)
+    }
+
+    @Test
+    fun `ClientIpAddressChanged stores value on form`() = runTest(testDispatcher) {
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        viewModel.onIntent(RegisterSubscriptionIntent.ClientIpAddressChanged("10.1.1.20"))
+        advanceUntilIdle()
+
+        assertEquals("10.1.1.20", viewModel.uiState.value.registerSubscriptionForm.clientIpAddress)
+    }
+
+    @Test
+    fun `saveSubscription sends clientIpAddress when offline`() = runTest(testDispatcher) {
+        offlineModeFlow.value = true
+        val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+        val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+        )
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        val pending = PendingSubscription(
+            localId = "local-1",
+            clientRequestId = "client-1",
+            subscriptionJson = "{}",
+            createdAt = 1L
+        )
+        coEvery {
+            registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
+        } answers {
+            assertEquals("192.168.25.10", firstArg<Subscription>().clientIpAddress)
+            assertEquals("192.168.25.10", firstArg<Subscription>().ip)
+            Result.success(RegisterSubscriptionResult.QueuedOffline(pending))
+        }
+
+        viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
+        viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
+        viewModel.onIntent(RegisterSubscriptionIntent.DniChanged("12345678"))
+        viewModel.onIntent(RegisterSubscriptionIntent.AddressChanged("Calle larga 12345"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PhoneChanged("987654321"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlanSelected(samplePlan))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
+        viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
+        viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+        viewModel.onIntent(RegisterSubscriptionIntent.ClientIpAddressChanged("192.168.25.10"))
+
+        viewModel.saveSubscription(facadePhotoFile)
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
     }
 }

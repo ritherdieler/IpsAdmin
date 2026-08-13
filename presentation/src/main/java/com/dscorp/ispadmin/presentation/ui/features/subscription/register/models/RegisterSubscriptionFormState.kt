@@ -9,6 +9,7 @@ import com.dscorp.ispadmin.domain.model.Onu
 import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.PlanResponse
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionAddressError
+import com.dscorp.ispadmin.domain.model.subscription.subscriptionClientIpAddressError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionDniError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionFacadePhotoError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionFirstNameError
@@ -60,6 +61,9 @@ data class RegisterSubscriptionFormState(
     val facadePhotoError: String? = null,
     val installationType: InstallationType = InstallationType.FIBER,
     val equipmentCondition: EquipmentCondition = EquipmentCondition.LOAN,
+    val clientIpAddress: String = "",
+    val clientIpAddressError: String? = null,
+    val requiresClientIpAddress: Boolean = false,
 ) {
     fun requiresNapBox(): Boolean {
         return installationType == InstallationType.FIBER ||
@@ -96,12 +100,21 @@ data class RegisterSubscriptionFormState(
                 coreDeviceList
             )
             FormFieldKey.EQUIPMENT_CONDITION -> null
+            FormFieldKey.CLIENT_IP_ADDRESS -> subscriptionClientIpAddressError(
+                clientIpAddress,
+                requiresClientIpAddress
+            )
         }
+    }
+
+    fun blockingFields(): List<FormFieldKey> {
+        return FormFieldKey.blockingForSubmit +
+            if (requiresClientIpAddress) listOf(FormFieldKey.CLIENT_IP_ADDRESS) else emptyList()
     }
 
     fun validated(vararg fields: FormFieldKey): RegisterSubscriptionFormState {
         val fieldsToValidate =
-            if (fields.isEmpty()) FormFieldKey.entries else fields.asList()
+            if (fields.isEmpty()) blockingFields() else fields.asList()
         return fieldsToValidate.fold(this) { form, field ->
             form.withFieldError(field, form.validate(field))
         }
@@ -109,7 +122,7 @@ data class RegisterSubscriptionFormState(
 
     fun isValid(): Boolean {
         val form = validated()
-        return FormFieldKey.blockingForSubmit.all { form.validate(it) == null }
+        return blockingFields().all { form.validate(it) == null }
     }
 }
 
@@ -131,5 +144,6 @@ private fun RegisterSubscriptionFormState.withFieldError(
         FormFieldKey.NOTE -> copy(noteError = message)
         FormFieldKey.HOST_DEVICE -> copy(hostDeviceError = message)
         FormFieldKey.EQUIPMENT_CONDITION -> this
+        FormFieldKey.CLIENT_IP_ADDRESS -> copy(clientIpAddressError = message)
     }
 }

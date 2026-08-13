@@ -73,6 +73,12 @@ ext {
     stethoVersion = '1.6.0'
     chuckerVersion = '4.1.0'
     
+    // Room
+    roomVersion = '2.7.1'
+
+    // Coroutines
+    coroutinesVersion = '1.9.0'
+
     // Test dependencies
     junitVersion = '4.13.2'
     mockitoVersion = '5.2.0'

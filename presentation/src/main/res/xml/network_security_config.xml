@@ -3,9 +3,11 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">127.0.0.1</domain>
         <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">192.168.1.12</domain>
         <domain includeSubdomains="true">192.168.1.29</domain>
         <domain includeSubdomains="true">192.168.1.5</domain>
         <domain includeSubdomains="true">192.168.1.11</domain>
+        <domain includeSubdomains="true">192.168.1.6</domain>
         <domain includeSubdomains="true">192.168.1.18</domain>
         <domain includeSubdomains="true">192.168.1.94</domain>
         <domain includeSubdomains="true">212.85.13.47</domain>

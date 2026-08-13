@@ -32,7 +32,7 @@ val useCaseModule = module {
     single { GetPlaceListUseCase(get()) }
     single { GetPlaceFromLocationUseCase(get()) }
     single { GetNapBoxListUseCase(get()) }
-    single { RegisterSubscriptionUseCase(get(), get()) }
+    single { RegisterSubscriptionUseCase(get(), get(), get(), get()) }
     single { GetUserSessionUseCase(get()) }
     single { GetCoreDevicesUseCase(get()) }
     single { GetNearNapBoxesUseCase(get()) }

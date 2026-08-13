@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <!-- Debug: HTTP local al backend de desarrollo. Sin esto Android bloquea cleartext a IPs nuevas. -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">127.0.0.1</domain>
         <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">192.168.1.12</domain>
         <domain includeSubdomains="true">192.168.1.29</domain>
         <domain includeSubdomains="true">192.168.1.5</domain>
         <domain includeSubdomains="true">192.168.1.11</domain>
+        <domain includeSubdomains="true">192.168.1.6</domain>
         <domain includeSubdomains="true">192.168.1.18</domain>
         <domain includeSubdomains="true">192.168.1.94</domain>
         <domain includeSubdomains="true">212.85.13.47</domain>
-
     </domain-config>
 </network-security-config>

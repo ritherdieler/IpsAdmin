@@ -55,8 +55,8 @@ android {
             versionNameSuffix "-dev"
             buildConfigField 'boolean', 'SKIP_VERSION_CHECK', 'true'
             buildConfigField 'String', "FIRE_BASE_URL", '"https://fcm.googleapis.com"'
-            buildConfigField 'String', "BASE_URL", '"http://192.168.1.11:8080/ispadmin/"'
-            buildConfigField 'String', "OBS_BASE_URL", '"http://192.168.1.11:8080/ispadmin/"'
+            buildConfigField 'String', "BASE_URL", '"http://127.0.0.1:8080/ispadmin/"'
+            buildConfigField 'String', "OBS_BASE_URL", '"http://127.0.0.1:8080/ispadmin/"'
             buildConfigField 'String', "OBS_API_KEY", '"dev-obs-android-key"'
             buildConfigField 'String', "OBS_API_KEY_ANDROID", '""'
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", "\"${sendCloudMessagingApiKey}\""
@@ -138,6 +138,8 @@ android {
 
 dependencies {
     implementation project(':observability')
+    implementation project(':domain')
+    implementation project(':data')
 
     // Accompanist
     implementation "com.google.accompanist:accompanist-permissions:${rootProject.ext.accompanistVersion}"
@@ -245,6 +247,8 @@ dependencies {
     testImplementation "com.squareup.okhttp3:mockwebserver:${rootProject.ext.okhttpVersion}"
     androidTestImplementation platform("androidx.compose:compose-bom:${rootProject.ext.composeBomVersion}")
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    testImplementation platform("androidx.compose:compose-bom:${rootProject.ext.composeBomVersion}")
+    testImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation "androidx.fragment:fragment-testing:${rootProject.ext.fragmentTestVersion}"
     testImplementation "org.robolectric:robolectric:${rootProject.ext.robolectricVersion}"
     testImplementation "org.mockito:mockito-inline:${rootProject.ext.mockitoVersion}"

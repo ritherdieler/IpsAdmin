@@ -81,6 +81,9 @@ import com.dscorp.ispadmin.presentation.ui.features.plan.PlanListViewModel
 import com.dscorp.ispadmin.presentation.ui.features.profile.ProfileScreen
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.EditSubscriptionViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.edit.compose.EditPlanSubscriptionScreen
+import com.dscorp.ispadmin.presentation.ui.features.subscription.pending.PendingSubscriptionsIntent
+import com.dscorp.ispadmin.presentation.ui.features.subscription.pending.PendingSubscriptionsScreen
+import com.dscorp.ispadmin.presentation.ui.features.subscription.pending.PendingSubscriptionsViewModel
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.compose.RegisterSubscriptionFormScreen
 import com.dscorp.ispadmin.presentation.ui.features.subscriptiondetail.SubscriptionDetailScreen
 import com.dscorp.ispadmin.presentation.ui.features.subscriptionfinder.compose.SubscriptionFinderScreen
@@ -151,6 +154,7 @@ fun FeatureNavGraph(
         is Profile -> "Perfil"
         is Subscription.Register -> "Registrar Suscripción"
         is Subscription.Find -> "Buscar Suscripción"
+        is Subscription.PendingSubscriptions -> "Suscripciones pendientes"
         is Subscription.Details -> "Suscripción #${currentRoute.subscriptionId}"
         is Subscription.ChangePlan -> "Cambiar Plan"
         is Subscription.Migrate -> "Migrar Suscripción"
@@ -302,6 +306,9 @@ private fun NavGraphContent(
                         installationOrderId = installationOrder,
                         onSubscriptionRegisterSuccess = {
                             navController.popBackStack()
+                        },
+                        onNavigateToPendingSubscriptions = {
+                            navController.navigate(Subscription.PendingSubscriptions)
                         }
                     )
                 }
@@ -311,6 +318,18 @@ private fun NavGraphContent(
                     }
                 }
             }
+        }
+        composable<Subscription.PendingSubscriptions> {
+            val viewModel: PendingSubscriptionsViewModel = koinViewModel()
+            val state by viewModel.uiState.collectAsStateWithLifecycle()
+            LaunchedEffect(Unit) {
+                viewModel.onIntent(PendingSubscriptionsIntent.Load)
+            }
+            PendingSubscriptionsScreen(
+                uiState = state,
+                onIntent = viewModel::onIntent,
+                uiEvents = viewModel.uiEvent
+            )
         }
         composable<Subscription.Find> {
             val viewModel: SubscriptionFinderViewModel = koinViewModel()

@@ -48,3 +48,5 @@ rootProject.name = "ispAdminAndroid"
 // Módulos de la aplicación
 include ':presentation'
 include ':observability'
+include ':domain'
+include ':data'

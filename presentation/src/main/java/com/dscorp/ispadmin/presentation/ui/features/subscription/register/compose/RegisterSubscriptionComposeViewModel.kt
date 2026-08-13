@@ -17,18 +17,23 @@ import com.dscorp.ispadmin.domain.model.subscription.subscriptionFacadePhotoErro
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionNapBoxErrorAfterNearbyRefresh
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionOnuErrorAfterListRefresh
 import com.dscorp.ispadmin.domain.usecase.InstallationOrderUseCase
-import com.dscorp.ispadmin.domain.usecase.plan.GetPlanListUseCase
+import com.dscorp.ispadmin.domain.usecase.catalog.GetRegistrationCatalogUseCase
+import com.dscorp.ispadmin.domain.usecase.catalog.RefreshRegistrationCatalogUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetAvailableOnuListUseCase
-import com.dscorp.ispadmin.domain.usecase.subscription.GetCoreDevicesUseCase
-import com.dscorp.ispadmin.domain.usecase.subscription.GetNapBoxListUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetNearNapBoxesUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetPlaceFromLocationUseCase
-import com.dscorp.ispadmin.domain.usecase.subscription.GetPlaceListUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.GetUserSessionUseCase
+import com.dscorp.ispadmin.domain.usecase.subscription.ObserveOfflineRegistrationModeUseCase
+import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionResult
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionUseCase
 import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
 import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.extension.removeSpecialCharacters
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.mapper.toNapBoxResponse
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.mapper.toNetworkDevice
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.mapper.toOnu
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.mapper.toPlace
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.mapper.toPlanResponse
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.FormFieldKey
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionFormState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
@@ -39,7 +44,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,15 +58,14 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class RegisterSubscriptionComposeViewModel(
     private val getAvailableOnuListUseCase: GetAvailableOnuListUseCase,
-    private val getPlanListUseCase: GetPlanListUseCase,
-    private val getPlaceListUseCase: GetPlaceListUseCase,
+    private val getRegistrationCatalogUseCase: GetRegistrationCatalogUseCase,
+    private val refreshRegistrationCatalogUseCase: RefreshRegistrationCatalogUseCase,
     private val getPlaceFromLocationUseCase: GetPlaceFromLocationUseCase,
-    private val getNapBoxListUseCase: GetNapBoxListUseCase,
     private val registerSubscriptionUseCase: RegisterSubscriptionUseCase,
     private val getUserSessionUseCase: GetUserSessionUseCase,
-    private val getCoreDevicesUseCase: GetCoreDevicesUseCase,
     private val getNearNapBoxesUseCase: GetNearNapBoxesUseCase,
     private val installationOrderUseCase: InstallationOrderUseCase,
+    private val observeOfflineRegistrationModeUseCase: ObserveOfflineRegistrationModeUseCase,
     private val observabilityClient: ObservabilityClient,
     private val mainImmediate: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : ViewModel() {
@@ -96,6 +99,7 @@ class RegisterSubscriptionComposeViewModel(
     private var loadScreenJob: Job? = null
     private var refreshOnuJob: Job? = null
     private var registerSubscriptionJob: Job? = null
+    private var offlineModeJob: Job? = null
 
     fun loadScreenData(installationOrderId: Int?) {
         loadScreenJob?.cancel()
@@ -107,6 +111,7 @@ class RegisterSubscriptionComposeViewModel(
         loadScreenJob = viewModelScope.launch(mainImmediate) {
             try {
                 _uiState.update { it.copy(isLoading = true) }
+                observeOfflineMode()
                 applyInitialCatalogData().exceptionOrNull()?.let { throwable ->
                     _uiState.update { it.copy(isLoading = false) }
                     observabilityClient.reportError(
@@ -158,30 +163,22 @@ class RegisterSubscriptionComposeViewModel(
     }
 
     private suspend fun applyInitialCatalogData(): Result<Unit> = coroutineScope {
-        val onuListDeferred = async { getAvailableOnuListUseCase() }
-        val planListDeferred = async { getPlanListUseCase() }
-        val placeListDeferred = async { getPlaceListUseCase() }
-        val napBoxListDeferred = async { getNapBoxListUseCase() }
-        val userSessionDeferred = async { getUserSessionUseCase() }
-        val coreDevicesDeferred = async { getCoreDevicesUseCase() }
-
-        val onuList = onuListDeferred.await()
-        val planList = planListDeferred.await()
-        val placeList = placeListDeferred.await()
-        val napBoxList = napBoxListDeferred.await()
-        val userSession = userSessionDeferred.await()
-        val coreDevices = coreDevicesDeferred.await()
+        refreshRegistrationCatalogUseCase()
+        val catalogResult = getRegistrationCatalogUseCase()
+        val userSession = getUserSessionUseCase()
 
         if (userSession.isFailure) {
             return@coroutineScope Result.failure(userSession.exceptionOrNull()!!)
         }
         val user = userSession.getOrNull()
             ?: return@coroutineScope Result.failure(IllegalStateException("Usuario no disponible"))
-        val coreList = coreDevices.getOrNull()
+        val catalog = catalogResult.getOrNull()
             ?: return@coroutineScope Result.failure(
-                coreDevices.exceptionOrNull()
-                    ?: IllegalStateException("Dispositivos no disponibles")
+                catalogResult.exceptionOrNull()
+                    ?: IllegalStateException("Catálogo no disponible")
             )
+
+        val coreList = catalog.coreDevices.map { it.toNetworkDevice() }
         val activeCores = coreList.filter { !it.disabled }
         if (activeCores.isEmpty()) {
             return@coroutineScope Result.failure(
@@ -190,8 +187,8 @@ class RegisterSubscriptionComposeViewModel(
         }
         val autoSelected = if (activeCores.size == 1) activeCores.first() else null
 
-        val cachedNapBoxes = napBoxList.getOrNull() ?: emptyList()
-        val cachedPlans = planList.getOrNull() ?: emptyList()
+        val cachedNapBoxes = catalog.napBoxes.map { it.toNapBoxResponse() }
+        val cachedPlans = catalog.plans.map { it.toPlanResponse() }
         val filteredPlans = cachedPlans.filter { it.type == InstallationType.FIBER }
         val selectedPlan = getAutoSelectedPlan(filteredPlans, null)
 
@@ -201,9 +198,9 @@ class RegisterSubscriptionComposeViewModel(
                 cachedNapBoxList = cachedNapBoxes,
                 cachedPlanList = cachedPlans,
                 registerSubscriptionForm = current.registerSubscriptionForm.copy(
-                    onuList = onuList.getOrNull() ?: emptyList(),
+                    onuList = catalog.onus.map { it.toOnu() },
                     planList = filteredPlans,
-                    placeList = placeList.getOrNull() ?: emptyList(),
+                    placeList = catalog.places.map { it.toPlace() },
                     napBoxList = cachedNapBoxes,
                     coreDeviceList = coreList,
                     selectedHostDevice = autoSelected,
@@ -263,6 +260,8 @@ class RegisterSubscriptionComposeViewModel(
             is RegisterSubscriptionIntent.NoteChanged -> onNoteChanged(intent.value)
             is RegisterSubscriptionIntent.EquipmentConditionChanged ->
                 onEquipmentConditionChanged(intent.value)
+            is RegisterSubscriptionIntent.ClientIpAddressChanged ->
+                onClientIpAddressChanged(intent.value)
             is RegisterSubscriptionIntent.RegisterClick -> saveSubscription(intent.facadePhotoFile)
         }
     }
@@ -417,6 +416,28 @@ private fun onNoteChanged(value: String) {
 private fun onEquipmentConditionChanged(value: EquipmentCondition) {
     updateValidatedForm(FormFieldKey.EQUIPMENT_CONDITION) { form ->
         form.copy(equipmentCondition = value)
+    }
+}
+
+private fun onClientIpAddressChanged(value: String) {
+    updateValidatedForm(FormFieldKey.CLIENT_IP_ADDRESS) { form ->
+        form.copy(clientIpAddress = value)
+    }
+}
+
+private fun observeOfflineMode() {
+    if (offlineModeJob?.isActive == true) return
+    offlineModeJob = viewModelScope.launch(mainImmediate) {
+        observeOfflineRegistrationModeUseCase().getOrElse { return@launch }.collect { offline ->
+            _uiState.update { current ->
+                current.copy(
+                    isOfflineMode = offline,
+                    registerSubscriptionForm = current.registerSubscriptionForm.copy(
+                        requiresClientIpAddress = offline
+                    )
+                )
+            }
+        }
     }
 }
 
@@ -597,7 +618,7 @@ fun saveSubscription(facadePhotoFile: File? = null) {
             "hasOrder" to (uiState.value.orderId != null)
         )
     )
-    val invalidFields = FormFieldKey.blockingForSubmit.filter { field ->
+    val invalidFields = form.blockingFields().filter { field ->
         when (field) {
             FormFieldKey.FACADE_PHOTO -> !hasFacadePhoto
             else -> validatedForm.validate(field) != null
@@ -665,19 +686,31 @@ fun saveSubscription(facadePhotoFile: File? = null) {
                 orderIdSnapshot,
                 facadePhotoFile = facadePhotoFile
             ).fold(
-                onSuccess = { registeredSubscription ->
+                onSuccess = { outcome ->
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             orderId = null
                         )
                     }
-                    observabilityClient.addBreadcrumb(
-                        category = ObsBreadcrumbCategory.STATE,
-                        message = "$OBS_FEATURE.register_success",
-                        data = mapOf("feature" to OBS_FEATURE, "orderId" to orderIdSnapshot)
-                    )
-                    _uiEvent.emit(RegisterSubscriptionUiEvent.Success(registeredSubscription))
+                    when (outcome) {
+                        is RegisterSubscriptionResult.Registered -> {
+                            observabilityClient.addBreadcrumb(
+                                category = ObsBreadcrumbCategory.STATE,
+                                message = "$OBS_FEATURE.register_success",
+                                data = mapOf("feature" to OBS_FEATURE, "orderId" to orderIdSnapshot)
+                            )
+                            _uiEvent.emit(RegisterSubscriptionUiEvent.Success(outcome.subscription))
+                        }
+                        is RegisterSubscriptionResult.QueuedOffline -> {
+                            observabilityClient.addBreadcrumb(
+                                category = ObsBreadcrumbCategory.STATE,
+                                message = "$OBS_FEATURE.register_queued_offline",
+                                data = mapOf("feature" to OBS_FEATURE, "orderId" to orderIdSnapshot)
+                            )
+                            _uiEvent.emit(RegisterSubscriptionUiEvent.QueuedOffline)
+                        }
+                    }
                 },
                 onFailure = { error ->
                     _uiState.update {
@@ -740,7 +773,9 @@ private fun buildSubscriptionFromForm(
         onu = form.selectedOnu,
         equipmentCondition = form.equipmentCondition,
         autoCut = true,
-        facadePhotoUrl = null
+        facadePhotoUrl = null,
+        clientIpAddress = form.clientIpAddress.trim().takeIf { it.isNotEmpty() },
+        ip = form.clientIpAddress.trim().takeIf { it.isNotEmpty() }
     )
 }
 
@@ -755,30 +790,6 @@ fun onLocationChanged(currentLocation: LatLng) {
 }
 
 private fun currentUiState() = _uiState.value
-
-fun closeInstallationOrder(orderId: Int) = viewModelScope.launch(mainImmediate) {
-    installationOrderUseCase.closeInstallationOrderResult(orderId).fold(
-        onSuccess = { },
-        onFailure = { error ->
-            observabilityClient.reportError(
-                throwable = error,
-                message = "Fallo al cerrar orden de instalación",
-                tags = mapOf(
-                    "feature" to OBS_FEATURE,
-                    "screen" to OBS_SCREEN,
-                    "action" to "close_installation_order",
-                    "entityId" to orderId,
-                    "orderId" to orderId
-                )
-            )
-            _uiEvent.emit(
-                RegisterSubscriptionUiEvent.Error(
-                    error.message ?: "Error al cerrar la orden de instalación"
-                )
-            )
-        }
-    )
-}
 
 private fun updateValidatedForm(
     vararg fields: FormFieldKey,

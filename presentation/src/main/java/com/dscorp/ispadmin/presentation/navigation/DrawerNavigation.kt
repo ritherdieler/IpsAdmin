@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Handyman
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.dscorp.ispadmin.domain.model.User
@@ -57,6 +58,13 @@ sealed class DrawerItem(
         Icons.AutoMirrored.Filled.NoteAdd
     )
 
+    object PendingSubscriptions : DrawerItem(
+        "Suscripciones pendientes",
+        FeatureRoutes.Subscription.PendingSubscriptions,
+        Icons.Filled.Refresh,
+        menuTestTag = "drawer_nav_pending_subscriptions"
+    )
+
     // Grupo: Pagos
     object PayerFinder :
         DrawerItem("Buscador de pagadores", FeatureRoutes.Payment.FindPayer, Icons.Filled.CreditCard
@@ -88,12 +96,12 @@ sealed class DrawerGroup(
 
     object Subscription : DrawerGroup(
         "Suscripciones",
-        listOf(DrawerItem.SubscriptionFinder, DrawerItem.RegisterSubscription)
+        listOf(DrawerItem.SubscriptionFinder, DrawerItem.RegisterSubscription, DrawerItem.PendingSubscriptions)
     )
 
     object SubscriptionFinderOnly : DrawerGroup(
         "Suscripciones",
-        listOf(DrawerItem.SubscriptionFinder)
+        listOf(DrawerItem.SubscriptionFinder, DrawerItem.PendingSubscriptions)
     )
 
     object Payment : DrawerGroup("Pagos", listOf(DrawerItem.PayerFinder))

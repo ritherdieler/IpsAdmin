@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,6 +54,7 @@ fun RegisterSubscriptionFormScreen(
     viewModel: RegisterSubscriptionComposeViewModel,
     context: Context = LocalContext.current,
     onSubscriptionRegisterSuccess: () -> Unit = {},
+    onNavigateToPendingSubscriptions: () -> Unit = {},
     installationOrderId: Int?,
 ) {
     val locationSetup = rememberLocationSetupState()
@@ -60,6 +62,7 @@ fun RegisterSubscriptionFormScreen(
 
     var dialogError by remember { mutableStateOf<String?>(null) }
     var successSubscription by remember { mutableStateOf<Subscription?>(null) }
+    var showQueuedOfflineDialog by remember { mutableStateOf(false) }
     var showFacadePhotoOptionsDialog by remember { mutableStateOf(false) }
     var locationFetched by remember { mutableStateOf(false) }
 
@@ -70,6 +73,7 @@ fun RegisterSubscriptionFormScreen(
                 when (event) {
                     is RegisterSubscriptionUiEvent.Error -> dialogError = event.message
                     is RegisterSubscriptionUiEvent.Success -> successSubscription = event.subscription
+                    RegisterSubscriptionUiEvent.QueuedOffline -> showQueuedOfflineDialog = true
                 }
             }
         }
@@ -140,6 +144,19 @@ fun RegisterSubscriptionFormScreen(
                 subscription = subscription,
                 onDismiss = { successSubscription = null },
                 onContinue = onSubscriptionRegisterSuccess
+            )
+        }
+
+        if (showQueuedOfflineDialog) {
+            QueuedOfflineDialog(
+                onDismiss = {
+                    showQueuedOfflineDialog = false
+                    onSubscriptionRegisterSuccess()
+                },
+                onViewPending = {
+                    showQueuedOfflineDialog = false
+                    onNavigateToPendingSubscriptions()
+                }
             )
         }
 
@@ -293,6 +310,50 @@ private fun SuccessDialog(
                 }
             ) {
                 Text("Continuar")
+            }
+        }
+    )
+}
+
+@Composable
+private fun QueuedOfflineDialog(
+    onDismiss: () -> Unit,
+    onViewPending: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "Guardado en modo offline",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Text(
+                text = "Suscripción guardada localmente en modo Offline. Sincronízala cuando tengas conexión.",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        },
+        confirmButton = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("queued_offline_dialog_view_pending"),
+                    onClick = onViewPending
+                ) {
+                    Text("Ver suscripciones pendientes")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("queued_offline_dialog_continue"),
+                    onClick = onDismiss
+                ) {
+                    Text("Entendido")
+                }
             }
         }
     )

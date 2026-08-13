@@ -2,8 +2,10 @@ package com.dscorp.ispadmin.di
 
 import android.app.Application
 import com.dscorp.ispadmin.BuildConfig
+import com.dscorp.ispadmin.data.di.dataModule
 import com.dscorp.ispadmin.data.repository.IRepository
 import com.dscorp.ispadmin.di.apiModule
+import com.dscorp.ispadmin.domain.di.domainModule
 import com.dscorp.ispadmin.observability.ObservabilityActivityTracker
 import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.observability.ObservabilityConnectivityMonitor
@@ -34,6 +36,8 @@ class KoinApplication : Application() {
             androidContext(this@KoinApplication)
             allowOverride(true)
             modules(
+                domainModule,
+                dataModule,
                 retrofitModule,
                 apiModule,
                 wispApiModule,

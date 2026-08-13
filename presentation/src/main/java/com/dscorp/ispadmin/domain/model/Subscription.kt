@@ -36,6 +36,9 @@ data class Subscription(
     var borneNumber: String? = null,
     var equipmentCondition: EquipmentCondition? = null,
     var autoCut: Boolean = true,
+    var clientRequestId: String? = null,
+    var installationOrderId: Int? = null,
+    var clientIpAddress: String? = null,
 
     ) : java.io.Serializable {
     override fun toString(): String {
