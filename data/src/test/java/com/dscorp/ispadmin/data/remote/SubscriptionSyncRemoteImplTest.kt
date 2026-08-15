@@ -89,24 +89,24 @@ class SubscriptionSyncRemoteImplTest {
     }
 
     @Test
-    fun `maps http 409 error body with IP_CONFLICT to IpConflict`() = runTest {
+    fun `maps body status 200 with provisioningPending still to Success`() = runTest {
         val api = mockk<PendingSubscriptionSyncApi>()
-        val errorJson =
-            """{"status":409,"error":"IP en uso","errorCode":"IP_CONFLICT"}"""
-        coEvery { api.registerWithFacadePhoto(any(), any()) } returns Response.error(
-            409,
-            errorJson.toResponseBody("application/json".toMediaType())
+        coEvery { api.registerWithFacadePhoto(any(), any()) } returns Response.success(
+            SubscriptionSyncApiResponse(
+                status = 200,
+                data = SubscriptionSyncData(provisioningPending = true)
+            )
         )
         val remote = SubscriptionSyncRemoteImpl(api)
         val photo = File.createTempFile("facade", ".jpg").apply { writeText("photo") }
 
         val outcome = remote.uploadPending(
-            subscriptionJson = """{"clientIpAddress":"10.0.0.2"}""",
-            clientRequestId = "req-3",
+            subscriptionJson = """{"clientIpAddress":"192.168.1.10"}""",
+            clientRequestId = "req-prov",
             installationOrderId = null,
             facadePhotoFile = photo
         )
 
-        assertEquals(SubscriptionSyncOutcome.IpConflict, outcome)
+        assertEquals(SubscriptionSyncOutcome.Success, outcome)
     }
 }
