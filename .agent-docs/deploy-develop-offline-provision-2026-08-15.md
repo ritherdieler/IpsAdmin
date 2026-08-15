@@ -2,30 +2,19 @@
 
 ## Android
 
-- Rama `develop` en GitHub ya incluye los cambios (`378d4d85`).
-- Distribuir: `./scripts/firebase-distribute-prod-debug.sh "offline sync + provisión pendiente"`
+- Publicado en App Distribution: **2.6.4 (56)** (`prodDebug`, grupo `gigafiber`).
+- Rama `develop` local incluye el bump de versión (sin push).
 
 ## Backend
 
-Push a `ispadmin-backend` **no disponible** desde el agente (`cursor[bot]` sin permiso).
+- Desplegado en prod: **`1.0.3+bce3bc2`** (`./scripts/deploy.sh --deploy` OK).
+- `develop` local está **ahead** de `origin/develop` (sin push).
 
-Estado local listo en el clone del agente / aplicar en tu máquina:
+Migraciones Flyway en prod:
 
-1. En `ispadmin-backend`, checkout `develop` y aplicar:
-   - Parche completo: `IpsAdmin-android/.agent-docs/backend-develop-offline-provision.patch`
-   ```bash
-   git checkout develop && git pull
-   git am --3way /ruta/a/backend-develop-offline-provision.patch
-   # o: git apply si am falla
-   ```
-2. Migraciones Flyway en develop:
-   - `V21` = `subscription_is_bimonthly` (ya existía)
-   - `V22` = `subscription_client_request_id`
-   - `V23` = `subscription_provision_status`
-3. Deploy:
-   ```bash
-   ./scripts/deploy.sh
-   ```
+- `V21` = `subscription_is_bimonthly` (ya existía; checksum intacto)
+- `V22` = `subscription_client_request_id`
+- `V23` = `subscription_provision_status`
 
 ## Contenido del merge
 
