@@ -247,9 +247,15 @@ private fun SuccessDialog(
         text = {
             Column {
                 Text(
-                    text = "La suscripción se ha registrado correctamente",
+                    text = if (subscription.provisioningPending) {
+                        "Registrado; provisión de red pendiente de reconciliar"
+                    } else {
+                        "La suscripción se ha registrado correctamente"
+                    },
                     style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .testTag("register_success_message")
                 )
 
                 Card(

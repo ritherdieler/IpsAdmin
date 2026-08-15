@@ -31,6 +31,10 @@ class SyncPendingSubscriptionsUseCase(
                         failedCount++
                         lastError = CONFLICT_ERROR
                     }
+                    SubscriptionSyncOutcome.IpConflict -> {
+                        failedCount++
+                        lastError = IP_CONFLICT_ERROR
+                    }
                     is SubscriptionSyncOutcome.Failure -> {
                         failedCount++
                         lastError = outcome.message
@@ -64,6 +68,12 @@ class SyncPendingSubscriptionsUseCase(
                     error = CONFLICT_ERROR
                 ).getOrThrow()
             }
+            SubscriptionSyncOutcome.IpConflict -> {
+                pendingSubscriptionRepository.markConflict(
+                    localId = pending.localId,
+                    error = IP_CONFLICT_ERROR
+                ).getOrThrow()
+            }
             is SubscriptionSyncOutcome.Failure -> {
                 pendingSubscriptionRepository.markRetryableError(
                     localId = pending.localId,
@@ -81,5 +91,7 @@ class SyncPendingSubscriptionsUseCase(
 
     private companion object {
         const val CONFLICT_ERROR = "HTTP 409: la suscripción ya existe en el servidor"
+        const val IP_CONFLICT_ERROR =
+            "IP ya en uso. Coordina otra IP con el equipo e intenta de nuevo."
     }
 }

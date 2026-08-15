@@ -1,0 +1,554 @@
+From 41076c0fe40806334d194d55dda91eaec5139d44 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sat, 15 Aug 2026 15:15:34 +0000
+Subject: [PATCH] feat(subscription): IP_CONFLICT con alerta WhatsApp al NOC
+
+Detecta unique de subscription.ip en el registro, responde errorCode IP_CONFLICT y notifica al NOC por plantilla WhatsApp sin bloquear la respuesta al cliente.
+---
+ .../controller/SubscriptionController.kt      |  40 +++++--
+ .../wispadmin/data/model/util/BaseResponse.kt |   3 +-
+ ...ubscriptionIntegrityViolationClassifier.kt |  39 ++++++
+ .../SubscriptionIpConflictNocNotifier.kt      |  62 ++++++++++
+ ...ptionControllerMultipartIdempotencyTest.kt |  94 ++++++++++++++-
+ ...riptionIntegrityViolationClassifierTest.kt |  62 ++++++++++
+ .../SubscriptionIpConflictNocNotifierTest.kt  | 112 ++++++++++++++++++
+ 7 files changed, 403 insertions(+), 9 deletions(-)
+ create mode 100644 src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifier.kt
+ create mode 100644 src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifier.kt
+ create mode 100644 src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifierTest.kt
+ create mode 100644 src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifierTest.kt
+
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt
+index d873eda..fc8d68e 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt
+@@ -12,6 +12,8 @@ import com.dscorp.wispadmin.wispadmin.requestbody.smartoltrequest.MoveOnuRequest
+ import com.dscorp.wispadmin.wispadmin.requestbody.smartoltrequest.OnuAuthorizationRequest
+ import com.dscorp.wispadmin.wispadmin.service.SubscriptionService
+ import com.dscorp.wispadmin.wispadmin.service.BorneValidationResult
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionIntegrityViolationClassifier
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionIpConflictNocNotifier
+ import com.dscorp.wispadmin.wispadmin.search.application.SubscriptionChangedEvent
+ import org.springframework.context.ApplicationEventPublisher
+ import org.apache.poi.xssf.usermodel.XSSFWorkbook
+@@ -45,13 +47,35 @@ class SubscriptionController(
+     private val couponRepository: CouponRepository,
+     private val subscriptionLogRepository: SubscriptionLogRepository,
+     private val storageService: FirebaseStorageService,
+-    private val eventPublisher: ApplicationEventPublisher
++    private val eventPublisher: ApplicationEventPublisher,
++    private val integrityViolationClassifier: SubscriptionIntegrityViolationClassifier,
++    private val ipConflictNocNotifier: SubscriptionIpConflictNocNotifier
+ ) {
+ 
+     private fun publishSubscriptionChanged(subscriptionId: Int?) {
+         subscriptionId?.let { eventPublisher.publishEvent(SubscriptionChangedEvent(it)) }
+     }
+ 
++    private fun handleRegistrationIntegrityViolation(
++        request: SubscriptionRequest,
++        ex: DataIntegrityViolationException,
++        defaultError: String
++    ): BaseResponse {
++        return if (integrityViolationClassifier.isIpUniqueViolation(ex)) {
++            ipConflictNocNotifier.notifyIpConflict(request)
++            BaseResponse(
++                status = 409,
++                error = SubscriptionIpConflictNocNotifier.ERROR_MESSAGE,
++                errorCode = SubscriptionIpConflictNocNotifier.ERROR_CODE
++            )
++        } else {
++            BaseResponse(
++                status = 409,
++                error = defaultError
++            )
++        }
++    }
++
+     @GetMapping("/findByElectronicPayerName")
+     fun findByElectronicPayerName(@RequestParam("electronicPayerName") electronicPayerName: String): BaseResponse {
+         val electronicPayers = repository.findByElectronicPayerName(electronicPayerName).map { it.toPayerFinderResultDto() }
+@@ -348,9 +372,10 @@ class SubscriptionController(
+             publishSubscriptionChanged(subscription.id)
+             BaseResponse(data = subscription, status = 200)
+         } catch (e: DataIntegrityViolationException) {
+-            BaseResponse(
+-                status = 409,
+-                error = "Este usuario ya se encuentra registrado",
++            handleRegistrationIntegrityViolation(
++                request = newSubscription,
++                ex = e,
++                defaultError = "Este usuario ya se encuentra registrado"
+             )
+         }
+     }
+@@ -398,9 +423,10 @@ class SubscriptionController(
+             publishSubscriptionChanged(subscription.id)
+             BaseResponse(data = subscription, status = 200)
+         } catch (e: DataIntegrityViolationException) {
+-            BaseResponse(
+-                status = 409,
+-                error = "Este usuario no se encuentra registrado",
++            handleRegistrationIntegrityViolation(
++                request = newSubscription,
++                ex = e,
++                defaultError = "Este usuario no se encuentra registrado"
+             )
+         }
+     }
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/util/BaseResponse.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/util/BaseResponse.kt
+index 58aec69..664fb53 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/util/BaseResponse.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/util/BaseResponse.kt
+@@ -4,5 +4,6 @@ data class BaseResponse(
+     var status: Int? = null,
+     var data: Any? = null,
+     var message: String? = null,
+-    var error: Any? = null
++    var error: Any? = null,
++    var errorCode: String? = null
+ )
+\ No newline at end of file
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifier.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifier.kt
+new file mode 100644
+index 0000000..d589db8
+--- /dev/null
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifier.kt
+@@ -0,0 +1,39 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import org.springframework.dao.DataIntegrityViolationException
++import org.springframework.stereotype.Component
++
++@Component
++class SubscriptionIntegrityViolationClassifier {
++
++    enum class ViolationType {
++        IP,
++        OTHER
++    }
++
++    fun classify(ex: DataIntegrityViolationException): ViolationType {
++        return if (isIpUniqueViolation(ex)) ViolationType.IP else ViolationType.OTHER
++    }
++
++    fun isIpUniqueViolation(ex: DataIntegrityViolationException): Boolean {
++        val text = buildString {
++            append(ex.message.orEmpty())
++            append(' ')
++            append(ex.rootCause?.message.orEmpty())
++            append(' ')
++            append(ex.mostSpecificCause?.message.orEmpty())
++        }.lowercase()
++
++        if (text.contains("client_request_id") || text.contains("subscription.dni") ||
++            text.contains("key 'dni'") || text.contains("key \"dni\"")
++        ) {
++            return false
++        }
++
++        return text.contains("subscription.ip") ||
++            text.contains("uk_subscription_ip") ||
++            text.contains("key 'ip'") ||
++            text.contains("key \"ip\"") ||
++            (text.contains("duplicate") && Regex("""['"`]ip['"`]""").containsMatchIn(text))
++    }
++}
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifier.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifier.kt
+new file mode 100644
+index 0000000..8e96666
+--- /dev/null
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifier.kt
+@@ -0,0 +1,62 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
++import com.dscorp.wispadmin.wispadmin.service.whatsapp.NamedTemplateParameter
++import org.slf4j.LoggerFactory
++import org.springframework.beans.factory.annotation.Value
++import org.springframework.stereotype.Service
++
++@Service
++class SubscriptionIpConflictNocNotifier(
++    private val whatsAppService: WhatsAppService,
++    @Value("\${net.diag.whatsapp.noc-phone:}") private val nocPhone: String,
++    @Value("\${net.diag.whatsapp.template-name:noc_alert_v1}") private val templateName: String,
++    @Value("\${net.diag.whatsapp.language-code:es}") private val languageCode: String
++) {
++
++    private val logger = LoggerFactory.getLogger(SubscriptionIpConflictNocNotifier::class.java)
++
++    fun notifyIpConflict(request: SubscriptionRequest) {
++        val phone = nocPhone.trim()
++        if (phone.isEmpty()) {
++            logger.warn(
++                "IP_CONFLICT sin alerta NOC: net.diag.whatsapp.noc-phone vacio. ip={}, clientRequestId={}",
++                request.clientIpAddress,
++                request.clientRequestId
++            )
++            return
++        }
++
++        val ip = request.clientIpAddress?.trim().orEmpty().ifBlank { "n/a" }
++        val clientLabel = "${request.firstName} ${request.lastName} DNI ${request.dni}".take(60)
++        val target = "IP $ip | $clientLabel | req=${request.clientRequestId ?: "n/a"} | host=${request.hostDeviceId}"
++            .take(60)
++
++        val parameters = listOf(
++            NamedTemplateParameter("severity", "HIGH"),
++            NamedTemplateParameter("title", "Colision IP sync offline".take(60)),
++            NamedTemplateParameter("reason_code", ERROR_CODE),
++            NamedTemplateParameter("target", target)
++        )
++
++        try {
++            val sent = whatsAppService.sendTemplateMessage(
++                phoneNumber = phone,
++                templateName = templateName,
++                languageCode = languageCode,
++                parameters = parameters
++            )
++            if (!sent) {
++                logger.warn("IP_CONFLICT alerta NOC no enviada (sendTemplateMessage=false) ip={}", ip)
++            }
++        } catch (ex: Exception) {
++            logger.warn("IP_CONFLICT alerta NOC fallo ip={}: {}", ip, ex.message)
++        }
++    }
++
++    companion object {
++        const val ERROR_CODE = "IP_CONFLICT"
++        const val ERROR_MESSAGE =
++            "La IP del cliente ya esta en uso. Coordina otra IP con el equipo e intenta de nuevo."
++    }
++}
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt
+index 9475390..ac76bc8 100644
+--- a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt
+@@ -13,14 +13,18 @@ import com.dscorp.wispadmin.wispadmin.repository.SubscriptionLogRepository
+ import com.dscorp.wispadmin.wispadmin.repository.SubscriptionRepository
+ import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
+ import com.dscorp.wispadmin.wispadmin.service.FirebaseStorageService
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionIntegrityViolationClassifier
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionIpConflictNocNotifier
+ import com.dscorp.wispadmin.wispadmin.service.SubscriptionService
+ import io.mockk.every
+ import io.mockk.mockk
+ import io.mockk.verify
+ import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertNull
+ import org.junit.jupiter.api.Assertions.assertTrue
+ import org.junit.jupiter.api.Test
+ import org.springframework.context.ApplicationEventPublisher
++import org.springframework.dao.DataIntegrityViolationException
+ import org.springframework.http.MediaType
+ import org.springframework.mock.web.MockMultipartFile
+ 
+@@ -30,6 +34,8 @@ class SubscriptionControllerMultipartIdempotencyTest {
+     private val subscriptionService = mockk<SubscriptionService>()
+     private val storageService = mockk<FirebaseStorageService>(relaxed = true)
+     private val eventPublisher = mockk<ApplicationEventPublisher>(relaxed = true)
++    private val integrityViolationClassifier = SubscriptionIntegrityViolationClassifier()
++    private val ipConflictNocNotifier = mockk<SubscriptionIpConflictNocNotifier>(relaxed = true)
+ 
+     private val controller = SubscriptionController(
+         repository = subscriptionRepository,
+@@ -42,6 +48,8 @@ class SubscriptionControllerMultipartIdempotencyTest {
+         subscriptionLogRepository = mockk(relaxed = true),
+         storageService = storageService,
+         eventPublisher = eventPublisher,
++        integrityViolationClassifier = integrityViolationClassifier,
++        ipConflictNocNotifier = ipConflictNocNotifier
+     )
+ 
+     @Test
+@@ -84,7 +92,89 @@ class SubscriptionControllerMultipartIdempotencyTest {
+         verify(exactly = 1) { subscriptionService.registerSubscription(any(), any()) }
+     }
+ 
+-    private fun sampleRequest(clientRequestId: String) = SubscriptionRequest(
++    @Test
++    fun `newSubcriptionWithFacade returns IP_CONFLICT and alerts NOC on ip unique violation`() {
++        every {
++            subscriptionService.findExistingSubscriptionByClientRequestId(any())
++        } returns null
++        every { storageService.uploadFileToFolder(any(), any()) } returns "https://facade/1.jpg"
++        every {
++            subscriptionService.registerSubscription(any(), any())
++        } throws DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '192.168.1.77' for key 'subscription.ip'")
++        )
++
++        val request = sampleRequest(
++            clientRequestId = "offline-req-ip",
++            clientIpAddress = "192.168.1.77"
++        )
++        val response = controller.newSubcriptionWithFacade(
++            newSubscription = request,
++            facadephoto = MockMultipartFile(
++                "facadePhoto",
++                "facade.jpg",
++                MediaType.IMAGE_JPEG_VALUE,
++                byteArrayOf(1, 2, 3),
++            )
++        )
++
++        assertEquals(409, response.status)
++        assertEquals(SubscriptionIpConflictNocNotifier.ERROR_CODE, response.errorCode)
++        assertEquals(SubscriptionIpConflictNocNotifier.ERROR_MESSAGE, response.error)
++        verify(exactly = 1) { ipConflictNocNotifier.notifyIpConflict(request) }
++    }
++
++    @Test
++    fun `newSubcriptionWithFacade keeps generic 409 without NOC when dni conflicts`() {
++        every {
++            subscriptionService.findExistingSubscriptionByClientRequestId(any())
++        } returns null
++        every { storageService.uploadFileToFolder(any(), any()) } returns "https://facade/1.jpg"
++        every {
++            subscriptionService.registerSubscription(any(), any())
++        } throws DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '12345678' for key 'subscription.dni'")
++        )
++
++        val response = controller.newSubcriptionWithFacade(
++            newSubscription = sampleRequest(clientRequestId = "offline-req-dni"),
++            facadephoto = MockMultipartFile(
++                "facadePhoto",
++                "facade.jpg",
++                MediaType.IMAGE_JPEG_VALUE,
++                byteArrayOf(1, 2, 3),
++            )
++        )
++
++        assertEquals(409, response.status)
++        assertNull(response.errorCode)
++        assertEquals("Este usuario no se encuentra registrado", response.error)
++        verify(exactly = 0) { ipConflictNocNotifier.notifyIpConflict(any()) }
++    }
++
++    @Test
++    fun `newSubscription returns IP_CONFLICT and alerts NOC on ip unique violation`() {
++        every {
++            subscriptionService.registerSubscription(any(), any())
++        } throws DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '10.0.0.15' for key 'subscription.ip'")
++        )
++
++        val request = sampleRequest(clientIpAddress = "10.0.0.15")
++        val response = controller.newSubscription(request)
++
++        assertEquals(409, response.status)
++        assertEquals(SubscriptionIpConflictNocNotifier.ERROR_CODE, response.errorCode)
++        verify(exactly = 1) { ipConflictNocNotifier.notifyIpConflict(request) }
++    }
++
++    private fun sampleRequest(
++        clientRequestId: String? = null,
++        clientIpAddress: String? = null
++    ) = SubscriptionRequest(
+         firstName = "Juan",
+         lastName = "Perez",
+         dni = "12345678",
+@@ -98,6 +188,8 @@ class SubscriptionControllerMultipartIdempotencyTest {
+         technicianId = 1,
+         hostDeviceId = 1,
+         installationType = InstallationType.WIRELESS,
++        equipmentCondition = EquipmentCondition.LOAN,
+         clientRequestId = clientRequestId,
++        clientIpAddress = clientIpAddress
+     )
+ }
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifierTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifierTest.kt
+new file mode 100644
+index 0000000..01817fd
+--- /dev/null
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifierTest.kt
+@@ -0,0 +1,62 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertFalse
++import org.junit.jupiter.api.Assertions.assertTrue
++import org.junit.jupiter.api.Test
++import org.springframework.dao.DataIntegrityViolationException
++
++class SubscriptionIntegrityViolationClassifierTest {
++
++    private val classifier = SubscriptionIntegrityViolationClassifier()
++
++    @Test
++    fun `detects mysql duplicate on subscription ip column`() {
++        val ex = DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '192.168.1.77' for key 'subscription.ip'")
++        )
++
++        assertTrue(classifier.isIpUniqueViolation(ex))
++        assertEquals(
++            SubscriptionIntegrityViolationClassifier.ViolationType.IP,
++            classifier.classify(ex)
++        )
++    }
++
++    @Test
++    fun `detects hibernate uk constraint mentioning ip`() {
++        val ex = DataIntegrityViolationException(
++            "constraint [uk_subscription_ip]",
++            RuntimeException("Duplicate entry '10.0.0.15' for key 'UK_subscription_ip'")
++        )
++
++        assertTrue(classifier.isIpUniqueViolation(ex))
++    }
++
++    @Test
++    fun `dni unique is not ip conflict`() {
++        val ex = DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '12345678' for key 'subscription.dni'")
++        )
++
++        assertFalse(classifier.isIpUniqueViolation(ex))
++        assertEquals(
++            SubscriptionIntegrityViolationClassifier.ViolationType.OTHER,
++            classifier.classify(ex)
++        )
++    }
++
++    @Test
++    fun `client_request_id unique is not ip conflict`() {
++        val ex = DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException(
++                "Duplicate entry 'offline-req-1' for key 'uk_subscription_client_request_id'"
++            )
++        )
++
++        assertFalse(classifier.isIpUniqueViolation(ex))
++    }
++}
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifierTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifierTest.kt
+new file mode 100644
+index 0000000..2c505b0
+--- /dev/null
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifierTest.kt
+@@ -0,0 +1,112 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
++import com.dscorp.wispadmin.wispadmin.service.whatsapp.NamedTemplateParameter
++import com.dscorp.wispadmin.wispadmin.data.model.EquipmentCondition
++import com.dscorp.wispadmin.wispadmin.data.model.GeoLocation
++import com.dscorp.wispadmin.wispadmin.data.model.InstallationType
++import io.mockk.every
++import io.mockk.mockk
++import io.mockk.slot
++import io.mockk.verify
++import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertTrue
++import org.junit.jupiter.api.Test
++
++class SubscriptionIpConflictNocNotifierTest {
++
++    private val whatsAppService = mockk<WhatsAppService>()
++
++    @Test
++    fun `sends noc template with ip conflict details when phone configured`() {
++        val notifier = SubscriptionIpConflictNocNotifier(
++            whatsAppService = whatsAppService,
++            nocPhone = "51999888777",
++            templateName = "noc_alert_v1",
++            languageCode = "es"
++        )
++        val paramsSlot = slot<List<NamedTemplateParameter>>()
++        every {
++            whatsAppService.sendTemplateMessage(
++                phoneNumber = any(),
++                templateName = any(),
++                languageCode = any(),
++                parameters = capture(paramsSlot)
++            )
++        } returns true
++
++        notifier.notifyIpConflict(
++            request = sampleRequest(
++                clientIpAddress = "192.168.1.77",
++                clientRequestId = "offline-req-9"
++            )
++        )
++
++        verify(exactly = 1) {
++            whatsAppService.sendTemplateMessage(
++                phoneNumber = "51999888777",
++                templateName = "noc_alert_v1",
++                languageCode = "es",
++                parameters = any()
++            )
++        }
++        val byName = paramsSlot.captured.associate { it.parameterName to it.text }
++        assertEquals("HIGH", byName["severity"])
++        assertTrue(byName["title"]!!.contains("Colision IP", ignoreCase = true))
++        assertEquals("IP_CONFLICT", byName["reason_code"])
++        assertTrue(byName["target"]!!.contains("192.168.1.77"))
++    }
++
++    @Test
++    fun `skips send and does not throw when noc phone blank`() {
++        val notifier = SubscriptionIpConflictNocNotifier(
++            whatsAppService = whatsAppService,
++            nocPhone = "  ",
++            templateName = "noc_alert_v1",
++            languageCode = "es"
++        )
++
++        notifier.notifyIpConflict(request = sampleRequest(clientIpAddress = "10.0.0.2"))
++
++        verify(exactly = 0) {
++            whatsAppService.sendTemplateMessage(any(), any(), any(), any())
++        }
++    }
++
++    @Test
++    fun `swallows whatsapp failures`() {
++        val notifier = SubscriptionIpConflictNocNotifier(
++            whatsAppService = whatsAppService,
++            nocPhone = "51999888777",
++            templateName = "noc_alert_v1",
++            languageCode = "es"
++        )
++        every {
++            whatsAppService.sendTemplateMessage(any(), any(), any(), any())
++        } throws RuntimeException("meta down")
++
++        notifier.notifyIpConflict(request = sampleRequest(clientIpAddress = "10.0.0.3"))
++    }
++
++    private fun sampleRequest(
++        clientIpAddress: String?,
++        clientRequestId: String? = null
++    ) = SubscriptionRequest(
++        firstName = "Juan",
++        lastName = "Perez",
++        dni = "12345678",
++        address = "Calle 1",
++        phone = "999888777",
++        subscriptionDate = System.currentTimeMillis(),
++        planId = 1,
++        additionalDeviceIds = emptyList(),
++        placeId = 1,
++        location = GeoLocation(-11.0, -77.0),
++        technicianId = 1,
++        hostDeviceId = 10,
++        installationType = InstallationType.WIRELESS,
++        equipmentCondition = EquipmentCondition.LOAN,
++        clientRequestId = clientRequestId,
++        clientIpAddress = clientIpAddress
++    )
++}
+-- 
+2.43.0
+

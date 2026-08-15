@@ -61,6 +61,18 @@ class RegisterSubscriptionUseCaseTest {
     }
 
     @Test
+    fun `online success with provisioningPending still returns Registered`() = runTest {
+        val registered = Subscription(subscriptionId = 22, provisioningPending = true)
+        coEvery { subscriptionWriteRepository.registerSubscription(any()) } returns registered
+
+        val result = useCase(Subscription(firstName = "Ana"), orderId = null)
+
+        assertTrue(result.isSuccess)
+        val outcome = result.getOrThrow() as RegisterSubscriptionResult.Registered
+        assertTrue(outcome.subscription.provisioningPending)
+    }
+
+    @Test
     fun `online with facade photo sends multipart payload with installationOrderId`() = runTest {
         val captured = slot<Subscription>()
         val registered = Subscription(subscriptionId = 11)

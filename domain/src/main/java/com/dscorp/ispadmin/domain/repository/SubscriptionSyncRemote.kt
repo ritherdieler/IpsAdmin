@@ -3,6 +3,7 @@ package com.dscorp.ispadmin.domain.repository
 sealed class SubscriptionSyncOutcome {
     data object Success : SubscriptionSyncOutcome()
     data object Conflict : SubscriptionSyncOutcome()
+    data object IpConflict : SubscriptionSyncOutcome()
     data class Failure(val message: String) : SubscriptionSyncOutcome()
 }
 
