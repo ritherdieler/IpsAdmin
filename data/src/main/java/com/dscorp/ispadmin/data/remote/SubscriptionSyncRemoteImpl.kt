@@ -2,6 +2,7 @@ package com.dscorp.ispadmin.data.remote
 
 import com.dscorp.ispadmin.domain.repository.SubscriptionSyncOutcome
 import com.dscorp.ispadmin.domain.repository.SubscriptionSyncRemote
+import com.google.gson.Gson
 import com.google.gson.JsonParser
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -11,7 +12,8 @@ import java.io.File
 import java.io.IOException
 
 class SubscriptionSyncRemoteImpl(
-    private val api: PendingSubscriptionSyncApi
+    private val api: PendingSubscriptionSyncApi,
+    private val gson: Gson = Gson()
 ) : SubscriptionSyncRemote {
 
     override suspend fun uploadPending(
@@ -30,14 +32,32 @@ class SubscriptionSyncRemoteImpl(
                 body = photoFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
             )
             val response = api.registerWithFacadePhoto(subscriptionBody, photoPart)
-            when (response.code()) {
-                200, 201 -> SubscriptionSyncOutcome.Success
-                409 -> SubscriptionSyncOutcome.Conflict
-                else -> SubscriptionSyncOutcome.Failure("HTTP ${response.code()}")
-            }
+            mapResponse(response)
         } catch (error: IOException) {
             SubscriptionSyncOutcome.Failure(error.message ?: "Error de red")
         }
+    }
+
+    private fun mapResponse(
+        response: retrofit2.Response<SubscriptionSyncApiResponse>
+    ): SubscriptionSyncOutcome {
+        val body = response.body() ?: parseErrorBody(response)
+        val status = body?.status ?: response.code()
+        return when {
+            status == 200 || status == 201 -> SubscriptionSyncOutcome.Success
+            status == 409 && body?.errorCode == IP_CONFLICT_CODE -> SubscriptionSyncOutcome.IpConflict
+            status == 409 -> SubscriptionSyncOutcome.Conflict
+            else -> SubscriptionSyncOutcome.Failure(
+                body?.error ?: "HTTP ${response.code()}"
+            )
+        }
+    }
+
+    private fun parseErrorBody(
+        response: retrofit2.Response<SubscriptionSyncApiResponse>
+    ): SubscriptionSyncApiResponse? {
+        val raw = response.errorBody()?.string() ?: return null
+        return runCatching { gson.fromJson(raw, SubscriptionSyncApiResponse::class.java) }.getOrNull()
     }
 
     private fun mergeIdentity(
@@ -51,5 +71,9 @@ class SubscriptionSyncRemoteImpl(
             json.addProperty("installationOrderId", installationOrderId)
         }
         return json.toString()
+    }
+
+    private companion object {
+        const val IP_CONFLICT_CODE = "IP_CONFLICT"
     }
 }

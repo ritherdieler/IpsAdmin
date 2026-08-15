@@ -13,5 +13,5 @@ interface PendingSubscriptionSyncApi {
     suspend fun registerWithFacadePhoto(
         @Part("subscription") subscription: RequestBody,
         @Part facadePhoto: MultipartBody.Part
-    ): Response<Unit>
+    ): Response<SubscriptionSyncApiResponse>
 }

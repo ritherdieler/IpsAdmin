@@ -163,6 +163,26 @@ class PendingSubscriptionsViewModelTest {
     }
 
     @Test
+    fun `ip conflict sync exposes actionable error message`() = runTest(testDispatcher) {
+        val message = "IP ya en uso. Coordina otra IP con el equipo e intenta de nuevo."
+        coEvery { syncPendingSubscriptionsUseCase() } returns Result.success(
+            PendingSubscriptionSyncResult(
+                syncedCount = 0,
+                failedCount = 1,
+                lastError = message
+            )
+        )
+
+        viewModel.onIntent(PendingSubscriptionsIntent.Sync)
+        advanceUntilIdle()
+
+        assertFalse(viewModel.uiState.value.isSyncing)
+        assertEquals(1, viewModel.uiState.value.failedCount)
+        assertEquals(message, viewModel.uiState.value.errorMessage)
+        assertEquals(message, viewModel.uiState.value.lastError)
+    }
+
+    @Test
     fun `sync failure exposes error message`() = runTest(testDispatcher) {
         coEvery { syncPendingSubscriptionsUseCase() } returns Result.failure(NoConnectivity())
         viewModel.onIntent(PendingSubscriptionsIntent.Load)

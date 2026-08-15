@@ -117,6 +117,32 @@ class SyncPendingSubscriptionsUseCaseTest {
     }
 
     @Test
+    fun `marks CONFLICT with actionable IP message and keeps row and photo on IP_CONFLICT`() = runTest {
+        val item = pending(localId = "ip-conflict-1", createdAt = 1L)
+        coEvery { pendingRepository.getPendingFifo() } returns listOf(item)
+        coEvery { remote.uploadPending(any(), any(), any(), any()) } returns SubscriptionSyncOutcome.IpConflict
+        every { photoStorage.fileFor(item.localId) } returns File("/files/pending_subscriptions/${item.localId}.jpg")
+
+        val result = useCase()
+
+        assertTrue(result.isSuccess)
+        assertEquals(0, result.getOrThrow().syncedCount)
+        assertEquals(1, result.getOrThrow().failedCount)
+        assertEquals(
+            "IP ya en uso. Coordina otra IP con el equipo e intenta de nuevo.",
+            result.getOrThrow().lastError
+        )
+        coVerify {
+            pendingRepository.markConflict(
+                item.localId,
+                "IP ya en uso. Coordina otra IP con el equipo e intenta de nuevo."
+            )
+        }
+        coVerify(exactly = 0) { pendingRepository.deleteByLocalId(any()) }
+        coVerify(exactly = 0) { photoStorage.delete(any()) }
+    }
+
+    @Test
     fun `increments retryCount keeps PENDING on network error`() = runTest {
         val item = pending(localId = "retry-1", createdAt = 1L)
         coEvery { pendingRepository.getPendingFifo() } returns listOf(item)
