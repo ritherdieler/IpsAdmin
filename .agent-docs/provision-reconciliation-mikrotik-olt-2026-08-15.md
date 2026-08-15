@@ -1,7 +1,7 @@
 # Reconciliación MikroTik + OLT tras registro
 
 Fecha: 2026-08-15  
-Rama: `cursor/provision-reconciliation-ef49`
+Rama: `develop`
 
 ## Comportamiento (backend)
 
@@ -14,13 +14,12 @@ Rama: `cursor/provision-reconciliation-ef49`
 5. Re-sync con el mismo `clientRequestId` reconcilia solo lo pendiente (idempotente).
 6. DTO: `mikrotikProvisionStatus`, `oltProvisionStatus`, `provisioningPending` (true si alguno es `PENDING`/`FAILED`).
 
-Parche backend (si el remoto no acepta push):  
-`.agent-docs/backend-provision-reconciliation.patch`
+Migraciones en develop: `V22` client_request_id, `V23` provision_status.
+
+Parche backend completo para apply en `ispadmin-backend` develop:  
+`.agent-docs/backend-develop-offline-provision.patch`
 
 ## Android
 
-- Online: diálogo de éxito con mensaje  
-  “Registrado; provisión de red pendiente de reconciliar” si `provisioningPending`.
-- Sync offline: HTTP 200 (alta o `alreadyRegistered`) → `SubscriptionSyncOutcome.Success`  
-  aunque `provisioningPending` → se borra la cola local; el backend reconcilia.
-- IP manual offline sin cambios.
+- Online: diálogo de éxito parcial si `provisioningPending`.
+- Sync offline HTTP 200 (aunque `provisioningPending`) borra cola local.

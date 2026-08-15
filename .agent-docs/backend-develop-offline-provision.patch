@@ -1,0 +1,2844 @@
+From aabe3fc5e04546bbb3c16c33a8148d6cad59a6da Mon Sep 17 00:00:00 2001
+From: Edwin Benavides <benavidesedwin170@gmail.com>
+Date: Thu, 13 Aug 2026 09:14:21 -0500
+Subject: [PATCH 1/5] Soporte offline Subscripciones
+
+---
+ .../routeros/adapter/MockMikrotikSession.kt   |  17 ++
+ .../routeros/adapter/RouterOs7RestAdapter.kt  |   6 +-
+ .../routeros/config/RouterOsClientConfig.kt   |  12 +-
+ .../controller/SubscriptionController.kt      |  17 ++
+ .../wispadmin/data/model/Subscription.kt      |   3 +
+ .../wispadmin/dto/SubscriptionDto.kt          |   1 +
+ .../repository/SubscriptionRepository.kt      |   2 +
+ .../requestbody/SubscriptionRequest.kt        |   2 +
+ .../wispadmin/service/EnvironmentService.kt   |   4 +-
+ .../service/InstallationOrderService.kt       |   4 +
+ .../wispadmin/service/SubscriptionService.kt  |  72 ++++++-
+ .../strategies/FiberInstallationStrategy.kt   |  23 ++-
+ .../WirelessInstallationStrategy.kt           |  26 ++-
+ .../V21__subscription_client_request_id.sql   |   2 +
+ .../routeros/RouterOs7RestAdapterUnitTest.kt  |  52 +++++
+ ...ptionControllerMultipartIdempotencyTest.kt | 103 ++++++++++
+ .../service/EnvironmentServiceTest.kt         |  33 +++
+ .../service/InstallationOrderServiceTest.kt   |  53 +++++
+ .../SubscriptionServiceIdempotencyTest.kt     | 190 ++++++++++++++++++
+ .../FiberInstallationStrategyTest.kt          | 100 +++++++++
+ 20 files changed, 690 insertions(+), 32 deletions(-)
+ create mode 100644 src/main/kotlin/com/dscorp/wispadmin/routeros/adapter/MockMikrotikSession.kt
+ create mode 100644 src/main/resources/db/migration/V21__subscription_client_request_id.sql
+ create mode 100644 src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt
+ create mode 100644 src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/EnvironmentServiceTest.kt
+ create mode 100644 src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/InstallationOrderServiceTest.kt
+ create mode 100644 src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionServiceIdempotencyTest.kt
+
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/routeros/adapter/MockMikrotikSession.kt b/src/main/kotlin/com/dscorp/wispadmin/routeros/adapter/MockMikrotikSession.kt
+new file mode 100644
+index 0000000..9e14865
+--- /dev/null
++++ b/src/main/kotlin/com/dscorp/wispadmin/routeros/adapter/MockMikrotikSession.kt
+@@ -0,0 +1,17 @@
++package com.dscorp.wispadmin.routeros.adapter
++
++import com.dscorp.wispadmin.routeros.port.MikrotikSession
++
++class MockMikrotikSession : MikrotikSession {
++    override fun print(path: String, query: Map<String, String>): List<Map<String, String>> = emptyList()
++
++    override fun call(path: String, args: Map<String, String>): List<Map<String, String>> = emptyList()
++
++    override fun add(path: String, args: Map<String, String>) = Unit
++
++    override fun set(path: String, id: String, args: Map<String, String>) = Unit
++
++    override fun remove(path: String, id: String) = Unit
++
++    override fun execute(command: String): List<Map<String, String>> = emptyList()
++}
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/routeros/adapter/RouterOs7RestAdapter.kt b/src/main/kotlin/com/dscorp/wispadmin/routeros/adapter/RouterOs7RestAdapter.kt
+index b970752..4bee041 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/routeros/adapter/RouterOs7RestAdapter.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/routeros/adapter/RouterOs7RestAdapter.kt
+@@ -20,12 +20,16 @@ import javax.net.ssl.X509TrustManager
+ class RouterOs7RestAdapter(
+     private val properties: RouterOsClientProperties,
+     private val objectMapper: ObjectMapper = ObjectMapper(),
+-    httpClient: OkHttpClient? = null
++    httpClient: OkHttpClient? = null,
++    private val mockEnabled: Boolean = false
+ ) : MikrotikClient, AutoCloseable {
+ 
+     private val ownedClient: OkHttpClient = httpClient ?: buildClient(properties)
+ 
+     override fun <T> withSession(device: MikrotikDeviceRef, block: (MikrotikSession) -> T): T {
++        if (mockEnabled) {
++            return block(MockMikrotikSession())
++        }
+         val effective = device.copy(
+             port = resolvePort(device)
+         )
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/routeros/config/RouterOsClientConfig.kt b/src/main/kotlin/com/dscorp/wispadmin/routeros/config/RouterOsClientConfig.kt
+index 90c4db9..5394769 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/routeros/config/RouterOsClientConfig.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/routeros/config/RouterOsClientConfig.kt
+@@ -4,6 +4,7 @@ import com.dscorp.wispadmin.routeros.adapter.RouterOs7RestAdapter
+ import com.dscorp.wispadmin.routeros.port.MikrotikClient
+ import com.fasterxml.jackson.databind.ObjectMapper
+ import org.slf4j.LoggerFactory
++import org.springframework.beans.factory.annotation.Value
+ import org.springframework.boot.context.properties.EnableConfigurationProperties
+ import org.springframework.context.annotation.Bean
+ import org.springframework.context.annotation.Configuration
+@@ -27,8 +28,15 @@ class RouterOsClientConfig(
+ 
+     @Bean(destroyMethod = "close")
+     @Primary
+-    fun routerOs7RestAdapter(objectMapper: ObjectMapper): MikrotikClient {
+-        return RouterOs7RestAdapter(properties, objectMapper)
++    fun routerOs7RestAdapter(
++        objectMapper: ObjectMapper,
++        @Value("\${mikrotik.connection.mock.enabled:false}") mockEnabled: Boolean
++    ): MikrotikClient {
++        return RouterOs7RestAdapter(
++            properties = properties,
++            objectMapper = objectMapper,
++            mockEnabled = mockEnabled
++        )
+     }
+ 
+     companion object {
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt
+index f6a0463..d873eda 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt
+@@ -322,6 +322,11 @@ class SubscriptionController(
+         return ResponseEntity.ok(null)
+     }
+ 
++    @GetMapping("/provisioning-ready")
++    fun provisioningReady(): BaseResponse {
++        return BaseResponse(status = 200, data = true)
++    }
++
+     @PostMapping
+     fun newSubscription(@RequestBody newSubscription: SubscriptionRequest): BaseResponse {
+         return try {
+@@ -359,6 +364,18 @@ class SubscriptionController(
+         @RequestPart("facadePhoto") facadephoto: MultipartFile
+     ): BaseResponse {
+         return try {
++            subscriptionService.findExistingSubscriptionByClientRequestId(newSubscription.clientRequestId)
++                ?.let {
++                    val dto = subscriptionService.registerSubscription(
++                        newSubscription = newSubscription,
++                        onSuccess = { }
++                    )
++                    return BaseResponse(
++                        data = dto,
++                        status = 200,
++                    )
++                }
++
+             val facadePhotoUrl = storageService.uploadFileToFolder(facadephoto, "facades")
+ 
+             newSubscription.facadePhotoUrl = facadePhotoUrl
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/Subscription.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/Subscription.kt
+index d4df7d2..b88d1a7 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/Subscription.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/Subscription.kt
+@@ -132,6 +132,9 @@ data class Subscription(
+     @Column(name = "facade_photo_url", length = 500)
+     var facadePhotoUrl: String? = null,
+ 
++    @Column(name = "client_request_id", unique = true)
++    var clientRequestId: String? = null,
++
+     @OneToMany(mappedBy = "subscription")
+     val subscriptionLogs: MutableSet<SubscriptionLog> = mutableSetOf(),
+ 
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/dto/SubscriptionDto.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/dto/SubscriptionDto.kt
+index 4a257f5..6680d78 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/dto/SubscriptionDto.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/dto/SubscriptionDto.kt
+@@ -51,6 +51,7 @@ data class SubscriptionDto(
+     val equipmentCondition: EquipmentCondition? = null,
+     val autoCut: Boolean = true,
+     val hasFiberOnu: Boolean = false,
++    val alreadyRegistered: Boolean = false,
+ 
+     ) : Serializable
+ 
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/repository/SubscriptionRepository.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/repository/SubscriptionRepository.kt
+index cdda7ec..f24099b 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/repository/SubscriptionRepository.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/repository/SubscriptionRepository.kt
+@@ -13,6 +13,8 @@ import java.time.LocalDateTime
+ 
+ interface SubscriptionRepository : JpaRepository<Subscription, Int> {
+ 
++    fun findByClientRequestId(clientRequestId: String): Optional<Subscription>
++
+     @Query(
+         """
+         SELECT DISTINCT s FROM Subscription s
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/requestbody/SubscriptionRequest.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/requestbody/SubscriptionRequest.kt
+index ba2b7d7..5a2a3e6 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/requestbody/SubscriptionRequest.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/requestbody/SubscriptionRequest.kt
+@@ -32,9 +32,11 @@ data class SubscriptionRequest(
+     var facadePhotoUrl: String? = null,
+     var isMigration: Boolean = false,
+     var installationOrderId: Int? = null,
++    var clientRequestId: String? = null,
+     var borneNumber: String? = null,
+     var equipmentCondition: EquipmentCondition = EquipmentCondition.LOAN,
+     var autoCut: Boolean = true,
++    var clientIpAddress: String? = null,
+ ) {
+     fun toModel(): Subscription = Subscription(
+         firstName = firstName.removeSpecialCharacters(),
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/EnvironmentService.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/EnvironmentService.kt
+index 61630f1..1872f2a 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/EnvironmentService.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/EnvironmentService.kt
+@@ -10,7 +10,9 @@ class EnvironmentService {
+     private lateinit var activeProfile: String
+     
+     fun isDevelopment(): Boolean {
+-        return activeProfile == "dev"
++        return activeProfile.split(",")
++            .map { it.trim() }
++            .any { it.equals("dev", ignoreCase = true) }
+     }
+     
+     fun getActiveProfile(): String {
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/InstallationOrderService.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/InstallationOrderService.kt
+index 62da20d..d718b57 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/InstallationOrderService.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/InstallationOrderService.kt
+@@ -115,6 +115,10 @@ class InstallationOrderService @Autowired constructor(
+     fun closeInstallationOrder(orderId: Int): InstallationOrder {
+         val order = getInstallationOrderById(orderId)
+ 
++        if (order.status == InstallationOrderStatus.CERRADO) {
++            return order
++        }
++
+         order.status = InstallationOrderStatus.CERRADO
+ 
+         val updatedOrder = installationOrderRepository.save(order)
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionService.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionService.kt
+index 124f587..cc2eb72 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionService.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionService.kt
+@@ -1,5 +1,6 @@
+ package com.dscorp.wispadmin.wispadmin.service
+ 
++import com.dscorp.wispadmin.routeros.port.MikrotikException
+ import com.dscorp.wispadmin.wispadmin.controller.toAuthorizationRequest
+ import com.dscorp.wispadmin.wispadmin.controller.toErrorLog
+ import com.dscorp.wispadmin.wispadmin.data.model.*
+@@ -59,6 +60,11 @@ class SubscriptionService(
+ ) {
+     private val logger = LoggerFactory.getLogger(SubscriptionService::class.java)
+ 
++    fun findExistingSubscriptionByClientRequestId(clientRequestId: String?): Subscription? {
++        val normalized = clientRequestId?.trim()?.takeIf { it.isNotEmpty() } ?: return null
++        return repository.findByClientRequestId(normalized).orElse(null)
++    }
++
+     fun createSubscriptionsSimpleQueue(): CompletableFuture<QueueCreationStats> {
+         return queueManager.createSubscriptionsSimpleQueue()
+     }
+@@ -152,10 +158,15 @@ class SubscriptionService(
+         var onuSn: String? = null
+ 
+         return try {
++            findExistingSubscriptionByClientRequestId(newSubscription.clientRequestId)?.let { existing ->
++                completePendingInstallation(existing, newSubscription)
++                return existing.toDto().copy(alreadyRegistered = true)
++            }
++
+             subscriptionValidator.validateSubscriptionRequest(newSubscription)
+ 
+-            val freeIp = getFreeIp()
+-            val subscriptionToSave = createSubscriptionEntity(newSubscription, freeIp)
++            val ipAssignment = resolveIpAssignment(newSubscription)
++            val subscriptionToSave = createSubscriptionEntity(newSubscription, ipAssignment)
+ 
+             if (newSubscription.installationType == InstallationType.FIBER) {
+                 processOnuForFiber(subscriptionToSave, newSubscription)
+@@ -189,11 +200,15 @@ class SubscriptionService(
+             val place = placeRepository.findById(subscription.place!!.id).get()
+ 
+             val strategy = installationStrategyFactory.getStrategy(newSubscription.installationType)
+-            val result = strategy.processInstallation(subscription, newSubscription, device, plan, place)
+-            
+-            queueAdded = result.queueAdded
+-            onuAuthorized = result.onuAuthorized
+-            onuSn = result.onuSn
++            try {
++                val result = strategy.processInstallation(subscription, newSubscription, device, plan, place)
++                queueAdded = result.queueAdded
++                onuAuthorized = result.onuAuthorized
++                onuSn = result.onuSn
++            } catch (ex: MikrotikException) {
++                logger.error("Error de provisión MikroTik tras persistir suscripción ${subscription.id}", ex)
++                persistProvisionError(ex)
++            }
+ 
+             newSubscription.installationOrderId?.let { orderId ->
+                 processInstallationOrderCompletion(orderId, subscription)
+@@ -211,13 +226,41 @@ class SubscriptionService(
+         }
+     }
+ 
++    private fun completePendingInstallation(
++        existing: Subscription,
++        request: SubscriptionRequest
++    ) {
++        try {
++            val deviceId = existing.hostDevice?.id ?: request.hostDeviceId
++            val planId = existing.plan?.id ?: request.planId
++            val placeId = existing.place?.id ?: request.placeId
++            val device = networkDeviceRepository.findById(deviceId).get()
++            val plan = planRepository.findById(planId).get()
++            val place = placeRepository.findById(placeId).get()
++            val installationType = existing.installationType ?: request.installationType
++            val strategy = installationStrategyFactory.getStrategy(installationType)
++            strategy.processInstallation(existing, request, device, plan, place)
++        } catch (ex: MikrotikException) {
++            logger.warn("No se pudo completar la provisión MikroTik pendiente para ${existing.id}", ex)
++            persistProvisionError(ex)
++        }
++    }
++
++    private fun persistProvisionError(ex: Exception) {
++        try {
++            errorLogRepository.save(ex.toErrorLog(Modules.SUBSCRIPTION))
++        } catch (logError: Exception) {
++            logger.warn("No se pudo guardar el error de provisión MikroTik", logError)
++        }
++    }
++
+     private fun createSubscriptionEntity(
+         newSubscription: SubscriptionRequest,
+         freeIp: Pair<String, IpPool>
+     ): Subscription {
+         return newSubscription.toModel().apply {
+             subscriptionDatetime = LocalDateTime.now()
+-
++            clientRequestId = newSubscription.clientRequestId?.trim()?.takeIf { it.isNotEmpty() }
+ 
+             this.ip = freeIp.first
+             this.ipPool = freeIp.second
+@@ -342,6 +385,19 @@ class SubscriptionService(
+         }
+     }
+ 
++    private fun resolveIpAssignment(request: SubscriptionRequest): Pair<String, IpPool> {
++        val manualIp = request.clientIpAddress?.trim()?.takeIf { it.isNotEmpty() }
++        if (manualIp != null) {
++            require(manualIp.isValidIpAddress()) { "La IP del cliente no es válida" }
++            val matchingPool = ipPoolRepository.findAllEligiblePools().firstOrNull { pool ->
++                manualIp.startsWith(pool.ipSegment.getBaseIpFromRange())
++            }
++            val pool = matchingPool ?: getFreeIp().second
++            return Pair(manualIp, pool)
++        }
++        return getFreeIp()
++    }
++
+     fun getFreeIp(): Pair<String, IpPool> {
+         var availableIp = ""
+         var pool: IpPool? = null
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategy.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategy.kt
+index 37e3b58..ad77494 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategy.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategy.kt
+@@ -1,5 +1,6 @@
+ package com.dscorp.wispadmin.wispadmin.service.subscription.strategies
+ 
++import com.dscorp.wispadmin.routeros.port.MikrotikException
+ import com.dscorp.wispadmin.wispadmin.data.model.NetworkDevice
+ import com.dscorp.wispadmin.wispadmin.data.model.Plan
+ import com.dscorp.wispadmin.wispadmin.data.model.Place
+@@ -58,17 +59,21 @@ class FiberInstallationStrategy(
+             onuAuthorized = true
+ 
+             val queueName = buildQueueName(subscription)
+-            device.executeCommand { session ->
+-                session.add(
+-                    "/queue/simple",
+-                    mapOf(
+-                        "name" to queueName,
+-                        "target" to subscription.ip.orEmpty(),
+-                        "max-limit" to "${plan.uploadSpeed}M/${plan.downloadSpeed}M"
++            try {
++                device.executeCommand { session ->
++                    session.add(
++                        "/queue/simple",
++                        mapOf(
++                            "name" to queueName,
++                            "target" to subscription.ip.orEmpty(),
++                            "max-limit" to "${plan.uploadSpeed}M/${plan.downloadSpeed}M"
++                        )
+                     )
+-                )
++                }
++                queueAdded = true
++            } catch (error: MikrotikException) {
++                logger.error("No se pudo crear simple queue en MikroTik para suscripción ${subscription.id}", error)
+             }
+-            queueAdded = true
+         }
+ 
+         return InstallationResult(
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/WirelessInstallationStrategy.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/WirelessInstallationStrategy.kt
+index 8cb31d5..7c839f7 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/WirelessInstallationStrategy.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/WirelessInstallationStrategy.kt
+@@ -1,5 +1,6 @@
+ package com.dscorp.wispadmin.wispadmin.service.subscription.strategies
+ 
++import com.dscorp.wispadmin.routeros.port.MikrotikException
+ import com.dscorp.wispadmin.wispadmin.data.model.NetworkDevice
+ import com.dscorp.wispadmin.wispadmin.data.model.Plan
+ import com.dscorp.wispadmin.wispadmin.data.model.Place
+@@ -26,19 +27,22 @@ class WirelessInstallationStrategy : IInstallationStrategy {
+         place: Place
+     ): InstallationResult {
+         val queueName = buildQueueName(subscription)
+-        
+-        device.executeCommand { session ->
+-            session.add(
+-                "/queue/simple",
+-                mapOf(
+-                    "name" to queueName,
+-                    "target" to subscription.ip.orEmpty(),
+-                    "max-limit" to "${plan.uploadSpeed}M/${plan.downloadSpeed}M"
++        return try {
++            device.executeCommand { session ->
++                session.add(
++                    "/queue/simple",
++                    mapOf(
++                        "name" to queueName,
++                        "target" to subscription.ip.orEmpty(),
++                        "max-limit" to "${plan.uploadSpeed}M/${plan.downloadSpeed}M"
++                    )
+                 )
+-            )
++            }
++            InstallationResult(queueAdded = true)
++        } catch (error: MikrotikException) {
++            logger.error("No se pudo crear simple queue en MikroTik para suscripción ${subscription.id}", error)
++            InstallationResult(queueAdded = false)
+         }
+-        
+-        return InstallationResult(queueAdded = true)
+     }
+     
+     override fun buildQueueName(subscription: Subscription): String {
+diff --git a/src/main/resources/db/migration/V21__subscription_client_request_id.sql b/src/main/resources/db/migration/V21__subscription_client_request_id.sql
+new file mode 100644
+index 0000000..5f25fa6
+--- /dev/null
++++ b/src/main/resources/db/migration/V21__subscription_client_request_id.sql
+@@ -0,0 +1,2 @@
++ALTER TABLE subscription ADD COLUMN client_request_id VARCHAR(64) NULL;
++CREATE UNIQUE INDEX uk_subscription_client_request_id ON subscription (client_request_id);
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/routeros/RouterOs7RestAdapterUnitTest.kt b/src/test/kotlin/com/dscorp/wispadmin/routeros/RouterOs7RestAdapterUnitTest.kt
+index d410cba..e32229d 100644
+--- a/src/test/kotlin/com/dscorp/wispadmin/routeros/RouterOs7RestAdapterUnitTest.kt
++++ b/src/test/kotlin/com/dscorp/wispadmin/routeros/RouterOs7RestAdapterUnitTest.kt
+@@ -3,17 +3,21 @@ package com.dscorp.wispadmin.routeros
+ import com.dscorp.wispadmin.routeros.adapter.RouterOs7RestAdapter
+ import com.dscorp.wispadmin.routeros.config.RouterOsClientProperties
+ import com.dscorp.wispadmin.routeros.port.MikrotikAuthException
++import com.dscorp.wispadmin.routeros.port.MikrotikCommandException
+ import com.dscorp.wispadmin.routeros.port.MikrotikDeviceRef
+ import com.dscorp.wispadmin.routeros.port.MikrotikTimeoutException
++import okhttp3.OkHttpClient
+ import okhttp3.mockwebserver.MockResponse
+ import okhttp3.mockwebserver.MockWebServer
+ import org.junit.jupiter.api.AfterEach
+ import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertDoesNotThrow
+ import org.junit.jupiter.api.Assertions.assertThrows
+ import org.junit.jupiter.api.Assertions.assertTrue
+ import org.junit.jupiter.api.BeforeEach
+ import org.junit.jupiter.api.Test
+ import java.util.concurrent.TimeUnit
++import javax.net.ssl.SSLHandshakeException
+ 
+ class RouterOs7RestAdapterUnitTest {
+ 
+@@ -152,4 +156,52 @@ class RouterOs7RestAdapterUnitTest {
+         assertEquals("DELETE", removeReq.method)
+         assertTrue(removeReq.path!!.contains("/rest/ip/address/*1"))
+     }
++
++    @Test
++    fun `tls handshake failure maps to MikrotikCommandException when mock is disabled`() {
++        val handshakeClient = OkHttpClient.Builder()
++            .addInterceptor { throw SSLHandshakeException("Remote host terminated the handshake") }
++            .build()
++        val handshakeAdapter = RouterOs7RestAdapter(
++            properties = RouterOsClientProperties().apply {
++                rest.scheme = "https"
++                rest.port = 443
++                rest.verifySsl = true
++            },
++            httpClient = handshakeClient,
++            mockEnabled = false
++        )
++
++        val error = assertThrows(MikrotikCommandException::class.java) {
++            handshakeAdapter.withSession(device.copy(port = 443)) { session ->
++                session.add("/queue/simple", mapOf("name" to "test-queue"))
++            }
++        }
++
++        assertTrue(error.message!!.contains("handshake", ignoreCase = true))
++        handshakeAdapter.close()
++    }
++
++    @Test
++    fun `tls handshake is swallowed and add succeeds when mikrotik mock is enabled`() {
++        val handshakeClient = OkHttpClient.Builder()
++            .addInterceptor { throw SSLHandshakeException("Remote host terminated the handshake") }
++            .build()
++        val mockAdapter = RouterOs7RestAdapter(
++            properties = RouterOsClientProperties().apply {
++                rest.scheme = "https"
++                rest.port = 443
++                rest.verifySsl = true
++            },
++            httpClient = handshakeClient,
++            mockEnabled = true
++        )
++
++        assertDoesNotThrow {
++            mockAdapter.withSession(device.copy(port = 443)) { session ->
++                session.add("/queue/simple", mapOf("name" to "test-queue", "target" to "10.0.0.10"))
++            }
++        }
++        mockAdapter.close()
++    }
+ }
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt
+new file mode 100644
+index 0000000..9475390
+--- /dev/null
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt
+@@ -0,0 +1,103 @@
++package com.dscorp.wispadmin.wispadmin.controller
++
++import com.dscorp.wispadmin.wispadmin.data.model.EquipmentCondition
++import com.dscorp.wispadmin.wispadmin.data.model.GeoLocation
++import com.dscorp.wispadmin.wispadmin.data.model.InstallationType
++import com.dscorp.wispadmin.wispadmin.data.model.Subscription
++import com.dscorp.wispadmin.wispadmin.repository.CouponRepository
++import com.dscorp.wispadmin.wispadmin.repository.NapBoxRepository
++import com.dscorp.wispadmin.wispadmin.repository.NetworkDeviceRepository
++import com.dscorp.wispadmin.wispadmin.repository.PlaceRepository
++import com.dscorp.wispadmin.wispadmin.repository.PlanRepository
++import com.dscorp.wispadmin.wispadmin.repository.SubscriptionLogRepository
++import com.dscorp.wispadmin.wispadmin.repository.SubscriptionRepository
++import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
++import com.dscorp.wispadmin.wispadmin.service.FirebaseStorageService
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionService
++import io.mockk.every
++import io.mockk.mockk
++import io.mockk.verify
++import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertTrue
++import org.junit.jupiter.api.Test
++import org.springframework.context.ApplicationEventPublisher
++import org.springframework.http.MediaType
++import org.springframework.mock.web.MockMultipartFile
++
++class SubscriptionControllerMultipartIdempotencyTest {
++
++    private val subscriptionRepository = mockk<SubscriptionRepository>(relaxed = true)
++    private val subscriptionService = mockk<SubscriptionService>()
++    private val storageService = mockk<FirebaseStorageService>(relaxed = true)
++    private val eventPublisher = mockk<ApplicationEventPublisher>(relaxed = true)
++
++    private val controller = SubscriptionController(
++        repository = subscriptionRepository,
++        subscriptionService = subscriptionService,
++        placeRepository = mockk(relaxed = true),
++        planRepository = mockk(relaxed = true),
++        napBoxRepository = mockk(relaxed = true),
++        networkDeviceRepository = mockk(relaxed = true),
++        couponRepository = mockk(relaxed = true),
++        subscriptionLogRepository = mockk(relaxed = true),
++        storageService = storageService,
++        eventPublisher = eventPublisher,
++    )
++
++    @Test
++    fun `newSubcriptionWithFacade skips photo upload when clientRequestId already exists`() {
++        val existing = Subscription(
++            firstName = "Juan",
++            lastName = "Perez",
++            dni = "12345678",
++            equipmentCondition = EquipmentCondition.LOAN,
++        ).apply {
++            id = 42
++            clientRequestId = "offline-req-42"
++        }
++
++        every {
++            subscriptionService.findExistingSubscriptionByClientRequestId("offline-req-42")
++        } returns existing
++        every {
++            subscriptionService.registerSubscription(any(), any())
++        } returns existing.toDto().copy(alreadyRegistered = true)
++
++        val photoPart = MockMultipartFile(
++            "facadePhoto",
++            "facade.jpg",
++            MediaType.IMAGE_JPEG_VALUE,
++            byteArrayOf(1, 2, 3),
++        )
++
++        val response = controller.newSubcriptionWithFacade(
++            newSubscription = sampleRequest(clientRequestId = "offline-req-42"),
++            facadephoto = photoPart,
++        )
++
++        assertEquals(200, response.status)
++        val data = response.data as com.dscorp.wispadmin.wispadmin.dto.SubscriptionDto
++        assertEquals(42, data.id)
++        assertTrue(data.alreadyRegistered)
++
++        verify(exactly = 0) { storageService.uploadFileToFolder(any(), any()) }
++        verify(exactly = 1) { subscriptionService.registerSubscription(any(), any()) }
++    }
++
++    private fun sampleRequest(clientRequestId: String) = SubscriptionRequest(
++        firstName = "Juan",
++        lastName = "Perez",
++        dni = "12345678",
++        address = "Calle 1",
++        phone = "999888777",
++        subscriptionDate = System.currentTimeMillis(),
++        planId = 1,
++        additionalDeviceIds = emptyList(),
++        placeId = 1,
++        location = GeoLocation(-11.0, -77.0),
++        technicianId = 1,
++        hostDeviceId = 1,
++        installationType = InstallationType.WIRELESS,
++        clientRequestId = clientRequestId,
++    )
++}
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/EnvironmentServiceTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/EnvironmentServiceTest.kt
+new file mode 100644
+index 0000000..517915b
+--- /dev/null
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/EnvironmentServiceTest.kt
+@@ -0,0 +1,33 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import org.junit.jupiter.api.Assertions.assertFalse
++import org.junit.jupiter.api.Assertions.assertTrue
++import org.junit.jupiter.api.Test
++import org.springframework.test.util.ReflectionTestUtils
++
++class EnvironmentServiceTest {
++
++    @Test
++    fun `isDevelopment is true when active profile is exactly dev`() {
++        val service = EnvironmentService()
++        ReflectionTestUtils.setField(service, "activeProfile", "dev")
++
++        assertTrue(service.isDevelopment())
++    }
++
++    @Test
++    fun `isDevelopment is true when dev is one of several active profiles`() {
++        val service = EnvironmentService()
++        ReflectionTestUtils.setField(service, "activeProfile", "dev,local")
++
++        assertTrue(service.isDevelopment())
++    }
++
++    @Test
++    fun `isDevelopment is false for production profile`() {
++        val service = EnvironmentService()
++        ReflectionTestUtils.setField(service, "activeProfile", "prod")
++
++        assertFalse(service.isDevelopment())
++    }
++}
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/InstallationOrderServiceTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/InstallationOrderServiceTest.kt
+new file mode 100644
+index 0000000..f397de3
+--- /dev/null
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/InstallationOrderServiceTest.kt
+@@ -0,0 +1,53 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import com.dscorp.wispadmin.wispadmin.data.model.InstallationOrder
++import com.dscorp.wispadmin.wispadmin.data.model.InstallationOrderStatus
++import com.dscorp.wispadmin.wispadmin.repository.InstallationOrderRepository
++import com.dscorp.wispadmin.wispadmin.repository.UserRepository
++import com.dscorp.wispadmin.wispadmin.util.fcm.FcmMessage
++import io.mockk.every
++import io.mockk.mockk
++import io.mockk.verify
++import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Test
++import java.util.Optional
++
++class InstallationOrderServiceTest {
++
++    private val installationOrderRepository = mockk<InstallationOrderRepository>()
++    private val userRepository = mockk<UserRepository>(relaxed = true)
++    private val notificationService = mockk<NotificationService>(relaxed = true)
++
++    private val service = InstallationOrderService(
++        installationOrderRepository = installationOrderRepository,
++        userRepository = userRepository,
++        notificationService = notificationService,
++    )
++
++    @Test
++    fun `closeInstallationOrder is idempotent when order is already closed`() {
++        val closedOrder = InstallationOrder(
++            id = 10,
++            customerFirstName = "Ana",
++            customerLastName = "Lopez",
++            status = InstallationOrderStatus.CERRADO,
++        )
++
++        every { installationOrderRepository.findById(10) } returns Optional.of(closedOrder)
++
++        val result = service.closeInstallationOrder(10)
++
++        assertEquals(InstallationOrderStatus.CERRADO, result.status)
++        verify(exactly = 0) { installationOrderRepository.save(any()) }
++        verify(exactly = 0) {
++            notificationService.sendTopicNotification(
++                topic = any(),
++                title = any(),
++                message = any(),
++                data = any(),
++                type = FcmMessage.FcmMessageType.SALES_CLOSED_INSTALLATION_ORDER,
++                id = any(),
++            )
++        }
++    }
++}
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionServiceIdempotencyTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionServiceIdempotencyTest.kt
+new file mode 100644
+index 0000000..8c8733c
+--- /dev/null
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionServiceIdempotencyTest.kt
+@@ -0,0 +1,190 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import com.dscorp.wispadmin.routeros.port.MikrotikCommandException
++import com.dscorp.wispadmin.wispadmin.data.model.EquipmentCondition
++import com.dscorp.wispadmin.wispadmin.data.model.GeoLocation
++import com.dscorp.wispadmin.wispadmin.data.model.InstallationType
++import com.dscorp.wispadmin.wispadmin.data.model.IpPool
++import com.dscorp.wispadmin.wispadmin.data.model.NetworkDevice
++import com.dscorp.wispadmin.wispadmin.data.model.Place
++import com.dscorp.wispadmin.wispadmin.data.model.Plan
++import com.dscorp.wispadmin.wispadmin.data.model.Subscription
++import com.dscorp.wispadmin.wispadmin.repository.IpPoolRepository
++import com.dscorp.wispadmin.wispadmin.repository.NetworkDeviceRepository
++import com.dscorp.wispadmin.wispadmin.repository.PlaceRepository
++import com.dscorp.wispadmin.wispadmin.repository.PlanRepository
++import com.dscorp.wispadmin.wispadmin.repository.SubscriptionRepository
++import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
++import com.dscorp.wispadmin.wispadmin.service.subscription.SubscriptionRegisteredEvent
++import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.IInstallationStrategy
++import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.InstallationResult
++import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.InstallationStrategyFactory
++import com.dscorp.wispadmin.wispadmin.service.validators.ISubscriptionValidator
++import io.mockk.every
++import io.mockk.mockk
++import io.mockk.slot
++import io.mockk.verify
++import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertFalse
++import org.junit.jupiter.api.Assertions.assertTrue
++import org.junit.jupiter.api.Test
++import org.springframework.context.ApplicationEventPublisher
++import java.util.Optional
++
++class SubscriptionServiceIdempotencyTest {
++
++    private val repository = mockk<SubscriptionRepository>()
++    private val ipPoolRepository = mockk<IpPoolRepository>()
++    private val networkDeviceRepository = mockk<NetworkDeviceRepository>()
++    private val planRepository = mockk<PlanRepository>()
++    private val placeRepository = mockk<PlaceRepository>()
++    private val subscriptionValidator = mockk<ISubscriptionValidator>(relaxed = true)
++    private val applicationEventPublisher = mockk<ApplicationEventPublisher>(relaxed = true)
++    private val installationStrategyFactory = mockk<InstallationStrategyFactory>()
++    private val installationStrategy = mockk<IInstallationStrategy>()
++    private val errorLogRepository = mockk<com.dscorp.wispadmin.wispadmin.repository.ErrorLogRepository>(relaxed = true)
++
++    private val service = SubscriptionService(
++        repository = repository,
++        ipPoolRepository = ipPoolRepository,
++        networkDeviceRepository = networkDeviceRepository,
++        planRepository = planRepository,
++        placeRepository = placeRepository,
++        napBoxRepository = mockk(relaxed = true),
++        onuService = mockk(relaxed = true),
++        onuRepository = mockk(relaxed = true),
++        installationOrderRepository = mockk(relaxed = true),
++        notificationService = mockk(relaxed = true),
++        subscriptionLogRepository = mockk(relaxed = true),
++        errorLogRepository = errorLogRepository,
++        borneManagementService = mockk(relaxed = true),
++        mikrotikService = mockk(relaxed = true),
++        queueManager = mockk(relaxed = true),
++        addressListManager = mockk(relaxed = true),
++        serviceCutManager = mockk(relaxed = true),
++        serviceReactivationManager = mockk(relaxed = true),
++        subscriptionValidator = subscriptionValidator,
++        paymentRepository = mockk(relaxed = true),
++        installationStrategyFactory = installationStrategyFactory,
++        applicationEventPublisher = applicationEventPublisher,
++        cancelledOnuReuseService = mockk(relaxed = true),
++    )
++
++    @Test
++    fun `registerSubscription returns existing dto when clientRequestId already exists`() {
++        val existing = Subscription(
++            firstName = "Juan",
++            lastName = "Perez",
++            dni = "12345678",
++            equipmentCondition = EquipmentCondition.LOAN,
++        ).apply {
++            id = 99
++            clientRequestId = "offline-req-1"
++            installationType = InstallationType.WIRELESS
++        }
++
++        stubLookupsForProvision()
++        every { repository.findByClientRequestId("offline-req-1") } returns Optional.of(existing)
++        every {
++            installationStrategy.processInstallation(any(), any(), any(), any(), any())
++        } returns InstallationResult(queueAdded = true)
++
++        val result = service.registerSubscription(
++            newSubscription = sampleRequest(clientRequestId = "offline-req-1"),
++            onSuccess = { throw AssertionError("onSuccess must not run for duplicate clientRequestId") },
++        )
++
++        assertEquals(99, result.id)
++        assertTrue(result.alreadyRegistered)
++        verify(exactly = 0) { subscriptionValidator.validateSubscriptionRequest(any()) }
++        verify(exactly = 0) { applicationEventPublisher.publishEvent(any<SubscriptionRegisteredEvent>()) }
++        verify(exactly = 1) { installationStrategy.processInstallation(existing, any(), any(), any(), any()) }
++    }
++
++    @Test
++    fun `registerSubscription keeps saved subscription when MikroTik handshake fails`() {
++        stubLookupsForProvision()
++        every { repository.findByClientRequestId(any()) } returns Optional.empty()
++        every { ipPoolRepository.findAllEligiblePools() } returns listOf(
++            IpPool(id = 1, ipSegment = "192.168.1.0/24")
++        )
++        every { repository.save(any()) } answers {
++            firstArg<Subscription>().apply { id = 77 }
++        }
++        every {
++            installationStrategy.processInstallation(any(), any(), any(), any(), any())
++        } throws MikrotikCommandException("rest PUT /rest/queue/simple: Remote host terminated the handshake")
++
++        val result = service.registerSubscription(
++            newSubscription = sampleRequest(clientRequestId = "offline-req-new"),
++            onSuccess = { },
++        )
++
++        assertEquals(77, result.id)
++        assertFalse(result.alreadyRegistered)
++        verify(exactly = 1) { repository.save(any()) }
++        verify(exactly = 1) { applicationEventPublisher.publishEvent(any<SubscriptionRegisteredEvent>()) }
++    }
++
++    @Test
++    fun `findExistingSubscriptionByClientRequestId returns null for blank clientRequestId`() {
++        val result = service.findExistingSubscriptionByClientRequestId("   ")
++
++        assertEquals(null, result)
++        verify(exactly = 0) { repository.findByClientRequestId(any()) }
++    }
++
++    private fun stubLookupsForProvision() {
++        every { installationStrategyFactory.getStrategy(any()) } returns installationStrategy
++        every { networkDeviceRepository.findById(1) } returns Optional.of(NetworkDevice(id = 1, name = "MK1"))
++        every { planRepository.findById(1) } returns Optional.of(Plan(id = 1, name = "f50", downloadSpeed = 50, uploadSpeed = 50))
++        every { placeRepository.findById(1) } returns Optional.of(Place(id = 1, name = "Huacho"))
++        every { errorLogRepository.save(any()) } answers { firstArg() }
++    }
++
++    private fun sampleRequest(clientRequestId: String?) = SubscriptionRequest(
++        firstName = "Juan",
++        lastName = "Perez",
++        dni = "12345678",
++        address = "Calle 1",
++        phone = "999888777",
++        subscriptionDate = System.currentTimeMillis(),
++        planId = 1,
++        additionalDeviceIds = emptyList(),
++        placeId = 1,
++        location = GeoLocation(-11.0, -77.0),
++        technicianId = 1,
++        hostDeviceId = 1,
++        installationType = InstallationType.WIRELESS,
++        clientRequestId = clientRequestId,
++    )
++
++    @Test
++    fun `registerSubscription uses clientIpAddress for saved ip instead of auto assigned`() {
++        stubLookupsForProvision()
++        val saved = slot<Subscription>()
++        val provisioned = slot<Subscription>()
++        every { repository.findByClientRequestId(any()) } returns Optional.empty()
++        every { ipPoolRepository.findAllEligiblePools() } returns listOf(
++            IpPool(id = 1, ipSegment = "192.168.1.0/24")
++        )
++        every { repository.save(capture(saved)) } answers {
++            firstArg<Subscription>().apply { id = 88 }
++        }
++        every {
++            installationStrategy.processInstallation(capture(provisioned), any(), any(), any(), any())
++        } returns InstallationResult(queueAdded = true)
++
++        val result = service.registerSubscription(
++            newSubscription = sampleRequest(clientRequestId = "offline-ip-1").apply {
++                clientIpAddress = "192.168.1.77"
++            },
++            onSuccess = { },
++        )
++
++        assertEquals(88, result.id)
++        assertEquals("192.168.1.77", saved.captured.ip)
++        assertEquals("192.168.1.77", result.ip)
++        assertEquals("192.168.1.77", provisioned.captured.ip)
++    }
++}
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategyTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategyTest.kt
+index c1aabaf..9b0773f 100644
+--- a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategyTest.kt
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategyTest.kt
+@@ -1,11 +1,30 @@
+ package com.dscorp.wispadmin.wispadmin.service.subscription.strategies
+ 
++import com.dscorp.wispadmin.routeros.port.MikrotikCommandException
+ import com.dscorp.wispadmin.wispadmin.data.model.EquipmentCondition
++import com.dscorp.wispadmin.wispadmin.data.model.InstallationType
+ import com.dscorp.wispadmin.wispadmin.data.model.NetworkDevice
++import com.dscorp.wispadmin.wispadmin.data.model.Plan
++import com.dscorp.wispadmin.wispadmin.data.model.Place
+ import com.dscorp.wispadmin.wispadmin.data.model.Subscription
++import com.dscorp.wispadmin.wispadmin.dto.OnuDto
++import com.dscorp.wispadmin.wispadmin.extensions.executeCommand
++import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
+ import com.dscorp.wispadmin.wispadmin.service.CancelledOnuReuseService
++import com.dscorp.wispadmin.wispadmin.data.model.GeoLocation
++import com.dscorp.wispadmin.routeros.port.MikrotikSession
++import io.mockk.every
++import io.mockk.just
++import io.mockk.mockk
++import io.mockk.mockkStatic
++import io.mockk.Runs
++import io.mockk.slot
++import io.mockk.unmockkStatic
++import org.junit.jupiter.api.AfterEach
+ import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertFalse
+ import org.junit.jupiter.api.Assertions.assertThrows
++import org.junit.jupiter.api.Assertions.assertTrue
+ import org.junit.jupiter.api.BeforeEach
+ import org.junit.jupiter.api.Test
+ import org.mockito.Mockito.mock
+@@ -42,6 +61,11 @@ class FiberInstallationStrategyTest {
+         }
+     }
+ 
++    @AfterEach
++    fun tearDown() {
++        unmockkStatic("com.dscorp.wispadmin.wispadmin.extensions.ExtensionsKt")
++    }
++
+     @Test
+     fun `resolveVlan falla cuando hostDevice esta deshabilitado`() {
+         val subscription = subscriptionWithHostDevice(
+@@ -53,6 +77,63 @@ class FiberInstallationStrategyTest {
+         }
+     }
+ 
++    @Test
++    fun `processInstallation does not throw when MikroTik TLS handshake fails`() {
++        mockkStatic("com.dscorp.wispadmin.wispadmin.extensions.ExtensionsKt")
++        val onuReuse = mockk<CancelledOnuReuseService>(relaxed = true)
++        strategy = FiberInstallationStrategy(onuReuse)
++        val host = cloudCoreRouter(id = 8, vlanId = 100)
++        val subscription = subscriptionWithHostDevice(host).apply {
++            plan = Plan(id = 54, name = "f50", downloadSpeed = 50, uploadSpeed = 50)
++            place = Place(id = 4, name = "Huacho")
++        }
++        every { any<NetworkDevice>().executeCommand(any()) } throws MikrotikCommandException(
++            "rest PUT /rest/queue/simple: Remote host terminated the handshake"
++        )
++
++        val result = strategy.processInstallation(
++            subscription = subscription,
++            request = fiberRequest(),
++            device = host,
++            plan = subscription.plan!!,
++            place = subscription.place!!
++        )
++
++        assertFalse(result.queueAdded)
++        assertEquals(true, result.onuAuthorized)
++    }
++
++    @Test
++    fun `processInstallation uses offline client ip as simple queue target`() {
++        mockkStatic("com.dscorp.wispadmin.wispadmin.extensions.ExtensionsKt")
++        val onuReuse = mockk<CancelledOnuReuseService>(relaxed = true)
++        strategy = FiberInstallationStrategy(onuReuse)
++        val host = cloudCoreRouter(id = 8, vlanId = 100)
++        val subscription = subscriptionWithHostDevice(host).apply {
++            ip = "192.168.1.77"
++            plan = Plan(id = 54, name = "f50", downloadSpeed = 50, uploadSpeed = 50)
++            place = Place(id = 4, name = "Huacho")
++        }
++        val capturedArgs = slot<Map<String, String>>()
++        every { any<NetworkDevice>().executeCommand(any()) } answers {
++            val block = secondArg<(MikrotikSession) -> Unit>()
++            val session = mockk<MikrotikSession>(relaxed = true)
++            every { session.add("/queue/simple", capture(capturedArgs)) } just Runs
++            block(session)
++        }
++
++        val result = strategy.processInstallation(
++            subscription = subscription,
++            request = fiberRequest().apply { clientIpAddress = "192.168.1.77" },
++            device = host,
++            plan = subscription.plan!!,
++            place = subscription.place!!
++        )
++
++        assertTrue(result.queueAdded)
++        assertEquals("192.168.1.77", capturedArgs.captured["target"])
++    }
++
+     private fun cloudCoreRouter(id: Int, vlanId: Int?, disabled: Boolean = false): NetworkDevice =
+         NetworkDevice(
+             id = id,
+@@ -72,4 +153,23 @@ class FiberInstallationStrategyTest {
+             ip = "192.168.25.10",
+             equipmentCondition = EquipmentCondition.LOAN
+         )
++
++    private fun fiberRequest() = SubscriptionRequest(
++        firstName = "Juan",
++        lastName = "Perez",
++        dni = "12345678",
++        address = "Calle 1",
++        phone = "999888777",
++        subscriptionDate = System.currentTimeMillis(),
++        planId = 54,
++        additionalDeviceIds = emptyList(),
++        placeId = 4,
++        location = GeoLocation(-11.0, -77.0),
++        technicianId = 1,
++        napBoxId = 63,
++        hostDeviceId = 8,
++        installationType = InstallationType.FIBER,
++        onu = OnuDto(sn = "ALCL12345678", board = "1", olt_id = "1", onu = "1", onu_type_id = "1", onu_type_name = "HG8240H", pon_type = "gpon", port = "1"),
++        clientRequestId = "offline-req-1"
++    )
+ }
+-- 
+2.43.0
+
+
+From 41076c0fe40806334d194d55dda91eaec5139d44 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sat, 15 Aug 2026 15:15:34 +0000
+Subject: [PATCH 2/5] feat(subscription): IP_CONFLICT con alerta WhatsApp al
+ NOC
+
+Detecta unique de subscription.ip en el registro, responde errorCode IP_CONFLICT y notifica al NOC por plantilla WhatsApp sin bloquear la respuesta al cliente.
+---
+ .../controller/SubscriptionController.kt      |  40 +++++--
+ .../wispadmin/data/model/util/BaseResponse.kt |   3 +-
+ ...ubscriptionIntegrityViolationClassifier.kt |  39 ++++++
+ .../SubscriptionIpConflictNocNotifier.kt      |  62 ++++++++++
+ ...ptionControllerMultipartIdempotencyTest.kt |  94 ++++++++++++++-
+ ...riptionIntegrityViolationClassifierTest.kt |  62 ++++++++++
+ .../SubscriptionIpConflictNocNotifierTest.kt  | 112 ++++++++++++++++++
+ 7 files changed, 403 insertions(+), 9 deletions(-)
+ create mode 100644 src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifier.kt
+ create mode 100644 src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifier.kt
+ create mode 100644 src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifierTest.kt
+ create mode 100644 src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifierTest.kt
+
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt
+index d873eda..fc8d68e 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionController.kt
+@@ -12,6 +12,8 @@ import com.dscorp.wispadmin.wispadmin.requestbody.smartoltrequest.MoveOnuRequest
+ import com.dscorp.wispadmin.wispadmin.requestbody.smartoltrequest.OnuAuthorizationRequest
+ import com.dscorp.wispadmin.wispadmin.service.SubscriptionService
+ import com.dscorp.wispadmin.wispadmin.service.BorneValidationResult
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionIntegrityViolationClassifier
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionIpConflictNocNotifier
+ import com.dscorp.wispadmin.wispadmin.search.application.SubscriptionChangedEvent
+ import org.springframework.context.ApplicationEventPublisher
+ import org.apache.poi.xssf.usermodel.XSSFWorkbook
+@@ -45,13 +47,35 @@ class SubscriptionController(
+     private val couponRepository: CouponRepository,
+     private val subscriptionLogRepository: SubscriptionLogRepository,
+     private val storageService: FirebaseStorageService,
+-    private val eventPublisher: ApplicationEventPublisher
++    private val eventPublisher: ApplicationEventPublisher,
++    private val integrityViolationClassifier: SubscriptionIntegrityViolationClassifier,
++    private val ipConflictNocNotifier: SubscriptionIpConflictNocNotifier
+ ) {
+ 
+     private fun publishSubscriptionChanged(subscriptionId: Int?) {
+         subscriptionId?.let { eventPublisher.publishEvent(SubscriptionChangedEvent(it)) }
+     }
+ 
++    private fun handleRegistrationIntegrityViolation(
++        request: SubscriptionRequest,
++        ex: DataIntegrityViolationException,
++        defaultError: String
++    ): BaseResponse {
++        return if (integrityViolationClassifier.isIpUniqueViolation(ex)) {
++            ipConflictNocNotifier.notifyIpConflict(request)
++            BaseResponse(
++                status = 409,
++                error = SubscriptionIpConflictNocNotifier.ERROR_MESSAGE,
++                errorCode = SubscriptionIpConflictNocNotifier.ERROR_CODE
++            )
++        } else {
++            BaseResponse(
++                status = 409,
++                error = defaultError
++            )
++        }
++    }
++
+     @GetMapping("/findByElectronicPayerName")
+     fun findByElectronicPayerName(@RequestParam("electronicPayerName") electronicPayerName: String): BaseResponse {
+         val electronicPayers = repository.findByElectronicPayerName(electronicPayerName).map { it.toPayerFinderResultDto() }
+@@ -348,9 +372,10 @@ class SubscriptionController(
+             publishSubscriptionChanged(subscription.id)
+             BaseResponse(data = subscription, status = 200)
+         } catch (e: DataIntegrityViolationException) {
+-            BaseResponse(
+-                status = 409,
+-                error = "Este usuario ya se encuentra registrado",
++            handleRegistrationIntegrityViolation(
++                request = newSubscription,
++                ex = e,
++                defaultError = "Este usuario ya se encuentra registrado"
+             )
+         }
+     }
+@@ -398,9 +423,10 @@ class SubscriptionController(
+             publishSubscriptionChanged(subscription.id)
+             BaseResponse(data = subscription, status = 200)
+         } catch (e: DataIntegrityViolationException) {
+-            BaseResponse(
+-                status = 409,
+-                error = "Este usuario no se encuentra registrado",
++            handleRegistrationIntegrityViolation(
++                request = newSubscription,
++                ex = e,
++                defaultError = "Este usuario no se encuentra registrado"
+             )
+         }
+     }
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/util/BaseResponse.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/util/BaseResponse.kt
+index 58aec69..664fb53 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/util/BaseResponse.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/util/BaseResponse.kt
+@@ -4,5 +4,6 @@ data class BaseResponse(
+     var status: Int? = null,
+     var data: Any? = null,
+     var message: String? = null,
+-    var error: Any? = null
++    var error: Any? = null,
++    var errorCode: String? = null
+ )
+\ No newline at end of file
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifier.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifier.kt
+new file mode 100644
+index 0000000..d589db8
+--- /dev/null
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifier.kt
+@@ -0,0 +1,39 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import org.springframework.dao.DataIntegrityViolationException
++import org.springframework.stereotype.Component
++
++@Component
++class SubscriptionIntegrityViolationClassifier {
++
++    enum class ViolationType {
++        IP,
++        OTHER
++    }
++
++    fun classify(ex: DataIntegrityViolationException): ViolationType {
++        return if (isIpUniqueViolation(ex)) ViolationType.IP else ViolationType.OTHER
++    }
++
++    fun isIpUniqueViolation(ex: DataIntegrityViolationException): Boolean {
++        val text = buildString {
++            append(ex.message.orEmpty())
++            append(' ')
++            append(ex.rootCause?.message.orEmpty())
++            append(' ')
++            append(ex.mostSpecificCause?.message.orEmpty())
++        }.lowercase()
++
++        if (text.contains("client_request_id") || text.contains("subscription.dni") ||
++            text.contains("key 'dni'") || text.contains("key \"dni\"")
++        ) {
++            return false
++        }
++
++        return text.contains("subscription.ip") ||
++            text.contains("uk_subscription_ip") ||
++            text.contains("key 'ip'") ||
++            text.contains("key \"ip\"") ||
++            (text.contains("duplicate") && Regex("""['"`]ip['"`]""").containsMatchIn(text))
++    }
++}
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifier.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifier.kt
+new file mode 100644
+index 0000000..8e96666
+--- /dev/null
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifier.kt
+@@ -0,0 +1,62 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
++import com.dscorp.wispadmin.wispadmin.service.whatsapp.NamedTemplateParameter
++import org.slf4j.LoggerFactory
++import org.springframework.beans.factory.annotation.Value
++import org.springframework.stereotype.Service
++
++@Service
++class SubscriptionIpConflictNocNotifier(
++    private val whatsAppService: WhatsAppService,
++    @Value("\${net.diag.whatsapp.noc-phone:}") private val nocPhone: String,
++    @Value("\${net.diag.whatsapp.template-name:noc_alert_v1}") private val templateName: String,
++    @Value("\${net.diag.whatsapp.language-code:es}") private val languageCode: String
++) {
++
++    private val logger = LoggerFactory.getLogger(SubscriptionIpConflictNocNotifier::class.java)
++
++    fun notifyIpConflict(request: SubscriptionRequest) {
++        val phone = nocPhone.trim()
++        if (phone.isEmpty()) {
++            logger.warn(
++                "IP_CONFLICT sin alerta NOC: net.diag.whatsapp.noc-phone vacio. ip={}, clientRequestId={}",
++                request.clientIpAddress,
++                request.clientRequestId
++            )
++            return
++        }
++
++        val ip = request.clientIpAddress?.trim().orEmpty().ifBlank { "n/a" }
++        val clientLabel = "${request.firstName} ${request.lastName} DNI ${request.dni}".take(60)
++        val target = "IP $ip | $clientLabel | req=${request.clientRequestId ?: "n/a"} | host=${request.hostDeviceId}"
++            .take(60)
++
++        val parameters = listOf(
++            NamedTemplateParameter("severity", "HIGH"),
++            NamedTemplateParameter("title", "Colision IP sync offline".take(60)),
++            NamedTemplateParameter("reason_code", ERROR_CODE),
++            NamedTemplateParameter("target", target)
++        )
++
++        try {
++            val sent = whatsAppService.sendTemplateMessage(
++                phoneNumber = phone,
++                templateName = templateName,
++                languageCode = languageCode,
++                parameters = parameters
++            )
++            if (!sent) {
++                logger.warn("IP_CONFLICT alerta NOC no enviada (sendTemplateMessage=false) ip={}", ip)
++            }
++        } catch (ex: Exception) {
++            logger.warn("IP_CONFLICT alerta NOC fallo ip={}: {}", ip, ex.message)
++        }
++    }
++
++    companion object {
++        const val ERROR_CODE = "IP_CONFLICT"
++        const val ERROR_MESSAGE =
++            "La IP del cliente ya esta en uso. Coordina otra IP con el equipo e intenta de nuevo."
++    }
++}
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt
+index 9475390..ac76bc8 100644
+--- a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/controller/SubscriptionControllerMultipartIdempotencyTest.kt
+@@ -13,14 +13,18 @@ import com.dscorp.wispadmin.wispadmin.repository.SubscriptionLogRepository
+ import com.dscorp.wispadmin.wispadmin.repository.SubscriptionRepository
+ import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
+ import com.dscorp.wispadmin.wispadmin.service.FirebaseStorageService
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionIntegrityViolationClassifier
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionIpConflictNocNotifier
+ import com.dscorp.wispadmin.wispadmin.service.SubscriptionService
+ import io.mockk.every
+ import io.mockk.mockk
+ import io.mockk.verify
+ import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertNull
+ import org.junit.jupiter.api.Assertions.assertTrue
+ import org.junit.jupiter.api.Test
+ import org.springframework.context.ApplicationEventPublisher
++import org.springframework.dao.DataIntegrityViolationException
+ import org.springframework.http.MediaType
+ import org.springframework.mock.web.MockMultipartFile
+ 
+@@ -30,6 +34,8 @@ class SubscriptionControllerMultipartIdempotencyTest {
+     private val subscriptionService = mockk<SubscriptionService>()
+     private val storageService = mockk<FirebaseStorageService>(relaxed = true)
+     private val eventPublisher = mockk<ApplicationEventPublisher>(relaxed = true)
++    private val integrityViolationClassifier = SubscriptionIntegrityViolationClassifier()
++    private val ipConflictNocNotifier = mockk<SubscriptionIpConflictNocNotifier>(relaxed = true)
+ 
+     private val controller = SubscriptionController(
+         repository = subscriptionRepository,
+@@ -42,6 +48,8 @@ class SubscriptionControllerMultipartIdempotencyTest {
+         subscriptionLogRepository = mockk(relaxed = true),
+         storageService = storageService,
+         eventPublisher = eventPublisher,
++        integrityViolationClassifier = integrityViolationClassifier,
++        ipConflictNocNotifier = ipConflictNocNotifier
+     )
+ 
+     @Test
+@@ -84,7 +92,89 @@ class SubscriptionControllerMultipartIdempotencyTest {
+         verify(exactly = 1) { subscriptionService.registerSubscription(any(), any()) }
+     }
+ 
+-    private fun sampleRequest(clientRequestId: String) = SubscriptionRequest(
++    @Test
++    fun `newSubcriptionWithFacade returns IP_CONFLICT and alerts NOC on ip unique violation`() {
++        every {
++            subscriptionService.findExistingSubscriptionByClientRequestId(any())
++        } returns null
++        every { storageService.uploadFileToFolder(any(), any()) } returns "https://facade/1.jpg"
++        every {
++            subscriptionService.registerSubscription(any(), any())
++        } throws DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '192.168.1.77' for key 'subscription.ip'")
++        )
++
++        val request = sampleRequest(
++            clientRequestId = "offline-req-ip",
++            clientIpAddress = "192.168.1.77"
++        )
++        val response = controller.newSubcriptionWithFacade(
++            newSubscription = request,
++            facadephoto = MockMultipartFile(
++                "facadePhoto",
++                "facade.jpg",
++                MediaType.IMAGE_JPEG_VALUE,
++                byteArrayOf(1, 2, 3),
++            )
++        )
++
++        assertEquals(409, response.status)
++        assertEquals(SubscriptionIpConflictNocNotifier.ERROR_CODE, response.errorCode)
++        assertEquals(SubscriptionIpConflictNocNotifier.ERROR_MESSAGE, response.error)
++        verify(exactly = 1) { ipConflictNocNotifier.notifyIpConflict(request) }
++    }
++
++    @Test
++    fun `newSubcriptionWithFacade keeps generic 409 without NOC when dni conflicts`() {
++        every {
++            subscriptionService.findExistingSubscriptionByClientRequestId(any())
++        } returns null
++        every { storageService.uploadFileToFolder(any(), any()) } returns "https://facade/1.jpg"
++        every {
++            subscriptionService.registerSubscription(any(), any())
++        } throws DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '12345678' for key 'subscription.dni'")
++        )
++
++        val response = controller.newSubcriptionWithFacade(
++            newSubscription = sampleRequest(clientRequestId = "offline-req-dni"),
++            facadephoto = MockMultipartFile(
++                "facadePhoto",
++                "facade.jpg",
++                MediaType.IMAGE_JPEG_VALUE,
++                byteArrayOf(1, 2, 3),
++            )
++        )
++
++        assertEquals(409, response.status)
++        assertNull(response.errorCode)
++        assertEquals("Este usuario no se encuentra registrado", response.error)
++        verify(exactly = 0) { ipConflictNocNotifier.notifyIpConflict(any()) }
++    }
++
++    @Test
++    fun `newSubscription returns IP_CONFLICT and alerts NOC on ip unique violation`() {
++        every {
++            subscriptionService.registerSubscription(any(), any())
++        } throws DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '10.0.0.15' for key 'subscription.ip'")
++        )
++
++        val request = sampleRequest(clientIpAddress = "10.0.0.15")
++        val response = controller.newSubscription(request)
++
++        assertEquals(409, response.status)
++        assertEquals(SubscriptionIpConflictNocNotifier.ERROR_CODE, response.errorCode)
++        verify(exactly = 1) { ipConflictNocNotifier.notifyIpConflict(request) }
++    }
++
++    private fun sampleRequest(
++        clientRequestId: String? = null,
++        clientIpAddress: String? = null
++    ) = SubscriptionRequest(
+         firstName = "Juan",
+         lastName = "Perez",
+         dni = "12345678",
+@@ -98,6 +188,8 @@ class SubscriptionControllerMultipartIdempotencyTest {
+         technicianId = 1,
+         hostDeviceId = 1,
+         installationType = InstallationType.WIRELESS,
++        equipmentCondition = EquipmentCondition.LOAN,
+         clientRequestId = clientRequestId,
++        clientIpAddress = clientIpAddress
+     )
+ }
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifierTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifierTest.kt
+new file mode 100644
+index 0000000..01817fd
+--- /dev/null
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIntegrityViolationClassifierTest.kt
+@@ -0,0 +1,62 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertFalse
++import org.junit.jupiter.api.Assertions.assertTrue
++import org.junit.jupiter.api.Test
++import org.springframework.dao.DataIntegrityViolationException
++
++class SubscriptionIntegrityViolationClassifierTest {
++
++    private val classifier = SubscriptionIntegrityViolationClassifier()
++
++    @Test
++    fun `detects mysql duplicate on subscription ip column`() {
++        val ex = DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '192.168.1.77' for key 'subscription.ip'")
++        )
++
++        assertTrue(classifier.isIpUniqueViolation(ex))
++        assertEquals(
++            SubscriptionIntegrityViolationClassifier.ViolationType.IP,
++            classifier.classify(ex)
++        )
++    }
++
++    @Test
++    fun `detects hibernate uk constraint mentioning ip`() {
++        val ex = DataIntegrityViolationException(
++            "constraint [uk_subscription_ip]",
++            RuntimeException("Duplicate entry '10.0.0.15' for key 'UK_subscription_ip'")
++        )
++
++        assertTrue(classifier.isIpUniqueViolation(ex))
++    }
++
++    @Test
++    fun `dni unique is not ip conflict`() {
++        val ex = DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException("Duplicate entry '12345678' for key 'subscription.dni'")
++        )
++
++        assertFalse(classifier.isIpUniqueViolation(ex))
++        assertEquals(
++            SubscriptionIntegrityViolationClassifier.ViolationType.OTHER,
++            classifier.classify(ex)
++        )
++    }
++
++    @Test
++    fun `client_request_id unique is not ip conflict`() {
++        val ex = DataIntegrityViolationException(
++            "could not execute statement",
++            RuntimeException(
++                "Duplicate entry 'offline-req-1' for key 'uk_subscription_client_request_id'"
++            )
++        )
++
++        assertFalse(classifier.isIpUniqueViolation(ex))
++    }
++}
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifierTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifierTest.kt
+new file mode 100644
+index 0000000..2c505b0
+--- /dev/null
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionIpConflictNocNotifierTest.kt
+@@ -0,0 +1,112 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
++import com.dscorp.wispadmin.wispadmin.service.whatsapp.NamedTemplateParameter
++import com.dscorp.wispadmin.wispadmin.data.model.EquipmentCondition
++import com.dscorp.wispadmin.wispadmin.data.model.GeoLocation
++import com.dscorp.wispadmin.wispadmin.data.model.InstallationType
++import io.mockk.every
++import io.mockk.mockk
++import io.mockk.slot
++import io.mockk.verify
++import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertTrue
++import org.junit.jupiter.api.Test
++
++class SubscriptionIpConflictNocNotifierTest {
++
++    private val whatsAppService = mockk<WhatsAppService>()
++
++    @Test
++    fun `sends noc template with ip conflict details when phone configured`() {
++        val notifier = SubscriptionIpConflictNocNotifier(
++            whatsAppService = whatsAppService,
++            nocPhone = "51999888777",
++            templateName = "noc_alert_v1",
++            languageCode = "es"
++        )
++        val paramsSlot = slot<List<NamedTemplateParameter>>()
++        every {
++            whatsAppService.sendTemplateMessage(
++                phoneNumber = any(),
++                templateName = any(),
++                languageCode = any(),
++                parameters = capture(paramsSlot)
++            )
++        } returns true
++
++        notifier.notifyIpConflict(
++            request = sampleRequest(
++                clientIpAddress = "192.168.1.77",
++                clientRequestId = "offline-req-9"
++            )
++        )
++
++        verify(exactly = 1) {
++            whatsAppService.sendTemplateMessage(
++                phoneNumber = "51999888777",
++                templateName = "noc_alert_v1",
++                languageCode = "es",
++                parameters = any()
++            )
++        }
++        val byName = paramsSlot.captured.associate { it.parameterName to it.text }
++        assertEquals("HIGH", byName["severity"])
++        assertTrue(byName["title"]!!.contains("Colision IP", ignoreCase = true))
++        assertEquals("IP_CONFLICT", byName["reason_code"])
++        assertTrue(byName["target"]!!.contains("192.168.1.77"))
++    }
++
++    @Test
++    fun `skips send and does not throw when noc phone blank`() {
++        val notifier = SubscriptionIpConflictNocNotifier(
++            whatsAppService = whatsAppService,
++            nocPhone = "  ",
++            templateName = "noc_alert_v1",
++            languageCode = "es"
++        )
++
++        notifier.notifyIpConflict(request = sampleRequest(clientIpAddress = "10.0.0.2"))
++
++        verify(exactly = 0) {
++            whatsAppService.sendTemplateMessage(any(), any(), any(), any())
++        }
++    }
++
++    @Test
++    fun `swallows whatsapp failures`() {
++        val notifier = SubscriptionIpConflictNocNotifier(
++            whatsAppService = whatsAppService,
++            nocPhone = "51999888777",
++            templateName = "noc_alert_v1",
++            languageCode = "es"
++        )
++        every {
++            whatsAppService.sendTemplateMessage(any(), any(), any(), any())
++        } throws RuntimeException("meta down")
++
++        notifier.notifyIpConflict(request = sampleRequest(clientIpAddress = "10.0.0.3"))
++    }
++
++    private fun sampleRequest(
++        clientIpAddress: String?,
++        clientRequestId: String? = null
++    ) = SubscriptionRequest(
++        firstName = "Juan",
++        lastName = "Perez",
++        dni = "12345678",
++        address = "Calle 1",
++        phone = "999888777",
++        subscriptionDate = System.currentTimeMillis(),
++        planId = 1,
++        additionalDeviceIds = emptyList(),
++        placeId = 1,
++        location = GeoLocation(-11.0, -77.0),
++        technicianId = 1,
++        hostDeviceId = 10,
++        installationType = InstallationType.WIRELESS,
++        equipmentCondition = EquipmentCondition.LOAN,
++        clientRequestId = clientRequestId,
++        clientIpAddress = clientIpAddress
++    )
++}
+-- 
+2.43.0
+
+
+From 2ee94bae51be3448e348952ae3909b8a2500eb36 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sat, 15 Aug 2026 15:46:52 +0000
+Subject: [PATCH 3/5] =?UTF-8?q?feat(subscription):=20reconciliar=20provisi?=
+ =?UTF-8?q?=C3=B3n=20MikroTik=20y=20OLT=20tras=20el=20registro?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Persiste la suscripción aunque falle la red; marca statuses PENDING y un job cada 5 min reintenta con backoff. Expone provisioningPending en el DTO.
+---
+ .../provision-reconciliation-2026-08-15.md    |  41 ++++
+ .../wispadmin/data/model/ProvisionStatus.kt   |  14 ++
+ .../wispadmin/data/model/Subscription.kt      |  30 ++-
+ .../wispadmin/dto/SubscriptionDto.kt          |   5 +
+ .../repository/SubscriptionRepository.kt      |  32 +++
+ ...riptionProvisionReconciliationScheduler.kt |  24 ++
+ .../service/SubscriptionProvisionService.kt   | 218 ++++++++++++++++++
+ .../wispadmin/service/SubscriptionService.kt  |  47 ++--
+ .../strategies/FiberInstallationStrategy.kt   |  46 ++--
+ .../strategies/IInstallationStrategy.kt       |   4 +-
+ .../WirelessInstallationStrategy.kt           |  20 +-
+ src/main/resources/application.properties     |   3 +
+ .../V22__subscription_provision_status.sql    |  17 ++
+ .../SubscriptionProvisionServiceTest.kt       | 214 +++++++++++++++++
+ .../SubscriptionServiceIdempotencyTest.kt     | 109 ++++++++-
+ 15 files changed, 778 insertions(+), 46 deletions(-)
+ create mode 100644 .agent-docs/provision-reconciliation-2026-08-15.md
+ create mode 100644 src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/ProvisionStatus.kt
+ create mode 100644 src/main/kotlin/com/dscorp/wispadmin/wispadmin/scheduled/SubscriptionProvisionReconciliationScheduler.kt
+ create mode 100644 src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionProvisionService.kt
+ create mode 100644 src/main/resources/db/migration/V22__subscription_provision_status.sql
+ create mode 100644 src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionProvisionServiceTest.kt
+
+diff --git a/.agent-docs/provision-reconciliation-2026-08-15.md b/.agent-docs/provision-reconciliation-2026-08-15.md
+new file mode 100644
+index 0000000..cbe2ce1
+--- /dev/null
++++ b/.agent-docs/provision-reconciliation-2026-08-15.md
+@@ -0,0 +1,41 @@
++# Reconciliación de provisión MikroTik + OLT
++
++Fecha: 2026-08-15  
++Rama: `cursor/provision-reconciliation-ef49`
++
++## Migración
++
++`V22__subscription_provision_status.sql`
++
++Columnas en `subscription`:
++
++- `mikrotik_provision_status`
++- `olt_provision_status`
++- `provision_attempt_count`
++- `provision_next_attempt_at`
++- `provision_last_error`
++
++Índice: `idx_subscription_provision_retry`
++
++## Componentes
++
++- `SubscriptionProvisionService` — init statuses, apply result, backoff, `reconcile` / `reconcileDue`
++- `SubscriptionProvisionReconciliationScheduler` — cada 5 min
++- Soft-fail OLT en `FiberInstallationStrategy`; cola MikroTik idempotente si el target ya existe
++- `SubscriptionDto`: `mikrotikProvisionStatus`, `oltProvisionStatus`, `provisioningPending`
++
++## Properties
++
++```
++subscription.provision.reconciliation.interval-ms=300000
++subscription.provision.reconciliation.initial-delay-ms=60000
++```
++
++## Backoff
++
++| `provision_attempt_count` (antes) | Delay |
++|-----------------------------------|-------|
++| 0 | 5 min |
++| 1 | 15 min |
++| ≥2 | 30 min |
++| ≥12 | `FAILED` estable (sin `next_attempt_at`) |
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/ProvisionStatus.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/ProvisionStatus.kt
+new file mode 100644
+index 0000000..deaab26
+--- /dev/null
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/ProvisionStatus.kt
+@@ -0,0 +1,14 @@
++package com.dscorp.wispadmin.wispadmin.data.model
++
++enum class MikrotikProvisionStatus {
++    PENDING,
++    COMPLETE,
++    FAILED
++}
++
++enum class OltProvisionStatus {
++    PENDING,
++    COMPLETE,
++    FAILED,
++    NA
++}
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/Subscription.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/Subscription.kt
+index b88d1a7..c53dad7 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/Subscription.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/data/model/Subscription.kt
+@@ -135,6 +135,23 @@ data class Subscription(
+     @Column(name = "client_request_id", unique = true)
+     var clientRequestId: String? = null,
+ 
++    @Enumerated(EnumType.STRING)
++    @Column(name = "mikrotik_provision_status", length = 32)
++    var mikrotikProvisionStatus: MikrotikProvisionStatus? = null,
++
++    @Enumerated(EnumType.STRING)
++    @Column(name = "olt_provision_status", length = 32)
++    var oltProvisionStatus: OltProvisionStatus? = null,
++
++    @Column(name = "provision_attempt_count")
++    var provisionAttemptCount: Int = 0,
++
++    @Column(name = "provision_next_attempt_at")
++    var provisionNextAttemptAt: LocalDateTime? = null,
++
++    @Column(name = "provision_last_error", length = 500)
++    var provisionLastError: String? = null,
++
+     @OneToMany(mappedBy = "subscription")
+     val subscriptionLogs: MutableSet<SubscriptionLog> = mutableSetOf(),
+ 
+@@ -210,9 +227,20 @@ data class Subscription(
+         borneNumber = borneNumber,
+         equipmentCondition = equipmentCondition,
+         autoCut = autoCut,
+-        hasFiberOnu = fiberOnu != null
++        hasFiberOnu = fiberOnu != null,
++        mikrotikProvisionStatus = mikrotikProvisionStatus,
++        oltProvisionStatus = oltProvisionStatus,
++        provisioningPending = isProvisioningPending()
+     )
+ 
++    fun isProvisioningPending(): Boolean {
++        val mikrotikPending = mikrotikProvisionStatus == MikrotikProvisionStatus.PENDING ||
++            mikrotikProvisionStatus == MikrotikProvisionStatus.FAILED
++        val oltPending = oltProvisionStatus == OltProvisionStatus.PENDING ||
++            oltProvisionStatus == OltProvisionStatus.FAILED
++        return mikrotikPending || oltPending
++    }
++
+ 
+     fun toCutDto() = SubscriptionCutDto(
+         id = id,
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/dto/SubscriptionDto.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/dto/SubscriptionDto.kt
+index 6680d78..9a06297 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/dto/SubscriptionDto.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/dto/SubscriptionDto.kt
+@@ -2,6 +2,8 @@ package com.dscorp.wispadmin.wispadmin.dto
+ 
+ import com.dscorp.wispadmin.wispadmin.data.model.EquipmentCondition
+ import com.dscorp.wispadmin.wispadmin.data.model.InstallationType
++import com.dscorp.wispadmin.wispadmin.data.model.MikrotikProvisionStatus
++import com.dscorp.wispadmin.wispadmin.data.model.OltProvisionStatus
+ import com.dscorp.wispadmin.wispadmin.data.model.ServiceStatus
+ import java.io.Serializable
+ import java.time.LocalDate
+@@ -52,6 +54,9 @@ data class SubscriptionDto(
+     val autoCut: Boolean = true,
+     val hasFiberOnu: Boolean = false,
+     val alreadyRegistered: Boolean = false,
++    val mikrotikProvisionStatus: MikrotikProvisionStatus? = null,
++    val oltProvisionStatus: OltProvisionStatus? = null,
++    val provisioningPending: Boolean = false,
+ 
+     ) : Serializable
+ 
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/repository/SubscriptionRepository.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/repository/SubscriptionRepository.kt
+index f24099b..de60f4b 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/repository/SubscriptionRepository.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/repository/SubscriptionRepository.kt
+@@ -15,6 +15,38 @@ interface SubscriptionRepository : JpaRepository<Subscription, Int> {
+ 
+     fun findByClientRequestId(clientRequestId: String): Optional<Subscription>
+ 
++    @Query(
++        """
++        SELECT s FROM Subscription s
++        WHERE s.provisionNextAttemptAt IS NOT NULL
++          AND s.provisionNextAttemptAt <= :now
++          AND (
++            s.mikrotikProvisionStatus = com.dscorp.wispadmin.wispadmin.data.model.MikrotikProvisionStatus.PENDING
++            OR s.oltProvisionStatus = com.dscorp.wispadmin.wispadmin.data.model.OltProvisionStatus.PENDING
++          )
++        ORDER BY s.provisionNextAttemptAt ASC
++        """
++    )
++    fun findDueForProvisionReconciliation(
++        @Param("now") now: LocalDateTime,
++        pageable: org.springframework.data.domain.Pageable
++    ): List<Subscription>
++
++    @Query(
++        """
++        SELECT DISTINCT s FROM Subscription s
++        LEFT JOIN FETCH s.plan
++        LEFT JOIN FETCH s.place
++        LEFT JOIN FETCH s.napBox
++        LEFT JOIN FETCH s.hostDevice
++        LEFT JOIN FETCH s.technician
++        LEFT JOIN FETCH s.fiberOnu
++        LEFT JOIN FETCH s.ipPool
++        WHERE s.id IN :ids
++        """
++    )
++    fun findAllWithProvisionRelationsByIdIn(@Param("ids") ids: List<Int>): List<Subscription>
++
+     @Query(
+         """
+         SELECT DISTINCT s FROM Subscription s
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/scheduled/SubscriptionProvisionReconciliationScheduler.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/scheduled/SubscriptionProvisionReconciliationScheduler.kt
+new file mode 100644
+index 0000000..8659a95
+--- /dev/null
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/scheduled/SubscriptionProvisionReconciliationScheduler.kt
+@@ -0,0 +1,24 @@
++package com.dscorp.wispadmin.wispadmin.scheduled
++
++import com.dscorp.wispadmin.wispadmin.service.SubscriptionProvisionService
++import org.slf4j.LoggerFactory
++import org.springframework.scheduling.annotation.Scheduled
++import org.springframework.stereotype.Component
++
++@Component
++class SubscriptionProvisionReconciliationScheduler(
++    private val subscriptionProvisionService: SubscriptionProvisionService
++) {
++    private val logger = LoggerFactory.getLogger(SubscriptionProvisionReconciliationScheduler::class.java)
++
++    @Scheduled(
++        fixedDelayString = "\${subscription.provision.reconciliation.interval-ms:300000}",
++        initialDelayString = "\${subscription.provision.reconciliation.initial-delay-ms:60000}"
++    )
++    fun reconcile() {
++        val count = subscriptionProvisionService.reconcileDue()
++        if (count > 0) {
++            logger.info("Reconciliacion de provision MikroTik/OLT procesada: $count suscripciones")
++        }
++    }
++}
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionProvisionService.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionProvisionService.kt
+new file mode 100644
+index 0000000..de788c1
+--- /dev/null
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionProvisionService.kt
+@@ -0,0 +1,218 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import com.dscorp.wispadmin.wispadmin.controller.toErrorLog
++import com.dscorp.wispadmin.wispadmin.data.model.InstallationType
++import com.dscorp.wispadmin.wispadmin.data.model.MikrotikProvisionStatus
++import com.dscorp.wispadmin.wispadmin.data.model.Modules
++import com.dscorp.wispadmin.wispadmin.data.model.OltProvisionStatus
++import com.dscorp.wispadmin.wispadmin.data.model.Subscription
++import com.dscorp.wispadmin.wispadmin.dto.OnuDto
++import com.dscorp.wispadmin.wispadmin.repository.ErrorLogRepository
++import com.dscorp.wispadmin.wispadmin.repository.NetworkDeviceRepository
++import com.dscorp.wispadmin.wispadmin.repository.PlaceRepository
++import com.dscorp.wispadmin.wispadmin.repository.PlanRepository
++import com.dscorp.wispadmin.wispadmin.repository.SubscriptionRepository
++import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
++import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.InstallationResult
++import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.InstallationStrategyFactory
++import org.slf4j.LoggerFactory
++import org.springframework.stereotype.Service
++import org.springframework.transaction.annotation.Transactional
++import java.time.LocalDateTime
++
++@Service
++class SubscriptionProvisionService(
++    private val repository: SubscriptionRepository,
++    private val networkDeviceRepository: NetworkDeviceRepository,
++    private val planRepository: PlanRepository,
++    private val placeRepository: PlaceRepository,
++    private val installationStrategyFactory: InstallationStrategyFactory,
++    private val errorLogRepository: ErrorLogRepository
++) {
++    private val logger = LoggerFactory.getLogger(SubscriptionProvisionService::class.java)
++
++    fun initializeStatuses(subscription: Subscription, installationType: InstallationType) {
++        when (installationType) {
++            InstallationType.WIRELESS -> {
++                subscription.mikrotikProvisionStatus = MikrotikProvisionStatus.PENDING
++                subscription.oltProvisionStatus = OltProvisionStatus.NA
++            }
++            InstallationType.FIBER -> {
++                subscription.mikrotikProvisionStatus = MikrotikProvisionStatus.PENDING
++                subscription.oltProvisionStatus = OltProvisionStatus.PENDING
++            }
++            InstallationType.ONLY_TV_FIBER -> {
++                subscription.mikrotikProvisionStatus = MikrotikProvisionStatus.COMPLETE
++                subscription.oltProvisionStatus = OltProvisionStatus.NA
++            }
++        }
++    }
++
++    fun applyInstallationResult(
++        subscription: Subscription,
++        result: InstallationResult,
++        installationType: InstallationType,
++        thrownError: String? = null
++    ) {
++        when (installationType) {
++            InstallationType.WIRELESS -> {
++                subscription.mikrotikProvisionStatus =
++                    if (result.queueAdded) MikrotikProvisionStatus.COMPLETE
++                    else MikrotikProvisionStatus.PENDING
++            }
++            InstallationType.FIBER -> {
++                subscription.mikrotikProvisionStatus =
++                    if (result.queueAdded) MikrotikProvisionStatus.COMPLETE
++                    else MikrotikProvisionStatus.PENDING
++                subscription.oltProvisionStatus =
++                    if (result.onuAuthorized) OltProvisionStatus.COMPLETE
++                    else OltProvisionStatus.PENDING
++            }
++            InstallationType.ONLY_TV_FIBER -> {
++                subscription.mikrotikProvisionStatus = MikrotikProvisionStatus.COMPLETE
++                subscription.oltProvisionStatus = OltProvisionStatus.NA
++            }
++        }
++
++        val errors = listOfNotNull(result.mikrotikError, result.oltError, thrownError)
++            .joinToString(" | ")
++            .ifBlank { null }
++        if (errors != null) {
++            subscription.provisionLastError = errors.take(500)
++        } else if (!subscription.isProvisioningPending()) {
++            subscription.provisionLastError = null
++            subscription.provisionNextAttemptAt = null
++        }
++
++        if (subscription.isProvisioningPending()) {
++            scheduleNextAttempt(subscription)
++        }
++    }
++
++    fun scheduleNextAttempt(subscription: Subscription) {
++        val attempts = subscription.provisionAttemptCount
++        if (attempts >= MAX_ATTEMPTS) {
++            if (subscription.mikrotikProvisionStatus == MikrotikProvisionStatus.PENDING) {
++                subscription.mikrotikProvisionStatus = MikrotikProvisionStatus.FAILED
++            }
++            if (subscription.oltProvisionStatus == OltProvisionStatus.PENDING) {
++                subscription.oltProvisionStatus = OltProvisionStatus.FAILED
++            }
++            subscription.provisionNextAttemptAt = null
++            return
++        }
++
++        val delayMinutes = when {
++            attempts <= 0 -> 5L
++            attempts == 1 -> 15L
++            else -> 30L
++        }
++        subscription.provisionAttemptCount = attempts + 1
++        subscription.provisionNextAttemptAt = LocalDateTime.now().plusMinutes(delayMinutes)
++    }
++
++    @Transactional
++    fun reconcile(subscription: Subscription, request: SubscriptionRequest): Subscription {
++        val installationType = subscription.installationType ?: request.installationType
++        if (subscription.mikrotikProvisionStatus == null && subscription.oltProvisionStatus == null) {
++            initializeStatuses(subscription, installationType)
++        }
++        if (!subscription.isProvisioningPending()) {
++            return subscription
++        }
++        val deviceId = subscription.hostDevice?.id ?: request.hostDeviceId
++        val planId = subscription.plan?.id ?: request.planId
++        val placeId = subscription.place?.id ?: request.placeId
++        val device = networkDeviceRepository.findById(deviceId).get()
++        val plan = planRepository.findById(planId).get()
++        val place = placeRepository.findById(placeId).get()
++        subscription.hostDevice = device
++        subscription.plan = plan
++        subscription.place = place
++
++        val strategy = installationStrategyFactory.getStrategy(installationType)
++        val result = try {
++            strategy.processInstallation(subscription, request, device, plan, place)
++        } catch (ex: Exception) {
++            logger.warn("Fallo reconciliando provisión para suscripción ${subscription.id}", ex)
++            persistProvisionError(ex)
++            InstallationResult(
++                queueAdded = false,
++                onuAuthorized = false,
++                mikrotikError = ex.message,
++                oltError = ex.message
++            )
++        }
++        applyInstallationResult(subscription, result, installationType)
++        return repository.save(subscription)
++    }
++
++    @Transactional
++    fun reconcileDue(limit: Int = DEFAULT_BATCH_SIZE): Int {
++        val page = org.springframework.data.domain.PageRequest.of(0, limit)
++        val dueIds = repository.findDueForProvisionReconciliation(LocalDateTime.now(), page)
++            .mapNotNull { it.id }
++        if (dueIds.isEmpty()) return 0
++        val due = repository.findAllWithProvisionRelationsByIdIn(dueIds)
++        due.forEach { subscription ->
++            try {
++                val request = buildRequestFromSubscription(subscription)
++                reconcile(subscription, request)
++            } catch (ex: Exception) {
++                logger.warn("No se pudo reconciliar suscripción ${subscription.id}", ex)
++                persistProvisionError(ex)
++                scheduleNextAttempt(subscription)
++                repository.save(subscription)
++            }
++        }
++        return due.size
++    }
++
++    fun buildRequestFromSubscription(subscription: Subscription): SubscriptionRequest {
++        val onu = subscription.fiberOnu?.let {
++            OnuDto(
++                sn = it.sn,
++                olt_id = it.olt_id,
++                pon_type = it.pon_type,
++                board = it.board,
++                port = it.port,
++                onu = it.onu,
++                onu_type_id = it.onu_type_id,
++                onu_type_name = it.onu_type_name
++            )
++        }
++        return SubscriptionRequest(
++            firstName = subscription.firstName.orEmpty(),
++            lastName = subscription.lastName.orEmpty(),
++            dni = subscription.dni.orEmpty(),
++            address = subscription.address.orEmpty(),
++            phone = subscription.phone.orEmpty(),
++            subscriptionDate = System.currentTimeMillis(),
++            planId = subscription.plan?.id ?: 0,
++            additionalDeviceIds = emptyList(),
++            placeId = subscription.place?.id ?: 0,
++            location = subscription.location
++                ?: com.dscorp.wispadmin.wispadmin.data.model.GeoLocation(0.0, 0.0),
++            technicianId = subscription.technician?.id ?: 0,
++            hostDeviceId = subscription.hostDevice?.id ?: 0,
++            napBoxId = subscription.napBox?.id,
++            installationType = subscription.installationType ?: InstallationType.WIRELESS,
++            equipmentCondition = subscription.equipmentCondition,
++            clientRequestId = subscription.clientRequestId,
++            clientIpAddress = subscription.ip,
++            onu = onu
++        )
++    }
++
++    private fun persistProvisionError(ex: Exception) {
++        try {
++            errorLogRepository.save(ex.toErrorLog(Modules.SUBSCRIPTION))
++        } catch (_: Exception) {
++        }
++    }
++
++    companion object {
++        const val MAX_ATTEMPTS = 12
++        const val DEFAULT_BATCH_SIZE = 50
++    }
++}
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionService.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionService.kt
+index cc2eb72..6af6188 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionService.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionService.kt
+@@ -20,6 +20,7 @@ import com.dscorp.wispadmin.wispadmin.service.mikrotik.IQueueManager
+ import com.dscorp.wispadmin.wispadmin.service.mikrotik.QueueCreationStats
+ import com.dscorp.wispadmin.wispadmin.service.subscription.IServiceCutManager
+ import com.dscorp.wispadmin.wispadmin.service.subscription.IServiceReactivationManager
++import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.InstallationResult
+ import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.InstallationStrategyFactory
+ import com.dscorp.wispadmin.wispadmin.service.validators.ISubscriptionValidator
+ import com.dscorp.wispadmin.wispadmin.util.fcm.FcmMessage.FcmMessageType
+@@ -56,7 +57,8 @@ class SubscriptionService(
+     private val paymentRepository: PaymentRepository,
+     private val installationStrategyFactory: InstallationStrategyFactory,
+     private val applicationEventPublisher: ApplicationEventPublisher,
+-    private val cancelledOnuReuseService: CancelledOnuReuseService
++    private val cancelledOnuReuseService: CancelledOnuReuseService,
++    private val subscriptionProvisionService: SubscriptionProvisionService
+ ) {
+     private val logger = LoggerFactory.getLogger(SubscriptionService::class.java)
+ 
+@@ -159,7 +161,7 @@ class SubscriptionService(
+ 
+         return try {
+             findExistingSubscriptionByClientRequestId(newSubscription.clientRequestId)?.let { existing ->
+-                completePendingInstallation(existing, newSubscription)
++                subscriptionProvisionService.reconcile(existing, newSubscription)
+                 return existing.toDto().copy(alreadyRegistered = true)
+             }
+ 
+@@ -167,6 +169,10 @@ class SubscriptionService(
+ 
+             val ipAssignment = resolveIpAssignment(newSubscription)
+             val subscriptionToSave = createSubscriptionEntity(newSubscription, ipAssignment)
++            subscriptionProvisionService.initializeStatuses(
++                subscriptionToSave,
++                newSubscription.installationType
++            )
+ 
+             if (newSubscription.installationType == InstallationType.FIBER) {
+                 processOnuForFiber(subscriptionToSave, newSubscription)
+@@ -198,17 +204,33 @@ class SubscriptionService(
+             val device = networkDeviceRepository.findById(subscription.hostDevice!!.id).get()
+             val plan = planRepository.findById(subscription.plan!!.id).get()
+             val place = placeRepository.findById(subscription.place!!.id).get()
++            subscription.hostDevice = device
++            subscription.plan = plan
++            subscription.place = place
+ 
+             val strategy = installationStrategyFactory.getStrategy(newSubscription.installationType)
+-            try {
++            val installationResult = try {
+                 val result = strategy.processInstallation(subscription, newSubscription, device, plan, place)
+                 queueAdded = result.queueAdded
+                 onuAuthorized = result.onuAuthorized
+                 onuSn = result.onuSn
+-            } catch (ex: MikrotikException) {
+-                logger.error("Error de provisión MikroTik tras persistir suscripción ${subscription.id}", ex)
++                result
++            } catch (ex: Exception) {
++                logger.error("Error de provisión de red tras persistir suscripción ${subscription.id}", ex)
+                 persistProvisionError(ex)
++                InstallationResult(
++                    queueAdded = false,
++                    onuAuthorized = false,
++                    mikrotikError = ex.message,
++                    oltError = ex.message
++                )
+             }
++            subscriptionProvisionService.applyInstallationResult(
++                subscription = subscription,
++                result = installationResult,
++                installationType = newSubscription.installationType
++            )
++            subscription = repository.save(subscription)
+ 
+             newSubscription.installationOrderId?.let { orderId ->
+                 processInstallationOrderCompletion(orderId, subscription)
+@@ -230,20 +252,7 @@ class SubscriptionService(
+         existing: Subscription,
+         request: SubscriptionRequest
+     ) {
+-        try {
+-            val deviceId = existing.hostDevice?.id ?: request.hostDeviceId
+-            val planId = existing.plan?.id ?: request.planId
+-            val placeId = existing.place?.id ?: request.placeId
+-            val device = networkDeviceRepository.findById(deviceId).get()
+-            val plan = planRepository.findById(planId).get()
+-            val place = placeRepository.findById(placeId).get()
+-            val installationType = existing.installationType ?: request.installationType
+-            val strategy = installationStrategyFactory.getStrategy(installationType)
+-            strategy.processInstallation(existing, request, device, plan, place)
+-        } catch (ex: MikrotikException) {
+-            logger.warn("No se pudo completar la provisión MikroTik pendiente para ${existing.id}", ex)
+-            persistProvisionError(ex)
+-        }
++        subscriptionProvisionService.reconcile(existing, request)
+     }
+ 
+     private fun persistProvisionError(ex: Exception) {
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategy.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategy.kt
+index ad77494..384bb27 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategy.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/FiberInstallationStrategy.kt
+@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component
+ class FiberInstallationStrategy(
+     private val cancelledOnuReuseService: CancelledOnuReuseService
+ ) : IInstallationStrategy {
+-    
++
+     private val logger = LoggerFactory.getLogger(FiberInstallationStrategy::class.java)
+-    
++
+     companion object {
+         private const val FALLBACK_VLAN = "1"
+         private const val DEFAULT_ZONE = "Zone 1"
+@@ -26,7 +26,7 @@ class FiberInstallationStrategy(
+         private const val DEFAULT_CUSTOM_PROFILE = "Generic_1"
+         private const val QUEUE_NAME_TEMPLATE = "id:%d, usuario:%s %s, lugar:%s, nap:%s, plan:%s, tipo:%s"
+     }
+-    
++
+     override fun processInstallation(
+         subscription: Subscription,
+         request: SubscriptionRequest,
+@@ -37,6 +37,8 @@ class FiberInstallationStrategy(
+         var queueAdded = false
+         var onuAuthorized = false
+         var onuSn: String? = null
++        var mikrotikError: String? = null
++        var oltError: String? = null
+ 
+         request.onu?.let { onuRequest ->
+             onuSn = onuRequest.sn
+@@ -54,35 +56,56 @@ class FiberInstallationStrategy(
+                 onu_mode = DEFAULT_ONU_MODE,
+                 custom_profile = DEFAULT_CUSTOM_PROFILE
+             )
+-            
+-            cancelledOnuReuseService.authorizeWithCancelledReuse(authorizeRequest)
+-            onuAuthorized = true
++
++            try {
++                cancelledOnuReuseService.authorizeWithCancelledReuse(authorizeRequest)
++                onuAuthorized = true
++            } catch (error: Exception) {
++                oltError = error.message ?: "Error autorizando ONU en OLT"
++                logger.error(
++                    "No se pudo autorizar ONU en OLT para suscripción ${subscription.id}",
++                    error
++                )
++            }
+ 
+             val queueName = buildQueueName(subscription)
++            val target = subscription.ip.orEmpty()
+             try {
+                 device.executeCommand { session ->
++                    val existing = session.print("/queue/simple", mapOf("target" to "$target/32"))
++                    if (existing.isNotEmpty()) {
++                        return@executeCommand
++                    }
+                     session.add(
+                         "/queue/simple",
+                         mapOf(
+                             "name" to queueName,
+-                            "target" to subscription.ip.orEmpty(),
++                            "target" to target,
+                             "max-limit" to "${plan.uploadSpeed}M/${plan.downloadSpeed}M"
+                         )
+                     )
+                 }
+                 queueAdded = true
+             } catch (error: MikrotikException) {
+-                logger.error("No se pudo crear simple queue en MikroTik para suscripción ${subscription.id}", error)
++                mikrotikError = error.message
++                logger.error(
++                    "No se pudo crear simple queue en MikroTik para suscripción ${subscription.id}",
++                    error
++                )
+             }
++        } ?: run {
++            oltError = "Solicitud FIBER sin datos de ONU"
+         }
+ 
+         return InstallationResult(
+             queueAdded = queueAdded,
+             onuAuthorized = onuAuthorized,
+-            onuSn = onuSn
++            onuSn = onuSn,
++            mikrotikError = mikrotikError,
++            oltError = oltError
+         )
+     }
+-    
++
+     override fun buildQueueName(subscription: Subscription): String {
+         val napBoxCode = subscription.napBox?.code ?: ""
+         return QUEUE_NAME_TEMPLATE.format(
+@@ -117,6 +140,3 @@ class FiberInstallationStrategy(
+         return FALLBACK_VLAN
+     }
+ }
+-
+-
+-
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/IInstallationStrategy.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/IInstallationStrategy.kt
+index 9489653..acbdba5 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/IInstallationStrategy.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/IInstallationStrategy.kt
+@@ -22,7 +22,9 @@ interface IInstallationStrategy {
+ data class InstallationResult(
+     val queueAdded: Boolean,
+     val onuAuthorized: Boolean = false,
+-    val onuSn: String? = null
++    val onuSn: String? = null,
++    val mikrotikError: String? = null,
++    val oltError: String? = null
+ )
+ 
+ 
+diff --git a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/WirelessInstallationStrategy.kt b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/WirelessInstallationStrategy.kt
+index 7c839f7..76c4ca7 100644
+--- a/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/WirelessInstallationStrategy.kt
++++ b/src/main/kotlin/com/dscorp/wispadmin/wispadmin/service/subscription/strategies/WirelessInstallationStrategy.kt
+@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component
+ 
+ @Component
+ class WirelessInstallationStrategy : IInstallationStrategy {
+-    
++
+     private val logger = LoggerFactory.getLogger(WirelessInstallationStrategy::class.java)
+-    
++
+     companion object {
+         private const val QUEUE_NAME_TEMPLATE = "id:%d, usuario:%s %s, lugar:%s, plan:%s, tipo:%s"
+     }
+-    
++
+     override fun processInstallation(
+         subscription: Subscription,
+         request: SubscriptionRequest,
+@@ -27,13 +27,18 @@ class WirelessInstallationStrategy : IInstallationStrategy {
+         place: Place
+     ): InstallationResult {
+         val queueName = buildQueueName(subscription)
++        val target = subscription.ip.orEmpty()
+         return try {
+             device.executeCommand { session ->
++                val existing = session.print("/queue/simple", mapOf("target" to "$target/32"))
++                if (existing.isNotEmpty()) {
++                    return@executeCommand
++                }
+                 session.add(
+                     "/queue/simple",
+                     mapOf(
+                         "name" to queueName,
+-                        "target" to subscription.ip.orEmpty(),
++                        "target" to target,
+                         "max-limit" to "${plan.uploadSpeed}M/${plan.downloadSpeed}M"
+                     )
+                 )
+@@ -41,10 +46,10 @@ class WirelessInstallationStrategy : IInstallationStrategy {
+             InstallationResult(queueAdded = true)
+         } catch (error: MikrotikException) {
+             logger.error("No se pudo crear simple queue en MikroTik para suscripción ${subscription.id}", error)
+-            InstallationResult(queueAdded = false)
++            InstallationResult(queueAdded = false, mikrotikError = error.message)
+         }
+     }
+-    
++
+     override fun buildQueueName(subscription: Subscription): String {
+         return QUEUE_NAME_TEMPLATE.format(
+             subscription.id ?: 0,
+@@ -56,6 +61,3 @@ class WirelessInstallationStrategy : IInstallationStrategy {
+         )
+     }
+ }
+-
+-
+-
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+index d6f6f20..53610a7 100644
+--- a/src/main/resources/application.properties
++++ b/src/main/resources/application.properties
+@@ -64,6 +64,9 @@ search.index=${SEARCH_INDEX:subscriptions}
+ search.reconciliation.interval-ms=${SEARCH_RECONCILIATION_INTERVAL_MS:1800000}
+ search.reconciliation.initial-delay-ms=${SEARCH_RECONCILIATION_INITIAL_DELAY_MS:1800000}
+ 
++subscription.provision.reconciliation.interval-ms=${SUBSCRIPTION_PROVISION_RECONCILIATION_INTERVAL_MS:300000}
++subscription.provision.reconciliation.initial-delay-ms=${SUBSCRIPTION_PROVISION_RECONCILIATION_INITIAL_DELAY_MS:60000}
++
+ # Adaptador Meilisearch (solo activo con search.provider=meilisearch)
+ search.meili.host=${MEILI_HOST:http://localhost:7700}
+ search.meili.api-key=${MEILI_MASTER_KEY:}
+diff --git a/src/main/resources/db/migration/V22__subscription_provision_status.sql b/src/main/resources/db/migration/V22__subscription_provision_status.sql
+new file mode 100644
+index 0000000..7129856
+--- /dev/null
++++ b/src/main/resources/db/migration/V22__subscription_provision_status.sql
+@@ -0,0 +1,17 @@
++ALTER TABLE subscription
++    ADD COLUMN mikrotik_provision_status VARCHAR(32) NULL,
++    ADD COLUMN olt_provision_status VARCHAR(32) NULL,
++    ADD COLUMN provision_attempt_count INT NOT NULL DEFAULT 0,
++    ADD COLUMN provision_next_attempt_at DATETIME NULL,
++    ADD COLUMN provision_last_error VARCHAR(500) NULL;
++
++UPDATE subscription
++SET mikrotik_provision_status = 'COMPLETE',
++    olt_provision_status = CASE
++        WHEN installation_type = 'FIBER' THEN 'COMPLETE'
++        ELSE 'NA'
++    END
++WHERE mikrotik_provision_status IS NULL;
++
++CREATE INDEX idx_subscription_provision_retry
++    ON subscription (mikrotik_provision_status, olt_provision_status, provision_next_attempt_at);
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionProvisionServiceTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionProvisionServiceTest.kt
+new file mode 100644
+index 0000000..5801684
+--- /dev/null
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionProvisionServiceTest.kt
+@@ -0,0 +1,214 @@
++package com.dscorp.wispadmin.wispadmin.service
++
++import com.dscorp.wispadmin.wispadmin.data.model.EquipmentCondition
++import com.dscorp.wispadmin.wispadmin.data.model.InstallationType
++import com.dscorp.wispadmin.wispadmin.data.model.MikrotikProvisionStatus
++import com.dscorp.wispadmin.wispadmin.data.model.NetworkDevice
++import com.dscorp.wispadmin.wispadmin.data.model.OltProvisionStatus
++import com.dscorp.wispadmin.wispadmin.data.model.Place
++import com.dscorp.wispadmin.wispadmin.data.model.Plan
++import com.dscorp.wispadmin.wispadmin.data.model.Subscription
++import com.dscorp.wispadmin.wispadmin.repository.ErrorLogRepository
++import com.dscorp.wispadmin.wispadmin.repository.NetworkDeviceRepository
++import com.dscorp.wispadmin.wispadmin.repository.PlaceRepository
++import com.dscorp.wispadmin.wispadmin.repository.PlanRepository
++import com.dscorp.wispadmin.wispadmin.repository.SubscriptionRepository
++import com.dscorp.wispadmin.wispadmin.requestbody.SubscriptionRequest
++import com.dscorp.wispadmin.wispadmin.data.model.GeoLocation
++import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.IInstallationStrategy
++import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.InstallationResult
++import com.dscorp.wispadmin.wispadmin.service.subscription.strategies.InstallationStrategyFactory
++import io.mockk.every
++import io.mockk.mockk
++import io.mockk.verify
++import org.junit.jupiter.api.Assertions.assertEquals
++import org.junit.jupiter.api.Assertions.assertFalse
++import org.junit.jupiter.api.Assertions.assertNotNull
++import org.junit.jupiter.api.Assertions.assertNull
++import org.junit.jupiter.api.Assertions.assertTrue
++import org.junit.jupiter.api.Test
++import java.time.LocalDateTime
++import java.util.Optional
++
++class SubscriptionProvisionServiceTest {
++
++    private val repository = mockk<SubscriptionRepository>()
++    private val networkDeviceRepository = mockk<NetworkDeviceRepository>()
++    private val planRepository = mockk<PlanRepository>()
++    private val placeRepository = mockk<PlaceRepository>()
++    private val installationStrategyFactory = mockk<InstallationStrategyFactory>()
++    private val installationStrategy = mockk<IInstallationStrategy>()
++    private val errorLogRepository = mockk<ErrorLogRepository>(relaxed = true)
++
++    private val service = SubscriptionProvisionService(
++        repository = repository,
++        networkDeviceRepository = networkDeviceRepository,
++        planRepository = planRepository,
++        placeRepository = placeRepository,
++        installationStrategyFactory = installationStrategyFactory,
++        errorLogRepository = errorLogRepository
++    )
++
++    @Test
++    fun `initializeStatuses sets wireless mikrotik pending and olt NA`() {
++        val subscription = baseSubscription()
++        service.initializeStatuses(subscription, InstallationType.WIRELESS)
++        assertEquals(MikrotikProvisionStatus.PENDING, subscription.mikrotikProvisionStatus)
++        assertEquals(OltProvisionStatus.NA, subscription.oltProvisionStatus)
++    }
++
++    @Test
++    fun `initializeStatuses sets fiber both pending`() {
++        val subscription = baseSubscription()
++        service.initializeStatuses(subscription, InstallationType.FIBER)
++        assertEquals(MikrotikProvisionStatus.PENDING, subscription.mikrotikProvisionStatus)
++        assertEquals(OltProvisionStatus.PENDING, subscription.oltProvisionStatus)
++    }
++
++    @Test
++    fun `applyInstallationResult marks complete and clears retry when queue ok`() {
++        val subscription = baseSubscription().apply {
++            mikrotikProvisionStatus = MikrotikProvisionStatus.PENDING
++            oltProvisionStatus = OltProvisionStatus.NA
++        }
++        service.applyInstallationResult(
++            subscription,
++            InstallationResult(queueAdded = true),
++            InstallationType.WIRELESS
++        )
++        assertEquals(MikrotikProvisionStatus.COMPLETE, subscription.mikrotikProvisionStatus)
++        assertFalse(subscription.isProvisioningPending())
++        assertNull(subscription.provisionNextAttemptAt)
++    }
++
++    @Test
++    fun `applyInstallationResult schedules backoff when mikrotik pending`() {
++        val subscription = baseSubscription().apply {
++            mikrotikProvisionStatus = MikrotikProvisionStatus.PENDING
++            oltProvisionStatus = OltProvisionStatus.NA
++            provisionAttemptCount = 0
++        }
++        service.applyInstallationResult(
++            subscription,
++            InstallationResult(queueAdded = false, mikrotikError = "down"),
++            InstallationType.WIRELESS
++        )
++        assertEquals(MikrotikProvisionStatus.PENDING, subscription.mikrotikProvisionStatus)
++        assertEquals(1, subscription.provisionAttemptCount)
++        assertNotNull(subscription.provisionNextAttemptAt)
++        assertTrue(subscription.provisionNextAttemptAt!!.isAfter(LocalDateTime.now().plusMinutes(4)))
++        assertEquals("down", subscription.provisionLastError)
++    }
++
++    @Test
++    fun `applyInstallationResult keeps olt pending when fiber onu fails`() {
++        val subscription = baseSubscription().apply {
++            mikrotikProvisionStatus = MikrotikProvisionStatus.PENDING
++            oltProvisionStatus = OltProvisionStatus.PENDING
++        }
++        service.applyInstallationResult(
++            subscription,
++            InstallationResult(queueAdded = true, onuAuthorized = false, oltError = "olt timeout"),
++            InstallationType.FIBER
++        )
++        assertEquals(MikrotikProvisionStatus.COMPLETE, subscription.mikrotikProvisionStatus)
++        assertEquals(OltProvisionStatus.PENDING, subscription.oltProvisionStatus)
++        assertTrue(subscription.isProvisioningPending())
++        assertTrue(subscription.provisionLastError!!.contains("olt timeout"))
++    }
++
++    @Test
++    fun `scheduleNextAttempt uses 15 minutes on second attempt`() {
++        val subscription = baseSubscription().apply {
++            mikrotikProvisionStatus = MikrotikProvisionStatus.PENDING
++            oltProvisionStatus = OltProvisionStatus.NA
++            provisionAttemptCount = 1
++        }
++        val before = LocalDateTime.now()
++        service.scheduleNextAttempt(subscription)
++        assertEquals(2, subscription.provisionAttemptCount)
++        assertNotNull(subscription.provisionNextAttemptAt)
++        assertTrue(subscription.provisionNextAttemptAt!!.isAfter(before.plusMinutes(14)))
++        assertTrue(subscription.provisionNextAttemptAt!!.isBefore(before.plusMinutes(16)))
++    }
++
++    @Test
++    fun `scheduleNextAttempt uses 30 minutes from third attempt`() {
++        val subscription = baseSubscription().apply {
++            mikrotikProvisionStatus = MikrotikProvisionStatus.PENDING
++            oltProvisionStatus = OltProvisionStatus.NA
++            provisionAttemptCount = 2
++        }
++        val before = LocalDateTime.now()
++        service.scheduleNextAttempt(subscription)
++        assertEquals(3, subscription.provisionAttemptCount)
++        assertNotNull(subscription.provisionNextAttemptAt)
++        assertTrue(subscription.provisionNextAttemptAt!!.isAfter(before.plusMinutes(29)))
++        assertTrue(subscription.provisionNextAttemptAt!!.isBefore(before.plusMinutes(31)))
++    }
++
++    @Test
++    fun `scheduleNextAttempt marks failed after max attempts`() {
++        val subscription = baseSubscription().apply {
++            mikrotikProvisionStatus = MikrotikProvisionStatus.PENDING
++            oltProvisionStatus = OltProvisionStatus.PENDING
++            provisionAttemptCount = SubscriptionProvisionService.MAX_ATTEMPTS
++        }
++        service.scheduleNextAttempt(subscription)
++        assertEquals(MikrotikProvisionStatus.FAILED, subscription.mikrotikProvisionStatus)
++        assertEquals(OltProvisionStatus.FAILED, subscription.oltProvisionStatus)
++        assertNull(subscription.provisionNextAttemptAt)
++    }
++
++    @Test
++    fun `reconcile completes pending mikrotik when strategy succeeds`() {
++        val subscription = baseSubscription().apply {
++            id = 10
++            mikrotikProvisionStatus = MikrotikProvisionStatus.PENDING
++            oltProvisionStatus = OltProvisionStatus.NA
++            hostDevice = NetworkDevice(id = 1)
++            plan = Plan(id = 1)
++            place = Place(id = 1)
++        }
++        every { networkDeviceRepository.findById(1) } returns Optional.of(NetworkDevice(id = 1))
++        every { planRepository.findById(1) } returns Optional.of(Plan(id = 1))
++        every { placeRepository.findById(1) } returns Optional.of(Place(id = 1))
++        every { installationStrategyFactory.getStrategy(any()) } returns installationStrategy
++        every {
++            installationStrategy.processInstallation(any(), any(), any(), any(), any())
++        } returns InstallationResult(queueAdded = true)
++        every { repository.save(any()) } answers { firstArg() }
++
++        val result = service.reconcile(subscription, sampleRequest())
++
++        assertEquals(MikrotikProvisionStatus.COMPLETE, result.mikrotikProvisionStatus)
++        assertFalse(result.isProvisioningPending())
++        verify(exactly = 1) { repository.save(subscription) }
++    }
++
++    private fun baseSubscription() = Subscription(
++        firstName = "Ana",
++        lastName = "Lopez",
++        dni = "87654321",
++        equipmentCondition = EquipmentCondition.LOAN
++    ).apply {
++        installationType = InstallationType.WIRELESS
++    }
++
++    private fun sampleRequest() = SubscriptionRequest(
++        firstName = "Ana",
++        lastName = "Lopez",
++        dni = "87654321",
++        address = "Calle 1",
++        phone = "999",
++        subscriptionDate = System.currentTimeMillis(),
++        planId = 1,
++        additionalDeviceIds = emptyList(),
++        placeId = 1,
++        location = GeoLocation(-11.0, -77.0),
++        technicianId = 1,
++        hostDeviceId = 1,
++        installationType = InstallationType.WIRELESS,
++        equipmentCondition = EquipmentCondition.LOAN
++    )
++}
+diff --git a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionServiceIdempotencyTest.kt b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionServiceIdempotencyTest.kt
+index 8c8733c..6292a39 100644
+--- a/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionServiceIdempotencyTest.kt
++++ b/src/test/kotlin/com/dscorp/wispadmin/wispadmin/service/SubscriptionServiceIdempotencyTest.kt
+@@ -43,8 +43,19 @@ class SubscriptionServiceIdempotencyTest {
+     private val installationStrategyFactory = mockk<InstallationStrategyFactory>()
+     private val installationStrategy = mockk<IInstallationStrategy>()
+     private val errorLogRepository = mockk<com.dscorp.wispadmin.wispadmin.repository.ErrorLogRepository>(relaxed = true)
++    private val subscriptionProvisionService by lazy {
++        SubscriptionProvisionService(
++            repository = repository,
++            networkDeviceRepository = networkDeviceRepository,
++            planRepository = planRepository,
++            placeRepository = placeRepository,
++            installationStrategyFactory = installationStrategyFactory,
++            errorLogRepository = errorLogRepository
++        )
++    }
+ 
+-    private val service = SubscriptionService(
++    private val service by lazy {
++        SubscriptionService(
+         repository = repository,
+         ipPoolRepository = ipPoolRepository,
+         networkDeviceRepository = networkDeviceRepository,
+@@ -68,7 +79,9 @@ class SubscriptionServiceIdempotencyTest {
+         installationStrategyFactory = installationStrategyFactory,
+         applicationEventPublisher = applicationEventPublisher,
+         cancelledOnuReuseService = mockk(relaxed = true),
+-    )
++        subscriptionProvisionService = subscriptionProvisionService,
++        )
++    }
+ 
+     @Test
+     fun `registerSubscription returns existing dto when clientRequestId already exists`() {
+@@ -85,6 +98,7 @@ class SubscriptionServiceIdempotencyTest {
+ 
+         stubLookupsForProvision()
+         every { repository.findByClientRequestId("offline-req-1") } returns Optional.of(existing)
++        every { repository.save(any()) } answers { firstArg() }
+         every {
+             installationStrategy.processInstallation(any(), any(), any(), any(), any())
+         } returns InstallationResult(queueAdded = true)
+@@ -122,10 +136,99 @@ class SubscriptionServiceIdempotencyTest {
+ 
+         assertEquals(77, result.id)
+         assertFalse(result.alreadyRegistered)
+-        verify(exactly = 1) { repository.save(any()) }
++        assertTrue(result.provisioningPending)
++        assertEquals(
++            com.dscorp.wispadmin.wispadmin.data.model.MikrotikProvisionStatus.PENDING,
++            result.mikrotikProvisionStatus
++        )
++        verify(atLeast = 1) { repository.save(any()) }
+         verify(exactly = 1) { applicationEventPublisher.publishEvent(any<SubscriptionRegisteredEvent>()) }
+     }
+ 
++    @Test
++    fun `registerSubscription keeps saved fiber when OLT fails but MikroTik succeeds`() {
++        stubLookupsForProvision()
++        every { repository.findByClientRequestId(any()) } returns Optional.empty()
++        every { ipPoolRepository.findAllEligiblePools() } returns listOf(
++            IpPool(id = 1, ipSegment = "192.168.1.0/24")
++        )
++        every { repository.save(any()) } answers {
++            firstArg<Subscription>().apply { id = 78 }
++        }
++        every {
++            installationStrategy.processInstallation(any(), any(), any(), any(), any())
++        } returns InstallationResult(
++            queueAdded = true,
++            onuAuthorized = false,
++            oltError = "OLT unreachable"
++        )
++
++        val result = service.registerSubscription(
++            newSubscription = sampleRequest(clientRequestId = "fiber-olt-down").apply {
++                installationType = InstallationType.FIBER
++                napBoxId = 1
++                onu = com.dscorp.wispadmin.wispadmin.dto.OnuDto(
++                    sn = "ONU123",
++                    olt_id = "1",
++                    board = "1",
++                    port = "1",
++                    onu_type_name = "HG8310"
++                )
++            },
++            onSuccess = { },
++        )
++
++        assertEquals(78, result.id)
++        assertTrue(result.provisioningPending)
++        assertEquals(
++            com.dscorp.wispadmin.wispadmin.data.model.MikrotikProvisionStatus.COMPLETE,
++            result.mikrotikProvisionStatus
++        )
++        assertEquals(
++            com.dscorp.wispadmin.wispadmin.data.model.OltProvisionStatus.PENDING,
++            result.oltProvisionStatus
++        )
++    }
++
++    @Test
++    fun `registerSubscription with existing clientRequestId reconciles pending provision`() {
++        val existing = Subscription(
++            firstName = "Juan",
++            lastName = "Perez",
++            dni = "12345678",
++            equipmentCondition = EquipmentCondition.LOAN,
++        ).apply {
++            id = 55
++            clientRequestId = "offline-pending"
++            installationType = InstallationType.WIRELESS
++            mikrotikProvisionStatus =
++                com.dscorp.wispadmin.wispadmin.data.model.MikrotikProvisionStatus.PENDING
++            oltProvisionStatus = com.dscorp.wispadmin.wispadmin.data.model.OltProvisionStatus.NA
++            hostDevice = NetworkDevice(id = 1)
++            plan = Plan(id = 1)
++            place = Place(id = 1)
++        }
++
++        stubLookupsForProvision()
++        every { repository.findByClientRequestId("offline-pending") } returns Optional.of(existing)
++        every { repository.save(any()) } answers { firstArg() }
++        every {
++            installationStrategy.processInstallation(any(), any(), any(), any(), any())
++        } returns InstallationResult(queueAdded = true)
++
++        val result = service.registerSubscription(
++            newSubscription = sampleRequest(clientRequestId = "offline-pending"),
++            onSuccess = { throw AssertionError("onSuccess must not run for duplicate") },
++        )
++
++        assertTrue(result.alreadyRegistered)
++        assertFalse(result.provisioningPending)
++        assertEquals(
++            com.dscorp.wispadmin.wispadmin.data.model.MikrotikProvisionStatus.COMPLETE,
++            result.mikrotikProvisionStatus
++        )
++    }
++
+     @Test
+     fun `findExistingSubscriptionByClientRequestId returns null for blank clientRequestId`() {
+         val result = service.findExistingSubscriptionByClientRequestId("   ")
+-- 
+2.43.0
+
+
+From 663e70c8f944e37bbb8af7fc8e70eba37f5305e0 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sat, 15 Aug 2026 15:58:52 +0000
+Subject: [PATCH 4/5] =?UTF-8?q?fix(flyway):=20renumerar=20migraciones=20of?=
+ =?UTF-8?q?fline/provisi=C3=B3n=20a=20V22/V23?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Evita colisión con V21__subscription_is_bimonthly ya presente en develop.
+---
+ ...ent_request_id.sql => V22__subscription_client_request_id.sql} | 0
+ ...rovision_status.sql => V23__subscription_provision_status.sql} | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ rename src/main/resources/db/migration/{V21__subscription_client_request_id.sql => V22__subscription_client_request_id.sql} (100%)
+ rename src/main/resources/db/migration/{V22__subscription_provision_status.sql => V23__subscription_provision_status.sql} (100%)
+
+diff --git a/src/main/resources/db/migration/V21__subscription_client_request_id.sql b/src/main/resources/db/migration/V22__subscription_client_request_id.sql
+similarity index 100%
+rename from src/main/resources/db/migration/V21__subscription_client_request_id.sql
+rename to src/main/resources/db/migration/V22__subscription_client_request_id.sql
+diff --git a/src/main/resources/db/migration/V22__subscription_provision_status.sql b/src/main/resources/db/migration/V23__subscription_provision_status.sql
+similarity index 100%
+rename from src/main/resources/db/migration/V22__subscription_provision_status.sql
+rename to src/main/resources/db/migration/V23__subscription_provision_status.sql
+-- 
+2.43.0
+
+
+From 2def7dc4e2bb8ab88b834d45acac7438e43b2262 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Sat, 15 Aug 2026 15:58:57 +0000
+Subject: [PATCH 5/5] =?UTF-8?q?docs:=20actualizar=20versi=C3=B3n=20Flyway?=
+ =?UTF-8?q?=20de=20provisi=C3=B3n=20a=20V23?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .agent-docs/provision-reconciliation-2026-08-15.md | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/.agent-docs/provision-reconciliation-2026-08-15.md b/.agent-docs/provision-reconciliation-2026-08-15.md
+index cbe2ce1..9b04bad 100644
+--- a/.agent-docs/provision-reconciliation-2026-08-15.md
++++ b/.agent-docs/provision-reconciliation-2026-08-15.md
+@@ -5,7 +5,8 @@ Rama: `cursor/provision-reconciliation-ef49`
+ 
+ ## Migración
+ 
+-`V22__subscription_provision_status.sql`
++`V23__subscription_provision_status.sql`  
++(`V22__subscription_client_request_id.sql` para idempotencia offline; `V21` en develop ya era `subscription_is_bimonthly`)
+ 
+ Columnas en `subscription`:
+ 
+-- 
+2.43.0
+
