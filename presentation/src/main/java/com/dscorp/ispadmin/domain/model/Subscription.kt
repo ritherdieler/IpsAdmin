@@ -42,6 +42,7 @@ data class Subscription(
     var provisioningPending: Boolean = false,
     var mikrotikProvisionStatus: String? = null,
     var oltProvisionStatus: String? = null,
+    var vlan: String? = "1",
 
     ) : java.io.Serializable {
     override fun toString(): String {

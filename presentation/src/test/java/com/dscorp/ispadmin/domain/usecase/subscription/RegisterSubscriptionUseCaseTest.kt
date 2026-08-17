@@ -187,4 +187,36 @@ class RegisterSubscriptionUseCaseTest {
         assertTrue(result.isFailure)
         coVerify(exactly = 0) { enqueuePendingSubscriptionUseCase(any(), any(), any()) }
     }
+
+    @Test
+    fun `offline json includes vlan`() = runTest {
+        every { connectivityMonitor.isConnected() } returns false
+        val jsonSlot = slot<String>()
+        val pending = PendingSubscription(
+            localId = "local-vlan",
+            clientRequestId = "client-vlan",
+            subscriptionJson = """{"vlan":"100"}""",
+            facadePhotoPath = "/files/pending_subscriptions/local-vlan.jpg",
+            installationOrderId = 8,
+            status = PendingSubscriptionStatus.PENDING,
+            createdAt = 1L
+        )
+        coEvery {
+            enqueuePendingSubscriptionUseCase(capture(jsonSlot), facadePhotoFile, 8)
+        } returns Result.success(pending)
+
+        val result = useCase(
+            Subscription(
+                firstName = "Ana",
+                clientIpAddress = "192.168.1.50",
+                vlan = "100"
+            ),
+            orderId = 8,
+            facadePhotoFile = facadePhotoFile
+        )
+
+        assertTrue(result.isSuccess)
+        assertTrue(jsonSlot.captured.contains("\"vlan\""))
+        assertTrue(jsonSlot.captured.contains("100"))
+    }
 }

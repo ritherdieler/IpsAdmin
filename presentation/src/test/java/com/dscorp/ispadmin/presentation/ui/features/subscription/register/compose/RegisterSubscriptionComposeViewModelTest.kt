@@ -644,4 +644,106 @@ class RegisterSubscriptionComposeViewModelTest {
 
         coVerify(exactly = 1) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
     }
+
+    @Test
+    fun `OnVlanChanged updates form vlan`() = runTest(testDispatcher) {
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        viewModel.onIntent(RegisterSubscriptionIntent.OnVlanChanged("100"))
+
+        assertEquals("100", viewModel.uiState.value.registerSubscriptionForm.vlan)
+    }
+
+    @Test
+    fun `saveSubscription sends vlan 100 only for FIBER`() = runTest(testDispatcher) {
+        val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+        val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+        )
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        coEvery {
+            registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
+        } answers {
+            assertEquals("100", firstArg<Subscription>().vlan)
+            Result.success(RegisterSubscriptionResult.Registered(Subscription(subscriptionId = 1)))
+        }
+
+        viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
+        viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
+        viewModel.onIntent(RegisterSubscriptionIntent.DniChanged("12345678"))
+        viewModel.onIntent(RegisterSubscriptionIntent.AddressChanged("Calle larga 12345"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PhoneChanged("987654321"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlanSelected(samplePlan))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
+        viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
+        viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+        viewModel.onIntent(RegisterSubscriptionIntent.OnVlanChanged("100"))
+
+        viewModel.saveSubscription(facadePhotoFile)
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
+    }
+
+    @Test
+    fun `saveSubscription sends vlan null when installation is not FIBER`() = runTest(testDispatcher) {
+        val wirelessPlan = PlanResponse(
+            id = "w1",
+            name = "Wireless",
+            price = 10.0,
+            downloadSpeed = "50",
+            uploadSpeed = "20",
+            type = InstallationType.WIRELESS
+        )
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(
+                plans = listOf(
+                    CatalogPlan(
+                        id = "p1",
+                        name = "Plan",
+                        price = 10.0,
+                        downloadSpeed = "100",
+                        uploadSpeed = "100",
+                        type = "FIBER"
+                    ),
+                    CatalogPlan(
+                        id = "w1",
+                        name = "Wireless",
+                        price = 10.0,
+                        downloadSpeed = "50",
+                        uploadSpeed = "20",
+                        type = "WIRELESS"
+                    )
+                )
+            )
+        )
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        coEvery {
+            registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
+        } answers {
+            assertNull(firstArg<Subscription>().vlan)
+            Result.success(RegisterSubscriptionResult.Registered(Subscription(subscriptionId = 2)))
+        }
+
+        viewModel.onIntent(RegisterSubscriptionIntent.InstallationTypeSelected(InstallationType.WIRELESS))
+        viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
+        viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
+        viewModel.onIntent(RegisterSubscriptionIntent.DniChanged("12345678"))
+        viewModel.onIntent(RegisterSubscriptionIntent.AddressChanged("Calle larga 12345"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PhoneChanged("987654321"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlanSelected(wirelessPlan))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
+        viewModel.onIntent(RegisterSubscriptionIntent.OnVlanChanged("100"))
+
+        viewModel.saveSubscription(facadePhotoFile)
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
+    }
 }

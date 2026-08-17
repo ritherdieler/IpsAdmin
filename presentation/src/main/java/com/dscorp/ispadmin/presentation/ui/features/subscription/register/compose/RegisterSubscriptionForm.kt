@@ -70,6 +70,7 @@ import com.dscorp.ispadmin.presentation.ui.components.MyOutLinedDropDown
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionFormState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionState
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.VLAN_OPTIONS
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -650,6 +651,15 @@ fun FiberOpticForm(
                     formState = formState
                 )
             }
+
+            MyOutLinedDropDown(
+                modifier = Modifier.testTag("register_vlan_dropdown"),
+                items = VLAN_OPTIONS,
+                selected = VLAN_OPTIONS.firstOrNull { it.value == form.vlan },
+                label = VLAN_LABEL,
+                onItemSelected = { onIntent(RegisterSubscriptionIntent.OnVlanChanged(it.value)) },
+                enabled = !formState.isLoading,
+            )
         }
 
         if (formState.isLoadingNearbyNapBoxes) {
@@ -720,6 +730,7 @@ private fun RefreshIcon(
 }
 
 private const val ONU_LABEL = "Onu"
+private const val VLAN_LABEL = "VLAN"
 private const val NAP_BOX_LABEL = "Caja Nap"
 const val FIBER_OPTIC = "Fibra óptica"
 const val WIRELESS = "Inalámbrico"

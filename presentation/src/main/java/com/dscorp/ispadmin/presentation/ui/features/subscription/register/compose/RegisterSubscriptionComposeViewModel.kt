@@ -262,6 +262,7 @@ class RegisterSubscriptionComposeViewModel(
                 onEquipmentConditionChanged(intent.value)
             is RegisterSubscriptionIntent.ClientIpAddressChanged ->
                 onClientIpAddressChanged(intent.value)
+            is RegisterSubscriptionIntent.OnVlanChanged -> onVlanChanged(intent.vlan)
             is RegisterSubscriptionIntent.RegisterClick -> saveSubscription(intent.facadePhotoFile)
         }
     }
@@ -422,6 +423,14 @@ private fun onEquipmentConditionChanged(value: EquipmentCondition) {
 private fun onClientIpAddressChanged(value: String) {
     updateValidatedForm(FormFieldKey.CLIENT_IP_ADDRESS) { form ->
         form.copy(clientIpAddress = value)
+    }
+}
+
+private fun onVlanChanged(vlan: String) {
+    _uiState.update { current ->
+        current.copy(
+            registerSubscriptionForm = current.registerSubscriptionForm.copy(vlan = vlan)
+        )
     }
 }
 
@@ -775,7 +784,8 @@ private fun buildSubscriptionFromForm(
         autoCut = true,
         facadePhotoUrl = null,
         clientIpAddress = form.clientIpAddress.trim().takeIf { it.isNotEmpty() },
-        ip = form.clientIpAddress.trim().takeIf { it.isNotEmpty() }
+        ip = form.clientIpAddress.trim().takeIf { it.isNotEmpty() },
+        vlan = form.vlan.takeIf { form.installationType == InstallationType.FIBER }
     )
 }
 

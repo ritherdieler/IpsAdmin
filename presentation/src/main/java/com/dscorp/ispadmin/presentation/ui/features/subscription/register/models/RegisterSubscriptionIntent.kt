@@ -27,5 +27,6 @@ sealed interface RegisterSubscriptionIntent {
     data class NoteChanged(val value: String) : RegisterSubscriptionIntent
     data class EquipmentConditionChanged(val value: EquipmentCondition) : RegisterSubscriptionIntent
     data class ClientIpAddressChanged(val value: String) : RegisterSubscriptionIntent
+    data class OnVlanChanged(val vlan: String) : RegisterSubscriptionIntent
     data class RegisterClick(val facadePhotoFile: File? = null) : RegisterSubscriptionIntent
 }

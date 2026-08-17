@@ -64,6 +64,7 @@ data class RegisterSubscriptionFormState(
     val clientIpAddress: String = "",
     val clientIpAddressError: String? = null,
     val requiresClientIpAddress: Boolean = false,
+    val vlan: String = "1",
 ) {
     fun requiresNapBox(): Boolean {
         return installationType == InstallationType.FIBER ||
