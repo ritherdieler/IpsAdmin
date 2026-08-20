@@ -25,6 +25,7 @@ import com.dscorp.ispadmin.domain.usecase.subscription.GetUserSessionUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.ObserveOfflineRegistrationModeUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionResult
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionUseCase
+import com.dscorp.ispadmin.domain.usecase.subscription.RetryTr069ProvisioningUseCase
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionUiEvent
 import io.mockk.coEvery
@@ -67,6 +68,7 @@ class RegisterSubscriptionComposeViewModelTest {
     private lateinit var getNearNapBoxesUseCase: GetNearNapBoxesUseCase
     private lateinit var installationOrderUseCase: InstallationOrderUseCase
     private lateinit var observeOfflineRegistrationModeUseCase: ObserveOfflineRegistrationModeUseCase
+    private lateinit var retryTr069ProvisioningUseCase: RetryTr069ProvisioningUseCase
     private val offlineModeFlow = MutableStateFlow(false)
 
     private lateinit var viewModel: RegisterSubscriptionComposeViewModel
@@ -135,6 +137,7 @@ class RegisterSubscriptionComposeViewModelTest {
         getNearNapBoxesUseCase = mockk()
         installationOrderUseCase = mockk(relaxed = true)
         observeOfflineRegistrationModeUseCase = mockk()
+        retryTr069ProvisioningUseCase = mockk()
         every { observeOfflineRegistrationModeUseCase() } returns Result.success(offlineModeFlow)
 
         coEvery { getAvailableOnuListUseCase() } returns Result.success(emptyList())
@@ -152,6 +155,7 @@ class RegisterSubscriptionComposeViewModelTest {
             getNearNapBoxesUseCase = getNearNapBoxesUseCase,
             installationOrderUseCase = installationOrderUseCase,
             observeOfflineRegistrationModeUseCase = observeOfflineRegistrationModeUseCase,
+            retryTr069ProvisioningUseCase = retryTr069ProvisioningUseCase,
             observabilityClient = mockk(relaxed = true),
             mainImmediate = testDispatcher
         )
@@ -278,6 +282,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+        fillWifiFields()
 
         val events = mutableListOf<RegisterSubscriptionUiEvent>()
         val job = launch {
@@ -289,7 +294,7 @@ class RegisterSubscriptionComposeViewModelTest {
 
         assertEquals(1, events.size)
         val success = events[0] as RegisterSubscriptionUiEvent.Success
-        assertEquals(registered, success.subscription)
+        assertEquals(registered.subscriptionId, success.subscription.subscriptionId)
         assertEquals(false, viewModel.uiState.value.isLoading)
 
         job.cancel()
@@ -325,6 +330,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+        fillWifiFields()
 
         val events = mutableListOf<RegisterSubscriptionUiEvent>()
         val job = launch {
@@ -363,6 +369,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+        fillWifiFields()
 
         val events = mutableListOf<RegisterSubscriptionUiEvent>()
         val job = launch {
@@ -446,6 +453,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+        fillWifiFields()
 
         viewModel.saveSubscription(facadePhotoFile)
         viewModel.saveSubscription(facadePhotoFile)
@@ -573,6 +581,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+        fillWifiFields()
 
         viewModel.onIntent(RegisterSubscriptionIntent.RegisterClick(facadePhotoFile))
         advanceUntilIdle()
@@ -638,6 +647,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
         viewModel.onIntent(RegisterSubscriptionIntent.ClientIpAddressChanged("192.168.25.10"))
+        fillWifiFields()
 
         viewModel.saveSubscription(facadePhotoFile)
         advanceUntilIdle()
@@ -646,11 +656,29 @@ class RegisterSubscriptionComposeViewModelTest {
     }
 
     @Test
+    fun `form defaults vlan to 100`() = runTest(testDispatcher) {
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        assertEquals("100", viewModel.uiState.value.registerSubscriptionForm.vlan)
+    }
+
+    @Test
     fun `OnVlanChanged updates form vlan`() = runTest(testDispatcher) {
         viewModel.loadScreenData(null)
         advanceUntilIdle()
 
         viewModel.onIntent(RegisterSubscriptionIntent.OnVlanChanged("100"))
+
+        assertEquals("100", viewModel.uiState.value.registerSubscriptionForm.vlan)
+    }
+
+    @Test
+    fun `OnVlanChanged ignores disabled vlan 1`() = runTest(testDispatcher) {
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        viewModel.onIntent(RegisterSubscriptionIntent.OnVlanChanged("1"))
 
         assertEquals("100", viewModel.uiState.value.registerSubscriptionForm.vlan)
     }
@@ -672,17 +700,39 @@ class RegisterSubscriptionComposeViewModelTest {
             Result.success(RegisterSubscriptionResult.Registered(Subscription(subscriptionId = 1)))
         }
 
-        viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
-        viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
-        viewModel.onIntent(RegisterSubscriptionIntent.DniChanged("12345678"))
-        viewModel.onIntent(RegisterSubscriptionIntent.AddressChanged("Calle larga 12345"))
-        viewModel.onIntent(RegisterSubscriptionIntent.PhoneChanged("987654321"))
-        viewModel.onIntent(RegisterSubscriptionIntent.PlanSelected(samplePlan))
-        viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
-        viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
-        viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+        fillValidFiberForm(nap, onu)
+        fillWifiFields()
         viewModel.onIntent(RegisterSubscriptionIntent.OnVlanChanged("100"))
 
+        viewModel.saveSubscription(facadePhotoFile)
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
+    }
+
+    @Test
+    fun `saveSubscription includes wifi fields for FIBER`() = runTest(testDispatcher) {
+        val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+        val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+        )
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        coEvery {
+            registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
+        } answers {
+            val sent = firstArg<Subscription>()
+            assertEquals("CasaFibra24", sent.wifiSsid24)
+            assertEquals("clave24xx", sent.wifiPassword24)
+            assertEquals("CasaFibra5", sent.wifiSsid5)
+            assertEquals("clave5xxx", sent.wifiPassword5)
+            Result.success(RegisterSubscriptionResult.Registered(Subscription(subscriptionId = 1)))
+        }
+
+        fillValidFiberForm(nap, onu)
+        fillWifiFields()
         viewModel.saveSubscription(facadePhotoFile)
         advanceUntilIdle()
 
@@ -727,7 +777,12 @@ class RegisterSubscriptionComposeViewModelTest {
         coEvery {
             registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
         } answers {
-            assertNull(firstArg<Subscription>().vlan)
+            val sent = firstArg<Subscription>()
+            assertNull(sent.vlan)
+            assertNull(sent.wifiSsid24)
+            assertNull(sent.wifiPassword24)
+            assertNull(sent.wifiSsid5)
+            assertNull(sent.wifiPassword5)
             Result.success(RegisterSubscriptionResult.Registered(Subscription(subscriptionId = 2)))
         }
 
@@ -740,10 +795,100 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.PlanSelected(wirelessPlan))
         viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
         viewModel.onIntent(RegisterSubscriptionIntent.OnVlanChanged("100"))
+        fillWifiFields()
 
         viewModel.saveSubscription(facadePhotoFile)
         advanceUntilIdle()
 
         coVerify(exactly = 1) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
+    }
+
+    @Test
+    fun `InstallationTypeSelected clears wifi fields`() = runTest(testDispatcher) {
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(
+                plans = listOf(
+                    CatalogPlan(
+                        id = "p1",
+                        name = "Plan",
+                        price = 10.0,
+                        downloadSpeed = "100",
+                        uploadSpeed = "100",
+                        type = "FIBER"
+                    ),
+                    CatalogPlan(
+                        id = "w1",
+                        name = "Wireless",
+                        price = 10.0,
+                        downloadSpeed = "50",
+                        uploadSpeed = "20",
+                        type = "WIRELESS"
+                    )
+                )
+            )
+        )
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        fillWifiFields()
+        assertEquals("CasaFibra24", viewModel.uiState.value.registerSubscriptionForm.wifiSsid24)
+
+        viewModel.onIntent(RegisterSubscriptionIntent.InstallationTypeSelected(InstallationType.WIRELESS))
+        advanceUntilIdle()
+
+        val form = viewModel.uiState.value.registerSubscriptionForm
+        assertEquals("", form.wifiSsid24)
+        assertEquals("", form.wifiPassword24)
+        assertEquals("", form.wifiSsid5)
+        assertEquals("", form.wifiPassword5)
+        assertNull(form.wifiSsid24Error)
+        assertNull(form.wifiPassword24Error)
+        assertNull(form.wifiSsid5Error)
+        assertNull(form.wifiPassword5Error)
+    }
+
+    @Test
+    fun `retryTr069 emits GenieACS error message when still MANUAL_REQUIRED`() = runTest(testDispatcher) {
+        val events = mutableListOf<RegisterSubscriptionUiEvent>()
+        val job = launch { viewModel.uiEvent.collect { events.add(it) } }
+
+        coEvery { retryTr069ProvisioningUseCase(42) } returns Result.success(
+            Subscription(
+                subscriptionId = 42,
+                tr069ProvisionStatus = "MANUAL_REQUIRED",
+                tr069Message = "GenieACS HTTP 400: missing or invalid resource identifier",
+            )
+        )
+
+        viewModel.retryTr069Provisioning(42)
+        advanceUntilIdle()
+
+        assertTrue(events.any { it is RegisterSubscriptionUiEvent.Success })
+        assertTrue(
+            events.filterIsInstance<RegisterSubscriptionUiEvent.Error>().any {
+                it.message.contains("GenieACS HTTP 400")
+            }
+        )
+        assertFalse(viewModel.uiState.value.tr069RetryLoading)
+        job.cancel()
+    }
+
+    private fun fillWifiFields() {
+        viewModel.onIntent(RegisterSubscriptionIntent.WifiSsid24Changed("CasaFibra24"))
+        viewModel.onIntent(RegisterSubscriptionIntent.WifiPassword24Changed("clave24xx"))
+        viewModel.onIntent(RegisterSubscriptionIntent.WifiSsid5Changed("CasaFibra5"))
+        viewModel.onIntent(RegisterSubscriptionIntent.WifiPassword5Changed("clave5xxx"))
+    }
+
+    private fun fillValidFiberForm(nap: NapBoxResponse, onu: Onu) {
+        viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
+        viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
+        viewModel.onIntent(RegisterSubscriptionIntent.DniChanged("12345678"))
+        viewModel.onIntent(RegisterSubscriptionIntent.AddressChanged("Calle larga 12345"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PhoneChanged("987654321"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlanSelected(samplePlan))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
+        viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
+        viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
     }
 }

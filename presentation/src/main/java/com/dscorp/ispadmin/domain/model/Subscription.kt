@@ -43,6 +43,13 @@ data class Subscription(
     var mikrotikProvisionStatus: String? = null,
     var oltProvisionStatus: String? = null,
     var vlan: String? = "1",
+    var wifiSsid24: String? = null,
+    var wifiPassword24: String? = null,
+    var wifiSsid5: String? = null,
+    var wifiPassword5: String? = null,
+    var tr069ProvisionStatus: String? = null,
+    var tr069RequiresManualConfig: Boolean = false,
+    var tr069Message: String? = null,
 
     ) : java.io.Serializable {
     override fun toString(): String {

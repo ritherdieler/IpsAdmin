@@ -65,7 +65,7 @@ fun provideHttpClient(
     val httpClient = OkHttpClient.Builder()
         .connectTimeout(1, TimeUnit.MINUTES)
         .writeTimeout(2, TimeUnit.MINUTES)
-        .readTimeout(1, TimeUnit.MINUTES)
+        .readTimeout(3, TimeUnit.MINUTES)
     val logging = HttpLoggingInterceptor()
     logging.level = HttpLoggingInterceptor.Level.BODY
     httpClient.addInterceptor(authInterceptor)

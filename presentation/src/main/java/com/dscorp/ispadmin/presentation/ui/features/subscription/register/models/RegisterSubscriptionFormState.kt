@@ -21,6 +21,8 @@ import com.dscorp.ispadmin.domain.model.subscription.subscriptionOnuError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionPhoneError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionPlaceError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionPlanError
+import com.dscorp.ispadmin.domain.model.subscription.subscriptionWifiPasswordError
+import com.dscorp.ispadmin.domain.model.subscription.subscriptionWifiSsidError
 import com.google.android.gms.maps.model.LatLng
 
 data class RegisterSubscriptionFormState(
@@ -64,7 +66,15 @@ data class RegisterSubscriptionFormState(
     val clientIpAddress: String = "",
     val clientIpAddressError: String? = null,
     val requiresClientIpAddress: Boolean = false,
-    val vlan: String = "1",
+    val vlan: String = DEFAULT_REGISTRATION_VLAN,
+    val wifiSsid24: String = "",
+    val wifiSsid24Error: String? = null,
+    val wifiPassword24: String = "",
+    val wifiPassword24Error: String? = null,
+    val wifiSsid5: String = "",
+    val wifiSsid5Error: String? = null,
+    val wifiPassword5: String = "",
+    val wifiPassword5Error: String? = null,
 ) {
     fun requiresNapBox(): Boolean {
         return installationType == InstallationType.FIBER ||
@@ -72,6 +82,10 @@ data class RegisterSubscriptionFormState(
     }
 
     fun requiresOnu(): Boolean {
+        return installationType == InstallationType.FIBER
+    }
+
+    fun requiresWifiConfig(): Boolean {
         return installationType == InstallationType.FIBER
     }
 
@@ -105,6 +119,12 @@ data class RegisterSubscriptionFormState(
                 clientIpAddress,
                 requiresClientIpAddress
             )
+            FormFieldKey.WIFI_SSID_24 -> subscriptionWifiSsidError(wifiSsid24, requiresWifiConfig())
+            FormFieldKey.WIFI_PASSWORD_24 ->
+                subscriptionWifiPasswordError(wifiPassword24, requiresWifiConfig())
+            FormFieldKey.WIFI_SSID_5 -> subscriptionWifiSsidError(wifiSsid5, requiresWifiConfig())
+            FormFieldKey.WIFI_PASSWORD_5 ->
+                subscriptionWifiPasswordError(wifiPassword5, requiresWifiConfig())
         }
     }
 
@@ -137,8 +157,8 @@ private fun RegisterSubscriptionFormState.withFieldError(
         FormFieldKey.DNI -> copy(dniError = message)
         FormFieldKey.ADDRESS -> copy(addressError = message)
         FormFieldKey.PHONE -> copy(phoneError = message)
-        FormFieldKey.PLAN -> copy(planError = message)
         FormFieldKey.PLACE -> copy(placeError = message)
+        FormFieldKey.PLAN -> copy(planError = message)
         FormFieldKey.ONU -> copy(onuError = message)
         FormFieldKey.NAP_BOX -> copy(napBoxError = message)
         FormFieldKey.FACADE_PHOTO -> copy(facadePhotoError = message)
@@ -146,5 +166,9 @@ private fun RegisterSubscriptionFormState.withFieldError(
         FormFieldKey.HOST_DEVICE -> copy(hostDeviceError = message)
         FormFieldKey.EQUIPMENT_CONDITION -> this
         FormFieldKey.CLIENT_IP_ADDRESS -> copy(clientIpAddressError = message)
+        FormFieldKey.WIFI_SSID_24 -> copy(wifiSsid24Error = message)
+        FormFieldKey.WIFI_PASSWORD_24 -> copy(wifiPassword24Error = message)
+        FormFieldKey.WIFI_SSID_5 -> copy(wifiSsid5Error = message)
+        FormFieldKey.WIFI_PASSWORD_5 -> copy(wifiPassword5Error = message)
     }
 }

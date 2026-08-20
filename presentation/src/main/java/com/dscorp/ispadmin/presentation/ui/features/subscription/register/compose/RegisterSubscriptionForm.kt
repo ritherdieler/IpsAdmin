@@ -28,10 +28,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SegmentedButton
@@ -41,6 +44,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -50,6 +56,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -659,6 +667,14 @@ fun FiberOpticForm(
                 label = VLAN_LABEL,
                 onItemSelected = { onIntent(RegisterSubscriptionIntent.OnVlanChanged(it.value)) },
                 enabled = !formState.isLoading,
+                isItemEnabled = { it.selectable },
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+            WifiFields(
+                form = form,
+                enabled = !formState.isLoading,
+                onIntent = onIntent
             )
         }
 
@@ -699,6 +715,138 @@ fun FiberOpticForm(
             }
         )
     }
+}
+
+@Composable
+private fun WifiFields(
+    form: RegisterSubscriptionFormState,
+    enabled: Boolean,
+    onIntent: (RegisterSubscriptionIntent) -> Unit,
+) {
+    var password24Visible by remember { mutableStateOf(false) }
+    var password5Visible by remember { mutableStateOf(false) }
+
+    Text(
+        text = "WiFi ONU",
+        style = MaterialTheme.typography.titleSmall,
+        fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.primary
+    )
+    Spacer(modifier = Modifier.height(8.dp))
+
+    MyOutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("tf_wifi_ssid_24"),
+        label = "SSID 2.4 GHz",
+        value = form.wifiSsid24,
+        errorMessage = form.wifiSsid24Error,
+        onValueChange = { onIntent(RegisterSubscriptionIntent.WifiSsid24Changed(it)) },
+        enabled = enabled,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        )
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    MyOutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("tf_wifi_password_24"),
+        label = "Clave 2.4 GHz",
+        value = form.wifiPassword24,
+        errorMessage = form.wifiPassword24Error,
+        onValueChange = { onIntent(RegisterSubscriptionIntent.WifiPassword24Changed(it)) },
+        enabled = enabled,
+        visualTransformation = if (password24Visible) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
+        trailingIcon = {
+            IconButton(
+                modifier = Modifier.testTag("btn_toggle_wifi_password_24"),
+                onClick = { password24Visible = !password24Visible }
+            ) {
+                Icon(
+                    imageVector = if (password24Visible) {
+                        Icons.Default.VisibilityOff
+                    } else {
+                        Icons.Default.Visibility
+                    },
+                    contentDescription = if (password24Visible) {
+                        "Ocultar clave 2.4 GHz"
+                    } else {
+                        "Mostrar clave 2.4 GHz"
+                    }
+                )
+            }
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Next
+        )
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    MyOutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("tf_wifi_ssid_5"),
+        label = "SSID 5 GHz",
+        value = form.wifiSsid5,
+        errorMessage = form.wifiSsid5Error,
+        onValueChange = { onIntent(RegisterSubscriptionIntent.WifiSsid5Changed(it)) },
+        enabled = enabled,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        )
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    MyOutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("tf_wifi_password_5"),
+        label = "Clave 5 GHz",
+        value = form.wifiPassword5,
+        errorMessage = form.wifiPassword5Error,
+        onValueChange = { onIntent(RegisterSubscriptionIntent.WifiPassword5Changed(it)) },
+        enabled = enabled,
+        visualTransformation = if (password5Visible) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
+        trailingIcon = {
+            IconButton(
+                modifier = Modifier.testTag("btn_toggle_wifi_password_5"),
+                onClick = { password5Visible = !password5Visible }
+            ) {
+                Icon(
+                    imageVector = if (password5Visible) {
+                        Icons.Default.VisibilityOff
+                    } else {
+                        Icons.Default.Visibility
+                    },
+                    contentDescription = if (password5Visible) {
+                        "Ocultar clave 5 GHz"
+                    } else {
+                        "Mostrar clave 5 GHz"
+                    }
+                )
+            }
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Next
+        )
+    )
 }
 
 @Composable

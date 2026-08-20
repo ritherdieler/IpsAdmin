@@ -5,5 +5,7 @@ interface SubscriptionActionsRepository {
 
     suspend fun rebootFiberOnu(subscriptionId: Int)
 
+    suspend fun retryTr069Provisioning(subscriptionId: Int): com.dscorp.ispadmin.domain.model.Subscription
+
     suspend fun restoreInternetConnection(subscriptionId: Int, notes: String?)
 }

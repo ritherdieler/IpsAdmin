@@ -36,8 +36,8 @@ android {
         applicationId "com.dscorp.ispadmin"
         minSdk rootProject.ext.minSdk
         targetSdk rootProject.ext.targetSdk
-        versionCode 56
-        versionName "2.6.4"
+        versionCode 57
+        versionName "2.6.5"
         testInstrumentationRunner "com.dscorp.ispadmin.test.InstrumentationTestRunner"
         manifestPlaceholders += [
             MAPS_API_KEY: mapsApiKey

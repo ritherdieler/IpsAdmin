@@ -27,6 +27,7 @@ fun <T> MyOutLinedDropDown(
     onItemSelected: (T) -> Unit,
     hasError: Boolean = false,
     enabled: Boolean = true,
+    isItemEnabled: (T) -> Boolean = { true },
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -58,10 +59,12 @@ fun <T> MyOutLinedDropDown(
             onDismissRequest = { expanded = false },
         ) {
             items.forEach { option ->
-                // Evitamos el NPE asegurándonos que option sea no nulo
+                val itemEnabled = enabled && isItemEnabled(option)
                 DropdownMenuItem(
                     modifier = Modifier.fillMaxWidth(),
+                    enabled = itemEnabled,
                     onClick = {
+                        if (!itemEnabled) return@DropdownMenuItem
                         expanded = false
                         onItemSelected(option)
                     },

@@ -960,6 +960,17 @@ class Repository : IRepository, KoinComponent {
         }
     }
 
+    override suspend fun retryTr069Provisioning(subscriptionId: Int): Subscription {
+        val response = restApiServices.retryTr069Provisioning(subscriptionId)
+        if (response.code() !in 200..299) {
+            val msg = response.errorBody()?.string()?.let { body ->
+                runCatching { JSONObject(body).getString("error") }.getOrNull()
+            }
+            throw Exception(msg ?: "No se pudo reintentar el aprovisionamiento TR-069")
+        }
+        return response.body() ?: throw Exception("Respuesta vacía al reintentar TR-069")
+    }
+
     override suspend fun getRemoteAppVersion(): AppVersion {
         val response = restApiServices.getRemoteAppVersion()
         if (response.code() !in 200..299)

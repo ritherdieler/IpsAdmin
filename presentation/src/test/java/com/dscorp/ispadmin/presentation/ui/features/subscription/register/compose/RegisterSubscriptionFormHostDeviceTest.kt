@@ -50,11 +50,14 @@ class RegisterSubscriptionFormHostDeviceTest {
         assertThat(formSource).contains("testTag(\"register_vlan_dropdown\")")
         assertThat(formSource).contains("RegisterSubscriptionIntent.OnVlanChanged")
         assertThat(formSource).contains("VLAN_OPTIONS")
+        assertThat(formSource).contains("isItemEnabled = { it.selectable }")
         val vlanOptionsSource = File(
             "src/main/java/com/dscorp/ispadmin/presentation/ui/features/subscription/register/models/VlanOption.kt"
         ).readText()
         assertThat(vlanOptionsSource).contains("VLAN 1")
         assertThat(vlanOptionsSource).contains("VLAN 100")
+        assertThat(vlanOptionsSource).contains("selectable = false")
+        assertThat(vlanOptionsSource).contains("DEFAULT_REGISTRATION_VLAN = \"100\"")
         val vlanTagIndex = formSource.indexOf("testTag(\"register_vlan_dropdown\")")
         val showOnuSelectorIndex = formSource.indexOf("if (showOnuSelector)")
         assertTrue(showOnuSelectorIndex >= 0)

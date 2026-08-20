@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,12 +21,14 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -47,6 +51,7 @@ import com.dscorp.ispadmin.presentation.theme.MyTheme
 import com.dscorp.ispadmin.presentation.ui.components.rememberPhotoTaker
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionUiEvent
+import kotlinx.coroutines.delay
 
 @Composable
 fun RegisterSubscriptionFormScreen(
@@ -142,6 +147,10 @@ fun RegisterSubscriptionFormScreen(
         successSubscription?.let { subscription ->
             SuccessDialog(
                 subscription = subscription,
+                tr069RetryLoading = uiState.tr069RetryLoading,
+                onRetryTr069 = subscription.subscriptionId?.let { subscriptionId ->
+                    { viewModel.onIntent(RegisterSubscriptionIntent.RetryTr069(subscriptionId)) }
+                },
                 onDismiss = { successSubscription = null },
                 onContinue = onSubscriptionRegisterSuccess
             )
@@ -194,6 +203,10 @@ fun RegisterSubscriptionFormScreen(
                 }
             )
         }
+
+        if (uiState.isLoading) {
+            RegistrationProgressOverlay()
+        }
     }
 }
 
@@ -218,11 +231,72 @@ private fun InfoRow(label: String, value: String) {
 }
 
 @Composable
-private fun SuccessDialog(
+internal fun RegistrationProgressOverlay() {
+    var elapsedMs by remember { mutableLongStateOf(0L) }
+
+    LaunchedEffect(Unit) {
+        val startedAt = System.currentTimeMillis()
+        while (true) {
+            elapsedMs = System.currentTimeMillis() - startedAt
+            delay(500L)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.45f))
+            .testTag("registration_progress_overlay"),
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = registrationProgressStepMessage(elapsedMs),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.testTag("registration_progress_step")
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Esto puede tomar hasta 2 minutos",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.testTag("registration_progress_hint")
+                )
+            }
+        }
+    }
+}
+
+@Composable
+internal fun SuccessDialog(
     subscription: Subscription,
+    tr069RetryLoading: Boolean = false,
+    onRetryTr069: (() -> Unit)? = null,
     onDismiss: () -> Unit,
     onContinue: () -> Unit
 ) {
+    val tr069Status = subscription.tr069ProvisionStatus
+    val showTr069Card = tr069Status == "COMPLETE" || tr069Status == "MANUAL_REQUIRED"
+    val showRetryTr069 = tr069Status == "MANUAL_REQUIRED" && onRetryTr069 != null
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -305,20 +379,106 @@ private fun SuccessDialog(
                         InfoRow("Tipo", subscription.installationType?.toString() ?: "No especificado")
                     }
                 }
+
+                if (showTr069Card) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Tr069StatusCard(subscription = subscription)
+                }
             }
         },
         confirmButton = {
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    onDismiss()
-                    onContinue()
+            Column(modifier = Modifier.fillMaxWidth()) {
+                if (showRetryTr069) {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("btn_retry_tr069"),
+                        enabled = !tr069RetryLoading,
+                        onClick = onRetryTr069,
+                    ) {
+                        if (tr069RetryLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text("Reintentar TR-069")
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-            ) {
-                Text("Continuar")
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("btn_success_continue"),
+                    enabled = !tr069RetryLoading,
+                    onClick = {
+                        onDismiss()
+                        onContinue()
+                    }
+                ) {
+                    Text("Continuar")
+                }
             }
         }
     )
+}
+
+@Composable
+internal fun Tr069StatusCard(subscription: Subscription) {
+    val isComplete = subscription.tr069ProvisionStatus == "COMPLETE"
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag("tr069_status_card"),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isComplete) {
+                MaterialTheme.colorScheme.tertiaryContainer
+            } else {
+                MaterialTheme.colorScheme.errorContainer
+            }
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = if (isComplete) {
+                    "ONU configurada automáticamente por TR-069. No requiere configuración manual."
+                } else {
+                    "No se pudo configurar la ONU por TR-069. Configure la ONU manualmente."
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = if (isComplete) {
+                    MaterialTheme.colorScheme.onTertiaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onErrorContainer
+                },
+                modifier = Modifier.testTag("tr069_status_message")
+            )
+
+            if (!isComplete) {
+                subscription.tr069Message?.takeIf { it.isNotBlank() }?.let { reason ->
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = reason,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        modifier = Modifier.testTag("tr069_status_reason")
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            InfoRow("SSID 2.4 GHz", subscription.wifiSsid24 ?: "—")
+            if (!isComplete) {
+                InfoRow("Clave 2.4 GHz", subscription.wifiPassword24 ?: "—")
+            }
+            InfoRow("SSID 5 GHz", subscription.wifiSsid5 ?: "—")
+            if (!isComplete) {
+                InfoRow("Clave 5 GHz", subscription.wifiPassword5 ?: "—")
+            }
+        }
+    }
 }
 
 @Composable

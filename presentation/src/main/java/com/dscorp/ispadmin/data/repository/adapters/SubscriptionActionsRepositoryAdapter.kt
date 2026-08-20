@@ -17,6 +17,9 @@ class SubscriptionActionsRepositoryAdapter(
         repository.rebootFiberOnu(subscriptionId)
     }
 
+    override suspend fun retryTr069Provisioning(subscriptionId: Int) =
+        repository.retryTr069Provisioning(subscriptionId)
+
     override suspend fun restoreInternetConnection(subscriptionId: Int, notes: String?) {
         val user = repository.getUserSession()
         val responsibleId = user?.id ?: throw IllegalStateException("Usuario no encontrado")

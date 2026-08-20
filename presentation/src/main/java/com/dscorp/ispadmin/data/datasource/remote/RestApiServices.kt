@@ -362,6 +362,11 @@ interface RestApiServices {
         @Query("subscriptionId") subscriptionId: Int
     ): Response<Unit>
 
+    @POST("subscription/{subscriptionId}/acs/retry-tr069")
+    suspend fun retryTr069Provisioning(
+        @Path("subscriptionId") subscriptionId: Int
+    ): Response<Subscription>
+
     @GET("app/check_version")
     suspend fun getRemoteAppVersion(): Response<AppVersion>
 

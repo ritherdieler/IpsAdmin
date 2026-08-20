@@ -26,6 +26,7 @@ import com.dscorp.ispadmin.domain.usecase.subscription.GetUserSessionUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.ObserveOfflineRegistrationModeUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionResult
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionUseCase
+import com.dscorp.ispadmin.domain.usecase.subscription.RetryTr069ProvisioningUseCase
 import com.dscorp.ispadmin.observability.ObsBreadcrumbCategory
 import com.dscorp.ispadmin.observability.ObservabilityClient
 import com.dscorp.ispadmin.presentation.extension.removeSpecialCharacters
@@ -39,6 +40,7 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionUiEvent
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.isRegistrationVlanSelectable
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -66,6 +68,7 @@ class RegisterSubscriptionComposeViewModel(
     private val getNearNapBoxesUseCase: GetNearNapBoxesUseCase,
     private val installationOrderUseCase: InstallationOrderUseCase,
     private val observeOfflineRegistrationModeUseCase: ObserveOfflineRegistrationModeUseCase,
+    private val retryTr069ProvisioningUseCase: RetryTr069ProvisioningUseCase,
     private val observabilityClient: ObservabilityClient,
     private val mainImmediate: CoroutineDispatcher = Dispatchers.Main.immediate
 ) : ViewModel() {
@@ -99,6 +102,7 @@ class RegisterSubscriptionComposeViewModel(
     private var loadScreenJob: Job? = null
     private var refreshOnuJob: Job? = null
     private var registerSubscriptionJob: Job? = null
+    private var retryTr069Job: Job? = null
     private var offlineModeJob: Job? = null
 
     fun loadScreenData(installationOrderId: Int?) {
@@ -263,7 +267,49 @@ class RegisterSubscriptionComposeViewModel(
             is RegisterSubscriptionIntent.ClientIpAddressChanged ->
                 onClientIpAddressChanged(intent.value)
             is RegisterSubscriptionIntent.OnVlanChanged -> onVlanChanged(intent.vlan)
+            is RegisterSubscriptionIntent.WifiSsid24Changed -> onWifiSsid24Changed(intent.value)
+            is RegisterSubscriptionIntent.WifiPassword24Changed ->
+                onWifiPassword24Changed(intent.value)
+            is RegisterSubscriptionIntent.WifiSsid5Changed -> onWifiSsid5Changed(intent.value)
+            is RegisterSubscriptionIntent.WifiPassword5Changed ->
+                onWifiPassword5Changed(intent.value)
             is RegisterSubscriptionIntent.RegisterClick -> saveSubscription(intent.facadePhotoFile)
+            is RegisterSubscriptionIntent.RetryTr069 -> retryTr069Provisioning(intent.subscriptionId)
+        }
+    }
+
+    fun retryTr069Provisioning(subscriptionId: Int) {
+        if (_uiState.value.tr069RetryLoading) return
+        retryTr069Job?.cancel()
+        retryTr069Job = viewModelScope.launch(mainImmediate) {
+            try {
+                _uiState.update { it.copy(tr069RetryLoading = true) }
+                retryTr069ProvisioningUseCase(subscriptionId).fold(
+                    onSuccess = { updated ->
+                        _uiState.update { it.copy(tr069RetryLoading = false) }
+                        _uiEvent.emit(RegisterSubscriptionUiEvent.Success(updated))
+                        if (updated.tr069ProvisionStatus == "MANUAL_REQUIRED") {
+                            _uiEvent.emit(
+                                RegisterSubscriptionUiEvent.Error(
+                                    updated.tr069Message
+                                        ?: "No se pudo completar el aprovisionamiento TR-069"
+                                )
+                            )
+                        }
+                    },
+                    onFailure = { error ->
+                        _uiState.update { it.copy(tr069RetryLoading = false) }
+                        _uiEvent.emit(
+                            RegisterSubscriptionUiEvent.Error(
+                                error.message ?: "No se pudo reintentar el aprovisionamiento TR-069"
+                            )
+                        )
+                    }
+                )
+            } catch (e: CancellationException) {
+                _uiState.update { it.copy(tr069RetryLoading = false) }
+                throw e
+            }
         }
     }
 
@@ -427,10 +473,39 @@ private fun onClientIpAddressChanged(value: String) {
 }
 
 private fun onVlanChanged(vlan: String) {
+    if (!isRegistrationVlanSelectable(vlan)) return
     _uiState.update { current ->
         current.copy(
             registerSubscriptionForm = current.registerSubscriptionForm.copy(vlan = vlan)
         )
+    }
+}
+
+private fun onWifiSsid24Changed(value: String) {
+    if (value.length > RegisterSubscriptionFormConstraints.MAX_WIFI_SSID_LENGTH) return
+    updateValidatedForm(FormFieldKey.WIFI_SSID_24) { form ->
+        form.copy(wifiSsid24 = value)
+    }
+}
+
+private fun onWifiPassword24Changed(value: String) {
+    if (value.length > RegisterSubscriptionFormConstraints.MAX_WIFI_PASSWORD_LENGTH) return
+    updateValidatedForm(FormFieldKey.WIFI_PASSWORD_24) { form ->
+        form.copy(wifiPassword24 = value)
+    }
+}
+
+private fun onWifiSsid5Changed(value: String) {
+    if (value.length > RegisterSubscriptionFormConstraints.MAX_WIFI_SSID_LENGTH) return
+    updateValidatedForm(FormFieldKey.WIFI_SSID_5) { form ->
+        form.copy(wifiSsid5 = value)
+    }
+}
+
+private fun onWifiPassword5Changed(value: String) {
+    if (value.length > RegisterSubscriptionFormConstraints.MAX_WIFI_PASSWORD_LENGTH) return
+    updateValidatedForm(FormFieldKey.WIFI_PASSWORD_5) { form ->
+        form.copy(wifiPassword5 = value)
     }
 }
 
@@ -482,6 +557,14 @@ private fun onInstallationTypeSelected(type: InstallationType) {
                 selectedPlan = selectedPlan,
                 selectedOnu = null,
                 selectedNapBox = null,
+                wifiSsid24 = "",
+                wifiPassword24 = "",
+                wifiSsid5 = "",
+                wifiPassword5 = "",
+                wifiSsid24Error = null,
+                wifiPassword24Error = null,
+                wifiSsid5Error = null,
+                wifiPassword5Error = null,
             ).validated(FormFieldKey.PLAN, FormFieldKey.ONU, FormFieldKey.NAP_BOX)
         )
     }
@@ -709,7 +792,15 @@ fun saveSubscription(facadePhotoFile: File? = null) {
                                 message = "$OBS_FEATURE.register_success",
                                 data = mapOf("feature" to OBS_FEATURE, "orderId" to orderIdSnapshot)
                             )
-                            _uiEvent.emit(RegisterSubscriptionUiEvent.Success(outcome.subscription))
+                            val enriched = outcome.subscription.copy(
+                                wifiSsid24 = outcome.subscription.wifiSsid24
+                                    ?: subscription.wifiSsid24,
+                                wifiSsid5 = outcome.subscription.wifiSsid5
+                                    ?: subscription.wifiSsid5,
+                                wifiPassword24 = subscription.wifiPassword24,
+                                wifiPassword5 = subscription.wifiPassword5
+                            )
+                            _uiEvent.emit(RegisterSubscriptionUiEvent.Success(enriched))
                         }
                         is RegisterSubscriptionResult.QueuedOffline -> {
                             observabilityClient.addBreadcrumb(
@@ -785,7 +876,11 @@ private fun buildSubscriptionFromForm(
         facadePhotoUrl = null,
         clientIpAddress = form.clientIpAddress.trim().takeIf { it.isNotEmpty() },
         ip = form.clientIpAddress.trim().takeIf { it.isNotEmpty() },
-        vlan = form.vlan.takeIf { form.installationType == InstallationType.FIBER }
+        vlan = form.vlan.takeIf { form.installationType == InstallationType.FIBER },
+        wifiSsid24 = form.wifiSsid24.trim().takeIf { form.requiresWifiConfig() },
+        wifiPassword24 = form.wifiPassword24.takeIf { form.requiresWifiConfig() },
+        wifiSsid5 = form.wifiSsid5.trim().takeIf { form.requiresWifiConfig() },
+        wifiPassword5 = form.wifiPassword5.takeIf { form.requiresWifiConfig() }
     )
 }
 

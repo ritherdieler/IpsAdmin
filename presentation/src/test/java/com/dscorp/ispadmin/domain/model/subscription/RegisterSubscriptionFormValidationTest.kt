@@ -358,4 +358,94 @@ class RegisterSubscriptionFormValidationTest {
         val form = RegisterSubscriptionFormState(requiresClientIpAddress = false)
         assertNull(form.validate(FormFieldKey.CLIENT_IP_ADDRESS))
     }
+
+    @Test
+    fun `requiresWifiConfig true only for FIBER`() {
+        assertTrue(
+            RegisterSubscriptionFormState(installationType = InstallationType.FIBER)
+                .requiresWifiConfig()
+        )
+        assertFalse(
+            RegisterSubscriptionFormState(installationType = InstallationType.WIRELESS)
+                .requiresWifiConfig()
+        )
+        assertFalse(
+            RegisterSubscriptionFormState(installationType = InstallationType.ONLY_TV_FIBER)
+                .requiresWifiConfig()
+        )
+    }
+
+    @Test
+    fun `subscriptionWifiSsidError null when wifi not required`() {
+        assertNull(subscriptionWifiSsidError("", requiresWifi = false))
+    }
+
+    @Test
+    fun `subscriptionWifiSsidError blank when required`() {
+        assertEquals("Ingrese el SSID WiFi", subscriptionWifiSsidError("", requiresWifi = true))
+        assertEquals("Ingrese el SSID WiFi", subscriptionWifiSsidError("   ", requiresWifi = true))
+    }
+
+    @Test
+    fun `subscriptionWifiSsidError length between 1 and 32`() {
+        assertNull(subscriptionWifiSsidError("A", requiresWifi = true))
+        assertNull(subscriptionWifiSsidError("a".repeat(32), requiresWifi = true))
+        assertEquals(
+            "El SSID debe tener entre 1 y 32 caracteres",
+            subscriptionWifiSsidError("a".repeat(33), requiresWifi = true)
+        )
+    }
+
+    @Test
+    fun `subscriptionWifiPasswordError null when wifi not required`() {
+        assertNull(subscriptionWifiPasswordError("", requiresWifi = false))
+    }
+
+    @Test
+    fun `subscriptionWifiPasswordError blank when required`() {
+        assertEquals(
+            "Ingrese la clave WiFi",
+            subscriptionWifiPasswordError("", requiresWifi = true)
+        )
+    }
+
+    @Test
+    fun `subscriptionWifiPasswordError length between 8 and 63`() {
+        assertEquals(
+            "La clave WiFi debe tener entre 8 y 63 caracteres",
+            subscriptionWifiPasswordError("1234567", requiresWifi = true)
+        )
+        assertNull(subscriptionWifiPasswordError("12345678", requiresWifi = true))
+        assertNull(subscriptionWifiPasswordError("a".repeat(63), requiresWifi = true))
+        assertEquals(
+            "La clave WiFi debe tener entre 8 y 63 caracteres",
+            subscriptionWifiPasswordError("a".repeat(64), requiresWifi = true)
+        )
+    }
+
+    @Test
+    fun `validate wifi fields null for wireless`() {
+        val form = RegisterSubscriptionFormState(installationType = InstallationType.WIRELESS)
+        assertNull(form.validate(FormFieldKey.WIFI_SSID_24))
+        assertNull(form.validate(FormFieldKey.WIFI_PASSWORD_24))
+        assertNull(form.validate(FormFieldKey.WIFI_SSID_5))
+        assertNull(form.validate(FormFieldKey.WIFI_PASSWORD_5))
+    }
+
+    @Test
+    fun `validate wifi fields required for FIBER`() {
+        val form = RegisterSubscriptionFormState(installationType = InstallationType.FIBER)
+        assertNotNull(form.validate(FormFieldKey.WIFI_SSID_24))
+        assertNotNull(form.validate(FormFieldKey.WIFI_PASSWORD_24))
+        assertNotNull(form.validate(FormFieldKey.WIFI_SSID_5))
+        assertNotNull(form.validate(FormFieldKey.WIFI_PASSWORD_5))
+    }
+
+    @Test
+    fun `blockingForSubmit includes wifi fields`() {
+        assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_SSID_24))
+        assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_PASSWORD_24))
+        assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_SSID_5))
+        assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_PASSWORD_5))
+    }
 }

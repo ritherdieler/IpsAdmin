@@ -15,6 +15,10 @@ object RegisterSubscriptionFormConstraints {
     const val MAX_PHONE_LENGTH = 9
     const val MAX_NOTE_LENGTH = 180
     const val MIN_ADDRESS_CHARS = 5
+    const val MIN_WIFI_SSID_LENGTH = 1
+    const val MAX_WIFI_SSID_LENGTH = 32
+    const val MIN_WIFI_PASSWORD_LENGTH = 8
+    const val MAX_WIFI_PASSWORD_LENGTH = 63
 }
 
 fun subscriptionFirstNameError(value: String): String? = when {
@@ -125,6 +129,28 @@ fun subscriptionOnuErrorAfterListRefresh(
 
 fun subscriptionFacadePhotoError(hasFacadePhoto: Boolean): String? =
     if (!hasFacadePhoto) "Adjunte una foto de la fachada" else null
+
+fun subscriptionWifiSsidError(value: String, requiresWifi: Boolean): String? {
+    if (!requiresWifi) return null
+    val trimmed = value.trim()
+    return when {
+        trimmed.isEmpty() -> "Ingrese el SSID WiFi"
+        trimmed.length > RegisterSubscriptionFormConstraints.MAX_WIFI_SSID_LENGTH ->
+            "El SSID debe tener entre ${RegisterSubscriptionFormConstraints.MIN_WIFI_SSID_LENGTH} y ${RegisterSubscriptionFormConstraints.MAX_WIFI_SSID_LENGTH} caracteres"
+        else -> null
+    }
+}
+
+fun subscriptionWifiPasswordError(value: String, requiresWifi: Boolean): String? {
+    if (!requiresWifi) return null
+    return when {
+        value.isEmpty() -> "Ingrese la clave WiFi"
+        value.length < RegisterSubscriptionFormConstraints.MIN_WIFI_PASSWORD_LENGTH ||
+            value.length > RegisterSubscriptionFormConstraints.MAX_WIFI_PASSWORD_LENGTH ->
+            "La clave WiFi debe tener entre ${RegisterSubscriptionFormConstraints.MIN_WIFI_PASSWORD_LENGTH} y ${RegisterSubscriptionFormConstraints.MAX_WIFI_PASSWORD_LENGTH} caracteres"
+        else -> null
+    }
+}
 
 fun subscriptionNapBoxErrorAfterNearbyRefresh(
     requiresNapBox: Boolean,

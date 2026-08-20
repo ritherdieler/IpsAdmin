@@ -15,5 +15,6 @@ data class RegisterSubscriptionState(
     
     val registerSubscriptionForm: RegisterSubscriptionFormState = RegisterSubscriptionFormState(),
     val orderId: Int? = null,
-    val isOfflineMode: Boolean = false
+    val isOfflineMode: Boolean = false,
+    val tr069RetryLoading: Boolean = false,
 )
