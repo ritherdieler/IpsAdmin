@@ -1,5 +1,7 @@
 package com.dscorp.ispadmin.domain.model
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * Created by Sergio Carrillo Diestra on 30/11/2022.
  * scarrillo.peruapps@gmail.com
@@ -8,6 +10,7 @@ package com.dscorp.ispadmin.domain.model
  *
  **/
 data class Subscription(
+    @SerializedName("id")
     var subscriptionId: Int? = null,
     var firstName: String? = null,
     var lastName: String? = null,
@@ -52,6 +55,8 @@ data class Subscription(
     var tr069Message: String? = null,
 
     ) : java.io.Serializable {
+    fun resolvedSubscriptionId(): Int? = subscriptionId
+
     override fun toString(): String {
         return firstName ?: ""
     }

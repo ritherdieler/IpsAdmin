@@ -17,6 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Surface
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -145,10 +150,10 @@ fun RegisterSubscriptionFormScreen(
         }
 
         successSubscription?.let { subscription ->
-            SuccessDialog(
+            RegisterSuccessFullScreen(
                 subscription = subscription,
                 tr069RetryLoading = uiState.tr069RetryLoading,
-                onRetryTr069 = subscription.subscriptionId?.let { subscriptionId ->
+                onRetryTr069 = subscription.resolvedSubscriptionId()?.let { subscriptionId ->
                     { viewModel.onIntent(RegisterSubscriptionIntent.RetryTr069(subscriptionId)) }
                 },
                 onDismiss = { successSubscription = null },
@@ -286,7 +291,7 @@ internal fun RegistrationProgressOverlay() {
 }
 
 @Composable
-internal fun SuccessDialog(
+internal fun RegisterSuccessFullScreen(
     subscription: Subscription,
     tr069RetryLoading: Boolean = false,
     onRetryTr069: (() -> Unit)? = null,
@@ -294,51 +299,63 @@ internal fun SuccessDialog(
     onContinue: () -> Unit
 ) {
     val tr069Status = subscription.tr069ProvisionStatus
-    val showTr069Card = tr069Status == "COMPLETE" || tr069Status == "MANUAL_REQUIRED"
-    val showRetryTr069 = tr069Status == "MANUAL_REQUIRED" && onRetryTr069 != null
+    val requiresManualTr069 = tr069Status == "MANUAL_REQUIRED" || subscription.tr069RequiresManualConfig
+    val showTr069Section = tr069Status == "COMPLETE" || requiresManualTr069
+    val showRetryTr069 = requiresManualTr069 && onRetryTr069 != null
 
-    AlertDialog(
+    Dialog(
         onDismissRequest = onDismiss,
-        title = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Éxito",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(64.dp)
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "¡Registro Exitoso!",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        },
-        text = {
-            Column {
-                Text(
-                    text = if (subscription.provisioningPending) {
-                        "Registrado; provisión de red pendiente de reconciliar"
-                    } else {
-                        "La suscripción se ha registrado correctamente"
-                    },
-                    style = MaterialTheme.typography.bodyLarge,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag("register_success_fullscreen"),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
                     modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .testTag("register_success_message")
-                )
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
-                    )
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 20.dp, vertical = 24.dp)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Éxito",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(64.dp)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "¡Registro Exitoso!",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = if (subscription.provisioningPending) {
+                            "Registrado; provisión de red pendiente de reconciliar"
+                        } else {
+                            "La suscripción se ha registrado correctamente"
+                        },
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.testTag("register_success_message")
+                    )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    RegisterSuccessSectionCard(
+                        title = "Suscriptor",
+                        testTag = "register_success_section_subscriber"
+                    ) {
                         Text(
                             text = "${subscription.firstName} ${subscription.lastName}",
                             style = MaterialTheme.typography.titleLarge,
@@ -350,24 +367,13 @@ internal fun SuccessDialog(
                         InfoRow("Teléfono", subscription.phone ?: "")
                         InfoRow("Dirección", subscription.address ?: "")
                     }
-                }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
-                    )
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = "Detalles Técnicos",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                    RegisterSuccessSectionCard(
+                        title = "Red",
+                        testTag = "register_success_section_network"
+                    ) {
                         InfoRow("IP", subscription.ip ?: "No asignada")
 
                         if (subscription.installationType == InstallationType.FIBER ||
@@ -376,51 +382,109 @@ internal fun SuccessDialog(
                             InfoRow("Borne", subscription.borneNumber ?: "No asignado")
                         }
 
-                        InfoRow("Tipo", subscription.installationType?.toString() ?: "No especificado")
+                        InfoRow(
+                            "Tipo",
+                            subscription.installationType?.toString() ?: "No especificado"
+                        )
+                    }
+
+                    if (showTr069Section) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "ONU / TR-069",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.testTag("register_success_section_tr069")
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Tr069StatusCard(subscription = subscription)
                     }
                 }
 
-                if (showTr069Card) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Tr069StatusCard(subscription = subscription)
-                }
-            }
-        },
-        confirmButton = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                if (showRetryTr069) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp)
+                ) {
+                    if (showRetryTr069) {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("btn_retry_tr069"),
+                            enabled = !tr069RetryLoading,
+                            onClick = onRetryTr069,
+                        ) {
+                            if (tr069RetryLoading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp
+                                )
+                            } else {
+                                Text("Reintentar TR-069")
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .testTag("btn_retry_tr069"),
+                            .testTag("btn_success_continue"),
                         enabled = !tr069RetryLoading,
-                        onClick = onRetryTr069,
-                    ) {
-                        if (tr069RetryLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(18.dp),
-                                strokeWidth = 2.dp
-                            )
-                        } else {
-                            Text("Reintentar TR-069")
+                        onClick = {
+                            onDismiss()
+                            onContinue()
                         }
+                    ) {
+                        Text("Continuar")
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("btn_success_continue"),
-                    enabled = !tr069RetryLoading,
-                    onClick = {
-                        onDismiss()
-                        onContinue()
-                    }
-                ) {
-                    Text("Continuar")
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun RegisterSuccessSectionCard(
+    title: String,
+    testTag: String,
+    content: @Composable () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(testTag),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            content()
+        }
+    }
+}
+
+/** Alias for tests; delegates to [RegisterSuccessFullScreen]. */
+@Composable
+internal fun SuccessDialog(
+    subscription: Subscription,
+    tr069RetryLoading: Boolean = false,
+    onRetryTr069: (() -> Unit)? = null,
+    onDismiss: () -> Unit,
+    onContinue: () -> Unit
+) {
+    RegisterSuccessFullScreen(
+        subscription = subscription,
+        tr069RetryLoading = tr069RetryLoading,
+        onRetryTr069 = onRetryTr069,
+        onDismiss = onDismiss,
+        onContinue = onContinue
     )
 }
 

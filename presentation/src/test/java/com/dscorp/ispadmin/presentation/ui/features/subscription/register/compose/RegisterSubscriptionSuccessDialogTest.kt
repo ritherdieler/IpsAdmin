@@ -6,6 +6,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performScrollTo
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.Subscription
 import org.junit.Rule
@@ -74,6 +75,58 @@ class RegisterSubscriptionSuccessDialogTest {
         composeRule.onNodeWithText("ONU no contactó al ACS").assertIsDisplayed()
         composeRule.onNodeWithText("Casa24").assertIsDisplayed()
         composeRule.onNodeWithText("clave24xx").assertIsDisplayed()
+    }
+
+    @Test
+    fun `MANUAL_REQUIRED shows retry button in fullscreen`() {
+        composeRule.setContent {
+            MaterialTheme {
+                RegisterSuccessFullScreen(
+                    subscription = Subscription(
+                        subscriptionId = 42,
+                        firstName = "Ana",
+                        lastName = "García",
+                        installationType = InstallationType.FIBER,
+                        tr069ProvisionStatus = "MANUAL_REQUIRED",
+                    ),
+                    onRetryTr069 = {},
+                    onDismiss = {},
+                    onContinue = {}
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("register_success_fullscreen").assertIsDisplayed()
+        composeRule.onNodeWithTag("btn_retry_tr069").assertIsDisplayed()
+        composeRule.onNodeWithTag("register_success_section_subscriber").assertIsDisplayed()
+        composeRule.onNodeWithTag("register_success_section_network")
+            .performScrollTo()
+            .assertIsDisplayed()
+        composeRule.onNodeWithTag("register_success_section_tr069")
+            .performScrollTo()
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `MANUAL_REQUIRED hides retry button when subscription id is missing`() {
+        composeRule.setContent {
+            MaterialTheme {
+                RegisterSuccessFullScreen(
+                    subscription = Subscription(
+                        firstName = "Ana",
+                        lastName = "García",
+                        installationType = InstallationType.FIBER,
+                        tr069ProvisionStatus = "MANUAL_REQUIRED",
+                        tr069RequiresManualConfig = true,
+                    ),
+                    onRetryTr069 = null,
+                    onDismiss = {},
+                    onContinue = {}
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("btn_retry_tr069").assertDoesNotExist()
     }
 
     @Test
