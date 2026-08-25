@@ -17,9 +17,15 @@ object RegisterSubscriptionFormConstraints {
     const val MIN_ADDRESS_CHARS = 5
     const val MIN_WIFI_SSID_LENGTH = 1
     const val MAX_WIFI_SSID_LENGTH = 32
+    const val WIFI_SSID_5_SUFFIX = " - 5G"
+    const val MAX_UNIFIED_WIFI_SSID_LENGTH =
+        MAX_WIFI_SSID_LENGTH - WIFI_SSID_5_SUFFIX.length
     const val MIN_WIFI_PASSWORD_LENGTH = 8
     const val MAX_WIFI_PASSWORD_LENGTH = 63
 }
+
+fun derivedWifiSsid5(ssid24: String): String =
+    ssid24.trim() + RegisterSubscriptionFormConstraints.WIFI_SSID_5_SUFFIX
 
 fun subscriptionFirstNameError(value: String): String? = when {
     value.length > RegisterSubscriptionFormConstraints.MAX_PERSON_NAME_LENGTH ->
@@ -137,6 +143,22 @@ fun subscriptionWifiSsidError(value: String, requiresWifi: Boolean): String? {
         trimmed.isEmpty() -> "Ingrese el SSID WiFi"
         trimmed.length > RegisterSubscriptionFormConstraints.MAX_WIFI_SSID_LENGTH ->
             "El SSID debe tener entre ${RegisterSubscriptionFormConstraints.MIN_WIFI_SSID_LENGTH} y ${RegisterSubscriptionFormConstraints.MAX_WIFI_SSID_LENGTH} caracteres"
+        else -> null
+    }
+}
+
+fun subscriptionWifiSsid24Error(
+    value: String,
+    requiresWifi: Boolean,
+    useDifferentWifiNames: Boolean
+): String? {
+    if (!requiresWifi) return null
+    if (useDifferentWifiNames) return subscriptionWifiSsidError(value, true)
+    val trimmed = value.trim()
+    return when {
+        trimmed.isEmpty() -> "Ingrese el SSID WiFi"
+        derivedWifiSsid5(trimmed).length > RegisterSubscriptionFormConstraints.MAX_WIFI_SSID_LENGTH ->
+            "El nombre de red no puede superar ${RegisterSubscriptionFormConstraints.MAX_UNIFIED_WIFI_SSID_LENGTH} caracteres (el SSID 5 GHz añade « - 5G»)"
         else -> null
     }
 }

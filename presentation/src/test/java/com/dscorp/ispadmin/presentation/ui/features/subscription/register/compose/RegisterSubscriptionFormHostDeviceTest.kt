@@ -63,4 +63,20 @@ class RegisterSubscriptionFormHostDeviceTest {
         assertTrue(showOnuSelectorIndex >= 0)
         assertTrue(vlanTagIndex > showOnuSelectorIndex)
     }
+
+    @Test
+    fun `WifiFields usa un nombre de red y check para nombres distintos`() {
+        val formSource = File(
+            "src/main/java/com/dscorp/ispadmin/presentation/ui/features/subscription/register/compose/RegisterSubscriptionForm.kt"
+        ).readText()
+
+        assertThat(formSource).contains("testTag(\"cb_wifi_different_names\")")
+        assertThat(formSource).contains("UseDifferentWifiNamesChanged")
+        assertThat(formSource).contains("Nombre de red")
+        assertThat(formSource).contains("Clave WiFi")
+        assertThat(formSource).contains("form.useDifferentWifiNames")
+        assertThat(formSource).contains("resolvedWifiSsid5()")
+        assertThat(formSource).contains("tf_wifi_ssid_5")
+        assertThat(formSource).contains("contentDescription")
+    }
 }

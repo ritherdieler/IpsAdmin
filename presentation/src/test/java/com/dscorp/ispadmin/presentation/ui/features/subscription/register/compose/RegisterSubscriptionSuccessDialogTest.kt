@@ -174,6 +174,44 @@ class RegisterSubscriptionSuccessDialogTest {
     }
 
     @Test
+    fun `PENDING shows applying message and retry button`() {
+        composeRule.setContent {
+            MaterialTheme {
+                RegisterSuccessFullScreen(
+                    subscription = Subscription(
+                        subscriptionId = 42,
+                        firstName = "Ana",
+                        lastName = "García",
+                        installationType = InstallationType.FIBER,
+                        tr069ProvisionStatus = "PENDING",
+                        tr069Message = "Los SSIDs no se confirmaron en el ACS dentro del tiempo de espera.",
+                        wifiSsid24 = "Casa24",
+                        wifiSsid5 = "Casa5"
+                    ),
+                    onRetryTr069 = {},
+                    onDismiss = {},
+                    onContinue = {}
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("register_success_fullscreen").assertIsDisplayed()
+        composeRule.onNodeWithTag("register_success_section_tr069")
+            .performScrollTo()
+            .assertIsDisplayed()
+        composeRule.onNodeWithTag("tr069_status_card")
+            .performScrollTo()
+            .assertIsDisplayed()
+        composeRule.onNodeWithText(
+            "Aplicando configuración WiFi en la ONU. Espere o reintente."
+        ).assertIsDisplayed()
+        composeRule.onNodeWithTag("btn_retry_tr069").assertIsDisplayed()
+        composeRule.onNodeWithText(
+            "No se pudo configurar la ONU por TR-069. Configure la ONU manualmente."
+        ).assertDoesNotExist()
+    }
+
+    @Test
     fun `NA hides tr069 card in SuccessDialog`() {
         composeRule.setContent {
             MaterialTheme {

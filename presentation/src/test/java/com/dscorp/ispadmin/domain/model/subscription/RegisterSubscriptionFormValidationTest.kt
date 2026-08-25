@@ -437,15 +437,82 @@ class RegisterSubscriptionFormValidationTest {
         val form = RegisterSubscriptionFormState(installationType = InstallationType.FIBER)
         assertNotNull(form.validate(FormFieldKey.WIFI_SSID_24))
         assertNotNull(form.validate(FormFieldKey.WIFI_PASSWORD_24))
-        assertNotNull(form.validate(FormFieldKey.WIFI_SSID_5))
-        assertNotNull(form.validate(FormFieldKey.WIFI_PASSWORD_5))
+        assertNull(form.validate(FormFieldKey.WIFI_SSID_5))
+        assertNull(form.validate(FormFieldKey.WIFI_PASSWORD_5))
     }
 
     @Test
-    fun `blockingForSubmit includes wifi fields`() {
+    fun `blockingForSubmit includes shared wifi fields not split ssid or password 5`() {
         assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_SSID_24))
         assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_PASSWORD_24))
-        assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_SSID_5))
-        assertTrue(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_PASSWORD_5))
+        assertFalse(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_SSID_5))
+        assertFalse(FormFieldKey.blockingForSubmit.contains(FormFieldKey.WIFI_PASSWORD_5))
+    }
+
+    @Test
+    fun `derivedWifiSsid5 appends suffix to trimmed name`() {
+        assertEquals("Casa - 5G", derivedWifiSsid5("Casa"))
+        assertEquals("Casa - 5G", derivedWifiSsid5("  Casa  "))
+    }
+
+    @Test
+    fun `unified wifi ssid error when derived 5ghz exceeds 32 chars`() {
+        val name27 = "a".repeat(27)
+        val name28 = "a".repeat(28)
+        val formOk = RegisterSubscriptionFormState(
+            installationType = InstallationType.FIBER,
+            wifiSsid24 = name27
+        )
+        val formTooLong = RegisterSubscriptionFormState(
+            installationType = InstallationType.FIBER,
+            wifiSsid24 = name28
+        )
+        assertNull(formOk.validate(FormFieldKey.WIFI_SSID_24))
+        assertEquals(
+            "El nombre de red no puede superar 27 caracteres (el SSID 5 GHz añade « - 5G»)",
+            formTooLong.validate(FormFieldKey.WIFI_SSID_24)
+        )
+    }
+
+    @Test
+    fun `split wifi names require both ssids and ignore password 5`() {
+        val emptySplit = RegisterSubscriptionFormState(
+            installationType = InstallationType.FIBER,
+            useDifferentWifiNames = true
+        )
+        assertNotNull(emptySplit.validate(FormFieldKey.WIFI_SSID_24))
+        assertNotNull(emptySplit.validate(FormFieldKey.WIFI_SSID_5))
+        assertNull(emptySplit.validate(FormFieldKey.WIFI_PASSWORD_5))
+
+        val filledSplit = emptySplit.copy(
+            wifiSsid24 = "Casa24",
+            wifiSsid5 = "Casa5"
+        )
+        assertNull(filledSplit.validate(FormFieldKey.WIFI_SSID_24))
+        assertNull(filledSplit.validate(FormFieldKey.WIFI_SSID_5))
+        assertTrue(filledSplit.blockingFields().contains(FormFieldKey.WIFI_SSID_5))
+        assertFalse(
+            RegisterSubscriptionFormState(installationType = InstallationType.FIBER)
+                .blockingFields()
+                .contains(FormFieldKey.WIFI_SSID_5)
+        )
+    }
+
+    @Test
+    fun `split wifi ssid 24 allows 32 chars because suffix is not applied`() {
+        val form = RegisterSubscriptionFormState(
+            installationType = InstallationType.FIBER,
+            useDifferentWifiNames = true,
+            wifiSsid24 = "a".repeat(32)
+        )
+        assertNull(form.validate(FormFieldKey.WIFI_SSID_24))
+    }
+
+    @Test
+    fun `resolvedWifiSsid5 uses suffix unless different names are enabled`() {
+        val unified = RegisterSubscriptionFormState(wifiSsid24 = "Casa", wifiSsid5 = "Otro")
+        val split = unified.copy(useDifferentWifiNames = true, wifiSsid5 = "Casa5")
+        assertEquals("Casa - 5G", unified.resolvedWifiSsid5())
+        assertEquals("Casa5", split.resolvedWifiSsid5())
     }
 }

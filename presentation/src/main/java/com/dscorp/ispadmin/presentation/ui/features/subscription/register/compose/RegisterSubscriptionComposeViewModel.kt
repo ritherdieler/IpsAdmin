@@ -76,6 +76,7 @@ class RegisterSubscriptionComposeViewModel(
     private companion object {
         const val OBS_FEATURE = "subscription"
         const val OBS_SCREEN = "register_subscription"
+        const val MAX_TR069_AUTO_RETRIES = 3
     }
 
     private val _uiState = MutableStateFlow(RegisterSubscriptionState())
@@ -273,6 +274,8 @@ class RegisterSubscriptionComposeViewModel(
             is RegisterSubscriptionIntent.WifiSsid5Changed -> onWifiSsid5Changed(intent.value)
             is RegisterSubscriptionIntent.WifiPassword5Changed ->
                 onWifiPassword5Changed(intent.value)
+            is RegisterSubscriptionIntent.UseDifferentWifiNamesChanged ->
+                onUseDifferentWifiNamesChanged(intent.enabled)
             is RegisterSubscriptionIntent.RegisterClick -> saveSubscription(intent.facadePhotoFile)
             is RegisterSubscriptionIntent.RetryTr069 -> retryTr069Provisioning(intent.subscriptionId)
         }
@@ -509,6 +512,12 @@ private fun onWifiPassword5Changed(value: String) {
     }
 }
 
+private fun onUseDifferentWifiNamesChanged(enabled: Boolean) {
+    updateValidatedForm(FormFieldKey.WIFI_SSID_24, FormFieldKey.WIFI_SSID_5) { form ->
+        form.copy(useDifferentWifiNames = enabled)
+    }
+}
+
 private fun observeOfflineMode() {
     if (offlineModeJob?.isActive == true) return
     offlineModeJob = viewModelScope.launch(mainImmediate) {
@@ -561,6 +570,7 @@ private fun onInstallationTypeSelected(type: InstallationType) {
                 wifiPassword24 = "",
                 wifiSsid5 = "",
                 wifiPassword5 = "",
+                useDifferentWifiNames = false,
                 wifiSsid24Error = null,
                 wifiPassword24Error = null,
                 wifiSsid5Error = null,
@@ -779,12 +789,6 @@ fun saveSubscription(facadePhotoFile: File? = null) {
                 facadePhotoFile = facadePhotoFile
             ).fold(
                 onSuccess = { outcome ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            orderId = null
-                        )
-                    }
                     when (outcome) {
                         is RegisterSubscriptionResult.Registered -> {
                             observabilityClient.addBreadcrumb(
@@ -800,9 +804,25 @@ fun saveSubscription(facadePhotoFile: File? = null) {
                                 wifiPassword24 = subscription.wifiPassword24,
                                 wifiPassword5 = subscription.wifiPassword5
                             )
-                            _uiEvent.emit(RegisterSubscriptionUiEvent.Success(enriched))
+                            if (shouldFollowUpTr069(enriched)) {
+                                followUpPendingTr069(enriched)
+                            } else {
+                                _uiState.update {
+                                    it.copy(
+                                        isLoading = false,
+                                        orderId = null
+                                    )
+                                }
+                                _uiEvent.emit(RegisterSubscriptionUiEvent.Success(enriched))
+                            }
                         }
                         is RegisterSubscriptionResult.QueuedOffline -> {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    orderId = null
+                                )
+                            }
                             observabilityClient.addBreadcrumb(
                                 category = ObsBreadcrumbCategory.STATE,
                                 message = "$OBS_FEATURE.register_queued_offline",
@@ -847,6 +867,57 @@ fun saveSubscription(facadePhotoFile: File? = null) {
     }
 }
 
+private fun shouldFollowUpTr069(subscription: Subscription): Boolean =
+    subscription.tr069ProvisionStatus == "PENDING" &&
+        subscription.resolvedSubscriptionId() != null
+
+private suspend fun followUpPendingTr069(initial: Subscription) {
+    val subscriptionId = initial.resolvedSubscriptionId() ?: return
+    var latest = initial
+    repeat(MAX_TR069_AUTO_RETRIES) {
+        val retryResult = retryTr069ProvisioningUseCase(subscriptionId)
+        retryResult.fold(
+            onSuccess = { updated ->
+                latest = updated.copy(
+                    wifiSsid24 = updated.wifiSsid24 ?: latest.wifiSsid24,
+                    wifiSsid5 = updated.wifiSsid5 ?: latest.wifiSsid5,
+                    wifiPassword24 = updated.wifiPassword24 ?: latest.wifiPassword24,
+                    wifiPassword5 = updated.wifiPassword5 ?: latest.wifiPassword5
+                )
+            },
+            onFailure = { error ->
+                _uiState.update { it.copy(isLoading = false, orderId = null) }
+                _uiEvent.emit(
+                    RegisterSubscriptionUiEvent.Error(
+                        error.message ?: "No se pudo reintentar el aprovisionamiento TR-069"
+                    )
+                )
+                return
+            }
+        )
+        when (latest.tr069ProvisionStatus) {
+            "COMPLETE" -> {
+                _uiState.update { it.copy(isLoading = false, orderId = null) }
+                _uiEvent.emit(RegisterSubscriptionUiEvent.Success(latest))
+                return
+            }
+            "MANUAL_REQUIRED" -> {
+                _uiState.update { it.copy(isLoading = false, orderId = null) }
+                _uiEvent.emit(RegisterSubscriptionUiEvent.Success(latest))
+                _uiEvent.emit(
+                    RegisterSubscriptionUiEvent.Error(
+                        latest.tr069Message
+                            ?: "No se pudo completar el aprovisionamiento TR-069"
+                    )
+                )
+                return
+            }
+        }
+    }
+    _uiState.update { it.copy(isLoading = false, orderId = null) }
+    _uiEvent.emit(RegisterSubscriptionUiEvent.Success(latest))
+}
+
 private fun buildSubscriptionFromForm(
     form: RegisterSubscriptionFormState
 ): Subscription? {
@@ -879,8 +950,8 @@ private fun buildSubscriptionFromForm(
         vlan = form.vlan.takeIf { form.installationType == InstallationType.FIBER },
         wifiSsid24 = form.wifiSsid24.trim().takeIf { form.requiresWifiConfig() },
         wifiPassword24 = form.wifiPassword24.takeIf { form.requiresWifiConfig() },
-        wifiSsid5 = form.wifiSsid5.trim().takeIf { form.requiresWifiConfig() },
-        wifiPassword5 = form.wifiPassword5.takeIf { form.requiresWifiConfig() }
+        wifiSsid5 = form.resolvedWifiSsid5().takeIf { form.requiresWifiConfig() },
+        wifiPassword5 = form.wifiPassword24.takeIf { form.requiresWifiConfig() }
     )
 }
 

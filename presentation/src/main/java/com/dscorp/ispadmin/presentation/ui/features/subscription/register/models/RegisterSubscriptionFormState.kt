@@ -21,7 +21,9 @@ import com.dscorp.ispadmin.domain.model.subscription.subscriptionOnuError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionPhoneError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionPlaceError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionPlanError
+import com.dscorp.ispadmin.domain.model.subscription.derivedWifiSsid5
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionWifiPasswordError
+import com.dscorp.ispadmin.domain.model.subscription.subscriptionWifiSsid24Error
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionWifiSsidError
 import com.google.android.gms.maps.model.LatLng
 
@@ -75,6 +77,7 @@ data class RegisterSubscriptionFormState(
     val wifiSsid5Error: String? = null,
     val wifiPassword5: String = "",
     val wifiPassword5Error: String? = null,
+    val useDifferentWifiNames: Boolean = false,
 ) {
     fun requiresNapBox(): Boolean {
         return installationType == InstallationType.FIBER ||
@@ -88,6 +91,9 @@ data class RegisterSubscriptionFormState(
     fun requiresWifiConfig(): Boolean {
         return installationType == InstallationType.FIBER
     }
+
+    fun resolvedWifiSsid5(): String =
+        if (useDifferentWifiNames) wifiSsid5.trim() else derivedWifiSsid5(wifiSsid24)
 
     fun activeCoreDevices(): List<NetworkDevice> = coreDeviceList.filter { !it.disabled }
 
@@ -119,18 +125,27 @@ data class RegisterSubscriptionFormState(
                 clientIpAddress,
                 requiresClientIpAddress
             )
-            FormFieldKey.WIFI_SSID_24 -> subscriptionWifiSsidError(wifiSsid24, requiresWifiConfig())
+            FormFieldKey.WIFI_SSID_24 -> subscriptionWifiSsid24Error(
+                wifiSsid24,
+                requiresWifiConfig(),
+                useDifferentWifiNames
+            )
             FormFieldKey.WIFI_PASSWORD_24 ->
                 subscriptionWifiPasswordError(wifiPassword24, requiresWifiConfig())
-            FormFieldKey.WIFI_SSID_5 -> subscriptionWifiSsidError(wifiSsid5, requiresWifiConfig())
-            FormFieldKey.WIFI_PASSWORD_5 ->
-                subscriptionWifiPasswordError(wifiPassword5, requiresWifiConfig())
+            FormFieldKey.WIFI_SSID_5 -> subscriptionWifiSsidError(
+                wifiSsid5,
+                requiresWifiConfig() && useDifferentWifiNames
+            )
+            FormFieldKey.WIFI_PASSWORD_5 -> null
         }
     }
 
     fun blockingFields(): List<FormFieldKey> {
-        return FormFieldKey.blockingForSubmit +
-            if (requiresClientIpAddress) listOf(FormFieldKey.CLIENT_IP_ADDRESS) else emptyList()
+        val extra = buildList {
+            if (requiresClientIpAddress) add(FormFieldKey.CLIENT_IP_ADDRESS)
+            if (requiresWifiConfig() && useDifferentWifiNames) add(FormFieldKey.WIFI_SSID_5)
+        }
+        return FormFieldKey.blockingForSubmit + extra
     }
 
     fun validated(vararg fields: FormFieldKey): RegisterSubscriptionFormState {

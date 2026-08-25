@@ -300,8 +300,9 @@ internal fun RegisterSuccessFullScreen(
 ) {
     val tr069Status = subscription.tr069ProvisionStatus
     val requiresManualTr069 = tr069Status == "MANUAL_REQUIRED" || subscription.tr069RequiresManualConfig
-    val showTr069Section = tr069Status == "COMPLETE" || requiresManualTr069
-    val showRetryTr069 = requiresManualTr069 && onRetryTr069 != null
+    val isPendingTr069 = tr069Status == "PENDING"
+    val showTr069Section = tr069Status == "COMPLETE" || requiresManualTr069 || isPendingTr069
+    val showRetryTr069 = (requiresManualTr069 || isPendingTr069) && onRetryTr069 != null
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -491,32 +492,36 @@ internal fun SuccessDialog(
 @Composable
 internal fun Tr069StatusCard(subscription: Subscription) {
     val isComplete = subscription.tr069ProvisionStatus == "COMPLETE"
+    val isPending = subscription.tr069ProvisionStatus == "PENDING"
+    val containerColor = when {
+        isComplete -> MaterialTheme.colorScheme.tertiaryContainer
+        isPending -> MaterialTheme.colorScheme.secondaryContainer
+        else -> MaterialTheme.colorScheme.errorContainer
+    }
+    val contentColor = when {
+        isComplete -> MaterialTheme.colorScheme.onTertiaryContainer
+        isPending -> MaterialTheme.colorScheme.onSecondaryContainer
+        else -> MaterialTheme.colorScheme.onErrorContainer
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .testTag("tr069_status_card"),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isComplete) {
-                MaterialTheme.colorScheme.tertiaryContainer
-            } else {
-                MaterialTheme.colorScheme.errorContainer
-            }
-        )
+        colors = CardDefaults.cardColors(containerColor = containerColor)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = if (isComplete) {
-                    "ONU configurada automáticamente por TR-069. No requiere configuración manual."
-                } else {
-                    "No se pudo configurar la ONU por TR-069. Configure la ONU manualmente."
+                text = when {
+                    isComplete ->
+                        "ONU configurada automáticamente por TR-069. No requiere configuración manual."
+                    isPending ->
+                        "Aplicando configuración WiFi en la ONU. Espere o reintente."
+                    else ->
+                        "No se pudo configurar la ONU por TR-069. Configure la ONU manualmente."
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = if (isComplete) {
-                    MaterialTheme.colorScheme.onTertiaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onErrorContainer
-                },
+                color = contentColor,
                 modifier = Modifier.testTag("tr069_status_message")
             )
 
@@ -526,7 +531,7 @@ internal fun Tr069StatusCard(subscription: Subscription) {
                     Text(
                         text = reason,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        color = contentColor,
                         modifier = Modifier.testTag("tr069_status_reason")
                     )
                 }

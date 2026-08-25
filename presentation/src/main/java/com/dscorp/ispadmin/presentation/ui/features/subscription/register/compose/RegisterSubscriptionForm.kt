@@ -30,6 +30,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -53,6 +55,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -723,8 +727,8 @@ private fun WifiFields(
     enabled: Boolean,
     onIntent: (RegisterSubscriptionIntent) -> Unit,
 ) {
-    var password24Visible by remember { mutableStateOf(false) }
-    var password5Visible by remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
+    val ssid24Label = if (form.useDifferentWifiNames) "SSID 2.4 GHz" else "Nombre de red"
 
     Text(
         text = "WiFi ONU",
@@ -734,11 +738,37 @@ private fun WifiFields(
     )
     Spacer(modifier = Modifier.height(8.dp))
 
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Checkbox(
+            modifier = Modifier.testTag("cb_wifi_different_names"),
+            checked = form.useDifferentWifiNames,
+            onCheckedChange = {
+                onIntent(RegisterSubscriptionIntent.UseDifferentWifiNamesChanged(it))
+            },
+            enabled = enabled,
+            colors = CheckboxDefaults.colors(
+                checkedColor = MaterialTheme.colorScheme.primary,
+                uncheckedColor = MaterialTheme.colorScheme.outline,
+                checkmarkColor = MaterialTheme.colorScheme.onPrimary
+            )
+        )
+        Text(
+            text = "Usar nombres diferentes por frecuencia",
+            modifier = Modifier.padding(start = 8.dp),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+
+    Spacer(modifier = Modifier.height(8.dp))
+
     MyOutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .testTag("tf_wifi_ssid_24"),
-        label = "SSID 2.4 GHz",
+        label = ssid24Label,
         value = form.wifiSsid24,
         errorMessage = form.wifiSsid24Error,
         onValueChange = { onIntent(RegisterSubscriptionIntent.WifiSsid24Changed(it)) },
@@ -749,18 +779,49 @@ private fun WifiFields(
         )
     )
 
+    if (!form.useDifferentWifiNames && form.wifiSsid24.isNotBlank()) {
+        Spacer(modifier = Modifier.height(4.dp))
+        val derivedSsid5 = form.resolvedWifiSsid5()
+        Text(
+            text = "5 GHz: $derivedSsid5",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.semantics {
+                contentDescription = "SSID 5 GHz derivado $derivedSsid5"
+            }
+        )
+    }
+
+    if (form.useDifferentWifiNames) {
+        Spacer(modifier = Modifier.height(8.dp))
+        MyOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("tf_wifi_ssid_5"),
+            label = "SSID 5 GHz",
+            value = form.wifiSsid5,
+            errorMessage = form.wifiSsid5Error,
+            onValueChange = { onIntent(RegisterSubscriptionIntent.WifiSsid5Changed(it)) },
+            enabled = enabled,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            )
+        )
+    }
+
     Spacer(modifier = Modifier.height(8.dp))
 
     MyOutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .testTag("tf_wifi_password_24"),
-        label = "Clave 2.4 GHz",
+        label = "Clave WiFi",
         value = form.wifiPassword24,
         errorMessage = form.wifiPassword24Error,
         onValueChange = { onIntent(RegisterSubscriptionIntent.WifiPassword24Changed(it)) },
         enabled = enabled,
-        visualTransformation = if (password24Visible) {
+        visualTransformation = if (passwordVisible) {
             VisualTransformation.None
         } else {
             PasswordVisualTransformation()
@@ -768,76 +829,18 @@ private fun WifiFields(
         trailingIcon = {
             IconButton(
                 modifier = Modifier.testTag("btn_toggle_wifi_password_24"),
-                onClick = { password24Visible = !password24Visible }
+                onClick = { passwordVisible = !passwordVisible }
             ) {
                 Icon(
-                    imageVector = if (password24Visible) {
+                    imageVector = if (passwordVisible) {
                         Icons.Default.VisibilityOff
                     } else {
                         Icons.Default.Visibility
                     },
-                    contentDescription = if (password24Visible) {
-                        "Ocultar clave 2.4 GHz"
+                    contentDescription = if (passwordVisible) {
+                        "Ocultar clave WiFi"
                     } else {
-                        "Mostrar clave 2.4 GHz"
-                    }
-                )
-            }
-        },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Password,
-            imeAction = ImeAction.Next
-        )
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    MyOutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag("tf_wifi_ssid_5"),
-        label = "SSID 5 GHz",
-        value = form.wifiSsid5,
-        errorMessage = form.wifiSsid5Error,
-        onValueChange = { onIntent(RegisterSubscriptionIntent.WifiSsid5Changed(it)) },
-        enabled = enabled,
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Next
-        )
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    MyOutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .testTag("tf_wifi_password_5"),
-        label = "Clave 5 GHz",
-        value = form.wifiPassword5,
-        errorMessage = form.wifiPassword5Error,
-        onValueChange = { onIntent(RegisterSubscriptionIntent.WifiPassword5Changed(it)) },
-        enabled = enabled,
-        visualTransformation = if (password5Visible) {
-            VisualTransformation.None
-        } else {
-            PasswordVisualTransformation()
-        },
-        trailingIcon = {
-            IconButton(
-                modifier = Modifier.testTag("btn_toggle_wifi_password_5"),
-                onClick = { password5Visible = !password5Visible }
-            ) {
-                Icon(
-                    imageVector = if (password5Visible) {
-                        Icons.Default.VisibilityOff
-                    } else {
-                        Icons.Default.Visibility
-                    },
-                    contentDescription = if (password5Visible) {
-                        "Ocultar clave 5 GHz"
-                    } else {
-                        "Mostrar clave 5 GHz"
+                        "Mostrar clave WiFi"
                     }
                 )
             }

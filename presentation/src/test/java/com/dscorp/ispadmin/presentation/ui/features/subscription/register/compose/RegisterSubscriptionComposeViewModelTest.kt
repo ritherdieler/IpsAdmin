@@ -726,8 +726,8 @@ class RegisterSubscriptionComposeViewModelTest {
             val sent = firstArg<Subscription>()
             assertEquals("CasaFibra24", sent.wifiSsid24)
             assertEquals("clave24xx", sent.wifiPassword24)
-            assertEquals("CasaFibra5", sent.wifiSsid5)
-            assertEquals("clave5xxx", sent.wifiPassword5)
+            assertEquals("CasaFibra24 - 5G", sent.wifiSsid5)
+            assertEquals("clave24xx", sent.wifiPassword5)
             Result.success(RegisterSubscriptionResult.Registered(Subscription(subscriptionId = 1)))
         }
 
@@ -738,6 +738,36 @@ class RegisterSubscriptionComposeViewModelTest {
 
         coVerify(exactly = 1) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
     }
+
+    @Test
+    fun `saveSubscription sends distinct ssids and shared password when different names enabled`() =
+        runTest(testDispatcher) {
+            val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+            val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+            coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+                sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+            )
+            viewModel.loadScreenData(null)
+            advanceUntilIdle()
+
+            coEvery {
+                registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
+            } answers {
+                val sent = firstArg<Subscription>()
+                assertEquals("CasaFibra24", sent.wifiSsid24)
+                assertEquals("clave24xx", sent.wifiPassword24)
+                assertEquals("CasaFibra5", sent.wifiSsid5)
+                assertEquals("clave24xx", sent.wifiPassword5)
+                Result.success(RegisterSubscriptionResult.Registered(Subscription(subscriptionId = 1)))
+            }
+
+            fillValidFiberForm(nap, onu)
+            fillSplitWifiFields()
+            viewModel.saveSubscription(facadePhotoFile)
+            advanceUntilIdle()
+
+            coVerify(exactly = 1) { registerSubscriptionUseCase(any(), any(), facadePhotoFile = any()) }
+        }
 
     @Test
     fun `saveSubscription sends vlan null when installation is not FIBER`() = runTest(testDispatcher) {
@@ -841,6 +871,7 @@ class RegisterSubscriptionComposeViewModelTest {
         assertEquals("", form.wifiPassword24)
         assertEquals("", form.wifiSsid5)
         assertEquals("", form.wifiPassword5)
+        assertFalse(form.useDifferentWifiNames)
         assertNull(form.wifiSsid24Error)
         assertNull(form.wifiPassword24Error)
         assertNull(form.wifiSsid5Error)
@@ -873,11 +904,140 @@ class RegisterSubscriptionComposeViewModelTest {
         job.cancel()
     }
 
+    @Test
+    fun `saveSubscription auto retries TR-069 while PENDING until COMPLETE without Error`() =
+        runTest(testDispatcher) {
+            val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+            val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+            coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+                sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+            )
+            viewModel.loadScreenData(null)
+            advanceUntilIdle()
+
+            val pending = Subscription(
+                subscriptionId = 1,
+                firstName = "A",
+                lastName = "B",
+                tr069ProvisionStatus = "PENDING",
+            )
+            val complete = pending.copy(tr069ProvisionStatus = "COMPLETE")
+            coEvery {
+                registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
+            } returns Result.success(RegisterSubscriptionResult.Registered(pending))
+            coEvery { retryTr069ProvisioningUseCase(1) } answers {
+                assertTrue(viewModel.uiState.value.isLoading)
+                Result.success(complete)
+            }
+
+            fillValidFiberForm(nap, onu)
+            fillWifiFields()
+
+            val events = mutableListOf<RegisterSubscriptionUiEvent>()
+            val job = launch { viewModel.uiEvent.collect { events.add(it) } }
+
+            viewModel.saveSubscription(facadePhotoFile)
+            advanceUntilIdle()
+
+            coVerify(exactly = 1) { retryTr069ProvisioningUseCase(1) }
+            assertEquals(1, events.size)
+            val success = events[0] as RegisterSubscriptionUiEvent.Success
+            assertEquals("COMPLETE", success.subscription.tr069ProvisionStatus)
+            assertTrue(events.none { it is RegisterSubscriptionUiEvent.Error })
+            assertEquals(false, viewModel.uiState.value.isLoading)
+            job.cancel()
+        }
+
+    @Test
+    fun `saveSubscription recoverable PENDING timeout does not emit Error`() = runTest(testDispatcher) {
+        val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+        val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+        )
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        val pending = Subscription(
+            subscriptionId = 1,
+            firstName = "A",
+            lastName = "B",
+            tr069ProvisionStatus = "PENDING",
+            tr069Message = "Los SSIDs no se confirmaron en el ACS dentro del tiempo de espera.",
+        )
+        coEvery {
+            registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
+        } returns Result.success(RegisterSubscriptionResult.Registered(pending))
+        coEvery { retryTr069ProvisioningUseCase(1) } returns Result.success(pending)
+
+        fillValidFiberForm(nap, onu)
+        fillWifiFields()
+
+        val events = mutableListOf<RegisterSubscriptionUiEvent>()
+        val job = launch { viewModel.uiEvent.collect { events.add(it) } }
+
+        viewModel.saveSubscription(facadePhotoFile)
+        advanceUntilIdle()
+
+        coVerify(exactly = 3) { retryTr069ProvisioningUseCase(1) }
+        assertEquals(1, events.size)
+        val success = events[0] as RegisterSubscriptionUiEvent.Success
+        assertEquals("PENDING", success.subscription.tr069ProvisionStatus)
+        assertTrue(events.none { it is RegisterSubscriptionUiEvent.Error })
+        assertEquals(false, viewModel.uiState.value.isLoading)
+        job.cancel()
+    }
+
+    @Test
+    fun `saveSubscription MANUAL_REQUIRED does not auto retry TR-069`() = runTest(testDispatcher) {
+        val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+        val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+        coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+            sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+        )
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+
+        val manual = Subscription(
+            subscriptionId = 1,
+            firstName = "A",
+            lastName = "B",
+            tr069ProvisionStatus = "MANUAL_REQUIRED",
+            tr069Message = "ONU no contactó al ACS",
+        )
+        coEvery {
+            registerSubscriptionUseCase(any(), any(), facadePhotoFile = any())
+        } returns Result.success(RegisterSubscriptionResult.Registered(manual))
+
+        fillValidFiberForm(nap, onu)
+        fillWifiFields()
+
+        val events = mutableListOf<RegisterSubscriptionUiEvent>()
+        val job = launch { viewModel.uiEvent.collect { events.add(it) } }
+
+        viewModel.saveSubscription(facadePhotoFile)
+        advanceUntilIdle()
+
+        coVerify(exactly = 0) { retryTr069ProvisioningUseCase(any()) }
+        assertEquals(1, events.size)
+        assertEquals(
+            "MANUAL_REQUIRED",
+            (events[0] as RegisterSubscriptionUiEvent.Success).subscription.tr069ProvisionStatus
+        )
+        assertTrue(events.none { it is RegisterSubscriptionUiEvent.Error })
+        job.cancel()
+    }
+
     private fun fillWifiFields() {
         viewModel.onIntent(RegisterSubscriptionIntent.WifiSsid24Changed("CasaFibra24"))
         viewModel.onIntent(RegisterSubscriptionIntent.WifiPassword24Changed("clave24xx"))
+    }
+
+    private fun fillSplitWifiFields() {
+        viewModel.onIntent(RegisterSubscriptionIntent.UseDifferentWifiNamesChanged(true))
+        viewModel.onIntent(RegisterSubscriptionIntent.WifiSsid24Changed("CasaFibra24"))
+        viewModel.onIntent(RegisterSubscriptionIntent.WifiPassword24Changed("clave24xx"))
         viewModel.onIntent(RegisterSubscriptionIntent.WifiSsid5Changed("CasaFibra5"))
-        viewModel.onIntent(RegisterSubscriptionIntent.WifiPassword5Changed("clave5xxx"))
     }
 
     private fun fillValidFiberForm(nap: NapBoxResponse, onu: Onu) {

@@ -22,6 +22,11 @@ enum class FormFieldKey {
 
     companion object {
         val blockingForSubmit: List<FormFieldKey> =
-            entries.filter { it != EQUIPMENT_CONDITION && it != CLIENT_IP_ADDRESS }
+            entries.filter {
+                it != EQUIPMENT_CONDITION &&
+                    it != CLIENT_IP_ADDRESS &&
+                    it != WIFI_SSID_5 &&
+                    it != WIFI_PASSWORD_5
+            }
     }
 }
