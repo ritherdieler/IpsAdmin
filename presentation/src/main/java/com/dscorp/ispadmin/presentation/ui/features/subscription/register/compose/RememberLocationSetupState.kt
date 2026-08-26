@@ -34,10 +34,12 @@ import com.google.android.gms.location.Priority
 data class LocationSetupState(
     val status: LocationSetupStatus,
     val isReady: Boolean,
+    val hasPermission: Boolean,
     val onContinue: () -> Unit,
     val openAppSettings: () -> Unit,
     val openLocationSettings: () -> Unit,
     val fetchCurrentLocation: (onSuccess: (Double, Double) -> Unit) -> Unit,
+    val requestCurrentLocation: (onSuccess: (Double, Double) -> Unit) -> Unit,
 )
 
 @Composable
@@ -59,6 +61,10 @@ fun rememberLocationSetupState(): LocationSetupState {
     var locationSettingsSatisfied by remember {
         mutableStateOf(isLocationUsableFallback(context))
     }
+    var currentLocationRequested by remember { mutableStateOf(false) }
+    var pendingLocationSuccess by remember {
+        mutableStateOf<((Double, Double) -> Unit)?>(null)
+    }
 
     fun recomputeStatus(): LocationSetupStatus {
         return LocationSetupStatusResolver.resolve(
@@ -71,8 +77,25 @@ fun rememberLocationSetupState(): LocationSetupState {
 
     var status by remember { mutableStateOf(recomputeStatus()) }
 
+    val fetchCurrentLocation: (onSuccess: (Double, Double) -> Unit) -> Unit = { onSuccess ->
+        if (hasLocationPermission(context)) {
+            val request = CurrentLocationRequest.Builder()
+                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                .build()
+            fusedLocationClient.getCurrentLocation(request, null)
+                .addOnSuccessListener { location ->
+                    location?.let { onSuccess(it.latitude, it.longitude) }
+                }
+        }
+    }
+
     fun updateStatus() {
         status = recomputeStatus()
+        if (status == LocationSetupStatus.Ready) {
+            val callback = pendingLocationSuccess ?: return
+            pendingLocationSuccess = null
+            fetchCurrentLocation(callback)
+        }
     }
 
     val locationSettingsLauncher = rememberLauncherForActivityResult(
@@ -158,15 +181,15 @@ fun rememberLocationSetupState(): LocationSetupState {
         }
     }
 
-    val fetchCurrentLocation: (onSuccess: (Double, Double) -> Unit) -> Unit = { onSuccess ->
-        if (hasLocationPermission(context)) {
-            val request = CurrentLocationRequest.Builder()
-                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-                .build()
-            fusedLocationClient.getCurrentLocation(request, null)
-                .addOnSuccessListener { location ->
-                    location?.let { onSuccess(it.latitude, it.longitude) }
-                }
+    val requestCurrentLocation: (onSuccess: (Double, Double) -> Unit) -> Unit = { onSuccess ->
+        currentLocationRequested = true
+        pendingLocationSuccess = onSuccess
+        hasPermission = hasLocationPermission(context)
+        if (hasPermission) {
+            checkLocationSettings()
+        } else {
+            permissionRequestedOnce = true
+            permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
@@ -174,10 +197,9 @@ fun rememberLocationSetupState(): LocationSetupState {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             hasPermission = hasLocationPermission(context)
             shouldShowRationale = shouldShowLocationRationale(activity)
-            if (hasPermission) {
+            if (currentLocationRequested && hasPermission) {
                 checkLocationSettings()
             } else {
-                locationSettingsSatisfied = isLocationUsableFallback(context)
                 updateStatus()
             }
         }
@@ -186,10 +208,12 @@ fun rememberLocationSetupState(): LocationSetupState {
     return LocationSetupState(
         status = status,
         isReady = status == LocationSetupStatus.Ready,
+        hasPermission = hasPermission,
         onContinue = onContinue,
         openAppSettings = openAppSettings,
         openLocationSettings = openLocationSettings,
         fetchCurrentLocation = fetchCurrentLocation,
+        requestCurrentLocation = requestCurrentLocation,
     )
 }
 

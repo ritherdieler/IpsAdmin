@@ -18,7 +18,8 @@ enum class FormFieldKey {
     WIFI_SSID_24,
     WIFI_PASSWORD_24,
     WIFI_SSID_5,
-    WIFI_PASSWORD_5;
+    WIFI_PASSWORD_5,
+    LOCATION;
 
     companion object {
         val blockingForSubmit: List<FormFieldKey> =

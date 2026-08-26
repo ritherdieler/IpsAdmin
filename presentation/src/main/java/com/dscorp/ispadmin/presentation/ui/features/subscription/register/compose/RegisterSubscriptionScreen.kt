@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,10 +51,12 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.dscorp.ispadmin.data.media.prepareFacadePhotoFile
+import com.dscorp.ispadmin.domain.model.GeoLocation
 import com.dscorp.ispadmin.domain.model.InstallationType
 import com.dscorp.ispadmin.domain.model.Subscription
 import com.dscorp.ispadmin.presentation.theme.MyTheme
 import com.dscorp.ispadmin.presentation.ui.components.rememberPhotoTaker
+import com.dscorp.ispadmin.presentation.ui.features.locationMapView.LocationSelectorComposeDialog
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionUiEvent
 import kotlinx.coroutines.delay
@@ -68,13 +71,15 @@ fun RegisterSubscriptionFormScreen(
     installationOrderId: Int?,
 ) {
     val locationSetup = rememberLocationSetupState()
+    val locationSetupLatest = rememberUpdatedState(locationSetup)
+    val viewModelLatest = rememberUpdatedState(viewModel)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     var dialogError by remember { mutableStateOf<String?>(null) }
     var successSubscription by remember { mutableStateOf<Subscription?>(null) }
     var showQueuedOfflineDialog by remember { mutableStateOf(false) }
     var showFacadePhotoOptionsDialog by remember { mutableStateOf(false) }
-    var locationFetched by remember { mutableStateOf(false) }
+    var showCurrentLocationGate by remember { mutableStateOf(false) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(lifecycleOwner) {
@@ -84,6 +89,19 @@ fun RegisterSubscriptionFormScreen(
                     is RegisterSubscriptionUiEvent.Error -> dialogError = event.message
                     is RegisterSubscriptionUiEvent.Success -> successSubscription = event.subscription
                     RegisterSubscriptionUiEvent.QueuedOffline -> showQueuedOfflineDialog = true
+                    RegisterSubscriptionUiEvent.RequestCurrentLocation -> {
+                        val setup = locationSetupLatest.value
+                        showCurrentLocationGate = !setup.hasPermission || !setup.isReady
+                        setup.requestCurrentLocation { latitude, longitude ->
+                            showCurrentLocationGate = false
+                            viewModelLatest.value.onIntent(
+                                RegisterSubscriptionIntent.LocationCoordinatesSelected(
+                                    latitude = latitude,
+                                    longitude = longitude
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -107,45 +125,65 @@ fun RegisterSubscriptionFormScreen(
     }
 
     LaunchedEffect(locationSetup.isReady) {
-        if (locationSetup.isReady && !locationFetched) {
-            locationFetched = true
-            locationSetup.fetchCurrentLocation { latitude, longitude ->
-                viewModel.processCurrentLocation(latitude, longitude)
-            }
-        }
-        if (!locationSetup.isReady) {
-            locationFetched = false
+        if (locationSetup.isReady) {
+            showCurrentLocationGate = false
         }
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        if (locationSetup.isReady) {
-            RegisterSubscriptionForm(
-                formState = uiState,
-                onIntent = { intent ->
-                    if (intent is RegisterSubscriptionIntent.RegisterClick) {
-                        val facadePhotoFile =
-                            uiState.registerSubscriptionForm.facadePhotoUri?.let { uri ->
-                                prepareFacadePhotoFile(context = context, uri = uri)
-                            }
-                        viewModel.onIntent(
-                            RegisterSubscriptionIntent.RegisterClick(
-                                facadePhotoFile = facadePhotoFile
-                            )
+        RegisterSubscriptionForm(
+            formState = uiState,
+            onIntent = { intent ->
+                if (intent is RegisterSubscriptionIntent.RegisterClick) {
+                    val facadePhotoFile =
+                        uiState.registerSubscriptionForm.facadePhotoUri?.let { uri ->
+                            prepareFacadePhotoFile(context = context, uri = uri)
+                        }
+                    viewModel.onIntent(
+                        RegisterSubscriptionIntent.RegisterClick(
+                            facadePhotoFile = facadePhotoFile
                         )
-                    } else {
-                        viewModel.onIntent(intent)
-                    }
+                    )
+                } else {
+                    viewModel.onIntent(intent)
+                }
+            },
+            onFacadePhotoClick = { showFacadePhotoOptionsDialog = true },
+        )
+
+        if (showCurrentLocationGate && !locationSetup.isReady) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                LocationSetupGate(
+                    status = locationSetup.status,
+                    onContinue = locationSetup.onContinue,
+                    onOpenAppSettings = locationSetup.openAppSettings,
+                    onOpenLocationSettings = locationSetup.openLocationSettings,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
+
+        if (uiState.showManualLocationMap) {
+            LocationSelectorComposeDialog(
+                initialLocation = uiState.registerSubscriptionForm.location?.let {
+                    GeoLocation(it.latitude, it.longitude)
                 },
-                onFacadePhotoClick = { showFacadePhotoOptionsDialog = true },
-            )
-        } else {
-            LocationSetupGate(
-                status = locationSetup.status,
-                onContinue = locationSetup.onContinue,
-                onOpenAppSettings = locationSetup.openAppSettings,
-                onOpenLocationSettings = locationSetup.openLocationSettings,
-                modifier = Modifier.fillMaxSize(),
+                enableMyLocation = locationSetup.hasPermission,
+                onLocationSelected = { latLng ->
+                    viewModel.onIntent(
+                        RegisterSubscriptionIntent.LocationCoordinatesSelected(
+                            latitude = latLng.latitude,
+                            longitude = latLng.longitude
+                        )
+                    )
+                },
+                onDismiss = {
+                    viewModel.onIntent(RegisterSubscriptionIntent.DismissManualLocationMap)
+                }
             )
         }
 

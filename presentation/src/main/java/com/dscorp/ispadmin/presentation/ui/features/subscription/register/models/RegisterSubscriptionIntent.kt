@@ -35,4 +35,13 @@ sealed interface RegisterSubscriptionIntent {
     data class UseDifferentWifiNamesChanged(val enabled: Boolean) : RegisterSubscriptionIntent
     data class RegisterClick(val facadePhotoFile: File? = null) : RegisterSubscriptionIntent
     data class RetryTr069(val subscriptionId: Int) : RegisterSubscriptionIntent
+    data object UseCurrentLocationClicked : RegisterSubscriptionIntent
+    data object ChooseManualLocationClicked : RegisterSubscriptionIntent
+    data object DismissManualLocationMap : RegisterSubscriptionIntent
+    data class LocationCoordinatesSelected(
+        val latitude: Double,
+        val longitude: Double,
+    ) : RegisterSubscriptionIntent
+    data object WizardContinueClicked : RegisterSubscriptionIntent
+    data object WizardBackClicked : RegisterSubscriptionIntent
 }

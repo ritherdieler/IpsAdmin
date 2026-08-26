@@ -9,6 +9,7 @@ data class AssistanceTicketResponse(
     val id: Int = 0,
     val name: String,
     val phone: String = "",
+    val ip: String? = null,
     val category: String,
     val description: String,
     var status: AssistanceTicketStatus,
@@ -44,6 +45,8 @@ data class AssistanceTicketResponse(
             AssistanceTicketStatus.CANCELLED -> "Cancelado"
         }
     }
+
+    fun displayableIp(): String? = ip?.takeIf { it.isNotBlank() }
 }
 
 enum class AssistanceTicketStatus {

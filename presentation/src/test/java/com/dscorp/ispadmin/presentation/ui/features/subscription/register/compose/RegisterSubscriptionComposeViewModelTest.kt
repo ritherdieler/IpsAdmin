@@ -26,6 +26,7 @@ import com.dscorp.ispadmin.domain.usecase.subscription.ObserveOfflineRegistratio
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionResult
 import com.dscorp.ispadmin.domain.usecase.subscription.RegisterSubscriptionUseCase
 import com.dscorp.ispadmin.domain.usecase.subscription.RetryTr069ProvisioningUseCase
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.LocationCaptureMethod
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionUiEvent
 import io.mockk.coEvery
@@ -283,6 +284,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
         fillWifiFields()
+        selectValidLocation()
 
         val events = mutableListOf<RegisterSubscriptionUiEvent>()
         val job = launch {
@@ -331,6 +333,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
         fillWifiFields()
+        selectValidLocation()
 
         val events = mutableListOf<RegisterSubscriptionUiEvent>()
         val job = launch {
@@ -370,6 +373,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
         fillWifiFields()
+        selectValidLocation()
 
         val events = mutableListOf<RegisterSubscriptionUiEvent>()
         val job = launch {
@@ -454,6 +458,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
         fillWifiFields()
+        selectValidLocation()
 
         viewModel.saveSubscription(facadePhotoFile)
         viewModel.saveSubscription(facadePhotoFile)
@@ -648,6 +653,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
         viewModel.onIntent(RegisterSubscriptionIntent.ClientIpAddressChanged("192.168.25.10"))
         fillWifiFields()
+        selectValidLocation()
 
         viewModel.saveSubscription(facadePhotoFile)
         advanceUntilIdle()
@@ -826,6 +832,7 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
         viewModel.onIntent(RegisterSubscriptionIntent.OnVlanChanged("100"))
         fillWifiFields()
+        selectValidLocation()
 
         viewModel.saveSubscription(facadePhotoFile)
         advanceUntilIdle()
@@ -972,6 +979,7 @@ class RegisterSubscriptionComposeViewModelTest {
 
         fillValidFiberForm(nap, onu)
         fillWifiFields()
+        selectValidLocation()
 
         val events = mutableListOf<RegisterSubscriptionUiEvent>()
         val job = launch { viewModel.uiEvent.collect { events.add(it) } }
@@ -1011,6 +1019,7 @@ class RegisterSubscriptionComposeViewModelTest {
 
         fillValidFiberForm(nap, onu)
         fillWifiFields()
+        selectValidLocation()
 
         val events = mutableListOf<RegisterSubscriptionUiEvent>()
         val job = launch { viewModel.uiEvent.collect { events.add(it) } }
@@ -1040,6 +1049,57 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.WifiSsid5Changed("CasaFibra5"))
     }
 
+    @Test
+    fun `UseCurrentLocationClicked sets current method and requests GPS`() = runTest(testDispatcher) {
+        val events = mutableListOf<RegisterSubscriptionUiEvent>()
+        val job = launch { viewModel.uiEvent.collect { events.add(it) } }
+
+        viewModel.onIntent(RegisterSubscriptionIntent.UseCurrentLocationClicked)
+        advanceUntilIdle()
+
+        assertEquals(
+            LocationCaptureMethod.CURRENT,
+            viewModel.uiState.value.registerSubscriptionForm.locationCaptureMethod
+        )
+        assertTrue(events.contains(RegisterSubscriptionUiEvent.RequestCurrentLocation))
+        job.cancel()
+    }
+
+    @Test
+    fun `ChooseManualLocationClicked opens map picker`() = runTest(testDispatcher) {
+        viewModel.onIntent(RegisterSubscriptionIntent.ChooseManualLocationClicked)
+        advanceUntilIdle()
+
+        assertEquals(
+            LocationCaptureMethod.MANUAL,
+            viewModel.uiState.value.registerSubscriptionForm.locationCaptureMethod
+        )
+        assertTrue(viewModel.uiState.value.showManualLocationMap)
+    }
+
+    @Test
+    fun `LocationCoordinatesSelected stores coords and preselects nearest nap`() = runTest(testDispatcher) {
+        val nearer = NapBoxResponse(id = "near", placeName = "P", placeId = 1)
+        val farther = NapBoxResponse(id = "far", placeName = "P", placeId = 1)
+        coEvery { getPlaceFromLocationUseCase(-12.0, -77.0) } returns Result.success(
+            Place(id = "1", name = "P")
+        )
+        coEvery { getNearNapBoxesUseCase(-12.0, -77.0) } returns Result.success(
+            listOf(nearer, farther)
+        )
+
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+        viewModel.onIntent(RegisterSubscriptionIntent.LocationCoordinatesSelected(-12.0, -77.0))
+        advanceUntilIdle()
+
+        val form = viewModel.uiState.value.registerSubscriptionForm
+        assertEquals(-12.0, form.location!!.latitude, 0.0)
+        assertEquals(-77.0, form.location!!.longitude, 0.0)
+        assertEquals(nearer, form.selectedNapBox)
+        assertFalse(viewModel.uiState.value.showManualLocationMap)
+    }
+
     private fun fillValidFiberForm(nap: NapBoxResponse, onu: Onu) {
         viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
         viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
@@ -1050,5 +1110,144 @@ class RegisterSubscriptionComposeViewModelTest {
         viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
         viewModel.onIntent(RegisterSubscriptionIntent.NapBoxSelected(nap))
         viewModel.onIntent(RegisterSubscriptionIntent.OnuSelected(onu))
+        selectValidLocation()
+    }
+
+    private fun selectValidLocation() {
+        viewModel.onLocationChanged(
+            com.google.android.gms.maps.model.LatLng(-12.0, -77.0)
+        )
+    }
+
+    @Test
+    fun `WizardContinue stays on step 1 when client and location are invalid`() = runTest(testDispatcher) {
+        viewModel.onIntent(RegisterSubscriptionIntent.WizardContinueClicked)
+        advanceUntilIdle()
+
+        assertEquals(
+            com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionWizardStep.CLIENT_LOCATION,
+            viewModel.uiState.value.wizardStep
+        )
+        assertNotNull(viewModel.uiState.value.registerSubscriptionForm.firstNameError)
+        assertNotNull(viewModel.uiState.value.registerSubscriptionForm.locationError)
+    }
+
+    @Test
+    fun `WizardContinue advances to installation when step 1 is valid`() = runTest(testDispatcher) {
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+        fillStep1()
+        advanceUntilIdle()
+
+        viewModel.onIntent(RegisterSubscriptionIntent.WizardContinueClicked)
+        advanceUntilIdle()
+
+        assertEquals(
+            com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionWizardStep.INSTALLATION,
+            viewModel.uiState.value.wizardStep
+        )
+        assertEquals("JUAN", viewModel.uiState.value.registerSubscriptionForm.firstName)
+    }
+
+    @Test
+    fun `WizardBack returns to previous step without clearing form`() = runTest(testDispatcher) {
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+        fillStep1()
+        advanceUntilIdle()
+        viewModel.onIntent(RegisterSubscriptionIntent.WizardContinueClicked)
+        advanceUntilIdle()
+
+        viewModel.onIntent(RegisterSubscriptionIntent.WizardBackClicked)
+        advanceUntilIdle()
+
+        assertEquals(
+            com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionWizardStep.CLIENT_LOCATION,
+            viewModel.uiState.value.wizardStep
+        )
+        assertEquals("JUAN", viewModel.uiState.value.registerSubscriptionForm.firstName)
+        assertEquals(-12.0, viewModel.uiState.value.registerSubscriptionForm.location!!.latitude, 0.0)
+    }
+
+    @Test
+    fun `WizardContinue stays on installation when fiber requirements are missing`() = runTest(testDispatcher) {
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+        fillStep1()
+        advanceUntilIdle()
+        viewModel.onIntent(RegisterSubscriptionIntent.WizardContinueClicked)
+        advanceUntilIdle()
+
+        viewModel.onIntent(RegisterSubscriptionIntent.WizardContinueClicked)
+        advanceUntilIdle()
+
+        assertEquals(
+            com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionWizardStep.INSTALLATION,
+            viewModel.uiState.value.wizardStep
+        )
+    }
+
+    @Test
+    fun `WizardContinue advances to confirmation when fiber installation is valid`() =
+        runTest(testDispatcher) {
+            val nap = NapBoxResponse(id = "n1", placeName = "P1", placeId = 1)
+            val onu = Onu("b", "olt", "1", "t", "type", "pon", "p", "sn1")
+            coEvery { getRegistrationCatalogUseCase() } returns Result.success(
+                sampleCatalog(napBoxes = listOf(fiberNap()), onus = listOf(fiberOnu()))
+            )
+            viewModel.loadScreenData(null)
+            advanceUntilIdle()
+            fillValidFiberForm(nap, onu)
+            fillWifiFields()
+            advanceUntilIdle()
+
+            viewModel.onIntent(RegisterSubscriptionIntent.WizardContinueClicked)
+            advanceUntilIdle()
+            viewModel.onIntent(RegisterSubscriptionIntent.WizardContinueClicked)
+            advanceUntilIdle()
+
+            assertEquals(
+                com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionWizardStep.CONFIRMATION,
+                viewModel.uiState.value.wizardStep
+            )
+            assertEquals("JUAN", viewModel.uiState.value.registerSubscriptionForm.firstName)
+            assertEquals(nap.id, viewModel.uiState.value.registerSubscriptionForm.selectedNapBox?.id)
+        }
+
+    @Test
+    fun `zero coordinates do not allow leaving step 1`() = runTest(testDispatcher) {
+        viewModel.loadScreenData(null)
+        advanceUntilIdle()
+        viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
+        viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
+        viewModel.onIntent(RegisterSubscriptionIntent.DniChanged("12345678"))
+        viewModel.onIntent(RegisterSubscriptionIntent.AddressChanged("Calle larga 12345"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PhoneChanged("987654321"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
+        coEvery { getPlaceFromLocationUseCase(any(), any()) } returns Result.success(
+            Place(id = "1", name = "P")
+        )
+        coEvery { getNearNapBoxesUseCase(any(), any()) } returns Result.success(emptyList())
+        viewModel.onIntent(RegisterSubscriptionIntent.LocationCoordinatesSelected(0.0, 0.0))
+        advanceUntilIdle()
+
+        viewModel.onIntent(RegisterSubscriptionIntent.WizardContinueClicked)
+        advanceUntilIdle()
+
+        assertEquals(
+            com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionWizardStep.CLIENT_LOCATION,
+            viewModel.uiState.value.wizardStep
+        )
+        assertNotNull(viewModel.uiState.value.registerSubscriptionForm.locationError)
+    }
+
+    private fun fillStep1() {
+        viewModel.onIntent(RegisterSubscriptionIntent.FirstNameChanged("Juan"))
+        viewModel.onIntent(RegisterSubscriptionIntent.LastNameChanged("Perez"))
+        viewModel.onIntent(RegisterSubscriptionIntent.DniChanged("12345678"))
+        viewModel.onIntent(RegisterSubscriptionIntent.AddressChanged("Calle larga 12345"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PhoneChanged("987654321"))
+        viewModel.onIntent(RegisterSubscriptionIntent.PlaceSelected(Place(id = "1", name = "P")))
+        selectValidLocation()
     }
 }

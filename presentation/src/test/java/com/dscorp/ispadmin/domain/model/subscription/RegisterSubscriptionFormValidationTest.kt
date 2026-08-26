@@ -209,6 +209,43 @@ class RegisterSubscriptionFormValidationTest {
     }
 
     @Test
+    fun `napBoxToPreselectAfterNearbyRefresh takes first ordered nap of the place`() {
+        val nearer = NapBoxResponse(id = "near", placeName = "P", placeId = 1)
+        val farther = NapBoxResponse(id = "far", placeName = "P", placeId = 1)
+        val otherPlace = NapBoxResponse(id = "other", placeName = "Q", placeId = 2)
+
+        val selected = napBoxToPreselectAfterNearbyRefresh(
+            nearbyOrdered = listOf(nearer, farther, otherPlace),
+            placeId = 1,
+        )
+
+        assertEquals(nearer, selected)
+    }
+
+    @Test
+    fun `napBoxToPreselectAfterNearbyRefresh uses first nearby when place is unknown`() {
+        val first = NapBoxResponse(id = "a", placeName = "A", placeId = 1)
+        val second = NapBoxResponse(id = "b", placeName = "B", placeId = 2)
+
+        val selected = napBoxToPreselectAfterNearbyRefresh(
+            nearbyOrdered = listOf(first, second),
+            placeId = null,
+        )
+
+        assertEquals(first, selected)
+    }
+
+    @Test
+    fun `napBoxToPreselectAfterNearbyRefresh returns null when list is empty`() {
+        assertNull(
+            napBoxToPreselectAfterNearbyRefresh(
+                nearbyOrdered = emptyList(),
+                placeId = 1,
+            )
+        )
+    }
+
+    @Test
     fun `subscriptionNapBoxErrorAfterNearbyRefresh stale selection`() {
         val nap = NapBoxResponse(id = "n1", placeName = "P", placeId = 1)
         assertEquals(

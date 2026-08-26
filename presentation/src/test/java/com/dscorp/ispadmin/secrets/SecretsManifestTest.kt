@@ -25,4 +25,21 @@ class SecretsManifestTest {
         val content = manifestFile.readText()
         assertThat(content).contains("android:value=\"\${MAPS_API_KEY}\"")
     }
+
+    @Test
+    fun `google-services de cada flavor tiene current_key para Maps`() {
+        val flavorFiles = listOf(
+            File("src/dev/google-services.json"),
+            File("src/prod/google-services.json"),
+            File("presentation/src/dev/google-services.json"),
+            File("presentation/src/prod/google-services.json")
+        ).filter { it.exists() }
+
+        assertThat(flavorFiles).isNotEmpty()
+        flavorFiles.forEach { file ->
+            val content = file.readText()
+            assertThat(content).contains("\"current_key\"")
+            assertThat(content).containsMatch("""AIzaSy[A-Za-z0-9_-]+""")
+        }
+    }
 }

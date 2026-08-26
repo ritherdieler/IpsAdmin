@@ -17,4 +17,6 @@ data class RegisterSubscriptionState(
     val orderId: Int? = null,
     val isOfflineMode: Boolean = false,
     val tr069RetryLoading: Boolean = false,
+    val showManualLocationMap: Boolean = false,
+    val wizardStep: RegisterSubscriptionWizardStep = RegisterSubscriptionWizardStep.CLIENT_LOCATION,
 )

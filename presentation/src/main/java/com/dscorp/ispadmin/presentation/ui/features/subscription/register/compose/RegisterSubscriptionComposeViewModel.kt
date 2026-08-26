@@ -13,6 +13,7 @@ import com.dscorp.ispadmin.domain.model.Place
 import com.dscorp.ispadmin.domain.model.PlanResponse
 import com.dscorp.ispadmin.domain.model.Subscription
 import com.dscorp.ispadmin.domain.model.subscription.RegisterSubscriptionFormConstraints
+import com.dscorp.ispadmin.domain.model.subscription.napBoxToPreselectAfterNearbyRefresh
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionFacadePhotoError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionNapBoxErrorAfterNearbyRefresh
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionOnuErrorAfterListRefresh
@@ -36,11 +37,14 @@ import com.dscorp.ispadmin.presentation.ui.features.subscription.register.mapper
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.mapper.toPlace
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.mapper.toPlanResponse
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.FormFieldKey
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.LocationCaptureMethod
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionFormState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionIntent
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionState
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.RegisterSubscriptionUiEvent
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.canAdvanceWizardStep
 import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.isRegistrationVlanSelectable
+import com.dscorp.ispadmin.presentation.ui.features.subscription.register.models.wizardFieldsFor
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -278,6 +282,70 @@ class RegisterSubscriptionComposeViewModel(
                 onUseDifferentWifiNamesChanged(intent.enabled)
             is RegisterSubscriptionIntent.RegisterClick -> saveSubscription(intent.facadePhotoFile)
             is RegisterSubscriptionIntent.RetryTr069 -> retryTr069Provisioning(intent.subscriptionId)
+            RegisterSubscriptionIntent.UseCurrentLocationClicked -> onUseCurrentLocationClicked()
+            RegisterSubscriptionIntent.ChooseManualLocationClicked -> onChooseManualLocationClicked()
+            RegisterSubscriptionIntent.DismissManualLocationMap -> onDismissManualLocationMap()
+            is RegisterSubscriptionIntent.LocationCoordinatesSelected ->
+                onLocationCoordinatesSelected(intent.latitude, intent.longitude)
+            RegisterSubscriptionIntent.WizardContinueClicked -> onWizardContinueClicked()
+            RegisterSubscriptionIntent.WizardBackClicked -> onWizardBackClicked()
+        }
+    }
+
+    private fun onUseCurrentLocationClicked() {
+        _uiState.update {
+            it.copy(
+                registerSubscriptionForm = it.registerSubscriptionForm.copy(
+                    locationCaptureMethod = LocationCaptureMethod.CURRENT
+                )
+            )
+        }
+        viewModelScope.launch(mainImmediate) {
+            _uiEvent.emit(RegisterSubscriptionUiEvent.RequestCurrentLocation)
+        }
+    }
+
+    private fun onChooseManualLocationClicked() {
+        _uiState.update {
+            it.copy(
+                showManualLocationMap = true,
+                registerSubscriptionForm = it.registerSubscriptionForm.copy(
+                    locationCaptureMethod = LocationCaptureMethod.MANUAL
+                )
+            )
+        }
+    }
+
+    private fun onDismissManualLocationMap() {
+        _uiState.update { it.copy(showManualLocationMap = false) }
+    }
+
+    private fun onLocationCoordinatesSelected(latitude: Double, longitude: Double) {
+        _uiState.update { it.copy(showManualLocationMap = false) }
+        processCurrentLocation(latitude, longitude)
+    }
+
+    private fun onWizardContinueClicked() {
+        val current = currentUiState()
+        val fields = wizardFieldsFor(current.wizardStep, current.registerSubscriptionForm)
+        val validated = current.registerSubscriptionForm.validated(*fields.toTypedArray())
+        val nextStep = if (canAdvanceWizardStep(current.wizardStep, validated)) {
+            current.wizardStep.next() ?: current.wizardStep
+        } else {
+            current.wizardStep
+        }
+        _uiState.update {
+            it.copy(
+                registerSubscriptionForm = validated,
+                wizardStep = nextStep,
+            )
+        }
+    }
+
+    private fun onWizardBackClicked() {
+        _uiState.update { current ->
+            val previous = current.wizardStep.previous() ?: return@update current
+            current.copy(wizardStep = previous)
         }
     }
 
@@ -434,7 +502,7 @@ private fun onPlaceSelected(value: Place) {
             napBoxList = filteredNapBoxes,
             selectedNapBox = form.selectedNapBox?.takeIf { selected ->
                 filteredNapBoxes.any { it.id == selected.id }
-            }
+            } ?: filteredNapBoxes.firstOrNull()
         )
     }
 }
@@ -651,12 +719,13 @@ private suspend fun fetchNearbyNapBoxes(
                 if (expectedGen != locationRequestGeneration.get()) return@fold
                 val currentForm = currentUiState().registerSubscriptionForm
                 val selectedPlace = currentForm.selectedPlace
-                val filteredNapBoxes = selectedPlace?.let { place ->
-                    napBoxes.filter { it.placeId == place.id?.toInt() }
+                val selectedNapBox = napBoxToPreselectAfterNearbyRefresh(
+                    nearbyOrdered = napBoxes,
+                    placeId = selectedPlace?.id?.toInt(),
+                )
+                val filteredNapBoxes = selectedPlace?.id?.toInt()?.let { placeId ->
+                    napBoxes.filter { it.placeId == placeId }
                 } ?: napBoxes
-                val selectedNapBox = currentForm.selectedNapBox?.takeIf { selected ->
-                    filteredNapBoxes.any { it.id == selected.id }
-                }
 
                 _uiState.update {
                     it.copy(
@@ -956,12 +1025,8 @@ private fun buildSubscriptionFromForm(
 }
 
 fun onLocationChanged(currentLocation: LatLng) {
-    _uiState.update {
-        it.copy(
-            registerSubscriptionForm = it.registerSubscriptionForm.copy(
-                location = currentLocation
-            )
-        )
+    updateValidatedForm(FormFieldKey.LOCATION) { form ->
+        form.copy(location = currentLocation)
     }
 }
 

@@ -24,11 +24,9 @@ class CreateSupportTicketViewModel(
         const val OBS_SCREEN = "create_support_ticket"
     }
 
-    // Estado principal de la pantalla usando UDF
     private val _uiState = MutableStateFlow(CreateSupportTicketUiState())
     val uiState: StateFlow<CreateSupportTicketUiState> = _uiState.asStateFlow()
 
-    // Categorías para los tickets de soporte
     val categories = listOf(
         "Sin Conexión a Internet",
         "Internet Lento",
@@ -48,22 +46,20 @@ class CreateSupportTicketViewModel(
         "Otros",
     )
 
-    // Inicializar los datos al crear el ViewModel
     init {
         getPlaces()
     }
 
-    // Obtener lugares disponibles
     private fun getPlaces() {
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isLoading = true) }
                 val response = repository.getPlaces()
-                _uiState.update { 
+                _uiState.update {
                     it.copy(
                         places = response,
                         isLoading = false
-                    ) 
+                    )
                 }
             } catch (e: Exception) {
                 observabilityClient.reportError(
@@ -71,18 +67,16 @@ class CreateSupportTicketViewModel(
                     message = "Fallo al cargar lugares para crear ticket",
                     tags = mapOf("feature" to OBS_FEATURE, "screen" to OBS_SCREEN, "action" to "load_places")
                 )
-                // Manejar el error sin afectar el estado principal
-                _uiState.update { 
+                _uiState.update {
                     it.copy(
                         error = "Error al cargar lugares: ${e.message}",
                         isLoading = false
-                    ) 
+                    )
                 }
             }
         }
     }
 
-    // Actualizar el teléfono
     fun updatePhone(phone: String) {
         _uiState.update {
             val phoneError = if (phone.isEmpty()) {
@@ -92,15 +86,14 @@ class CreateSupportTicketViewModel(
             } else {
                 null
             }
-            
+
             it.copy(
                 phone = phone,
                 phoneError = phoneError
             )
         }
     }
-    
-    // Actualizar la categoría
+
     fun updateCategory(category: String) {
         _uiState.update {
             val categoryError = if (category.isEmpty()) {
@@ -108,15 +101,14 @@ class CreateSupportTicketViewModel(
             } else {
                 null
             }
-            
+
             it.copy(
                 category = category,
                 categoryError = categoryError
             )
         }
     }
-    
-    // Actualizar la descripción
+
     fun updateDescription(description: String) {
         _uiState.update {
             val descriptionError = if (description.isEmpty()) {
@@ -126,28 +118,34 @@ class CreateSupportTicketViewModel(
             } else {
                 null
             }
-            
+
             it.copy(
                 description = description,
                 descriptionError = descriptionError
             )
         }
     }
-    
-    // Actualizar el tipo de cliente
+
     fun updateIsClient(isClient: Boolean) {
         _uiState.update {
-            it.copy(
-                isClient = isClient,
-                // Resetear selecciones según el tipo de cliente
-                selectedPlace = if (isClient) null else it.selectedPlace,
-                selectedSubscription = if (!isClient) null else it.selectedSubscription,
-                customerNameError = null
-            )
+            if (isClient) {
+                it.copy(
+                    isClient = true,
+                    selectedPlace = null,
+                    customerNameError = null
+                )
+            } else {
+                it.copy(
+                    isClient = false,
+                    selectedSubscription = null,
+                    customerNameError = null,
+                    phone = "",
+                    phoneError = null
+                ).clearedClientDetails()
+            }
         }
     }
-    
-    // Actualizar el lugar seleccionado
+
     fun updateSelectedPlace(place: Place?) {
         _uiState.update {
             val placeError = if (!it.isClient && place == null) {
@@ -155,31 +153,95 @@ class CreateSupportTicketViewModel(
             } else {
                 null
             }
-            
+
             it.copy(
                 selectedPlace = place,
                 placeError = placeError
             )
         }
     }
-    
-    // Actualizar la suscripción seleccionada
+
     fun updateSelectedSubscription(subscription: SubscriptionFastSearchResponse?) {
-        _uiState.update {
-            val subscriptionError = if (it.isClient && subscription == null) {
-                "Debe seleccionar un cliente"
-            } else {
-                null
+        if (subscription == null) {
+            _uiState.update {
+                it.copy(
+                    selectedSubscription = null,
+                    subscriptionError = if (it.isClient) "Debe seleccionar un cliente" else null,
+                    phone = "",
+                    phoneError = null
+                ).clearedClientDetails()
             }
-            
+            return
+        }
+
+        _uiState.update {
             it.copy(
                 selectedSubscription = subscription,
-                subscriptionError = subscriptionError
+                subscriptionError = null,
+                isLoadingSubscription = true,
+                hasLoadedClientDetails = false,
+                subscriptionLoadError = null,
+                phone = "",
+                phoneError = null,
+                clientName = "",
+                clientIp = "",
+                clientLocation = ""
             )
+        }
+        loadSubscriptionDetails(subscription.id)
+    }
+
+    private fun loadSubscriptionDetails(subscriptionId: Int) {
+        viewModelScope.launch {
+            try {
+                val details = repository.subscriptionById(subscriptionId)
+                _uiState.update { current ->
+                    if (current.selectedSubscription?.id != subscriptionId) {
+                        current
+                    } else {
+                        val fullName = details.getFullName().trim()
+                        current.copy(
+                            isLoadingSubscription = false,
+                            hasLoadedClientDetails = true,
+                            subscriptionLoadError = null,
+                            phone = details.phone.orEmpty(),
+                            clientName = fullName,
+                            clientIp = details.ip.orEmpty(),
+                            clientLocation = details.place?.name.orEmpty(),
+                            selectedSubscription = current.selectedSubscription?.copy(fullName = fullName)
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                observabilityClient.reportError(
+                    throwable = e,
+                    message = "Fallo al cargar datos de la suscripción para ticket",
+                    tags = mapOf(
+                        "feature" to OBS_FEATURE,
+                        "screen" to OBS_SCREEN,
+                        "action" to "load_subscription",
+                        "entityId" to subscriptionId
+                    )
+                )
+                _uiState.update { current ->
+                    if (current.selectedSubscription?.id != subscriptionId) {
+                        current
+                    } else {
+                        current.copy(
+                            isLoadingSubscription = false,
+                            hasLoadedClientDetails = false,
+                            subscriptionLoadError = "Error al cargar datos del cliente: ${e.message}",
+                            phone = "",
+                            clientName = "",
+                            clientIp = "",
+                            clientLocation = ""
+                        )
+                    }
+                }
+            }
         }
     }
 
-    // Buscar suscripciones por nombre
     fun findSubscriptionByNames(names: String) {
         viewModelScope.launch {
             try {
@@ -207,7 +269,6 @@ class CreateSupportTicketViewModel(
         }
     }
 
-    // Crear un ticket de soporte
     fun createTicket() {
         viewModelScope.launch {
             observabilityClient.addBreadcrumb(
@@ -223,22 +284,24 @@ class CreateSupportTicketViewModel(
             )
             try {
                 _uiState.update { it.copy(isLoading = true) }
-                
-                // Validar campos obligatorios
+
                 val state = _uiState.value
                 val isValid = validateForm(state)
-                
+
                 if (isValid) {
-                    // Crear objeto de request con los datos del formulario
                     val ticketRequest = AssistanceTicketRequest(
                         phone = state.phone,
                         category = state.category,
                         description = state.description,
                         subscriptionId = state.selectedSubscription?.id,
-                        customerName = if (state.isClient) state.selectedSubscription?.fullName ?: "" else state.customerName,
+                        customerName = if (state.isClient) {
+                            state.clientName.ifBlank { state.selectedSubscription?.fullName ?: "" }
+                        } else {
+                            state.customerName
+                        },
                         placeName = state.selectedPlace?.name
                     )
-                    
+
                     repository.createTicket(ticketRequest)
                     _uiState.update {
                         it.copy(
@@ -247,7 +310,6 @@ class CreateSupportTicketViewModel(
                         )
                     }
                 } else {
-                    // Actualizar errores si el formulario no es válido
                     updateFormErrors()
                     _uiState.update {
                         it.copy(
@@ -271,50 +333,53 @@ class CreateSupportTicketViewModel(
             }
         }
     }
-    
-    // Validar el formulario completo
+
     private fun validateForm(state: CreateSupportTicketUiState): Boolean {
-        // Verificar campos básicos
-        if (state.phone.isEmpty() || state.phone.length != 9 || 
-            state.category.isEmpty() || state.description.isEmpty()) {
+        if (state.category.isEmpty() || state.description.isEmpty()) {
             return false
         }
-        
-        // Verificar campos específicos según tipo de cliente
+
         return if (state.isClient) {
-            state.selectedSubscription != null
+            state.selectedSubscription != null && state.hasLoadedClientDetails
         } else {
-            state.selectedPlace != null && !state.customerName.isNullOrBlank()
+            state.phone.isNotEmpty() &&
+                state.phone.length == 9 &&
+                state.selectedPlace != null &&
+                state.customerName.isNotBlank()
         }
     }
-    
-    // Actualizar errores del formulario
+
     private fun updateFormErrors() {
         val state = _uiState.value
         _uiState.update {
             it.copy(
-                phoneError = if (state.phone.isEmpty()) "El teléfono es obligatorio" 
-                    else if (state.phone.length != 9) "El teléfono debe tener 9 dígitos" else null,
+                phoneError = if (!state.isClient) {
+                    if (state.phone.isEmpty()) "El teléfono es obligatorio"
+                    else if (state.phone.length != 9) "El teléfono debe tener 9 dígitos" else null
+                } else {
+                    null
+                },
                 categoryError = if (state.category.isEmpty()) "La categoría es obligatoria" else null,
                 descriptionError = if (state.description.isEmpty()) "La descripción es obligatoria" else null,
-                subscriptionError = if (state.isClient && state.selectedSubscription == null) "Debe seleccionar un cliente" else null,
+                subscriptionError = when {
+                    state.isClient && state.selectedSubscription == null -> "Debe seleccionar un cliente"
+                    state.isClient && !state.hasLoadedClientDetails -> "Debe cargar los datos del cliente"
+                    else -> null
+                },
                 placeError = if (!state.isClient && state.selectedPlace == null) "Debe seleccionar un lugar" else null,
                 customerNameError = if (!state.isClient && state.customerName.isBlank()) "El nombre completo es obligatorio" else null
             )
         }
     }
 
-    // Resetear el error
     fun resetError() {
         _uiState.update { it.copy(error = null) }
     }
 
-    // Resetear el estado de ticketCreated
     fun resetTicketCreated() {
         _uiState.update { it.copy(isTicketCreated = false) }
     }
 
-    // Función para actualizar el nombre del cliente cuando no es cliente
     fun updateCustomerName(name: String) {
         _uiState.update {
             val customerNameError = if (!it.isClient && name.isEmpty()) {
@@ -322,7 +387,7 @@ class CreateSupportTicketViewModel(
             } else {
                 null
             }
-            
+
             it.copy(
                 customerName = name,
                 customerNameError = customerNameError
@@ -331,13 +396,11 @@ class CreateSupportTicketViewModel(
     }
 }
 
-// Estado de la UI siguiendo UDF
 data class CreateSupportTicketUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val isTicketCreated: Boolean = false,
-    
-    // Campos del formulario
+
     val phone: String = "",
     val phoneError: String? = null,
     val category: String = "",
@@ -351,8 +414,22 @@ data class CreateSupportTicketUiState(
     val placeError: String? = null,
     val customerName: String = "",
     val customerNameError: String? = null,
-    
-    // Datos para los dropdowns
+    val clientName: String = "",
+    val clientIp: String = "",
+    val clientLocation: String = "",
+    val isLoadingSubscription: Boolean = false,
+    val hasLoadedClientDetails: Boolean = false,
+    val subscriptionLoadError: String? = null,
+
     val subscriptions: List<SubscriptionFastSearchResponse> = emptyList(),
     val places: List<Place> = emptyList()
-) 
+)
+
+private fun CreateSupportTicketUiState.clearedClientDetails() = copy(
+    clientName = "",
+    clientIp = "",
+    clientLocation = "",
+    isLoadingSubscription = false,
+    hasLoadedClientDetails = false,
+    subscriptionLoadError = null
+)

@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.PriorityHigh
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.Pending
@@ -33,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -100,6 +102,15 @@ fun TicketCard(
                     }
                 }
             )
+
+            ticket.displayableIp()?.let { ip ->
+                InfoItem(
+                    icon = Icons.Filled.Wifi,
+                    label = "IP",
+                    value = ip,
+                    testTag = "ticket_ip"
+                )
+            }
             
             ticket.place?.let { place ->
                 InfoItem(
@@ -294,7 +305,8 @@ private fun InfoItem(
     value: String,
     valueStyle: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.bodyMedium,
     maxLines: Int = 1,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
+    testTag: String? = null
 ) {
     Row(
         modifier = Modifier
@@ -306,6 +318,7 @@ private fun InfoItem(
                     Modifier
                 }
             )
+            .then(if (testTag != null) Modifier.testTag(testTag) else Modifier)
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.Top
     ) {

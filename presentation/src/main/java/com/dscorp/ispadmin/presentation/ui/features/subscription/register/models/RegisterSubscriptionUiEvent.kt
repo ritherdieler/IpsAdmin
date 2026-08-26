@@ -6,4 +6,5 @@ sealed interface RegisterSubscriptionUiEvent {
     data class Error(val message: String) : RegisterSubscriptionUiEvent
     data class Success(val subscription: Subscription) : RegisterSubscriptionUiEvent
     data object QueuedOffline : RegisterSubscriptionUiEvent
+    data object RequestCurrentLocation : RegisterSubscriptionUiEvent
 }

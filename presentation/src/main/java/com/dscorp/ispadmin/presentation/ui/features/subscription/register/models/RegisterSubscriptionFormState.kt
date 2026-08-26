@@ -15,6 +15,7 @@ import com.dscorp.ispadmin.domain.model.subscription.subscriptionFacadePhotoErro
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionFirstNameError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionHostDeviceError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionLastNameError
+import com.dscorp.ispadmin.domain.model.subscription.subscriptionLocationError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionNapBoxError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionNoteError
 import com.dscorp.ispadmin.domain.model.subscription.subscriptionOnuError
@@ -51,6 +52,8 @@ data class RegisterSubscriptionFormState(
     val selectedHostDevice: NetworkDevice? = null,
     val hostDeviceError: String? = null,
     val location: LatLng? = null,
+    val locationError: String? = null,
+    val locationCaptureMethod: LocationCaptureMethod = LocationCaptureMethod.NOT_SELECTED,
     val cpeDevice: NetworkDevice? = null,
     val napBoxError: String? = null,
     val napBoxList: List<NapBoxResponse> = emptyList(),
@@ -137,6 +140,8 @@ data class RegisterSubscriptionFormState(
                 requiresWifiConfig() && useDifferentWifiNames
             )
             FormFieldKey.WIFI_PASSWORD_5 -> null
+            FormFieldKey.LOCATION ->
+                subscriptionLocationError(location?.latitude, location?.longitude)
         }
     }
 
@@ -185,5 +190,6 @@ private fun RegisterSubscriptionFormState.withFieldError(
         FormFieldKey.WIFI_PASSWORD_24 -> copy(wifiPassword24Error = message)
         FormFieldKey.WIFI_SSID_5 -> copy(wifiSsid5Error = message)
         FormFieldKey.WIFI_PASSWORD_5 -> copy(wifiPassword5Error = message)
+        FormFieldKey.LOCATION -> copy(locationError = message)
     }
 }

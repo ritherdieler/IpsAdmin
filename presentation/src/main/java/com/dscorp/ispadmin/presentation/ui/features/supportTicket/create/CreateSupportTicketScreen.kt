@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -18,8 +19,10 @@ import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -68,38 +71,39 @@ fun CreateSupportTicketScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-            Text(
-                text = "Información de Contacto",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Campo de teléfono con icono
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Phone,
-                    contentDescription = "Teléfono",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(end = 8.dp)
+            if (!uiState.isClient) {
+                Text(
+                    text = "Información de Contacto",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
 
-                MyOutlinedTextField(
-                    value = uiState.phone,
-                    onValueChange = { if (it.length <= 9) onPhoneChange(it) },
-                    label = "Teléfono de contacto",
-                    modifier = Modifier.fillMaxWidth(),
-                    errorMessage = uiState.phoneError,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Phone,
+                        contentDescription = "Teléfono",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+
+                    MyOutlinedTextField(
+                        value = uiState.phone,
+                        onValueChange = { if (it.length <= 9) onPhoneChange(it) },
+                        label = "Teléfono de contacto",
+                        modifier = Modifier.fillMaxWidth(),
+                        errorMessage = uiState.phoneError,
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = "Detalles del Problema",
@@ -286,6 +290,60 @@ fun CreateSupportTicketScreen(
                         }
                     }
                 }
+
+                if (uiState.isLoadingSubscription) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .padding(end = 12.dp)
+                                .size(24.dp)
+                        )
+                        Text(
+                            text = "Cargando datos del cliente...",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+
+                if (uiState.subscriptionLoadError != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = uiState.subscriptionLoadError ?: "",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                if (uiState.hasLoadedClientDetails) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ClientLoadedDetailField(
+                        icon = Icons.Filled.Person,
+                        label = "Nombre",
+                        value = uiState.clientName
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    ClientLoadedDetailField(
+                        icon = Icons.Filled.Phone,
+                        label = "Teléfono",
+                        value = uiState.phone
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    ClientLoadedDetailField(
+                        icon = Icons.Filled.Wifi,
+                        label = "IP",
+                        value = uiState.clientIp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    ClientLoadedDetailField(
+                        icon = Icons.Filled.LocationOn,
+                        label = "Ubicación",
+                        value = uiState.clientLocation
+                    )
+                }
             } else {
                 Text(
                     text = "Ubicación",
@@ -435,6 +493,37 @@ fun CreateSupportTicketScreen(
     }
 }
 
+@Composable
+private fun ClientLoadedDetailField(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    value: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(end = 8.dp)
+        )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = value.ifBlank { "—" },
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun CreateSupportTicketScreenPreview() {
@@ -449,6 +538,10 @@ fun CreateSupportTicketScreenPreview() {
                     id = 1,
                     fullName = "Juan Pérez",
                 ),
+                clientName = "Juan Pérez",
+                clientIp = "192.168.1.10",
+                clientLocation = "Huacho",
+                hasLoadedClientDetails = true,
                 subscriptions = listOf(
                     SubscriptionFastSearchResponse(
                         id = 1,

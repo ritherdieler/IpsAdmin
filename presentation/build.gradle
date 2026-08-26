@@ -15,7 +15,11 @@ apply from: "${rootProject.projectDir}/gradle/secrets.gradle"
 def localProps = loadLocalProperties(rootProject)
 def sendCloudMessagingApiKey = propOrEnv(localProps, "SEND_CLOUD_MESSAGING_API_KEY")
 def obsApiKeyProd = resolveProdObsApiKey(localProps)
-def mapsApiKey = propOrEnv(localProps, "MAPS_API_KEY")
+def mapsApiKeyDev = resolveMapsApiKey(localProps, file("src/dev/google-services.json"))
+def mapsApiKeyProd = resolveMapsApiKey(localProps, file("src/prod/google-services.json"))
+if (mapsApiKeyDev.isEmpty() || mapsApiKeyProd.isEmpty()) {
+    logger.warn("Maps API key missing in google-services.json or MAPS_API_KEY; Google Maps tiles will not load.")
+}
 
 
 secrets {
@@ -39,9 +43,6 @@ android {
         versionCode 58
         versionName "2.6.6"
         testInstrumentationRunner "com.dscorp.ispadmin.test.InstrumentationTestRunner"
-        manifestPlaceholders += [
-            MAPS_API_KEY: mapsApiKey
-        ]
         vectorDrawables {
             useSupportLibrary true
         }
@@ -53,16 +54,20 @@ android {
             dimension "environment"
             applicationIdSuffix ".dev"
             versionNameSuffix "-dev"
+            manifestPlaceholders += [MAPS_API_KEY: mapsApiKeyDev]
+            buildConfigField "boolean", "HAS_MAPS_API_KEY", (!mapsApiKeyDev.isEmpty()).toString()
             buildConfigField 'boolean', 'SKIP_VERSION_CHECK', 'true'
             buildConfigField 'String', "FIRE_BASE_URL", '"https://fcm.googleapis.com"'
-            buildConfigField 'String', "BASE_URL", '"http://127.0.0.1:8080/ispadmin/"'
-            buildConfigField 'String', "OBS_BASE_URL", '"http://127.0.0.1:8080/ispadmin/"'
+            buildConfigField 'String', "BASE_URL", '"http://192.168.1.4:8080/ispadmin/"'
+            buildConfigField 'String', "OBS_BASE_URL", '"http://192.168.1.4:8080/ispadmin/"'
             buildConfigField 'String', "OBS_API_KEY", '"dev-obs-android-key"'
             buildConfigField 'String', "OBS_API_KEY_ANDROID", '""'
             buildConfigField 'String', "SEND_CLOUD_MESSAGING_API_KEY", "\"${sendCloudMessagingApiKey}\""
         }
         prod {
             dimension "environment"
+            manifestPlaceholders += [MAPS_API_KEY: mapsApiKeyProd]
+            buildConfigField "boolean", "HAS_MAPS_API_KEY", (!mapsApiKeyProd.isEmpty()).toString()
             buildConfigField 'boolean', 'SKIP_VERSION_CHECK', 'false'
             buildConfigField 'String', "FIRE_BASE_URL", '"https://fcm.googleapis.com"'
             buildConfigField 'String', "BASE_URL", '"https://api.gigafiberperu.cloud/ispadmin/"'

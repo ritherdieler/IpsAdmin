@@ -136,6 +136,12 @@ fun subscriptionOnuErrorAfterListRefresh(
 fun subscriptionFacadePhotoError(hasFacadePhoto: Boolean): String? =
     if (!hasFacadePhoto) "Adjunte una foto de la fachada" else null
 
+fun subscriptionLocationError(latitude: Double?, longitude: Double?): String? {
+    if (latitude == null || longitude == null) return "Seleccione una ubicación"
+    if (latitude == 0.0 && longitude == 0.0) return "Seleccione una ubicación"
+    return null
+}
+
 fun subscriptionWifiSsidError(value: String, requiresWifi: Boolean): String? {
     if (!requiresWifi) return null
     val trimmed = value.trim()
@@ -172,6 +178,14 @@ fun subscriptionWifiPasswordError(value: String, requiresWifi: Boolean): String?
             "La clave WiFi debe tener entre ${RegisterSubscriptionFormConstraints.MIN_WIFI_PASSWORD_LENGTH} y ${RegisterSubscriptionFormConstraints.MAX_WIFI_PASSWORD_LENGTH} caracteres"
         else -> null
     }
+}
+
+fun napBoxToPreselectAfterNearbyRefresh(
+    nearbyOrdered: List<NapBoxResponse>,
+    placeId: Int?,
+): NapBoxResponse? {
+    val filtered = placeId?.let { id -> nearbyOrdered.filter { it.placeId == id } } ?: nearbyOrdered
+    return filtered.firstOrNull()
 }
 
 fun subscriptionNapBoxErrorAfterNearbyRefresh(
